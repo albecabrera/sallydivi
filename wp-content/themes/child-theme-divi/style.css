@@ -1,0 +1,340 @@
+/*
+Theme Name: Child Theme Divi
+Author: brother webart
+Description: Your description goes here
+Version: 1.0
+Template: Divi
+
+This is the child theme for Divi theme, generated with Generate Child Theme plugin by catchthemes.
+
+(optional values you can add: Theme URI, Author URI, License, License URI, Tags, Text Domain)
+*/
+
+/* Erfahre mehr button - darker background for contrast */
+/* Erfahre mehr button - darker background for contrast */
+body #page-container .et_pb_section .et_pb_button_0,
+body #page-container .et_pb_section .et_pb_button_0.et_pb_button {
+    background-color: #5c3344 !important;
+    border-color: #5c3344 !important;
+    color: #ffffff !important;
+}
+body #page-container .et_pb_section .et_pb_button_0:hover {
+    background-color: #8a5566 !important;
+    border-color: #8a5566 !important;
+    color: #ffffff !important;
+}
+
+/* Fix dropdown arrow "3" in nav menu items with children */
+.et-menu .menu-item-has-children > a:first-child:after {
+    display: none;
+}
+
+/* Newsletter Formular -------------------------------------------------------- */
+.et_pb_section_5 {
+    padding-top: 50px !important;
+    padding-bottom: 50px !important;
+}
+.et_pb_section_5 .et_pb_row {
+    max-width: 900px !important;
+    width: 80% !important;
+}
+.et_pb_text_11,
+.et_pb_text_11 .et_pb_text_inner {
+    overflow: visible !important;
+    width: 100% !important;
+    text-align: center !important;
+}
+
+/* ── Inline form ── */
+.sally-newsletter-wrap {
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+}
+.sally-newsletter-form {
+    width: 100%;
+}
+.sally-newsletter-form .sally-nl-fields {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    margin-bottom: 10px;
+    width: 100%;
+}
+body .sally-newsletter-form input[type="email"] {
+    flex: 1 1 260px;
+    max-width: 420px;
+    padding: 13px 18px !important;
+    border: 2px solid #c4a2a8 !important;
+    border-radius: 8px !important;
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+    color: #2b2b2b !important;
+    background: #fff !important;
+    outline: none !important;
+    transition: border-color .2s;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+}
+body .sally-newsletter-form input[type="email"]:focus {
+    border-color: #5c3344 !important;
+}
+body .sally-newsletter-form button[type="submit"] {
+    padding: 13px 30px !important;
+    background-color: #5c3344 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: background-color .2s;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+body .sally-newsletter-form button[type="submit"]:hover {
+    background-color: #8a5566 !important;
+}
+.sally-nl-hint {
+    font-size: 13px !important;
+    color: #888 !important;
+    text-align: center !important;
+    margin-top: 10px !important;
+    padding-bottom: 0 !important;
+}
+.sally-nl-success {
+    color: #5c3344;
+    font-weight: 600;
+    font-size: 18px !important;
+    text-align: center;
+    margin-bottom: 12px;
+    padding-bottom: 0 !important;
+}
+.sally-nl-error {
+    color: #c0392b;
+    font-size: 14px !important;
+    text-align: center;
+    margin-bottom: 12px;
+    padding-bottom: 0 !important;
+}
+@media (max-width: 600px) {
+    .sally-newsletter-form .sally-nl-fields {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    body .sally-newsletter-form input[type="email"],
+    body .sally-newsletter-form button[type="submit"] {
+        max-width: 100%;
+        width: 100% !important;
+        flex: none !important;
+    }
+}
+
+/* ── Newsletter popup (bh-nl-*) ── */
+.bh-nl-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .55);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.bh-nl-overlay.bh-nl-open {
+    display: flex;
+    animation: bhNlFadeIn .25s ease;
+}
+@keyframes bhNlFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+.bh-nl-popup {
+    position: relative;
+    background: #fff;
+    border-radius: 14px;
+    padding: 48px 40px 38px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .22);
+    text-align: center;
+    animation: bhNlSlideUp .28s ease;
+}
+@keyframes bhNlSlideUp {
+    from { transform: translateY(24px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+.bh-nl-popup-close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    color: #aaa;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: color .2s, background .2s;
+}
+.bh-nl-popup-close:hover {
+    color: #5c3344;
+    background: #f5edef;
+}
+.bh-nl-popup-heading {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #5c3344 !important;
+    margin: 0 0 10px !important;
+    padding: 0 !important;
+    line-height: 1.3 !important;
+}
+.bh-nl-popup-desc {
+    font-size: 14px !important;
+    color: #777 !important;
+    margin: 0 0 22px !important;
+    padding: 0 !important;
+}
+.bh-nl-popup-form .bh-nl-popup-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.bh-nl-popup-form .bh-nl-popup-fields input[type="email"] {
+    width: 100% !important;
+    padding: 13px 16px !important;
+    font-size: 16px !important;
+    font-family: 'Roboto', sans-serif !important;
+    border: 2px solid #c4a2a8 !important;
+    border-radius: 8px !important;
+    background: #fff !important;
+    color: #2b2b2b !important;
+    box-sizing: border-box !important;
+    -webkit-appearance: none;
+}
+.bh-nl-popup-form .bh-nl-popup-fields input[type="email"]:focus {
+    border-color: #5c3344 !important;
+    outline: none !important;
+}
+.bh-nl-popup-form .bh-nl-popup-fields button[type="submit"] {
+    width: 100% !important;
+    padding: 14px 24px !important;
+    font-size: 17px !important;
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 600 !important;
+    background: #5c3344 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: background-color .2s !important;
+}
+.bh-nl-popup-form .bh-nl-popup-fields button[type="submit"]:hover {
+    background: #8a5566 !important;
+}
+@media (max-width: 520px) {
+    .bh-nl-popup {
+        padding: 44px 22px 30px;
+    }
+}
+
+/* ── Divi signup module – injected form ── */
+.et_pb_newsletter .bh-nl-injected-form {
+    display: block !important;
+}
+.et_pb_newsletter .bh-nl-injected-form form {
+    margin: 0;
+}
+.et_pb_newsletter .bh-nl-injected-form .et_pb_newsletter_fields {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    justify-content: center !important;
+    align-items: stretch !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.et_pb_newsletter .bh-nl-injected-form .et_pb_newsletter_field {
+    flex: 1 1 220px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.et_pb_newsletter .bh-nl-injected-form .et_pb_newsletter_field .input {
+    width: 100% !important;
+    padding: 13px 16px !important;
+    font-size: 16px !important;
+    border: 2px solid #c4a2a8 !important;
+    border-radius: 8px !important;
+    background: #fff !important;
+    color: #2b2b2b !important;
+    box-sizing: border-box !important;
+    height: auto !important;
+    line-height: 1.4 !important;
+    -webkit-appearance: none;
+}
+.et_pb_newsletter .bh-nl-injected-form .et_pb_newsletter_field .input:focus {
+    border-color: #5c3344 !important;
+    outline: none !important;
+}
+.et_pb_newsletter .bh-nl-injected-form .et_pb_newsletter_button_wrap {
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.et_pb_newsletter .bh-nl-injected-form .et_pb_newsletter_button {
+    display: inline-block !important;
+    width: auto !important;
+    padding: 13px 28px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    background: #5c3344 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    transition: background-color .2s !important;
+    line-height: 1.4 !important;
+    box-shadow: none !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+.et_pb_newsletter .bh-nl-injected-form .et_pb_newsletter_button:hover {
+    background: #8a5566 !important;
+}
+.bh-nl-inline-success {
+    text-align: center;
+    color: #5c3344;
+    font-weight: 600;
+    font-size: 18px !important;
+    padding: 14px 0;
+    margin: 0;
+}
+@media (max-width: 600px) {
+    .et_pb_newsletter .bh-nl-injected-form .et_pb_newsletter_fields {
+        flex-direction: column !important;
+    }
+    .et_pb_newsletter .bh-nl-injected-form .et_pb_newsletter_button {
+        width: 100% !important;
+    }
+}
+
+/* ETmodules icon font - fix mobile menu toggle icon */
+@font-face {
+    font-family: ETmodules;
+    font-display: swap;
+    src: url('../Divi/core/admin/fonts/modules/all/modules.eot');
+    src: url('../Divi/core/admin/fonts/modules/all/modules.eot?#iefix') format('embedded-opentype'),
+         url('../Divi/core/admin/fonts/modules/all/modules.woff') format('woff'),
+         url('../Divi/core/admin/fonts/modules/all/modules.ttf') format('truetype'),
+         url('../Divi/core/admin/fonts/modules/all/modules.svg#ETmodules') format('svg');
+    font-weight: 400;
+    font-style: normal;
+}

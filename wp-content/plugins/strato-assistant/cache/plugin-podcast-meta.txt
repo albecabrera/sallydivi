@@ -1,0 +1,1474 @@
+a:5:{s:39:"podlove-podcasting-plugin-for-wordpress";a:29:{s:4:"name";s:25:"Podlove Podcast Publisher";s:4:"slug";s:39:"podlove-podcasting-plugin-for-wordpress";s:7:"version";s:5:"4.4.1";s:6:"author";s:67:"<a href="https://profiles.wordpress.org/eteubert/">Eric Teubert</a>";s:14:"author_profile";s:40:"https://profiles.wordpress.org/eteubert/";s:8:"requires";s:5:"4.9.6";s:6:"tested";s:5:"6.9.4";s:12:"requires_php";s:3:"8.0";s:16:"requires_plugins";a:0:{}s:6:"rating";i:88;s:7:"ratings";a:5:{i:5;i:36;i:4;i:1;i:3;i:1;i:2;i:0;i:1;i:6;}s:11:"num_ratings";i:44;s:15:"support_threads";i:0;s:24:"support_threads_resolved";i:0;s:10:"downloaded";i:562378;s:12:"last_updated";s:21:"2026-03-31 1:15pm GMT";s:5:"added";s:10:"2012-06-26";s:8:"homepage";s:46:"https://podlove.org/podlove-podcast-publisher/";s:8:"sections";a:5:{s:11:"description";s:4946:"<p>We started the Podlove Podcast Publisher project in 2012 because existing solutions were stuck in the past, complex and unwieldy. The Publisher helps you save time, worry less and provides a cutting edge listening experience for your audience.</p>
+<p>Official Site: <a href="https://podlove.org/podlove-podcast-publisher" rel="nofollow ugc">podlove.org/podlove-podcast-publisher</a></p>
+<h3>Getting Started Videos</h3>
+<p>Starting fresh with Podlove Publisher:</p>
+<p><span class="embed-youtube" style="text-align:center; display: block;"><iframe loading="lazy" class="youtube-player" width="750" height="422" src="https://www.youtube.com/embed/2UZrmPAcyrs?version=3&#038;rel=1&#038;showsearch=0&#038;showinfo=1&#038;iv_load_policy=1&#038;fs=1&#038;hl=en-US&#038;autohide=2&#038;wmode=transparent" allowfullscreen="true" style="border:0;" sandbox="allow-scripts allow-same-origin allow-popups allow-presentation allow-popups-to-escape-sandbox"></iframe></span></p>
+<p>Migrating an existing podcast to Podlove Publisher:</p>
+<p><span class="embed-youtube" style="text-align:center; display: block;"><iframe loading="lazy" class="youtube-player" width="750" height="422" src="https://www.youtube.com/embed/s6jL6jk6hWk?version=3&#038;rel=1&#038;showsearch=0&#038;showinfo=1&#038;iv_load_policy=1&#038;fs=1&#038;hl=en-US&#038;autohide=2&#038;wmode=transparent" allowfullscreen="true" style="border:0;" sandbox="allow-scripts allow-same-origin allow-popups allow-presentation allow-popups-to-escape-sandbox"></iframe></span></p>
+<h3>Compatible RSS Feeds</h3>
+<p>The Publisher makes it easy to create highly expressive, efficient and super compatible podcast feeds with fine grained control over client behavior (e.g. GUID control to replace faulty episodes and for clients to reload) supporting all important meta data.</p>
+<h3>Multi-Format Publishing</h3>
+<p>The Publisher also makes multi-format publishing &#8211; embracing all modern and legacy audio and video codecs &#8211; a snap. By adopting simple file name conventions, the plugin allows the podcaster to provide individual feeds for certain use cases or audiences without adding work for the podcaster during the publishing process.</p>
+<h3>Optimized Web Player</h3>
+<p>The Publisher also comes integrated with the Podlove Web Player plugin and fully supports its advanced options including multiple audio (MP4 AAC, MP3, Vorbis, Opus) and video (MP4 H.264, WebM, Theora) format support for web browsers. This Web Player is fully HTML5 compatible and is ready for all touch based clients too.</p>
+<h3>Metadata Galore</h3>
+<ul>
+<li><strong>Chapter Marks:</strong> The Publisher also makes it easy to publish chapter information in the player to make access to structured episodes even easier. Full support for linking directly to any part of your podcast on the web with instant playback included.</li>
+<li><strong>Contributors:</strong> Bring your team and guests front and center. Manage contributors, including their names, avatars and web urls.</li>
+<li><strong>Transcripts:</strong> WebVTT transcripts can be imported and even connected to your contributors. They are referenced in the RSS feed so they can be displayed by podcast apps.</li>
+<li><strong>Seasons:</strong> Does your podcast have seasons? We got you covered with a dedicated &#8220;Seasons&#8221; module.</li>
+<li><strong>Related Episodes:</strong> Manage and display related episodes on your website.</li>
+</ul>
+<h3>Auphonic Integration</h3>
+<p>Auphonic is your all-in-one audio post production webtool to achieve a professional quality result. We provide a first class integration module for ease of use and best automation experience.</p>
+<h3>Flexible Templates</h3>
+<p>To round it all up, a flexible template system enables you to published Podcasts in a defined fashion and change the style at any time without having to touch your individual postings later on.</p>
+<p>And this is just the beginning. We have a rich roadmap that will bring even more interesting features: integration with helpful services, much improved timeline metadata support (show notes) and much more.</p>
+<h4>Further Reading</h4>
+<ul>
+<li><a href="http://publisher.podlove.org/" rel="nofollow ugc">Podlove Publisher</a></li>
+<li><a href="http://podlove.org/" rel="nofollow ugc">Podlove Project</a></li>
+<li><a href="https://community.podlove.org/" rel="nofollow ugc">Podlove Community</a></li>
+<li><a href="http://docs.podlove.org/" rel="nofollow ugc">Documentation</a></li>
+<li><a href="https://github.com/podlove/podlove-publisher/issues" rel="nofollow ugc">Bug Tracker</a></li>
+<li><a href="http://podlove.org/donations/" rel="nofollow ugc">Donate</a></li>
+</ul>
+<p>Development of the plugin is an open process. The current version is available <a href="https://github.com/podlove/podlove-publisher" rel="nofollow ugc">on GitHub</a> Feel free to contribute and to fix errors or send improvements via GitHub.</p>
+<p>Requires PHP 8.0+</p>
+";s:12:"installation";s:410:"<ol>
+<li>Download the Podlove Publisher Plugin to your desktop.</li>
+<li>If downloaded as a zip archive, extract the Plugin folder to your desktop.</li>
+<li>With your FTP program, upload the Plugin folder to the wp-content/plugins folder in your WordPress directory online.</li>
+<li>Go to Plugins screen and find the newly uploaded Plugin in the list.</li>
+<li>Click Activate Plugin to activate it.</li>
+</ol>
+";s:3:"faq";s:3022:"
+<dt id="is%20podlove%20podcast%20publisher%20free%3F">
+Is Podlove Podcast Publisher free?
+</h4>
+<p>
+<p>Yes! The core features of Podlove Podcast Publisher are and always will be free.</p>
+</p>
+<dt id="are%20there%20download%20statistics%3F">
+Are there Download Statistics?
+</h4>
+<p>
+<p>Yes! Podcast Downloads can be tracked and analyzed. You can easily see how many people downloaded you podcast episodes, which clients they used, if they prefer to subscribe to the feed or listen on your website using the web player—and much more.</p>
+</p>
+<dt id="are%20there%20privacy%20%2F%20gdpr%20considerations%3F">
+Are there Privacy / GDPR considerations?
+</h4>
+<p>
+<p>Podlove Publisher is GDPR compliant and provides prewritten text snippets for your privacy page. See https://docs.podlove.org/podlove-publisher/guides/dsgvo-gdpr.html</p>
+</p>
+<dt id="where%20can%20i%20host%20my%20podcast%20files%3F">
+Where can I host my podcast files?
+</h4>
+<p>
+<p>Any storage where you have control over the file naming is compatible with Podlove Podcast Publisher. You can manage files using a simple FTP/sFTP or use services like Amazon S3.</p>
+</p>
+<dt id="where%20can%20i%20ask%20questions%20and%20get%20support%3F">
+Where can I ask questions and get support?
+</h4>
+<p>
+<p>Free support where questions are answered by the community is available in the <a href="http://community.podlove.org/" rel="nofollow ugc">Podlove Community Forum</a>. There is a German community in the <a href="https://sendegate.de/" rel="nofollow ugc">Sendegate</a>.</p>
+</p>
+<dt id="how%20can%20i%20help%20the%20project%3F">
+How can I help the project?
+</h4>
+<p>
+<p>The continued success of Open Source project relies on the community. There are many ways you can help:<br />
+Episode title in API now follows the same rules as in RSS feed. There&#8217;s a new field &#8216;title_clean&#8217; for accessing the specifically set plain episode title, but that might be null in some cases, so it&#8217;s better to default the &#8216;title&#8217; attribute to the usual rules.<br />
+&#8211; If you enjoy the plugin, please <a href="https://wordpress.org/support/plugin/podlove-podcasting-plugin-for-wordpress/reviews/#new-post" rel="ugc">leave a review</a>.<br />
+&#8211; You can answer questions of other fellow podcasters in the <a href="https://community.podlove.org/" rel="nofollow ugc">Podlove Community</a>.</p>
+</p>
+<dt id="where%20do%20i%20report%20security%20bugs%20found%20in%20this%20plugin%3F%20%3D">
+Where do I report security bugs found in this plugin? =
+</h4>
+<p>
+<p>Please report security bugs found in the source code of the Podlove Podcast Publisher plugin through the <a href="https://patchstack.com/database/vdp/9e5fb42f-70ee-4afb-9e86-886900031833" rel="nofollow ugc">Patchstack Vulnerability Disclosure  Program</a>. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.</p>
+<p>This product includes GeoLite2 data created by MaxMind, available from http://www.maxmind.com.</p>
+</p>
+
+";s:9:"changelog";s:14574:"<h4>4.4.1</h4>
+<ul>
+<li>fix: Auphonic preset selector shows preset label again</li>
+</ul>
+<h4>4.4.0</h4>
+<p><strong>Tracking &amp; Analytics</strong></p>
+<ul>
+<li>new: add download tracking support for Matomo (see Expert Settings &gt; Tracking)</li>
+<li>new: &#8220;Recent Downloads&#8221; chart can now be added to the WordPress dashboard</li>
+<li>improve: reorganize tracking settings page</li>
+</ul>
+<p><strong>Auphonic</strong></p>
+<ul>
+<li>new: Auphonic module now supports providing an API key in addition to the OAuth flow</li>
+<li>new: Auphonic module now supports chapter images in the production</li>
+<li>new: when re-running a production in Auphonic, Publisher now detects new files and presents a &#8220;Re-upload to PLUS&#8221; button</li>
+<li>fix: switch Auphonic OAuth to the new <code>auth.podlove.org</code> service (OAuth in older Publisher versions will no longer work)</li>
+</ul>
+<p><strong>Platform &amp; Integrations</strong></p>
+<ul>
+<li>new: Codeberg support as contributor social service</li>
+<li>new: repair tool detects missing permission to alter tables, which prevents some database migrations from running successfully</li>
+<li>new: add some situational notices that PLUS exists</li>
+</ul>
+<p><strong>Maintenance</strong></p>
+<ul>
+<li>update various JavaScript dependencies</li>
+</ul>
+<h4>4.3.5</h4>
+<ul>
+<li>new: the &#8220;Repair&#8221; function in &#8220;Tools&#8221; now checks for missing database columns and adds missing ones</li>
+</ul>
+<h4>4.3.4</h4>
+<ul>
+<li>change: enable the Publisher PLUS module by default for new and existing installs</li>
+<li>fix: prevent connection to PLUS service when module is deactivated</li>
+<li>fix: prevent feed proxy when PLUS module is deactivated</li>
+<li>fix: escape missing template id error in podlove-template shortcode</li>
+<li>fix: various PHP deprecation warnings and notices</li>
+</ul>
+<h4>4.3.3</h4>
+<ul>
+<li>fix: allow selecting chapter images from the media library</li>
+<li>fix: prevent media files module from hanging on new episodes without an ID</li>
+<li>change: default new contributors to visible</li>
+<li>fix: treat inactive episode files as nonexistent in templates</li>
+</ul>
+<h4>4.3.2</h4>
+<ul>
+<li>improve permission verification when deleting default and podcast contributions</li>
+</ul>
+<h4>4.3.1</h4>
+<ul>
+<li>add &#8220;podcast:chapters&#8221; tag to RSS feed, which Apple Podcast now prefers for chapters information.</li>
+<li>change default database table character set to utf8mb4 for emoji support. For safety reasons, there is no automatic migration provided. If you prefer, you can update Publisher tables manually via SQL, but in most cases the episode table will be all you need: <code>ALTER TABLE wp_podlove_episode CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</code></li>
+</ul>
+<h4>4.3.0</h4>
+<p>Reworked and extended the <strong>Publisher PLUS</strong> service. It now offers the &#8220;File Storage&#8221; feature to conveniently upload media files to PLUS instead of storing it in WordPress or other external locations.</p>
+<p>To get started, navigate to &#8220;Podlove &#8211; Modules&#8221;, find &#8220;Publisher PLUS&#8221; and activate it. This will add a new menu entry with further instructions.</p>
+<p>There is a migration tool to copy existing media files to PLUS.</p>
+<p>Give it a try if this kind of service interests you. And please do give feedback 🙂</p>
+<p><strong>Other Changes</strong></p>
+<ul>
+<li>PLUS feature management moved: there is now a &#8220;Publisher PLUS&#8221; settings page for token management and feature toggles</li>
+<li>new: media file slug &#8220;freeze&#8221;. As soon as the first media file validates, the<br />
+slug is marked as &#8220;frozen&#8221; so it cannot be edited accidently any more, by<br />
+automations or manual interaction. There is an edit button to consciously change<br />
+it, if necessary</li>
+<li>fixes &#8220;Activate for all existing Episodes&#8221; button in assets</li>
+</ul>
+<h4>4.2.7</h4>
+<ul>
+<li>security: Improved handling of image files in the download cache to block malicious uploads.</li>
+</ul>
+<p>Note: this should not affect normal image delivery, but please keep an eye out for any unexpected issues with cached images.</p>
+<h4>4.2.6</h4>
+<ul>
+<li>fix: open redirection vulnerability</li>
+</ul>
+<h4>4.2.5</h4>
+<ul>
+<li>fix: an episode that is assigned to a show can now be taken out of that show</li>
+<li>load more Auphonic productions to select from (50)</li>
+</ul>
+<h4>4.2.4</h4>
+<ul>
+<li>fix: when upgrading YOAST SEO while the Publisher is active, permalinks do not break any more</li>
+<li>onboarding: show warning if application passwords are disabled</li>
+<li>include feeds in <code>GET podlove/v2/shows</code> result</li>
+</ul>
+<h4>4.2.3</h4>
+<ul>
+<li>feat: add API route to list public feeds: <code>GET podlove/v2/feeds</code></li>
+<li>security: remove unused code (which contained an XSS vulnerability)</li>
+</ul>
+<h4>4.2.2</h4>
+<p>Fix GUIDs for shows:</p>
+<ul>
+<li>generate a guid for all existing shows</li>
+<li>use the guid in the RSS feed, instead of the podcast guid</li>
+<li>new shows will get a new guid</li>
+</ul>
+<h4>4.2.1</h4>
+<ul>
+<li>security: XSS vulnerability in podcast summary</li>
+</ul>
+<h4>4.2.0</h4>
+<p>This release introduces the all-new <strong>Onboarding Assistant</strong>, enabling you to<br />
+either setup a new podcast or move your existing podcast to Podlove with just<br />
+your RSS Feed URL.</p>
+<p>This makes it much easier for potential podcasters to get started, as it makes<br />
+the initial setup process as simple and quick as possible, now only requiring<br />
+the podcaster to define what&#8217;s really necessary about the podcast, without<br />
+needing to worry about technical details.</p>
+<p>And for the first time, you can now move any of your existing podcasts to<br />
+Podlove Publisher. All you need is the RSS feed. Podlove Publisher finds all the<br />
+episode data and metadata like the audio file, title, description, chapters,<br />
+transcript and contributors and imports them automatically.</p>
+<p>A huge Thank You goes to the <a href="https://prototypefund.de/project/podlove-publisher-onboarding-import-assistant/" rel="nofollow ugc">Prototype Fund</a><br />
+for sponsoring the development of the Onboarding Assistant module.</p>
+<p><strong>Other Changes</strong></p>
+<ul>
+<li>removes outdated &#8220;Migration Wizard&#8221;</li>
+<li>generate a guid for the podcast and use it in the RSS feed <code>podcast:guid</code> tag</li>
+<li>API changes:
+<ul>
+<li>episodes: allow filtering by <code>guid</code></li>
+<li>podcast: include the following fields in responses: guid, language, feeds</li>
+</ul>
+</li>
+<li>fix: respect slashes in file slugs when urlencoding</li>
+<li>security: XSS vulnerability in feed name</li>
+</ul>
+<h4>4.1.25</h4>
+<ul>
+<li>fix: Auphonic &#8220;Start Production&#8221; is working again</li>
+</ul>
+<h4>4.1.24</h4>
+<ul>
+<li>security: XSS vulnerability in episode assets title</li>
+<li>feat: add API route to clear caches: <code>DELETE podlove/v2/tools/clear-caches</code></li>
+<li>feat: add bluesky to social services</li>
+</ul>
+<h4>4.1.23</h4>
+<ul>
+<li>new: Auphonic file uploads display their upload progress</li>
+<li>fix: image cache sometimes saved the resized files under a wrong filename</li>
+<li>fix: image cache is now more robust, redirecting to the original image url instead of failing when any processing step fails</li>
+<li>fix: oembed xml generation with escaping</li>
+<li>fix: various PHP warnings/notices when trying to access nonexistent array keys</li>
+</ul>
+<h4>4.1.22</h4>
+<ul>
+<li>fix: empty vtt transcripts (when no voices were assigned to contributors)</li>
+<li>fix: error when unsetting a transcript voice assignment</li>
+<li>fix: PHP warning while using a deprecated podcast category</li>
+</ul>
+<h4>4.1.21</h4>
+<ul>
+<li>fix: encode tracking urls and their redirected urls</li>
+</ul>
+<h4>4.1.20</h4>
+<ul>
+<li>fix: when using the &#8220;Post Thumbnail&#8221; setting for episode images, the chosen<br />
+image is now immediately shown in the &#8220;Episode Description&#8221; box and it is sent<br />
+to Auphonic when saving a production.</li>
+<li>fix: Auphonic status polling now only gets called when appropriate, instead of on every page load</li>
+<li>fix: improve WordPress 6.7 compatibility (related to translation api)</li>
+</ul>
+<h4>4.1.19</h4>
+<ul>
+<li>fix some templates by allowing <code>service.name</code> (but it&#8217;s deprecated, so you should change your templates to use <code>service.title</code> instead)</li>
+</ul>
+<h4>4.1.18</h4>
+<ul>
+<li>fix <code>episode.transcript</code> accessor</li>
+</ul>
+<h4>4.1.17</h4>
+<ul>
+<li>fix some templates that broke with 4.1.16</li>
+</ul>
+<h4>4.1.16</h4>
+<ul>
+<li>security: use Twig in Sandbox mode</li>
+<li>change: reenable recently disabled Twig Template filters &#8220;filter&#8221;, &#8220;map&#8221; and &#8220;reduce&#8221;</li>
+<li>fix: plugin crash on setup when default WordPress roles do not exist</li>
+</ul>
+<h4>4.1.15</h4>
+<ul>
+<li>security: disable unsafe Twig Template filters &#8220;filter&#8221;, &#8220;map&#8221; and &#8220;reduce&#8221;</li>
+</ul>
+<h4>4.1.14</h4>
+<ul>
+<li>security: add nonces to template actions</li>
+<li>security: use output escaping for episode slug</li>
+</ul>
+<h4>4.1.13</h4>
+<ul>
+<li>add transcripts to import/export</li>
+<li>add confirmation button on modal to input episode image url</li>
+<li>fix: selecting an episode image updates the preview</li>
+</ul>
+<h4>4.1.12</h4>
+<ul>
+<li>new: when selecting a file for Auphonic, its name is suggested to be used as episode slug</li>
+<li>fix: PHP deprecation warnings</li>
+</ul>
+<h4>4.1.11</h4>
+<ul>
+<li>new: support <code>podcast:license</code> tag in RSS feed</li>
+<li>fix: imports correct chapter times from Auphonic (when using features that affect the episode duration)</li>
+<li>maintenance: update various javascript dependencies</li>
+</ul>
+<h4>4.1.10</h4>
+<ul>
+<li>fix: bug introduced in latest patch that created duplicate database entries for media files</li>
+</ul>
+<h4>4.1.9</h4>
+<p>Various fixes regarding adjusted media file handling introduced in version 4.0.11:</p>
+<ul>
+<li>dashboard shows a grey bar again when the file is inactive</li>
+<li>RSS feed correctly skips items with inactive files again</li>
+</ul>
+<h4>4.1.8</h4>
+<ul>
+<li>changes in an episode immediately affect the RSS feed</li>
+</ul>
+<p>There are various caches in place to ensure efficient delivery of the RSS feed<br />
+to podcast clients. However it can be hard to guess how long it will take for a<br />
+change to appear in the feed and podcatchers. Now, any change to the episode<br />
+metadata or enabling/disabling an asset immediately clears the cache for that<br />
+feed item, resulting in the change to be visible in the RSS feed immediately.</p>
+<ul>
+<li>transcripts: contributors in voices selection are sorted alphabetically</li>
+<li>fix: episode license and explicit value are not emptied when saving the episode</li>
+<li>maintenance: fix various notices from WordPress Plugin Check tool</li>
+<li>maintenance: js dependency updates</li>
+</ul>
+<h4>4.1.7</h4>
+<ul>
+<li>fix <code>itunes:explicit</code> RSS tag. It now contains the valid values &#8220;true&#8221; or &#8220;false&#8221;.</li>
+<li>fix typo in API: <code>explicit</code> field was mistyped as <code>expicit</code></li>
+</ul>
+<h4>4.1.6</h4>
+<ul>
+<li>Shows Settings: sort Auphonic presets alphabetically</li>
+</ul>
+<h4>4.1.5</h4>
+<ul>
+<li>Hotfix: Creating Auphonic productions works again</li>
+</ul>
+<h4>4.1.4</h4>
+<ul>
+<li>Auphonic: reduce preset cache to 10 seconds so manual refreshing is not necessary (and remove broken refresh button on module page)</li>
+<li>Auphonic: select configured show preset when selecting a show</li>
+<li>Auphonic: fix status updates when opening an episode with an already running production</li>
+<li>performance: don&#8217;t try to fetch file headers twice for unreachable URLs</li>
+<li>performance: faster saving of slug changes</li>
+</ul>
+<h4>4.1.3</h4>
+<ul>
+<li>Shows selection in the episode was rewritten for the new frontend stack. It is now compatible with the Automatic Numbering module again.</li>
+</ul>
+<h4>4.1.2</h4>
+<ul>
+<li>transcripts: include json link in RSS again when &#8220;Publisher Generated&#8221; is selected</li>
+<li>transcripts: polish timestamp rendering in preview (shorter, monospaced, right aligned, unselectable)</li>
+<li>chapters: fix &#8220;unknown&#8221; durations</li>
+</ul>
+<h4>4.1.1</h4>
+<ul>
+<li>security: add nonces to tools actions</li>
+</ul>
+<h4>4.1.0</h4>
+<p><strong>Feature: Better control over transcripts in RSS feed</strong></p>
+<p>There is a new feature under <code>Podlove &gt; Podcast Feeds</code> called &#8220;Episode<br />
+Transcripts&#8221; to control how episode transcripts should be referenced in your RSS<br />
+feed. The default is &#8220;Publisher Generated vtt&#8221;, which is nearly the same<br />
+behavior as before (In previous versions, three variants were referenced: vtt,<br />
+json and srt. The json and srt URLs still work but they are not referenced in<br />
+the RSS feed any more as they are not neccessary and removing them reduces feed<br />
+size). There is a dedicated &#8220;Do not include in feed&#8221; option, in case you do not<br />
+want the transcripts in your RSS feed.</p>
+<p>Finally, you may prefer to host your transcript assets externally, just like<br />
+your audio files. If you have configured a transcript asset, you can now select<br />
+it in this setting. Then the RSS feed will reference this external file<br />
+directly.</p>
+<p><strong>Auphonic improvements</strong></p>
+<ul>
+<li>add button to always access the import screen</li>
+<li>add button to delete a track</li>
+<li>show status in production selection</li>
+<li>rearrange / polish various some button and information positions</li>
+</ul>
+<p><strong>Other</strong></p>
+<ul>
+<li>add: capability &#8220;podlove_manage_contributors&#8221; for contributors settings screens</li>
+<li>fix: sometimes missing voices in Podlove Web Player transcripts</li>
+<li>fix: sometimes an enabled asset is disabled a few moments later</li>
+<li>fix: show files as &#8220;not found&#8221; when they become unreachable</li>
+<li>transcripts: rename &#8220;delete&#8221; action to &#8220;clear&#8221;</li>
+<li>transcripts: show timestamps in editor preview</li>
+<li>upgrade heroicons (icon library) from v1 to v2</li>
+</ul>
+<p>Changes for previous versions can be found in the <a href="https://github.com/podlove/podlove-publisher/blob/master/changelog.txt" rel="nofollow ugc"><code>changelog.txt</code></a>.</p>
+";s:11:"screenshots";s:2359:"<ol><li><a href="https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-1.png?rev=1559510"><img src="https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-1.png?rev=1559510" alt="Custom episode post type separates media from your blog content."></a><p>Custom episode post type separates media from your blog content.</p></li><li><a href="https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-2.png?rev=1559510"><img src="https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-2.png?rev=1559510" alt="Download analytics provide you with all the data you ever wanted."></a><p>Download analytics provide you with all the data you ever wanted.</p></li><li><a href="https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-3.png?rev=1559514"><img src="https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-3.png?rev=1559514" alt="The Publisher automatically checks the health of your media files."></a><p>The Publisher automatically checks the health of your media files.</p></li><li><a href="https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-4.png?rev=1559510"><img src="https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-4.png?rev=1559510" alt="The mighty template engine gives you full control over the episode presentation."></a><p>The mighty template engine gives you full control over the episode presentation.</p></li><li><a href="https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-5.png?rev=1559510"><img src="https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-5.png?rev=1559510" alt="Includes the Podlove Subscribe Button, the easiest way for listeners to subscribe to your podcast."></a><p>Includes the Podlove Subscribe Button, the easiest way for listeners to subscribe to your podcast.</p></li><li><a href="https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-6.png?rev=1982732"><img src="https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-6.png?rev=1982732" alt="Includes the Podlove Web Player. One more thing: you can manage and present all contributors easily."></a><p>Includes the Podlove Web Player. One more thing: you can manage and present all contributors easily.</p></li></ol>";}s:17:"short_description";s:108:"The one and only next generation podcast publishing system. Seriously. It&#039;s magical and sparkles a lot.";s:13:"download_link";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.4.1.zip";s:11:"screenshots";a:6:{i:1;a:2:{s:3:"src";s:92:"https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-1.png?rev=1559510";s:7:"caption";s:64:"Custom episode post type separates media from your blog content.";}i:2;a:2:{s:3:"src";s:92:"https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-2.png?rev=1559510";s:7:"caption";s:65:"Download analytics provide you with all the data you ever wanted.";}i:3;a:2:{s:3:"src";s:92:"https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-3.png?rev=1559514";s:7:"caption";s:66:"The Publisher automatically checks the health of your media files.";}i:4;a:2:{s:3:"src";s:92:"https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-4.png?rev=1559510";s:7:"caption";s:80:"The mighty template engine gives you full control over the episode presentation.";}i:5;a:2:{s:3:"src";s:92:"https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-5.png?rev=1559510";s:7:"caption";s:98:"Includes the Podlove Subscribe Button, the easiest way for listeners to subscribe to your podcast.";}i:6;a:2:{s:3:"src";s:92:"https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/screenshot-6.png?rev=1982732";s:7:"caption";s:100:"Includes the Podlove Web Player. One more thing: you can manage and present all contributors easily.";}}s:4:"tags";a:5:{s:5:"audio";s:5:"audio";s:7:"podcast";s:7:"podcast";s:7:"podlove";s:7:"podlove";s:10:"publishing";s:10:"publishing";s:3:"rss";s:3:"rss";}s:8:"versions";a:65:{s:6:"2.10.0";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.2.10.0.zip";s:6:"2.11.4";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.2.11.4.zip";s:6:"2.7.24";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.2.7.24.zip";s:6:"2.8.10";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.2.8.10.zip";s:6:"2.9.10";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.2.9.10.zip";s:5:"3.0.4";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.0.4.zip";s:5:"3.1.0";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.1.0.zip";s:6:"3.1.17";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.1.17.zip";s:6:"3.1.18";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.1.18.zip";s:5:"3.2.2";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.2.2.zip";s:5:"3.3.1";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.3.1.zip";s:5:"3.3.2";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.3.2.zip";s:5:"3.4.0";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.4.0.zip";s:5:"3.4.1";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.4.1.zip";s:5:"3.5.6";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.5.6.zip";s:5:"3.6.0";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.6.0.zip";s:5:"3.6.1";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.6.1.zip";s:5:"3.7.0";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.7.0.zip";s:5:"3.7.1";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.7.1.zip";s:5:"3.7.2";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.7.2.zip";s:6:"3.8.12";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.3.8.12.zip";s:6:"4.0.15";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.0.15.zip";s:5:"4.1.0";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.0.zip";s:5:"4.1.1";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.1.zip";s:6:"4.1.10";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.10.zip";s:6:"4.1.11";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.11.zip";s:6:"4.1.12";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.12.zip";s:6:"4.1.13";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.13.zip";s:6:"4.1.14";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.14.zip";s:6:"4.1.15";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.15.zip";s:6:"4.1.16";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.16.zip";s:6:"4.1.17";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.17.zip";s:6:"4.1.18";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.18.zip";s:6:"4.1.19";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.19.zip";s:5:"4.1.2";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.2.zip";s:6:"4.1.20";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.20.zip";s:6:"4.1.21";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.21.zip";s:6:"4.1.22";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.22.zip";s:6:"4.1.23";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.23.zip";s:6:"4.1.24";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.24.zip";s:6:"4.1.25";s:89:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.25.zip";s:5:"4.1.3";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.3.zip";s:5:"4.1.4";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.4.zip";s:5:"4.1.5";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.5.zip";s:5:"4.1.6";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.6.zip";s:5:"4.1.7";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.7.zip";s:5:"4.1.8";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.8.zip";s:5:"4.1.9";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.1.9.zip";s:5:"4.2.0";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.2.0.zip";s:5:"4.2.1";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.2.1.zip";s:5:"4.2.2";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.2.2.zip";s:5:"4.2.3";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.2.3.zip";s:5:"4.2.4";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.2.4.zip";s:5:"4.2.5";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.2.5.zip";s:5:"4.2.6";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.2.6.zip";s:5:"4.2.7";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.2.7.zip";s:5:"4.3.0";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.3.0.zip";s:5:"4.3.1";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.3.1.zip";s:5:"4.3.2";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.3.2.zip";s:5:"4.3.3";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.3.3.zip";s:5:"4.3.4";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.3.4.zip";s:5:"4.3.5";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.3.5.zip";s:5:"4.4.0";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.4.0.zip";s:5:"4.4.1";s:88:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.4.4.1.zip";s:5:"trunk";s:82:"https://downloads.wordpress.org/plugin/podlove-podcasting-plugin-for-wordpress.zip";}s:11:"donate_link";s:34:"https://opencollective.com/podlove";s:5:"icons";a:2:{s:2:"1x";s:84:"https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/icon.svg?rev=1545024";s:3:"svg";s:84:"https://ps.w.org/podlove-podcasting-plugin-for-wordpress/assets/icon.svg?rev=1545024";}s:12:"contributors";a:1:{s:8:"eteubert";s:40:"https://profiles.wordpress.org/eteubert/";}s:6:"market";N;s:11:"custom_link";N;}s:18:"podlove-web-player";a:29:{s:4:"name";s:18:"Podlove Web Player";s:4:"slug";s:18:"podlove-web-player";s:7:"version";s:5:"5.9.2";s:6:"author";s:75:"<a href="https://profiles.wordpress.org/gerritvanaaken/">gerritvanaaken</a>";s:14:"author_profile";s:46:"https://profiles.wordpress.org/gerritvanaaken/";s:8:"requires";s:5:"4.9.6";s:6:"tested";s:5:"6.8.5";s:12:"requires_php";s:3:"7.2";s:16:"requires_plugins";a:0:{}s:6:"rating";i:74;s:7:"ratings";a:5:{i:5;i:9;i:4;i:0;i:3;i:1;i:2;i:0;i:1;i:4;}s:11:"num_ratings";i:14;s:15:"support_threads";i:0;s:24:"support_threads_resolved";i:0;s:10:"downloaded";i:192685;s:12:"last_updated";s:21:"2026-01-02 2:14pm GMT";s:5:"added";s:10:"2012-07-03";s:8:"homepage";s:44:"https://docs.podlove.org/podlove-web-player/";s:8:"sections";a:5:{s:11:"description";s:2900:"<p>Podlove Web Player is a HTML5 based web player for audio and video media files that is optimized and extended for the specific needs of podcasters.<br />
+It has a native integration with <a href="https://wordpress.org/plugins/podlove-podcasting-plugin-for-wordpress/" rel="ugc">Podlove Publisher</a>, can be used as a shortcode and also plays well with Gutenberg Blocks.</p>
+<h3>Made for Podcasters</h3>
+<ul>
+<li>Podcast Chapters</li>
+<li>Transcripts</li>
+<li>Sharing &amp; Embedding</li>
+<li>Download integrated</li>
+<li>Audio Controls, including playback speed</li>
+<li>Supports multiple audio file formats</li>
+<li>Supports live streams</li>
+</ul>
+<h3>Theming &amp; Templating</h3>
+<p>The Player is fully customizable in terms of</p>
+<ul>
+<li>Theme colors</li>
+<li>Font family and weight</li>
+<li>Templates and appearance</li>
+</ul>
+<h3>Subscribe Button Integration</h3>
+<ul>
+<li>Customizable Podcast Clients</li>
+<li>Integration in the Player</li>
+</ul>
+<h3>Usage</h3>
+<p>There are basically four ways to use the Podlove Web Player:</p>
+<h4>1 Manual WordPress Shortcode</h4>
+<p>Use a simple shortcode in your posts and pages, and the Podlove Web Player will appear, playing any media file you want to assign. Basic usage:</p>
+<pre><code>[podlove-web-player
+  theme="default"
+  config="default"
+  title="My episode title"
+  subtitle="Episode Subtitle"
+  poster="/files/path/to/poster.png"
+  chapters="/files/path/to/chapters.json"
+  transcripts="/files/path/to/transcripts.json"
+  playlist="/files/path/to/playlist.json"
+  src="http://mysite.com/mymedia.mp3"
+  size="1337"
+  show="My show title"
+  duration="03:33"
+]
+</code></pre>
+<p>Use an existing post with a media enclosure that is provided from plugins like Blubrry:</p>
+<pre><code>[podlove-web-player
+  theme="default"
+  config="default"
+  post="1234"
+]
+</code></pre>
+<p>Or in case you have our <a href="https://wordpress.org/plugins/podlove-podcasting-plugin-for-wordpress/" rel="ugc">Podlove Publisher</a> installed:</p>
+<pre><code>[podlove-web-player
+  theme="default"
+  config="default"
+  publisher="1234"
+]
+</code></pre>
+<h4>2 Using WordPress Gutenberg Blocks</h4>
+<p>You can choose between different references, like Podlove Publisher, Blocks or you can add the meta data manually. Right now the latter option is limited to a limited set of attributes, this will be expanded in further releases.</p>
+<h4>3 Automatic Integration with Podcasting Engines</h4>
+<p>If you are using Podlove Publisher you should be able to select it in the Publisher Player settings.<br />
+In case you are still using Blubrry you can simply enable the automatic insertions on enclosures in the settings and choose the position.</p>
+<h3>Help &amp; Support</h3>
+<p>If you encounter any issue with the plugin or want to request a specific feature please reach out to our <a href="https://community.podlove.org/" rel="nofollow ugc">Podlove Community</a>.</p>
+";s:12:"installation";s:411:"<ol>
+<li>Download the Podlove Web Player Plugin to your desktop.</li>
+<li>If downloaded as a zip archive, extract the Plugin folder to your desktop.</li>
+<li>With your FTP program, upload the Plugin folder to the wp-content/plugins folder in your WordPress directory online.</li>
+<li>Go to Plugins screen and find the newly uploaded Plugin in the list.</li>
+<li>Click Activate Plugin to activate it.</li>
+</ol>
+";s:3:"faq";s:526:"
+<dt id='where%20do%20i%20report%20security%20bugs%20found%20in%20this%20plugin%3F'>
+Where do I report security bugs found in this plugin?
+</h4>
+<p>
+<p>Please report security bugs found in the source code of the Podlove Web Player plugin through the <a href="https://patchstack.com/database/vdp/9e5fbc08-ca1f-4072-9764-b26c45f95853" rel="nofollow ugc">Patchstack Vulnerability Disclosure  Program</a>. The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.</p>
+</p>
+
+";s:9:"changelog";s:12389:"<h4>5.9.2</h4>
+<ul>
+<li>Improve duration parsing security</li>
+</ul>
+<h4>5.9.1</h4>
+<ul>
+<li>Update software dependencies</li>
+</ul>
+<h4>5.9.0</h4>
+<ul>
+<li>Update to Podlove Web Player 5.13.0</li>
+<li>Verify WordPress 6.7 compatability</li>
+</ul>
+<h4>5.7.5</h4>
+<ul>
+<li>Improve PHP 8 compatability</li>
+<li>Improve compatability with WordPress 6</li>
+</ul>
+<h4>5.7.4</h4>
+<ul>
+<li>Fix security vulnerability</li>
+</ul>
+<h4>5.7.3</h4>
+<ul>
+<li>Fix security vulnerability</li>
+</ul>
+<h4>5.7.1</h4>
+<ul>
+<li>Add episode id to related episodes</li>
+</ul>
+<h4>5.7.0</h4>
+<ul>
+<li>Update to Podlove Web Player 5.12.0</li>
+<li>Fix issue with missing config properties</li>
+</ul>
+<h4>5.6.0</h4>
+<ul>
+<li>Update to Podlove Web Player 5.11.1</li>
+<li>Add public api for player options</li>
+</ul>
+<h4>5.5.1</h4>
+<ul>
+<li>Update to Podlove Web Player 5.11.0</li>
+<li>Add ability to add multiple custom Subscribe Button clients</li>
+</ul>
+<h4>5.4.15</h4>
+<ul>
+<li>Update to Podlove Web Player 5.9.0</li>
+<li>Update ability to add custom Subscribe Button clients</li>
+</ul>
+<h4>5.4.15</h4>
+<ul>
+<li>Update to Podlove Web Player 5.7.4</li>
+<li>Update WordPress compatability</li>
+</ul>
+<h4>5.4.14</h4>
+<ul>
+<li>Update to Podlove Web Player 5.7.2</li>
+</ul>
+<h4>5.4.13</h4>
+<ul>
+<li>Update to Podlove Web Player 5.5.0</li>
+<li>Fixes warnings because of incomplete data structures</li>
+</ul>
+<h4>5.4.12</h4>
+<ul>
+<li>Add ClassicPress interoperability</li>
+<li>Drop minimal requirement to 4.9.6</li>
+</ul>
+<h4>5.4.11</h4>
+<ul>
+<li>Fix an issue that could lead to invisible player</li>
+</ul>
+<h4>5.4.10</h4>
+<ul>
+<li>Update wordpress repository</li>
+</ul>
+<h4>5.4.9</h4>
+<ul>
+<li>Fix PHP warnings for array_replace and array_merge</li>
+<li>Add logic to hide player while it&#8217;s initializing</li>
+<li>Improve README</li>
+</ul>
+<h4>5.4.8</h4>
+<ul>
+<li>Remove conditonal loading due to WordPress quirkyness :/</li>
+</ul>
+<h4>5.4.7</h4>
+<ul>
+<li>Improve page performance by only adding scripts on pages with a player</li>
+<li>Harden lifecycle, only render player once all scripts are available (this may lead to slower page rendering)</li>
+</ul>
+<h4>5.4.5</h4>
+<ul>
+<li>Fix PHP warnings</li>
+<li>Minimize cache.js size</li>
+<li>Only add api requests to cache</li>
+</ul>
+<h4>5.4.4</h4>
+<ul>
+<li>Brings back show tag for shortcode</li>
+<li>Fixes shortcode registration</li>
+</ul>
+<h4>5.4.3</h4>
+<ul>
+<li>Fixes an issue with persisting embed player and share playtime config</li>
+<li>Fixes an issue with rendering the player enclosure in feed</li>
+</ul>
+<h4>5.4.2</h4>
+<ul>
+<li>Fixes an issue with persisting the embedding settings</li>
+<li>Improves compatability if the plugin is activated but not enabled in the Podlove Publisher settings</li>
+</ul>
+<h4>5.4.1</h4>
+<ul>
+<li>Fixes issue with active default tab</li>
+<li>Fixes an issue with invalid stored configurations</li>
+</ul>
+<h4>5.4.0</h4>
+<ul>
+<li>Fix issues with default configuration saving</li>
+<li>Fix menu highlighting</li>
+<li>Add assistive texts to theming</li>
+<li>Feature add ability to define related episodes</li>
+<li>Improve player loading and caching performance</li>
+<li>Update Podlove Web Player to v5.3.1</li>
+<li>Breaking: removes ability to define a show as a related episode in the publisher player template</li>
+</ul>
+<h4>5.3.1</h4>
+<ul>
+<li>Fix API requests to make configurator working again</li>
+</ul>
+<h4>5.3.0</h4>
+<ul>
+<li>Fix API warnings</li>
+<li>Update Podlove Web Player to v5.3.0</li>
+</ul>
+<h4>5.2.9</h4>
+<ul>
+<li>Update Podlove Web Player to v5.2.0</li>
+</ul>
+<h4>5.2.8</h4>
+<ul>
+<li>Rollback changes</li>
+</ul>
+<h4>5.2.7</h4>
+<ul>
+<li>Fixes issue with channel selection on default</li>
+</ul>
+<h4>5.2.6</h4>
+<ul>
+<li>Fixes issue in the configurator on systems running on subdomains</li>
+</ul>
+<h4>5.2.5</h4>
+<ul>
+<li>Fixes issue with theme font editing</li>
+</ul>
+<h4>5.2.4</h4>
+<ul>
+<li>Update Podlove Web Player package</li>
+</ul>
+<h4>5.2.3</h4>
+<ul>
+<li>Update Podlove Web Player package to fix font names</li>
+<li>Add ability to create fonts in themes with names</li>
+<li>Fix multi site support directory name</li>
+</ul>
+<h4>5.2.2</h4>
+<ul>
+<li>Update Podlove Web Player package to prevent unitential preload</li>
+<li>Add shortcode attribute for playlists</li>
+</ul>
+<h4>5.2.1</h4>
+<ul>
+<li>Update Podlove Web Player package to address network related errors</li>
+</ul>
+<h4>5.2.0</h4>
+<ul>
+<li>Extract defaults to fix incorrect persisted paths</li>
+<li>Add the ability to use Podlove Publisher shows to display related episodes</li>
+</ul>
+<h4>5.1.2</h4>
+<ul>
+<li>Fix a bug that causes a warning on pages</li>
+</ul>
+<h4>5.1.1</h4>
+<ul>
+<li>Fix a bug that prevents adding/updating configs or templates</li>
+</ul>
+<h4>5.1.0</h4>
+<ul>
+<li>Set default configuration, theme and template for player instances</li>
+<li>Add show title attribute in short codes</li>
+<li>Add ability to select a blueprint while creating a config, theme or template</li>
+<li>Add full configuration with all subscribe-button options enabled</li>
+<li>Add Podlove Web Player 4 (classic) template as blueprint</li>
+<li>Add themes for WordPress TwentyTwenty and WordPress TwentyNineteen</li>
+<li>Fix bug that prevents complete uninstall</li>
+<li>Upgrade Podlove Web Player to 5.1.4</li>
+</ul>
+<h4>5.0.14</h4>
+<ul>
+<li>Support WordPress MultiSite instances, in network activated mode all settings are stored globally on the site</li>
+<li>Fix player embed base path on instances where wordpress is running in subdirectories</li>
+</ul>
+<h4>5.0.13</h4>
+<ul>
+<li>Debounce player embedding until page is fully loaded</li>
+<li>Don&#8217;t show the embed code when deactivated</li>
+</ul>
+<h4>5.0.12</h4>
+<ul>
+<li>Sort menu items by defaukt</li>
+<li>Bump Podlvoe Player to 5.1.3</li>
+<li>Fix missing demo content</li>
+</ul>
+<h4>5.0.11</h4>
+<ul>
+<li>Fix a bug that prevented removing configurations</li>
+<li>Add a compatability class to support WordPress theme TwentyTwenty</li>
+<li>Relocated the delete button in the configurator</li>
+</ul>
+<h4>5.0.10</h4>
+<ul>
+<li>Fix list ordering</li>
+<li>Improve theme color selection</li>
+<li>Fix theme configuration</li>
+<li>Bump player version</li>
+</ul>
+<h4>5.0.9</h4>
+<ul>
+<li>Fix variable collision with Podlove Publisher</li>
+</ul>
+<h4>5.0.8</h4>
+<ul>
+<li>Fix broken import path</li>
+</ul>
+<h4>5.0.7</h4>
+<ul>
+<li>Prepare Podlove Publisher compatability</li>
+</ul>
+<h4>5.0.6</h4>
+<ul>
+<li>Fix wordpress release process</li>
+</ul>
+<h4>5.0.5</h4>
+<ul>
+<li>Change input type for the custom gutenberg duration block</li>
+</ul>
+<h4>5.0.4</h4>
+<ul>
+<li>Fixes a bug with the mimeType detection for m4a audio files</li>
+</ul>
+<h4>5.0.3</h4>
+<ul>
+<li>Fixes a bug that prevents resetting the &#8220;transform post enclosure&#8221; option</li>
+<li>Set &#8220;local&#8221; as the default source for the player</li>
+</ul>
+<h4>5.0.2</h4>
+<ul>
+<li>Update to Podlove Web Player 5.1.1</li>
+</ul>
+<h4>5.0.1</h4>
+<ul>
+<li>Fix wordpress readme</li>
+</ul>
+<h4>5.0.0</h4>
+<ul>
+<li>Podlove Web Player 5</li>
+<li>Complete rewrite of the plugin</li>
+<li>Podlove Publisher Integration</li>
+<li>Extensive configurator for Themes and Templates</li>
+<li>Support for Gutenberg Blocks</li>
+</ul>
+<h4>2.1.0</h4>
+<ul>
+<li>mejs update</li>
+<li>simplified, modernised look</li>
+<li>responsive layout for mobile devices</li>
+</ul>
+<h4>2.0.19</h4>
+<ul>
+<li>mejs update</li>
+<li>link to timecode</li>
+<li>default posters configurable</li>
+<li>get chapters from other sources</li>
+<li>Style Editor</li>
+<li>smaller and bigger player styles</li>
+<li>save playtime in cookies</li>
+<li>mp4chaps image support</li>
+</ul>
+<h4>2.0.18</h4>
+<ul>
+<li>compatible with WordPress theme Twenty-Fourteen</li>
+<li>read plugin version dynamically in settings.php</li>
+</ul>
+<h4>2.0.17</h4>
+<ul>
+<li>fixes an error on apaches without mod_headers</li>
+</ul>
+<h4>2.0.16</h4>
+<ul>
+<li>fixes unspecific css selector bug, introduced in last version</li>
+<li>fixes removing elements other than sources</li>
+<li>fixes false milliseconds</li>
+</ul>
+<h4>2.0.15</h4>
+<ul>
+<li>small fixes</li>
+<li>.htaccess examples added in /help</li>
+</ul>
+<h4>2.0.14</h4>
+<ul>
+<li>style improvements</li>
+<li>wordpress twenty thirteen theme compatibility</li>
+<li>FireFox AAC fix</li>
+<li>summary style fix</li>
+<li>XSS Firefox Bugfix</li>
+<li>jslint valid whitespace</li>
+</ul>
+<h4>2.0.13</h4>
+<ul>
+<li>fix IE8 support</li>
+<li>more valid/better js code</li>
+</ul>
+<h4>2.0.12</h4>
+<ul>
+<li>increase version number to fix wordpress.org issues</li>
+<li>support images in mp4chaps</li>
+<li>more valid/better js code</li>
+<li>save playtime in cookies</li>
+</ul>
+<h4>2.0.11</h4>
+<ul>
+<li>empty chapter file and empty meta_box bug fixed</li>
+<li>chapter images added to chapter table</li>
+<li>chapter links added to chapter table</li>
+<li>chapter table bugfix</li>
+<li>max chapter table height changeable</li>
+<li>buttons improved (style and size)</li>
+</ul>
+<h4>2.0.10</h4>
+<ul>
+<li>wordpress.org has some problems with the last commit</li>
+<li>sorry for the inconvenience</li>
+</ul>
+<h4>2.0.9</h4>
+<ul>
+<li>sorry for the mp4 chaps bug</li>
+<li>now it’s working again</li>
+</ul>
+<h4>2.0.8</h4>
+<ul>
+<li>better compatibility</li>
+<li>resume at last position</li>
+<li>build script (less requests)</li>
+<li>accept chapters as json-file</li>
+</ul>
+<h4>2.0.7</h4>
+<ul>
+<li>Download bar added</li>
+<li>Button config added</li>
+<li>PHP Warnings removed</li>
+<li>various small changes</li>
+</ul>
+<h4>2.0.6</h4>
+<ul>
+<li>podPress compatibility</li>
+<li>chapterbox height fix</li>
+<li>summary height fix</li>
+<li>infobutton style fixes</li>
+<li>jshint and jslint valid</li>
+<li>various small fixes</li>
+<li>Chapter hand over via JSON</li>
+</ul>
+<h4>2.0.5</h4>
+<ul>
+<li>fixed Blubrry PowerPress compatibility</li>
+<li>fixed style Interference with various WP Themes</li>
+<li>firefox flash fallback multiple playing fix</li>
+<li>opera font bug fix</li>
+<li>more stable CSS</li>
+</ul>
+<h4>2.0.4</h4>
+<ul>
+<li>fixed flash fallback again</li>
+<li>parameter handover improved</li>
+<li>encoding issues fixed</li>
+</ul>
+<h4>2.0.3</h4>
+<ul>
+<li>reduced DOM interaction at player creation</li>
+<li>improved readability of JS code</li>
+<li>improved JS performance</li>
+<li>fixed video</li>
+<li>fixed flash fallback</li>
+<li>fixed player slowing down Firefox</li>
+<li>fixed buttons not being displayed properly</li>
+<li>added a new bar with social sharing buttons</li>
+<li>updated submodules</li>
+</ul>
+<h4>2.0.2</h4>
+<ul>
+<li>equivalent to 2.0.1</li>
+</ul>
+<h4>2.0.1</h4>
+<ul>
+<li>does not crash in PHP 5.2 anymore</li>
+<li>some CSS improvements for responsive layouts</li>
+<li>fixes visual glitches in readme.txt</li>
+</ul>
+<h4>2.0.0</h4>
+<ul>
+<li>refactored large parts of the code</li>
+<li>added standalone player, works without PHP (example HTML/JS included)</li>
+<li>moved lots of functionality from PHP to JS</li>
+<li>cleaned variables and removed old stuff</li>
+<li>CSS improvements</li>
+<li>new settings area (yes, again. But now WordPress API compliant)</li>
+<li>added FontAwesome for fancy control buttons</li>
+<li>added “duration” parameter for displaying duration of last chapter</li>
+<li>added “permalink” parameter</li>
+<li>added “alwaysShowHours” parameter</li>
+<li>added “alwaysShowControls” parameter</li>
+<li>added “chaptersVisible” parameter</li>
+<li>added “timecontrolsVisible” parameter</li>
+<li>added “summaryVisible” parameter</li>
+<li>added sample audio files for testing purposes</li>
+<li>fresh versions of mediaelementjs and jQuery</li>
+</ul>
+<h4>1.2</h4>
+<ul>
+<li>added: Rich player with meta information (title, subtitle, summary, cover image)</li>
+<li>added: Opus audio codec support</li>
+<li>added: Chapter duration display</li>
+<li>added: Chapter deeplinking</li>
+<li>added: optional listening to WordPress enclosures</li>
+<li>new settings area</li>
+<li>fixed some issues with flash fallback</li>
+<li>freshest version of mediaelement.js</li>
+<li>lots of bugfixes and improvements</li>
+</ul>
+<h4>1.1.2</h4>
+<ul>
+<li>prevents activation conflicts with other instances of the plugin</li>
+</ul>
+<h4>1.1.1</h4>
+<ul>
+<li>small bugfixes and improvements</li>
+</ul>
+<h4>1.1</h4>
+<ul>
+<li>First proper release.</li>
+<li>[audio] and [video] are deprecated: Use [podloveaudio] and [podlovevideo] instead!</li>
+<li>Implements W3C Media Fragements with start and end time</li>
+</ul>
+<h4>1.0</h4>
+<ul>
+<li>First version on wordpress.org</li>
+<li>Full of bugs</li>
+</ul>
+";s:11:"screenshots";s:865:"<ol><li><a href="https://ps.w.org/podlove-web-player/assets/screenshot-1.png?rev=2286238"><img src="https://ps.w.org/podlove-web-player/assets/screenshot-1.png?rev=2286238" alt="Configurator"></a><p>Configurator</p></li><li><a href="https://ps.w.org/podlove-web-player/assets/screenshot-2.png?rev=2286238"><img src="https://ps.w.org/podlove-web-player/assets/screenshot-2.png?rev=2286238" alt="Theming"></a><p>Theming</p></li><li><a href="https://ps.w.org/podlove-web-player/assets/screenshot-3.png?rev=2286238"><img src="https://ps.w.org/podlove-web-player/assets/screenshot-3.png?rev=2286238" alt="Templating"></a><p>Templating</p></li><li><a href="https://ps.w.org/podlove-web-player/assets/screenshot-4.png?rev=2286238"><img src="https://ps.w.org/podlove-web-player/assets/screenshot-4.png?rev=2286238" alt="Gutenberg Block"></a><p>Gutenberg Block</p></li></ol>";}s:17:"short_description";s:78:"The fast, flexible and responsive podcast player powered by podlove meta data.";s:13:"download_link";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.9.2.zip";s:11:"screenshots";a:4:{i:1;a:2:{s:3:"src";s:71:"https://ps.w.org/podlove-web-player/assets/screenshot-1.png?rev=2286238";s:7:"caption";s:12:"Configurator";}i:2;a:2:{s:3:"src";s:71:"https://ps.w.org/podlove-web-player/assets/screenshot-2.png?rev=2286238";s:7:"caption";s:7:"Theming";}i:3;a:2:{s:3:"src";s:71:"https://ps.w.org/podlove-web-player/assets/screenshot-3.png?rev=2286238";s:7:"caption";s:10:"Templating";}i:4;a:2:{s:3:"src";s:71:"https://ps.w.org/podlove-web-player/assets/screenshot-4.png?rev=2286238";s:7:"caption";s:15:"Gutenberg Block";}}s:4:"tags";a:2:{s:5:"audio";s:5:"audio";s:10:"podcasting";s:10:"podcasting";}s:8:"versions";a:90:{s:5:"1.0.4";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.1.0.4.zip";s:5:"1.0.5";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.1.0.5.zip";s:5:"1.0.6";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.1.0.6.zip";s:5:"1.0.7";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.1.0.7.zip";s:5:"1.0.8";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.1.0.8.zip";s:5:"1.0.9";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.1.0.9.zip";s:5:"1.1.0";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.1.1.0.zip";s:5:"1.1.1";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.1.1.1.zip";s:5:"1.1.2";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.1.1.2.zip";s:3:"1.2";s:65:"https://downloads.wordpress.org/plugin/podlove-web-player.1.2.zip";s:5:"1.2.1";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.1.2.1.zip";s:5:"2.0.0";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.0.zip";s:5:"2.0.1";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.1.zip";s:6:"2.0.10";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.10.zip";s:6:"2.0.11";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.11.zip";s:6:"2.0.12";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.12.zip";s:6:"2.0.13";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.13.zip";s:6:"2.0.14";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.14.zip";s:6:"2.0.15";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.15.zip";s:6:"2.0.16";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.16.zip";s:6:"2.0.17";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.17.zip";s:6:"2.0.19";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.19.zip";s:5:"2.0.2";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.2.zip";s:5:"2.0.3";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.3.zip";s:5:"2.0.4";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.4.zip";s:5:"2.0.5";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.5.zip";s:5:"2.0.6";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.6.zip";s:5:"2.0.7";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.7.zip";s:5:"2.0.8";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.8.zip";s:5:"2.0.9";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.2.0.9.zip";s:5:"2.1.0";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.2.1.0.zip";s:5:"5.0.0";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.0.zip";s:5:"5.0.1";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.1.zip";s:6:"5.0.10";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.10.zip";s:6:"5.0.11";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.11.zip";s:6:"5.0.12";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.12.zip";s:6:"5.0.13";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.13.zip";s:6:"5.0.14";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.14.zip";s:5:"5.0.2";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.2.zip";s:5:"5.0.3";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.3.zip";s:5:"5.0.4";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.4.zip";s:5:"5.0.5";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.5.zip";s:5:"5.0.6";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.6.zip";s:5:"5.0.7";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.7.zip";s:5:"5.0.8";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.8.zip";s:5:"5.0.9";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.0.9.zip";s:5:"5.1.0";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.1.0.zip";s:5:"5.1.1";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.1.1.zip";s:5:"5.1.2";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.1.2.zip";s:5:"5.2.0";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.2.0.zip";s:5:"5.2.1";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.2.1.zip";s:5:"5.2.2";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.2.2.zip";s:5:"5.2.3";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.2.3.zip";s:5:"5.2.4";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.2.4.zip";s:5:"5.2.5";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.2.5.zip";s:5:"5.2.6";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.2.6.zip";s:5:"5.2.7";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.2.7.zip";s:5:"5.2.8";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.2.8.zip";s:5:"5.2.9";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.2.9.zip";s:5:"5.3.0";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.3.0.zip";s:5:"5.3.1";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.3.1.zip";s:5:"5.4.0";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.0.zip";s:5:"5.4.1";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.1.zip";s:6:"5.4.10";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.10.zip";s:6:"5.4.11";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.11.zip";s:6:"5.4.12";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.12.zip";s:6:"5.4.13";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.13.zip";s:6:"5.4.14";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.14.zip";s:6:"5.4.15";s:68:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.15.zip";s:5:"5.4.2";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.2.zip";s:5:"5.4.3";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.3.zip";s:5:"5.4.4";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.4.zip";s:5:"5.4.5";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.5.zip";s:5:"5.4.6";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.6.zip";s:5:"5.4.7";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.7.zip";s:5:"5.4.8";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.8.zip";s:5:"5.4.9";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.4.9.zip";s:5:"5.5.0";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.5.0.zip";s:5:"5.5.1";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.5.1.zip";s:5:"5.6.0";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.6.0.zip";s:5:"5.7.0";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.7.0.zip";s:5:"5.7.1";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.7.1.zip";s:5:"5.7.2";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.7.2.zip";s:5:"5.7.3";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.7.3.zip";s:5:"5.7.4";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.7.4.zip";s:5:"5.8.0";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.8.0.zip";s:5:"5.9.0";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.9.0.zip";s:5:"5.9.1";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.9.1.zip";s:5:"5.9.2";s:67:"https://downloads.wordpress.org/plugin/podlove-web-player.5.9.2.zip";s:5:"trunk";s:61:"https://downloads.wordpress.org/plugin/podlove-web-player.zip";}s:11:"donate_link";s:29:"https://podlove.org/donations";s:5:"icons";a:2:{s:2:"1x";s:63:"https://ps.w.org/podlove-web-player/assets/icon.svg?rev=2286308";s:3:"svg";s:63:"https://ps.w.org/podlove-web-player/assets/icon.svg?rev=2286308";}s:12:"contributors";a:1:{s:14:"gerritvanaaken";s:46:"https://profiles.wordpress.org/gerritvanaaken/";}s:6:"market";N;s:11:"custom_link";N;}s:24:"podlove-subscribe-button";a:29:{s:4:"name";s:24:"Podlove Subscribe button";s:4:"slug";s:24:"podlove-subscribe-button";s:7:"version";s:6:"1.3.12";s:6:"author";s:71:"<a href="https://profiles.wordpress.org/chemiker/">Alexander Lueken</a>";s:14:"author_profile";s:40:"https://profiles.wordpress.org/chemiker/";s:8:"requires";s:5:"3.5.0";s:6:"tested";s:6:"6.1.10";s:12:"requires_php";s:3:"5.3";s:16:"requires_plugins";a:0:{}s:6:"rating";i:100;s:7:"ratings";a:5:{i:5;i:2;i:4;i:0;i:3;i:0;i:2;i:0;i:1;i:0;}s:11:"num_ratings";i:2;s:15:"support_threads";i:0;s:24:"support_threads_resolved";i:0;s:10:"downloaded";i:61237;s:12:"last_updated";s:22:"2025-10-12 12:47pm GMT";s:5:"added";s:10:"2015-04-15";s:8:"homepage";s:62:"https://wordpress.org/extend/plugins/podlove-subscribe-button/";s:8:"sections";a:5:{s:11:"description";s:2037:"<p>This plugin allows easy inclusion of the Podlove Subscribe Button. Put it in your sidebar with a simple widget or include the button in pages and/or posts with a simple shortcode.</p>
+<h3>About the Podlove Subscribe Button</h3>
+<p>The Podlove Subscribe Button allows for simple subscription of podcasts in anybody&#8217;s favorite podcast app right from the browser without having to deal with pesky feed URLs and go on a hunt for feed subscription dialogues.</p>
+<p>The button knows how to activate the subscription functionality in all popular podcast apps supporting various operating systems including but not limited to iOS, Android, WindowsPhone, OSX, Windows and Linux.</p>
+<p>The button is centrally hosted and gets permanently updated when new podcast apps emerge or when new features are added. Using the button ensures your podcast can easily be subscribed to and presents an ever more popular user interface that your audience gets more and more used to.</p>
+<h3>About Podlove</h3>
+<p>Podlove is an open source initiative to improve the overall podcasting infrastructure and to come up with simple but helpful standards and tools to make publishing and listening to podcast as easy as possible.</p>
+<p>Podlove currently provides:</p>
+<ul>
+<li><a href="https://publisher.podlove.org" rel="nofollow ugc"><strong><em>Podlove Podcast Publisher</em></strong></a> &#8211; a powerful plugin for WordPress for podcasters to publish metadata-rich podcasts</li>
+<li><strong><em>Podlove Web Player</em></strong> &#8211; a podcast-optimized HTML5 web player with chapter support</li>
+<li><a href="https://subscribe-button.podlove.org" rel="nofollow ugc"><strong><em>Podlove Subscribe Button</em></strong></a> &#8211; a centrally hosted universal podcast subscribe button for the web</li>
+</ul>
+<h3>Other Resources</h3>
+<ul>
+<li>Podlove Project: https://podlove.org/</li>
+<li>Podlove Community: https://community.podlove.org/</li>
+<li>Documentation: https://docs.podlove.org/</li>
+<li>Donate: https://podlove.org/donations/</li>
+</ul>
+";s:12:"installation";s:4139:"<h3>Install the plugin</h3>
+<ol>
+<li>Upload the plugin folder to the <code>/wp-content/plugins/</code> directory</li>
+<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>
+</ol>
+<h3>Configure buttons</h3>
+<ol>
+<li>Navigate to <code>Settings &gt; Podlove Subscribe Button</code></li>
+<li>Fill out all fields, save and grab the shortcode</li>
+<li>Add the button to your blog using the shortcode <code>[podlove-subscribe-button id="{{yourButtonID}}"]</code> with your button ID, or use the provided Podlove Subscribe Button Widget</li>
+</ol>
+<h3>Display the Subscribe Button in your Sidebar using a Widget</h3>
+<p>Go to <code>Appearance -&gt; Widgets</code> and drag the &#8220;Podlove Subscribe Button&#8221; widget to your sidebar configuration. Select the pre-configured button from the list and determine which style you want. That&#8217;s it. The button should show up in your sidebar. Optionally add a title and description for your widget.</p>
+<p>This is the easiest and recommended way of using this plugin especially if you ony want to display a button for a single podcast. For best visibility choose size &#8220;big&#8221; and format &#8220;cover&#8221; to make your Subscribe Button stand out and easily locatable.</p>
+<h3>Include the Subscribe Button in WordPress pages using a Shortcode</h3>
+<p>If you want to include a Podlove Subscribe Button in a WordPress page (or a post) just put the shortcode <code>[podlove-subscribe-button]</code> at the desired position in your text. Use the following shortcode parameters to configure it properly:</p>
+<ul>
+<li><code>button</code> &#8211; the ID of one of your preconfigured buttons</li>
+<li><code>size</code> &#8211; one of &#8216;small&#8217;, &#8216;medium&#8217;, &#8216;big&#8217;</li>
+<li><code>width</code> &#8211; specify desired button width in CSS compatibles values or &#8216;auto&#8217; automatic width depending on context.</li>
+<li><code>color</code> &#8211; specify the color of the button in a CSS compatible format (keyword, rgb-hex, rgb, rgba, hsl, hsla)</li>
+<li><code>style</code> &#8211; default is filled, options are &#8216;outline&#8217; and &#8216;frameless&#8217;</li>
+<li><code>format</code> &#8211; default is a rectangle, options are &#8216;square&#8217; and &#8216;cover&#8217; (<strong>Note</strong>: &#8216;cover&#8217; has a max size of 300px)</li>
+<li><code>hide</code> &#8211; if set to <code>true</code> the button will not be shown (useful if you want to use your own element)</li>
+<li><code>language</code> &#8211; specify the language the texts on the button and popup should be in (currently supports &#8216;de&#8217;, &#8216;en&#8217;, &#8216;eo&#8217;, &#8216;fi&#8217;, &#8216;fr&#8217;, &#8216;nl&#8217;, &#8216;zh&#8217; and &#8216;ja&#8217;)</li>
+</ul>
+<p>Note that if you do not provide one of the attributes the subscribe button will use the globally set default.</p>
+<h3>Shortcode Examples</h3>
+<pre><code>[podlove-subscribe-button button="mybutton1" size="big"]
+</code></pre>
+<p>Displays a large button with the podcast logo on top using data from button configuration with id &#8220;mybutton1&#8221;. All other options will be set to the globally set default values.</p>
+<pre><code>[podlove-subscribe-button button="mybutton2" size="medium" width="100pt" language="de"]
+</code></pre>
+<p>Displays a small button with a width of 100pt using data from button configuration with id &#8220;mybutton2&#8221; in german. All other options will be set to the globally set default values.</p>
+<pre><code>[podlove-subscribe-button button="mybutton3" size="big" width="auto" format="cover"]
+</code></pre>
+<p>Displays a big button with a the podcast cover and automatically adjusted using data from button configuration with id &#8220;mybutton3&#8221;. All other options will be set to the globally set default values.</p>
+<pre><code>[podlove-subscribe-button button="mybutton4" format="square" style="frameless"]
+</code></pre>
+<p>Displays a small, frameless square button with using data from button configuration with id &#8220;mybutton4&#8221;. All other options will be set to the globally set default values.</p>
+";s:3:"faq";s:2304:"
+<dt id='i%27m%20running%20the%20podlove%20publisher.%20do%20i%20need%20this%20plugin%20to%20display%20a%20subscribe%20button%3F'>
+I&#8217;m running the Podlove Publisher. Do I need this plugin to display a Subscribe button?
+</h4>
+<p>
+<p>Yes and No. If you simply want to display a Subscribe Button for your Podcast you publish with the Podlove Publisher you do not need this plugin as the Publisher itself provides this functionality. If you want to display multiple Subscribe Buttons you can use the Subscribe Button plugin.</p>
+</p>
+<dt id='where%20do%20i%20create%20those%20%22network-wide%22%20buttons%3F'>
+Where do I create those &#8220;Network-wide&#8221; Buttons?
+</h4>
+<p>
+<p>You can find the Panel in the Networks Settings Section</p>
+</p>
+<dt id='does%20this%20plugin%20actually%20contain%20the%20code%20for%20the%20button%3F'>
+Does this plugin actually contain the code for the button?
+</h4>
+<p>
+<p>No. This plugin just embeds the code that is needed to display the Podlove Subscribe Button. The button itself is served live from api.podlove.org</p>
+</p>
+<dt id='do%20i%20update%20the%20plugin%20to%20get%20support%20for%20more%20clients%3F'>
+Do I update the plugin to get support for more clients?
+</h4>
+<p>
+<p>No. As the Podlove Subscribe Button is hosted centrally, it gets updated regularly independent from this pugin.</p>
+</p>
+<dt id='i%20am%20a%20podcast%20app%20developer%20and%20would%20like%20my%20app%20be%20listed%20in%20the%20button.%20what%20do%20i%20need%20to%20do%3F'>
+I am a podcast app developer and would like my app be listed in the button. What do I need to do?
+</h4>
+<p>
+<p>Consult the information provided on <a href="https://podlove.org/podlove-subscribe-button" rel="nofollow ugc">the technical information page</a> at podlove.org on how the button works and what app developers need to support and do in order to get listed in the button.</p>
+</p>
+<dt id='how%20can%20i%20report%20security%20bugs%3F'>
+How can I report security bugs?
+</h4>
+<p>
+<p>You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team helps validate, triage and handle any security vulnerabilities. <a href="https://patchstack.com/database/vdp/54baba88-4c9c-4194-8707-5e0f37dfb763" rel="nofollow ugc">Report a security vulnerability.</a></p>
+</p>
+
+";s:9:"changelog";s:2724:"<h3>1.3.12</h3>
+<ul>
+<li>FIXED XSS vulnerabilities</li>
+</ul>
+<h3>1.3.11</h3>
+<ul>
+<li>FIXED SQL Injection vulnerabilities</li>
+</ul>
+<h3>1.3.8 / 1.3.9 / 1.3.10 (2023-02-10)</h3>
+<ul>
+<li>FIXED XSS and CSRF vulnerabilities</li>
+</ul>
+<h3>1.3.7 (2019-07-20)</h3>
+<ul>
+<li>FIXED an issue that prevented the subscribe button to appear</li>
+<li>FIXED a XSS vulnerability</li>
+</ul>
+<h3>1.3.6 (2018-10-02)</h3>
+<ul>
+<li>FIXED autowidth value not saving to options correctly</li>
+</ul>
+<h3>1.3.5 (2018-09-09)</h3>
+<ul>
+<li>Replaced the spectrum color selector with WP Color Picker</li>
+<li>FIXED multiple color pickers when adding a widget</li>
+</ul>
+<h3>1.3.4 (unreleased)</h3>
+<ul>
+<li>FIXED detection of Publisher plugin (widget naming)</li>
+<li>FIXED deprecated WP core functions removed</li>
+<li>FIXED fix select button for widget</li>
+</ul>
+<h3>1.3.3</h3>
+<ul>
+<li>Enhanced Support for translation</li>
+<li>Fixed an issue that prevented network buttons to be shown</li>
+</ul>
+<h3>1.3.2</h3>
+<ul>
+<li>Fixed an error that caused notices on some installations</li>
+</ul>
+<h3>1.3.1</h3>
+<ul>
+<li>Fixed an error that caused fatal errors on some installations</li>
+</ul>
+<h3>1.3</h3>
+<ul>
+<li>Podcast Cover Image can be selected using the WordPress Media Library</li>
+<li>When using the Shortcode, the button language can now be set using the language attribute</li>
+<li>Enhanced support for button color</li>
+<li>Fixed a bug that caused an error message for non-network installations</li>
+<li>UI enhancements and further optimizations</li>
+</ul>
+<h3>1.2.1</h3>
+<ul>
+<li>Various bugfixes</li>
+</ul>
+<h3>1.2</h3>
+<ul>
+<li>Added various options that allow customization of the Subscribe button</li>
+<li>Various bugfixes</li>
+</ul>
+<h3>1.1.3</h3>
+<ul>
+<li>Various bugfixes</li>
+</ul>
+<h3>1.1.2</h3>
+<ul>
+<li>Remove duplicate <code>wp-admin/</code> from Network-Settings URL</li>
+<li>Check for old PHP versions before plugin is activated</li>
+</ul>
+<h3>1.1.1</h3>
+<ul>
+<li>Smaller Bugfix: Build tables on plugin-activation only</li>
+</ul>
+<h3>1.1</h3>
+<ul>
+<li>Network Support &#8211; If you run a WordPress Multisite Installation you can create network-wide available Buttons</li>
+<li>Default Settings for Size and Autowidth</li>
+<li>UI enhancements</li>
+</ul>
+<h3>1.0.1</h3>
+<ul>
+<li>Enhancements in documentation</li>
+<li>Smaller Bugfixes</li>
+<li>Shortcodes: Change <code>id</code> attribute to <code>button</code></li>
+</ul>
+<h3>1.0</h3>
+<ul>
+<li>Initial Release</li>
+<li>Settings page to allow definition of preconfigured buttons</li>
+<li>WordPress Widget to show preconfigured buttons in WordPress Sidebar</li>
+<li>WordPress Shortcode [podlove-subscribe-button] to insert preconfigured buttons in pages and articles</li>
+</ul>
+";s:11:"screenshots";s:1381:"<ol><li><a href="https://ps.w.org/podlove-subscribe-button/assets/screenshot-1.png?rev=1416418"><img src="https://ps.w.org/podlove-subscribe-button/assets/screenshot-1.png?rev=1416418" alt="The Subscribe buttons are listed with a preview to check their functionality."></a><p>The Subscribe buttons are listed with a preview to check their functionality.</p></li><li><a href="https://ps.w.org/podlove-subscribe-button/assets/screenshot-2.png?rev=1494012"><img src="https://ps.w.org/podlove-subscribe-button/assets/screenshot-2.png?rev=1494012" alt="The Subscribe button administration interface."></a><p>The Subscribe button administration interface.</p></li><li><a href="https://ps.w.org/podlove-subscribe-button/assets/screenshot-3.png?rev=1416418"><img src="https://ps.w.org/podlove-subscribe-button/assets/screenshot-3.png?rev=1416418" alt="The Subscribe button widgets provides an easy way to include your button in your blog."></a><p>The Subscribe button widgets provides an easy way to include your button in your blog.</p></li><li><a href="https://ps.w.org/podlove-subscribe-button/assets/screenshot-4.png?rev=1494012"><img src="https://ps.w.org/podlove-subscribe-button/assets/screenshot-4.png?rev=1494012" alt="The Subscribe button widgets can be easily be adjusted to your needs."></a><p>The Subscribe button widgets can be easily be adjusted to your needs.</p></li></ol>";}s:17:"short_description";s:123:"Podlove Subscribe button allows your users to easily select a podcast feed and pass it along to their favorite podcast app.";s:13:"download_link";s:74:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.3.12.zip";s:11:"screenshots";a:4:{i:1;a:2:{s:3:"src";s:77:"https://ps.w.org/podlove-subscribe-button/assets/screenshot-1.png?rev=1416418";s:7:"caption";s:77:"The Subscribe buttons are listed with a preview to check their functionality.";}i:2;a:2:{s:3:"src";s:77:"https://ps.w.org/podlove-subscribe-button/assets/screenshot-2.png?rev=1494012";s:7:"caption";s:46:"The Subscribe button administration interface.";}i:3;a:2:{s:3:"src";s:77:"https://ps.w.org/podlove-subscribe-button/assets/screenshot-3.png?rev=1416418";s:7:"caption";s:86:"The Subscribe button widgets provides an easy way to include your button in your blog.";}i:4;a:2:{s:3:"src";s:77:"https://ps.w.org/podlove-subscribe-button/assets/screenshot-4.png?rev=1494012";s:7:"caption";s:69:"The Subscribe button widgets can be easily be adjusted to your needs.";}}s:4:"tags";a:5:{s:6:"button";s:6:"button";s:4:"feed";s:4:"feed";s:7:"podcast";s:7:"podcast";s:7:"podlove";s:7:"podlove";s:9:"subscribe";s:9:"subscribe";}s:8:"versions";a:20:{s:3:"1.0";s:71:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.0.zip";s:5:"1.0.1";s:73:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.0.1.zip";s:3:"1.1";s:71:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.1.zip";s:5:"1.1.1";s:73:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.1.1.zip";s:5:"1.1.2";s:73:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.1.2.zip";s:5:"1.1.3";s:73:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.1.3.zip";s:3:"1.2";s:71:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.2.zip";s:5:"1.2.1";s:73:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.2.1.zip";s:3:"1.3";s:71:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.3.zip";s:5:"1.3.1";s:73:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.3.1.zip";s:6:"1.3.10";s:74:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.3.10.zip";s:6:"1.3.11";s:74:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.3.11.zip";s:6:"1.3.12";s:74:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.3.12.zip";s:5:"1.3.2";s:73:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.3.2.zip";s:5:"1.3.3";s:73:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.3.3.zip";s:5:"1.3.5";s:73:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.3.5.zip";s:5:"1.3.6";s:73:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.3.6.zip";s:5:"1.3.7";s:73:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.3.7.zip";s:5:"1.3.9";s:73:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.1.3.9.zip";s:5:"trunk";s:67:"https://downloads.wordpress.org/plugin/podlove-subscribe-button.zip";}s:11:"donate_link";s:71:"https://flattr.com/thing/728463/Podlove-Podcasting-Plugin-for-WordPress";s:5:"icons";a:2:{s:2:"1x";s:69:"https://ps.w.org/podlove-subscribe-button/assets/icon.svg?rev=1545649";s:3:"svg";s:69:"https://ps.w.org/podlove-subscribe-button/assets/icon.svg?rev=1545649";}s:12:"contributors";a:2:{s:8:"chemiker";s:40:"https://profiles.wordpress.org/chemiker/";s:10:"cfoellmann";s:42:"https://profiles.wordpress.org/cfoellmann/";}s:6:"market";N;s:11:"custom_link";N;}s:15:"ultimate-member";a:29:{s:4:"name";s:116:"Ultimate Member – User Profile, Registration, Login, Member Directory, Content Restriction &amp; Membership Plugin";s:4:"slug";s:15:"ultimate-member";s:7:"version";s:6:"2.11.3";s:6:"author";s:76:"<a href="https://profiles.wordpress.org/ultimatemember/">Ultimate Member</a>";s:14:"author_profile";s:46:"https://profiles.wordpress.org/ultimatemember/";s:8:"requires";s:3:"6.2";s:6:"tested";s:5:"6.9.4";s:12:"requires_php";s:3:"7.0";s:16:"requires_plugins";a:0:{}s:6:"rating";i:88;s:7:"ratings";a:5:{i:5;i:1141;i:4;i:70;i:3;i:38;i:2;i:46;i:1;i:151;}s:11:"num_ratings";i:1446;s:15:"support_threads";i:53;s:24:"support_threads_resolved";i:49;s:10:"downloaded";i:12896279;s:12:"last_updated";s:21:"2026-03-26 9:48pm GMT";s:5:"added";s:10:"2015-01-21";s:8:"homepage";s:26:"http://ultimatemember.com/";s:8:"sections";a:5:{s:11:"description";s:10121:"<h4>User Profile &amp; Membership Plugin for WordPress</h4>
+<p>The ultimate user profile &amp; membership plugin for WordPress. The plugin makes it a breeze for users to sign-up and become members of your website. The plugin allows you to add beautiful user profiles to your site and is designed for creating advanced online communities and membership sites. Lightweight and highly extendible, Ultimate Member will enable you to create almost any type of site where users can join and become members with absolute ease.</p>
+<h4>Features of the plugin include:</h4>
+<ul>
+<li>Front-end user profiles</li>
+<li>Front-end user registration</li>
+<li>Front-end user login</li>
+<li>Custom form fields</li>
+<li>Conditional logic for form fields</li>
+<li>Drag and drop form builder</li>
+<li>User account page</li>
+<li>Custom user roles</li>
+<li>Member directories</li>
+<li>User emails</li>
+<li>Content restriction</li>
+<li>Conditional nav menus</li>
+<li>Show author posts &amp; comments on user profiles</li>
+<li>Developer friendly with dozens of actions and filters</li>
+</ul>
+<p>Read about all of the plugin&#8217;s features at <a href="https://ultimatemember.com" rel="nofollow ugc">Ultimate Member</a></p>
+<h4>Paid Extensions</h4>
+<p>Ultimate Member has a range of extensions that allow you to extend the power of the plugin. You can purchase all of these extensions at a significant discount with one of our <a href="https://ultimatemember.com/pricing/" rel="nofollow ugc">paid plans</a> or you can purchase extensions individually.</p>
+<ul>
+<li><a href="https://ultimatemember.com/extensions/zapier/" rel="nofollow ugc">Zapier</a> &#8211; Allow to integrate the Zapier popular apps with Ultimate Member</li>
+<li><a href="https://ultimatemember.com/extensions/stripe/" rel="nofollow ugc">Stripe</a> &#8211; Sell paid memberships to access your website via Stripe subscriptions</li>
+<li><a href="https://ultimatemember.com/extensions/user-notes/" rel="nofollow ugc">User Notes</a> &#8211; Allow users to create public and private notes from their profile</li>
+<li><a href="https://ultimatemember.com/extensions/profile-tabs/" rel="nofollow ugc">Profile Tabs</a> &#8211; Allow to add the custom tabs to profiles</li>
+<li><a href="https://ultimatemember.com/extensions/user-locations/" rel="nofollow ugc">User Locations</a> &#8211; Allow to display users on a map on the member directory page and allow users to add their location via their profile</li>
+<li><a href="https://ultimatemember.com/extensions/unsplash/" rel="nofollow ugc">Unsplash</a> &#8211; Allow users to select a profile cover photo from <a href="https://unsplash.com/" rel="nofollow ugc">Unsplash</a> from their profile</li>
+<li><a href="https://ultimatemember.com/extensions/user-bookmarks/" rel="nofollow ugc">User Bookmarks</a> &#8211; Allow users to bookmark content from your website</li>
+<li><a href="https://ultimatemember.com/extensions/user-photos/" rel="nofollow ugc">User Photos</a> &#8211; Allow users to upload photos to their profile</li>
+<li><a href="https://ultimatemember.com/extensions/groups/" rel="nofollow ugc">Groups</a> &#8211; Allow users to create and join groups around shared topics, interests etc.</li>
+<li><a href="https://ultimatemember.com/extensions/private-content/" rel="nofollow ugc">Private Content</a> &#8211; Display private content to logged in users that only they can access</li>
+<li><a href="https://ultimatemember.com/extensions/user-tags/" rel="nofollow ugc">User Tags</a> &#8211; Lets you add a user tag system to your website</li>
+<li><a href="https://ultimatemember.com/extensions/social-activity/" rel="nofollow ugc">Social Activity</a> &#8211; Let users create public wall posts &amp; see the activity of other users</li>
+<li><a href="https://ultimatemember.com/extensions/woocommerce/" rel="nofollow ugc">WooCommerce</a> &#8211; Allow you to integrate WooCommerce with Ultimate Member</li>
+<li><a href="https://ultimatemember.com/extensions/private-messages/" rel="nofollow ugc">Private Messages</a> &#8211; Add a private messaging system to your site &amp; allow users to message each other</li>
+<li><a href="https://ultimatemember.com/extensions/followers/" rel="nofollow ugc">Followers</a> &#8211; Allow users to follow each other on your site and protect their profile information</li>
+<li><a href="https://ultimatemember.com/extensions/real-time-notifications/" rel="nofollow ugc">Real-time Notifications</a> &#8211; Add a notifications system to your site so users can receive real-time notifications</li>
+<li><a href="https://ultimatemember.com/extensions/social-login/" rel="nofollow ugc">Social Login</a> &#8211; Let users register &amp; login to your site via Facebook, Twitter, G+, LinkedIn, Instagram and Vkontakte (VK.com)</li>
+<li><a href="https://ultimatemember.com/extensions/bbpress/" rel="nofollow ugc">bbPress</a> &#8211; With the bbPress extension you can beautifully integrate Ultimate Member with bbPress</li>
+<li><a href="https://ultimatemember.com/extensions/mailchimp/" rel="nofollow ugc">MailChimp</a> &#8211; Allow users to subscribe to your MailChimp lists when they signup on your site and sync user meta to MailChimp</li>
+<li><a href="https://ultimatemember.com/extensions/user-reviews/" rel="nofollow ugc">User Reviews</a> &#8211; Allow users to rate &amp; review each other using a 5 star rate/review system</li>
+<li><a href="https://ultimatemember.com/extensions/verified-users/" rel="nofollow ugc">Verified Users</a> &#8211; Add a user verification system to your site so user accounts can be verified</li>
+<li><a href="https://ultimatemember.com/extensions/mycred/" rel="nofollow ugc">myCRED</a> &#8211; With the myCRED extension you can integrate Ultimate Member with the popular myCRED points management plugin</li>
+<li><a href="https://ultimatemember.com/extensions/notices/" rel="nofollow ugc">Notices</a> &#8211; Alert users to important information using conditional notices</li>
+<li><a href="https://ultimatemember.com/extensions/profile-completeness/" rel="nofollow ugc">Profile Completeness</a> &#8211; Encourage or force users to complete their profiles with the profile completeness extension</li>
+<li><a href="https://ultimatemember.com/extensions/friends/" rel="nofollow ugc">Friends</a> &#8211; Allows users to become friends by sending &amp; accepting/rejecting friend requests</li>
+</ul>
+<h4>Free Extensions</h4>
+<ul>
+<li><a href="https://ultimatemember.com/extensions/jobboardwp/" rel="nofollow ugc">JobsBoardWP</a> &#8211; This free extension integrates Ultimate Member with the job board plugin <a href="https://wordpress.org/plugins/jobboardwp" rel="ugc">JobBoardWP</a>.</li>
+<li><a href="https://ultimatemember.com/extensions/forumwp/" rel="nofollow ugc">ForumWP</a> &#8211; This free extension integrates Ultimate Member with the forum plugin <a href="https://forumwpplugin.com" rel="nofollow ugc">ForumWP</a>.</li>
+<li><a href="https://ultimatemember.com/extensions/terms-conditions/" rel="nofollow ugc">Terms &amp; Conditions</a> &#8211; Add a terms and condition checkbox to your registration forms &amp; require users to agree to your T&amp;Cs before registering on your site.</li>
+<li><a href="https://ultimatemember.com/extensions/google-recaptcha/" rel="nofollow ugc">Google reCAPTCHA</a> &#8211; Stop bots on your registration &amp; login forms with Google reCAPTCHA</li>
+<li><a href="https://ultimatemember.com/extensions/online-users/" rel="nofollow ugc">Online Users</a> &#8211; Display what users are online with this extension</li>
+</ul>
+<h4>Theme</h4>
+<p>Our official <a href="https://ultimatemember.com/theme/" rel="nofollow ugc">theme</a> is purpose built for websites that have logged in and out users. The <a href="https://ultimatemember.com/theme/" rel="nofollow ugc">theme</a> has deep integration with Ultimate Member plugin and the extensions, different header designs for logged-in/out users and works alongside the Beaver Builder and Elementor page builders.</p>
+<h4>Our other plugins</h4>
+<p>In addition to Ultimate Member, we also have two other plugins: <a href="https://forumwpplugin.com/" rel="nofollow ugc">ForumWP</a> and <a href="https://wordpress.org/plugins/jobboardwp" rel="ugc">JobBoardWP</a>.</p>
+<h4>ForumWP</h4>
+<p><a href="https://forumwpplugin.com/" rel="nofollow ugc">ForumWP</a> is a forum plugin which adds an online forum to your website, allowing users to create topics and write replies. Forums are a great way to build and grow an online community.</p>
+<h4>JobBoardWP</h4>
+<p><a href="https://wordpress.org/plugins/jobboardwp" rel="ugc">JobBoardWP</a> is a job board plugin which adds a modern job board to your website. Display job listings and allow employers to submit and manage jobs all from the front-end.</p>
+<h4>Development * Translations</h4>
+<p>If you&#8217;re a developer and would like to contribute to the source code of the plugin you can do so via our <a href="https://github.com/ultimatemember/ultimatemember" rel="nofollow ugc">GitHub Repository</a>.</p>
+<p>Want to add a new language to Ultimate Member? Great! You can contribute via <a href="https://translate.wordpress.org/projects/wp-plugins/ultimate-member" rel="nofollow ugc">translate.wordpress.org</a>.</p>
+<p>If you are a developer and you need to know the list of UM Hooks, make this via our <a href="https://docs.ultimatemember.com/article/1324-hooks-list" rel="nofollow ugc">Hooks Documentation</a> or <a href="https://ultimatemember.github.io/ultimatemember/hooks/" rel="nofollow ugc">Hooks Documentation v2</a>.</p>
+<p>If you are a developer and you need to know the structure of our code, make this via our <a href="https://ultimatemember.github.io/ultimatemember/phpdoc/" rel="nofollow ugc">Documentation API</a>.</p>
+<h4>Documentation &amp; Support</h4>
+<p>Got a problem or need help with Ultimate Member? Head over to our <a href="http://docs.ultimatemember.com/" rel="nofollow ugc">documentation</a> and perform a search of the knowledge base. If you can’t find a solution to your issue then you can create a topic on the <a href="https://wordpress.org/support/plugin/ultimate-member" rel="ugc">support forum</a>.</p>
+";s:12:"installation";s:268:"<ol>
+<li>Activate the plugin</li>
+<li>That&#8217;s it. Go to Ultimate Member &gt; Settings to customize plugin options</li>
+<li>For more details, please visit the official <a href="http://docs.ultimatemember.com/" rel="nofollow ugc">Documentation</a> page.</li>
+</ol>
+";s:3:"faq";s:3302:"
+<dt id="do%20i%20need%20to%20know%20any%20coding%20to%20use%20this%20plugin%3F">
+Do I need to know any coding to use this plugin?
+</h4>
+<p>
+<p>No, we have built Ultimate Member to be extremely easy to use and does not require you to manually build shortcodes or have any coding knowledge.</p>
+</p>
+<dt id="is%20ultimate%20member%20mobile%20responsive%3F">
+Is Ultimate Member mobile responsive?
+</h4>
+<p>
+<p>Yes. Ultimate Member is designed to adapt nicely to any screen resolution. It includes specific designs for phones, tablets and desktops.</p>
+</p>
+<dt id="is%20ultimate%20member%20multi-site%20compatible%3F">
+Is Ultimate Member multi-site compatible?
+</h4>
+<p>
+<p>Yes. Ultimate Member works great on both single site and multi-site WordPress installs.</p>
+</p>
+<dt id="does%20the%20plugin%20work%20with%20any%20wordpress%20theme%3F">
+Does the plugin work with any WordPress theme?
+</h4>
+<p>
+<p>Yes. Ultimate Member will work with any properly coded theme. However, some themes may cause conflicts with the plugin. If you find a styling issue with your theme please create a post in the community forum.</p>
+</p>
+<dt id="does%20the%20plugin%20work%20with%20caching%20plugins%3F">
+Does the plugin work with caching plugins?
+</h4>
+<p>
+<p>The plugin works with popular caching plugins by automatically excluding Ultimate Member pages from being cached. This ensures other visitors to a page will not see the private information of another user. However, if you add features of Ultimate Member to other pages you have to exclude those pages from being cached through your cache plugin settings panel.</p>
+</p>
+<dt id="does%20ultimate%20member%20restrict%20access%20to%20wp-login.php%20when%20the%20plugin%20is%20active%3F">
+Does Ultimate Member restrict access to wp-login.php when the plugin is active?
+</h4>
+<p>
+<p>The plugin does not restrict access to the wp-login.php page when active, so that our plugin does not interfere with the existing functionality of a website or other plugins that may utilise the default login page. If you wish to restrict access to the wp-login.php page you can use a plugin such as <a href="https://wordpress.org/plugins/wps-hide-login/" rel="ugc">WPS Hide Login</a> or another plugin that removes the ability to login via wp-login.php.</p>
+</p>
+<dt id="are%20ultimate%20member%20login%2Fregistration%20pages%20required%3F">
+Are Ultimate Member Login/Registration pages required?
+</h4>
+<p>
+<p>No, you do not need to use our plugin’s login or registration pages and can use another plugin or the default WordPress methods for user registration and login.</p>
+</p>
+<dt id="are%20additional%20php%20modules%20necessary%20for%20the%20plugin%20to%20work%20correctly%3F">
+Are additional PHP modules necessary for the plugin to work correctly?
+</h4>
+<p>
+<p>No specific extensions are needed. But we highly recommended keep active these PHP modules: <code>mbstring</code>, <code>json</code>, <code>dom</code>, <code>exif</code>, <code>gd</code>, <code>fileinfo</code>, <code>curl</code>, <code>iconv</code>. wp-admin &gt; Tools &gt; Site Health page has a summary about your installation and required modules. All major extensions are listed <a href="https://make.wordpress.org/hosting/handbook/server-environment/#php-extensions" rel="nofollow ugc">here</a>.</p>
+</p>
+
+";s:9:"changelog";s:7364:"<h4>Important:</h4>
+<p>IMPORTANT: PLEASE UPDATE THE PLUGIN TO AT LEAST VERSION 2.6.7 IMMEDIATELY. VERSION 2.6.7 PATCHES SECURITY PRIVILEGE ESCALATION VULNERABILITY. PLEASE SEE <a href="https://docs.ultimatemember.com/article/1866-security-incident-update-and-recommended-actions" rel="nofollow ugc">THIS ARTICLE</a> FOR MORE INFORMATION</p>
+<h4>2.11.3 2026-03-26</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+<li>Added: UM &gt; Settings &gt; Advanced &gt; APIs section for set available APIs settings.</li>
+<li>Added: GoogleMaps API setting when it&#8217;s available.</li>
+<li>Added: Function <code>UM()-&gt;mail()-&gt;enabled_email()</code> for checking if the email notification is enabled by the user.</li>
+<li>Added: <code>color</code> type of sanitize settings saved in wp-admin.</li>
+<li>Added: Checking array type of submission data when <code>url</code> type of sanitize is used in wp-admin.</li>
+<li>Added: Enhance UM form sanitization filter with $form_data param. Added the $form_data parameter to the <code>um_sanitize_form_submission</code> filter.</li>
+<li>Added: Option for special character requirement for passwords. It&#8217;s situated in &#8220;General &gt; Users &gt; Password requires special character&#8221; (based on @faisalahammad suggestions)</li>
+<li>Added: Filter hook <code>um_before_account_delete_text</code> for changing before delete account text by 3rd-party plugins. End-customers can use it for translations.</li>
+<li>Added: Filter hook <code>um_custom_{$message_key}</code> (<code>um_custom_pending_message</code>, <code>um_custom_checkmail_message</code>) for changing after-registration message based on the user status by 3rd-party plugins. End-customers can use it for translations.</li>
+<li>Added: Filter hook <code>um_convert_tags_blacklist_fields</code> For 3rd-party integrations to control the usermeta keys in <code>um_convert_tags()</code> function.</li>
+<li>Added: <code>.um-display-none</code> CSS utility + <code>umShow()/umHide()/umToggle()</code> jQuery helpers.</li>
+<li>Added: <code>um-notice</code> JS library.</li>
+</ul>
+<p><strong>Bugfixes</strong></p>
+<ul>
+<li>Fixed: Security issue, CVE ID: CVE-2026-4248. Added blacklist filter for convert_tag replace placeholders function.</li>
+<li>Fixed: HTML sanitization logic for textarea-type custom fields with enabled HTML using setting.</li>
+<li>Fixed: WP editor formatting to prevent incorrect HTML entity conversion when using html-mode in the textarea-type custom fields. Applied and removed this filter dynamically to avoid interfering with other processes.</li>
+<li>Fixed: Dynamic string translation pattern and improve escaping. Replaced incorrect __(&#8216;%s&#8217;) pattern. (@faisalahammad)</li>
+<li>Fixed: <code>wp_die()</code> function triggering on the frontend actions. Added UM notice above the User Profile page. (based on @faisalahammad suggestions)</li>
+<li>Fixed: Password reset key handling for multiple users. Previously, the static reset key caused issues when handling password resets for multiple users simultaneously.</li>
+<li>Fixed: <code>um_trim_string()</code> function for using with UTF-8 symbols.</li>
+<li>Fixed: PHP Notice: Function WP_Scripts::add was called incorrectly.</li>
+</ul>
+<p><strong>Templates Requiring Update</strong></p>
+<ul>
+<li>members.php</li>
+<li>message.php</li>
+<li>restricted-blog.php</li>
+<li>restricted-taxonomy.php</li>
+</ul>
+<p><strong>Note: Cached and optimized/minified assets(JS/CSS) must be flushed/re-generated after the upgrade</strong></p>
+<h4>2.11.2 2026-02-10</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+<li>Added: Server-side validation when the Search Form is submitted.</li>
+<li>Added: Action hook <code>um_approve_user_on_email_confirmation</code> to natively approve the user after validating the email activation link.</li>
+<li>Added: JS filter wp.hook <code>um_member_directory_popstate_ignore</code> to stop window.pushSate in the member directory for 3rd-party integrations.</li>
+</ul>
+<p><strong>Bugfixes</strong></p>
+<ul>
+<li>Fixed: Security issue, CVE ID: CVE-2025-15064. Deprecated the ability to use HTML inside the user description. It&#8217;s still allowed to use only predefined &#8216;user_description&#8217; tags in <code>wp_kses()</code>.</li>
+<li>Fixed: Security issue, CVE ID: CVE-2026-1404. Modified template item formatting to avoid using HTML characters in the filter values.</li>
+<li>Fixed: Profile photo dropdown menu position for screens smaller than 340px.</li>
+<li>Fixed: Display of the saved value of the &#8220;Privacy Options&#8221; &gt; &#8220;Allowed roles&#8221; setting for the member directory.</li>
+<li>Fixed: Information in Site-Health about the registration form&#8217;s <code>Template</code> and <code>Role</code> settings.</li>
+<li>Fixed: Information in Site-Health about the login and profile form&#8217;s <code>Template</code> settings.</li>
+</ul>
+<p><strong>Templates Requiring Update</strong></p>
+<ul>
+<li>members.php</li>
+<li>searchform.php</li>
+</ul>
+<p><strong>Note: Cached and optimized/minified assets(JS/CSS) must be flushed/re-generated after the upgrade</strong></p>
+<h4>2.11.1 2025-12-16</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+<li>Added: &#8216;Privacy Options&#8217; for Member Directory. &#8216;Who can see this member directory&#8217; and &#8216;Allowed Roles&#8217;.</li>
+<li>Added: &#8216;Rate Limit&#8217; setting for nopriv AJAX actions.</li>
+</ul>
+<p><strong>Bugfixes</strong></p>
+<ul>
+<li>Fixed: Security issue CVE ID: CVE-2025-13220. Used <code>shortcode_atts()</code> function to avoid using wrong attributes.</li>
+<li>Fixed: Security issue CVE ID: CVE-2025-13217. Implementing proper input sanitization and escaping for iframe URLs in YouTube, Vimeo, and Google Maps embeds.</li>
+<li>Fixed: Security issue CVE ID: CVE-2025-14081. Filtering fields based on user permissions during Account form submission.</li>
+<li>Fixed: Security issue CVE ID: CVE-2025-12492. Added directory privacy settings and added rate limiting.</li>
+</ul>
+<p><strong>Templates Requiring Update</strong></p>
+<ul>
+<li>members.php</li>
+<li>members-grid.php</li>
+<li>members-list.php</li>
+</ul>
+<h4>2.11.0 2025-12-02</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+<li>Added: Extra condition for checking the license activation requests.</li>
+<li>Added: 2nd <code>$args</code> attribute to the action hook &#8216;um_cover_area_content&#8217;.</li>
+<li>Added: <code>$args</code> and <code>$user_id</code> attributes to the action hook &#8216;um_after_profile_header_name&#8217;.</li>
+<li>Added: Class <code>um-profile-subnav-{$subnav_id}-link</code> to the sub navigation links in the User Profile page.</li>
+<li>Tweak: Updated <code>Extensions_Updater</code> class to use Action Scheduler in the upgrade process of the UM extensions.</li>
+</ul>
+<p><strong>Bugfixes</strong></p>
+<ul>
+<li>Fixed: User profile links in the comments section on the frontend when the <code>$comment-&gt;user_id</code> is empty.</li>
+<li>Fixed: The <code>emotize</code> function regexp for better emoji converting.</li>
+<li>Fixed: The conflict between the image uploader and lazy-loading attribute added by 3rd-party plugins.</li>
+<li>Fixed: PHP warnings for roles without meta data.</li>
+<li>Fixed: Typo in labels.</li>
+</ul>
+<p><a href="https://plugins.svn.wordpress.org/ultimate-member/trunk/changelog.txt" rel="nofollow ugc">See changelog for all versions</a>.</p>
+";s:11:"screenshots";s:2541:"<ol><li><a href="https://ps.w.org/ultimate-member/assets/screenshot-1.png?rev=3160947"><img src="https://ps.w.org/ultimate-member/assets/screenshot-1.png?rev=3160947" alt="Screenshot 1"></a><p>Screenshot 1</p></li><li><a href="https://ps.w.org/ultimate-member/assets/screenshot-2.png?rev=3160947"><img src="https://ps.w.org/ultimate-member/assets/screenshot-2.png?rev=3160947" alt="Screenshot 2"></a><p>Screenshot 2</p></li><li><a href="https://ps.w.org/ultimate-member/assets/screenshot-3.png?rev=3160947"><img src="https://ps.w.org/ultimate-member/assets/screenshot-3.png?rev=3160947" alt="Screenshot 3"></a><p>Screenshot 3</p></li><li><a href="https://ps.w.org/ultimate-member/assets/screenshot-4.png?rev=3160947"><img src="https://ps.w.org/ultimate-member/assets/screenshot-4.png?rev=3160947" alt="Screenshot 4"></a><p>Screenshot 4</p></li><li><a href="https://ps.w.org/ultimate-member/assets/screenshot-5.png?rev=3160947"><img src="https://ps.w.org/ultimate-member/assets/screenshot-5.png?rev=3160947" alt="Screenshot 5"></a><p>Screenshot 5</p></li><li><a href="https://ps.w.org/ultimate-member/assets/screenshot-6.png?rev=3160947"><img src="https://ps.w.org/ultimate-member/assets/screenshot-6.png?rev=3160947" alt="Screenshot 6"></a><p>Screenshot 6</p></li><li><a href="https://ps.w.org/ultimate-member/assets/screenshot-7.png?rev=3160947"><img src="https://ps.w.org/ultimate-member/assets/screenshot-7.png?rev=3160947" alt="Screenshot 7"></a><p>Screenshot 7</p></li><li><a href="https://ps.w.org/ultimate-member/assets/screenshot-8.png?rev=3160947"><img src="https://ps.w.org/ultimate-member/assets/screenshot-8.png?rev=3160947" alt="Screenshot 8"></a><p>Screenshot 8</p></li><li><a href="https://ps.w.org/ultimate-member/assets/screenshot-9.png?rev=3160947"><img src="https://ps.w.org/ultimate-member/assets/screenshot-9.png?rev=3160947" alt="Screenshot 9"></a><p>Screenshot 9</p></li><li><a href="https://ps.w.org/ultimate-member/assets/screenshot-10.png?rev=3160947"><img src="https://ps.w.org/ultimate-member/assets/screenshot-10.png?rev=3160947" alt="Screenshot 10"></a><p>Screenshot 10</p></li><li><a href="https://ps.w.org/ultimate-member/assets/screenshot-11.png?rev=3160947"><img src="https://ps.w.org/ultimate-member/assets/screenshot-11.png?rev=3160947" alt="Screenshot 11"></a><p>Screenshot 11</p></li><li><a href="https://ps.w.org/ultimate-member/assets/screenshot-12.png?rev=3160947"><img src="https://ps.w.org/ultimate-member/assets/screenshot-12.png?rev=3160947" alt="Screenshot 12"></a><p>Screenshot 12</p></li></ol>";}s:17:"short_description";s:146:"Membership &amp; community plugin with user profiles, registration &amp; login, member directories, content restriction, user roles and much more.";s:13:"download_link";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.11.3.zip";s:11:"screenshots";a:12:{i:1;a:2:{s:3:"src";s:68:"https://ps.w.org/ultimate-member/assets/screenshot-1.png?rev=3160947";s:7:"caption";s:12:"Screenshot 1";}i:2;a:2:{s:3:"src";s:68:"https://ps.w.org/ultimate-member/assets/screenshot-2.png?rev=3160947";s:7:"caption";s:12:"Screenshot 2";}i:3;a:2:{s:3:"src";s:68:"https://ps.w.org/ultimate-member/assets/screenshot-3.png?rev=3160947";s:7:"caption";s:12:"Screenshot 3";}i:4;a:2:{s:3:"src";s:68:"https://ps.w.org/ultimate-member/assets/screenshot-4.png?rev=3160947";s:7:"caption";s:12:"Screenshot 4";}i:5;a:2:{s:3:"src";s:68:"https://ps.w.org/ultimate-member/assets/screenshot-5.png?rev=3160947";s:7:"caption";s:12:"Screenshot 5";}i:6;a:2:{s:3:"src";s:68:"https://ps.w.org/ultimate-member/assets/screenshot-6.png?rev=3160947";s:7:"caption";s:12:"Screenshot 6";}i:7;a:2:{s:3:"src";s:68:"https://ps.w.org/ultimate-member/assets/screenshot-7.png?rev=3160947";s:7:"caption";s:12:"Screenshot 7";}i:8;a:2:{s:3:"src";s:68:"https://ps.w.org/ultimate-member/assets/screenshot-8.png?rev=3160947";s:7:"caption";s:12:"Screenshot 8";}i:9;a:2:{s:3:"src";s:68:"https://ps.w.org/ultimate-member/assets/screenshot-9.png?rev=3160947";s:7:"caption";s:12:"Screenshot 9";}i:10;a:2:{s:3:"src";s:69:"https://ps.w.org/ultimate-member/assets/screenshot-10.png?rev=3160947";s:7:"caption";s:13:"Screenshot 10";}i:11;a:2:{s:3:"src";s:69:"https://ps.w.org/ultimate-member/assets/screenshot-11.png?rev=3160947";s:7:"caption";s:13:"Screenshot 11";}i:12;a:2:{s:3:"src";s:69:"https://ps.w.org/ultimate-member/assets/screenshot-12.png?rev=3160947";s:7:"caption";s:13:"Screenshot 12";}}s:4:"tags";a:5:{s:9:"community";s:9:"community";s:6:"member";s:6:"member";s:10:"membership";s:10:"membership";s:12:"user-profile";s:12:"user profile";s:17:"user-registration";s:17:"User Registration";}s:8:"versions";a:309:{s:5:"1.0.0";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.0.zip";s:6:"1.0.10";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.10.zip";s:6:"1.0.15";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.15.zip";s:6:"1.0.16";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.16.zip";s:6:"1.0.17";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.17.zip";s:6:"1.0.18";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.18.zip";s:6:"1.0.19";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.19.zip";s:6:"1.0.20";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.20.zip";s:6:"1.0.21";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.21.zip";s:6:"1.0.22";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.22.zip";s:6:"1.0.23";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.23.zip";s:6:"1.0.24";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.24.zip";s:6:"1.0.25";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.25.zip";s:6:"1.0.26";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.26.zip";s:6:"1.0.27";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.27.zip";s:6:"1.0.28";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.28.zip";s:6:"1.0.29";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.29.zip";s:6:"1.0.30";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.30.zip";s:6:"1.0.31";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.31.zip";s:6:"1.0.32";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.32.zip";s:6:"1.0.33";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.33.zip";s:6:"1.0.34";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.34.zip";s:6:"1.0.35";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.35.zip";s:6:"1.0.36";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.36.zip";s:6:"1.0.37";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.37.zip";s:6:"1.0.38";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.38.zip";s:6:"1.0.39";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.39.zip";s:6:"1.0.40";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.40.zip";s:6:"1.0.41";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.41.zip";s:6:"1.0.42";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.42.zip";s:6:"1.0.43";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.43.zip";s:6:"1.0.44";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.44.zip";s:6:"1.0.45";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.45.zip";s:6:"1.0.46";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.46.zip";s:6:"1.0.47";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.47.zip";s:6:"1.0.48";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.48.zip";s:6:"1.0.49";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.49.zip";s:6:"1.0.50";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.50.zip";s:6:"1.0.51";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.51.zip";s:6:"1.0.52";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.52.zip";s:6:"1.0.53";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.53.zip";s:6:"1.0.54";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.54.zip";s:6:"1.0.55";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.55.zip";s:6:"1.0.56";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.56.zip";s:6:"1.0.57";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.57.zip";s:6:"1.0.58";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.58.zip";s:6:"1.0.59";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.59.zip";s:6:"1.0.60";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.60.zip";s:6:"1.0.61";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.61.zip";s:6:"1.0.62";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.62.zip";s:6:"1.0.63";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.63.zip";s:6:"1.0.64";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.64.zip";s:6:"1.0.65";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.65.zip";s:6:"1.0.66";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.66.zip";s:6:"1.0.67";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.67.zip";s:6:"1.0.68";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.68.zip";s:6:"1.0.69";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.69.zip";s:6:"1.0.70";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.70.zip";s:6:"1.0.71";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.71.zip";s:6:"1.0.72";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.72.zip";s:6:"1.0.73";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.73.zip";s:6:"1.0.74";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.74.zip";s:6:"1.0.75";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.75.zip";s:6:"1.0.76";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.76.zip";s:6:"1.0.77";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.77.zip";s:6:"1.0.78";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.78.zip";s:6:"1.0.79";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.79.zip";s:6:"1.0.80";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.80.zip";s:6:"1.0.81";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.81.zip";s:6:"1.0.82";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.82.zip";s:6:"1.0.83";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.83.zip";s:6:"1.0.84";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.84.zip";s:6:"1.0.85";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.85.zip";s:6:"1.0.86";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.86.zip";s:6:"1.0.87";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.87.zip";s:6:"1.0.88";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.88.zip";s:6:"1.0.89";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.89.zip";s:6:"1.0.90";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.90.zip";s:6:"1.0.91";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.91.zip";s:6:"1.0.92";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.92.zip";s:6:"1.0.93";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.93.zip";s:6:"1.0.94";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.94.zip";s:6:"1.0.95";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.95.zip";s:6:"1.0.96";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.0.96.zip";s:5:"1.1.0";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.1.0.zip";s:5:"1.1.1";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.1.1.zip";s:5:"1.1.2";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.1.2.zip";s:5:"1.1.3";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.1.3.zip";s:5:"1.1.4";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.1.4.zip";s:5:"1.1.5";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.1.5.zip";s:5:"1.1.6";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.1.6.zip";s:3:"1.2";s:62:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.zip";s:5:"1.2.1";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.1.zip";s:5:"1.2.2";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.2.zip";s:5:"1.2.3";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.3.zip";s:5:"1.2.4";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.4.zip";s:5:"1.2.5";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.5.zip";s:5:"1.2.6";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.6.zip";s:5:"1.2.7";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.7.zip";s:5:"1.2.8";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.8.zip";s:5:"1.2.9";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.9.zip";s:6:"1.2.91";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.91.zip";s:6:"1.2.92";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.92.zip";s:6:"1.2.93";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.93.zip";s:6:"1.2.94";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.94.zip";s:6:"1.2.95";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.95.zip";s:6:"1.2.96";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.96.zip";s:6:"1.2.97";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.97.zip";s:6:"1.2.98";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.98.zip";s:6:"1.2.99";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.99.zip";s:7:"1.2.991";s:66:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.991.zip";s:7:"1.2.993";s:66:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.993.zip";s:7:"1.2.994";s:66:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.994.zip";s:7:"1.2.995";s:66:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.995.zip";s:7:"1.2.996";s:66:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.996.zip";s:7:"1.2.997";s:66:"https://downloads.wordpress.org/plugin/ultimate-member.1.2.997.zip";s:5:"1.3.0";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.0.zip";s:5:"1.3.1";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.1.zip";s:6:"1.3.11";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.11.zip";s:6:"1.3.12";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.12.zip";s:6:"1.3.13";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.13.zip";s:6:"1.3.14";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.14.zip";s:6:"1.3.15";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.15.zip";s:6:"1.3.16";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.16.zip";s:6:"1.3.17";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.17.zip";s:6:"1.3.18";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.18.zip";s:6:"1.3.19";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.19.zip";s:6:"1.3.20";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.20.zip";s:6:"1.3.21";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.21.zip";s:6:"1.3.22";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.22.zip";s:6:"1.3.23";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.23.zip";s:6:"1.3.24";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.24.zip";s:6:"1.3.25";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.25.zip";s:6:"1.3.26";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.26.zip";s:6:"1.3.27";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.27.zip";s:6:"1.3.28";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.28.zip";s:6:"1.3.29";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.29.zip";s:6:"1.3.30";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.30.zip";s:6:"1.3.31";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.31.zip";s:6:"1.3.32";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.32.zip";s:6:"1.3.33";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.33.zip";s:6:"1.3.34";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.34.zip";s:6:"1.3.35";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.35.zip";s:6:"1.3.36";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.36.zip";s:6:"1.3.37";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.37.zip";s:6:"1.3.38";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.38.zip";s:6:"1.3.39";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.39.zip";s:6:"1.3.44";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.44.zip";s:6:"1.3.47";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.47.zip";s:6:"1.3.48";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.48.zip";s:6:"1.3.49";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.49.zip";s:6:"1.3.50";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.50.zip";s:6:"1.3.51";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.51.zip";s:6:"1.3.52";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.52.zip";s:6:"1.3.53";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.53.zip";s:6:"1.3.54";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.54.zip";s:6:"1.3.58";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.58.zip";s:6:"1.3.59";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.59.zip";s:6:"1.3.60";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.60.zip";s:6:"1.3.61";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.61.zip";s:6:"1.3.63";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.63.zip";s:6:"1.3.64";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.64.zip";s:6:"1.3.65";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.65.zip";s:6:"1.3.66";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.66.zip";s:6:"1.3.67";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.67.zip";s:6:"1.3.68";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.68.zip";s:6:"1.3.69";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.69.zip";s:6:"1.3.70";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.70.zip";s:6:"1.3.71";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.71.zip";s:6:"1.3.72";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.72.zip";s:6:"1.3.73";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.73.zip";s:6:"1.3.77";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.77.zip";s:6:"1.3.78";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.78.zip";s:6:"1.3.79";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.79.zip";s:6:"1.3.80";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.80.zip";s:6:"1.3.81";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.81.zip";s:6:"1.3.82";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.82.zip";s:6:"1.3.83";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.83.zip";s:6:"1.3.84";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.84.zip";s:6:"1.3.85";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.85.zip";s:6:"1.3.87";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.87.zip";s:6:"1.3.88";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.88.zip";s:6:"1.3.89";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.1.3.89.zip";s:6:"2.0.10";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.10.zip";s:6:"2.0.11";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.11.zip";s:6:"2.0.12";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.12.zip";s:6:"2.0.13";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.13.zip";s:6:"2.0.14";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.14.zip";s:6:"2.0.15";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.15.zip";s:6:"2.0.16";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.16.zip";s:6:"2.0.17";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.17.zip";s:6:"2.0.18";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.18.zip";s:6:"2.0.19";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.19.zip";s:6:"2.0.21";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.21.zip";s:6:"2.0.22";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.22.zip";s:6:"2.0.23";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.23.zip";s:6:"2.0.24";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.24.zip";s:6:"2.0.25";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.25.zip";s:6:"2.0.26";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.26.zip";s:6:"2.0.27";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.27.zip";s:6:"2.0.28";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.28.zip";s:6:"2.0.29";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.29.zip";s:6:"2.0.30";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.30.zip";s:6:"2.0.31";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.31.zip";s:6:"2.0.32";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.32.zip";s:6:"2.0.33";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.33.zip";s:6:"2.0.34";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.34.zip";s:6:"2.0.35";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.35.zip";s:6:"2.0.36";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.36.zip";s:6:"2.0.37";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.37.zip";s:6:"2.0.38";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.38.zip";s:6:"2.0.39";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.39.zip";s:5:"2.0.4";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.4.zip";s:6:"2.0.40";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.40.zip";s:6:"2.0.41";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.41.zip";s:6:"2.0.42";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.42.zip";s:6:"2.0.43";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.43.zip";s:6:"2.0.44";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.44.zip";s:6:"2.0.45";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.45.zip";s:6:"2.0.46";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.46.zip";s:6:"2.0.47";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.47.zip";s:6:"2.0.48";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.48.zip";s:6:"2.0.49";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.49.zip";s:5:"2.0.5";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.5.zip";s:6:"2.0.50";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.50.zip";s:6:"2.0.51";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.51.zip";s:6:"2.0.52";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.52.zip";s:6:"2.0.53";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.53.zip";s:6:"2.0.54";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.54.zip";s:6:"2.0.55";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.55.zip";s:6:"2.0.56";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.56.zip";s:5:"2.0.9";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.0.9.zip";s:5:"2.1.0";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.0.zip";s:5:"2.1.1";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.1.zip";s:6:"2.1.10";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.10.zip";s:6:"2.1.11";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.11.zip";s:6:"2.1.12";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.12.zip";s:6:"2.1.13";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.13.zip";s:6:"2.1.14";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.14.zip";s:6:"2.1.15";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.15.zip";s:6:"2.1.16";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.16.zip";s:6:"2.1.17";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.17.zip";s:6:"2.1.18";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.18.zip";s:6:"2.1.19";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.19.zip";s:5:"2.1.2";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.2.zip";s:6:"2.1.20";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.20.zip";s:6:"2.1.21";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.21.zip";s:5:"2.1.3";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.3.zip";s:5:"2.1.4";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.4.zip";s:5:"2.1.5";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.5.zip";s:5:"2.1.6";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.6.zip";s:5:"2.1.7";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.7.zip";s:5:"2.1.8";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.8.zip";s:5:"2.1.9";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.1.9.zip";s:6:"2.10.0";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.10.0.zip";s:6:"2.10.1";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.10.1.zip";s:6:"2.10.2";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.10.2.zip";s:6:"2.10.3";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.10.3.zip";s:6:"2.10.4";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.10.4.zip";s:6:"2.10.5";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.10.5.zip";s:6:"2.10.6";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.10.6.zip";s:6:"2.11.0";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.11.0.zip";s:6:"2.11.1";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.11.1.zip";s:6:"2.11.2";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.11.2.zip";s:6:"2.11.3";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.11.3.zip";s:5:"2.2.0";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.2.0.zip";s:5:"2.2.1";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.2.1.zip";s:5:"2.2.2";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.2.2.zip";s:5:"2.2.3";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.2.3.zip";s:5:"2.2.4";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.2.4.zip";s:5:"2.2.5";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.2.5.zip";s:5:"2.3.0";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.3.0.zip";s:5:"2.3.1";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.3.1.zip";s:5:"2.3.2";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.3.2.zip";s:5:"2.4.0";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.4.0.zip";s:5:"2.4.1";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.4.1.zip";s:5:"2.4.2";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.4.2.zip";s:5:"2.5.0";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.5.0.zip";s:5:"2.5.1";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.5.1.zip";s:5:"2.5.2";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.5.2.zip";s:5:"2.5.3";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.5.3.zip";s:5:"2.5.4";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.5.4.zip";s:5:"2.6.0";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.6.0.zip";s:5:"2.6.1";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.6.1.zip";s:6:"2.6.10";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.6.10.zip";s:6:"2.6.11";s:65:"https://downloads.wordpress.org/plugin/ultimate-member.2.6.11.zip";s:5:"2.6.2";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.6.2.zip";s:5:"2.6.3";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.6.3.zip";s:5:"2.6.4";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.6.4.zip";s:5:"2.6.5";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.6.5.zip";s:5:"2.6.6";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.6.6.zip";s:5:"2.6.7";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.6.7.zip";s:5:"2.6.8";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.6.8.zip";s:5:"2.6.9";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.6.9.zip";s:5:"2.7.0";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.7.0.zip";s:5:"2.8.0";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.8.0.zip";s:5:"2.8.1";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.8.1.zip";s:5:"2.8.2";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.8.2.zip";s:5:"2.8.3";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.8.3.zip";s:5:"2.8.4";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.8.4.zip";s:5:"2.8.5";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.8.5.zip";s:5:"2.8.6";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.8.6.zip";s:5:"2.8.7";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.8.7.zip";s:5:"2.8.8";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.8.8.zip";s:5:"2.8.9";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.8.9.zip";s:5:"2.9.0";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.9.0.zip";s:5:"2.9.1";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.9.1.zip";s:5:"2.9.2";s:64:"https://downloads.wordpress.org/plugin/ultimate-member.2.9.2.zip";s:5:"trunk";s:58:"https://downloads.wordpress.org/plugin/ultimate-member.zip";}s:11:"donate_link";s:0:"";s:5:"icons";a:2:{s:2:"1x";s:68:"https://ps.w.org/ultimate-member/assets/icon-128x128.png?rev=3160947";s:2:"2x";s:68:"https://ps.w.org/ultimate-member/assets/icon-256x256.png?rev=3160947";}s:12:"contributors";a:3:{s:14:"ultimatemember";s:46:"https://profiles.wordpress.org/ultimatemember/";s:15:"champsupertramp";s:47:"https://profiles.wordpress.org/champsupertramp/";s:11:"nsinelnikov";s:43:"https://profiles.wordpress.org/nsinelnikov/";}s:6:"market";N;s:11:"custom_link";N;}s:15:"google-site-kit";a:29:{s:4:"name";s:68:"Site Kit by Google &#8211; Analytics, Search Console, AdSense, Speed";s:4:"slug";s:15:"google-site-kit";s:7:"version";s:7:"1.175.0";s:6:"author";s:59:"<a href="https://profiles.wordpress.org/google/">Google</a>";s:14:"author_profile";s:38:"https://profiles.wordpress.org/google/";s:8:"requires";s:3:"5.2";s:6:"tested";s:5:"6.9.4";s:12:"requires_php";s:3:"7.4";s:16:"requires_plugins";a:0:{}s:6:"rating";i:84;s:7:"ratings";a:5:{i:5;i:725;i:4;i:47;i:3;i:29;i:2;i:39;i:1;i:143;}s:11:"num_ratings";i:983;s:15:"support_threads";i:52;s:24:"support_threads_resolved";i:46;s:10:"downloaded";i:246896568;s:12:"last_updated";s:21:"2026-03-23 9:44pm GMT";s:5:"added";s:10:"2019-10-31";s:8:"homepage";s:30:"https://sitekit.withgoogle.com";s:8:"sections";a:4:{s:11:"description";s:1860:"<p>Site Kit is the official WordPress plugin from Google for insights about how people find and use your site. Site Kit is the one-stop solution to deploy, manage, and get insights from critical Google tools to make the site successful on the web. It provides authoritative, up-to-date insights from multiple Google products directly on the WordPress dashboard for easy access, all for free.</p>
+<h4>Bringing the best of Google tools to WordPress</h4>
+<p>Site Kit includes powerful features that make using these Google products seamless and flexible:</p>
+<ul>
+<li>Easy-to-understand stats directly on your WordPress dashboard</li>
+<li>Official stats from multiple Google tools, all in one dashboard</li>
+<li>Quick setup for multiple Google tools without having to edit the source code of your site</li>
+<li>Metrics for your entire site and for individual posts</li>
+<li>Easy-to-manage, granular permissions across WordPress and different Google products</li>
+</ul>
+<h4>Supported Google tools</h4>
+<p>Site Kit shows key metrics and insights from different Google products:</p>
+<ul>
+<li><strong>Search Console:</strong> Understand how Google Search discovers and displays your pages in Google Search. Track how many people saw your site in Search results, and what query they used to search for your site.</li>
+<li><strong>Analytics:</strong> Explore how users navigate your site and track goals you&#8217;ve set up for your users to complete.</li>
+<li><strong>AdSense:</strong> Keep track of how much your site is earning you.</li>
+<li><strong>PageSpeed Insights:</strong> See how your pages perform compared to other real-world sites. Improve performance with actionable tips from PageSpeed Insights.</li>
+<li><strong>Tag Manager:</strong> Use Site Kit to easily set up Tag Manager- no code editing required. Then, manage your tags in Tag Manager.</li>
+</ul>
+";s:12:"installation";s:1809:"<p><strong>Note</strong>: Make sure that your website is live. If your website isn&#8217;t live yet, Site Kit can&#8217;t show you any data.<br />
+However, if you have a staging environment in addition to your production site, Site Kit can display data from your production site in the staging environment. Learn how to use <a href="https://sitekit.withgoogle.com/documentation/using-site-kit/staging/" rel="nofollow ugc">Site Kit with a staging environment</a>.</p>
+<h4>Installation from within WordPress</h4>
+<ol>
+<li>Visit <strong>Plugins &gt; Add New</strong>.</li>
+<li>Search for <strong>Site Kit by Google</strong>.</li>
+<li>Install and activate the Site Kit by Google plugin.</li>
+<li>Connect Site Kit to your Google account. If there are multiple WordPress admins, keep in mind that each admin must connect their own Google account in order to access the plugin.</li>
+</ol>
+<h4>Manual installation</h4>
+<ol>
+<li>Upload the entire <code>google-site-kit</code> folder to the <code>/wp-content/plugins/</code> directory.</li>
+<li>Visit <strong>Plugins</strong>.</li>
+<li>Activate the Site Kit by Google plugin.</li>
+<li>Connect Site Kit to your Google account. If there are multiple WordPress admins, keep in mind that each admin must connect their own Google account in order to access the plugin.</li>
+</ol>
+<h4>After activation</h4>
+<ol>
+<li>Visit the new <strong>Site Kit</strong> menu.</li>
+<li>Follow the instructions in the setup flow.</li>
+<li>Go to the main Site Kit dashboard which already displays key metrics from Search Console.</li>
+<li>Connect additional Google tools under <strong>Site Kit &gt; Settings</strong>. Learn more about <a href="https://sitekit.withgoogle.com/documentation/getting-started/connecting-services/" rel="nofollow ugc">which tools are right for you</a>.</li>
+</ol>
+";s:3:"faq";s:4825:"<p>For more information, visit the <a href="https://sitekit.withgoogle.com/documentation/" rel="nofollow ugc">official Site Kit website</a>.</p>
+
+<dt id="is%20site%20kit%20free%3F">
+Is Site Kit free?
+</h4>
+<p>
+<p>The Site Kit plugin is free and open source, and will remain so. Individual Google products included in Site Kit are subject to standard terms and fees (if any) for those products.</p>
+</p>
+<dt id="what%20are%20the%20minimum%20requirements%20for%20site%20kit%3F">
+What are the minimum requirements for Site Kit?
+</h4>
+<p>
+<p>In order to successfully install and use Site Kit, your site must meet the following requirements:</p>
+<ul>
+<li>WordPress version 5.2+</li>
+<li>PHP version 7.4+</li>
+<li>Modern browser – Internet Explorer is not supported</li>
+<li>Is publicly accessible – it isn’t in maintenance mode, accessible only via password, or otherwise blocked</li>
+<li>REST API is available – Site Kit must be able to communicate via REST API with Google services. To ensure that the REST API is available for your site, go to Tools &gt; Site Health.</li>
+</ul>
+</p>
+<dt id="why%20is%20my%20dashboard%20showing%20%E2%80%9Cgathering%20data%E2%80%9D%20and%20none%20of%20my%20service%20data%3F">
+Why is my dashboard showing “gathering data” and none of my service data?
+</h4>
+<p>
+<p>It can take a few days after connecting Site Kit to a Google service for data to begin to display in your dashboard. The “gathering data” message typically appears when you’ve recently set up a Google service (i.e. just created a new Analytics account) and/or your site is new, and data is not yet available for display.</p>
+<p>If you are still seeing this message after a few days, feel free to get in touch with us on the <a href="https://wordpress.org/support/plugin/google-site-kit/" rel="ugc">support forum</a>.</p>
+</p>
+<dt id="why%20aren%E2%80%99t%20any%20ads%20appearing%20on%20my%20site%20after%20i%20connected%20adsense%3F">
+Why aren’t any ads appearing on my site after I connected AdSense?
+</h4>
+<p>
+<p>If you’re new to AdSense when you connect via Site Kit, your new AdSense account and your site will need to be manually reviewed and approved for ads by the AdSense team. Ads will not display until your account and site have been approved. <a href="https://support.google.com/adsense/answer/76228" rel="nofollow ugc">Check out this guide for more information about the approval process and timeline.</a></p>
+<p>You can check your approval status in Site Kit by going to <strong>Settings &gt; Connected Services &gt; AdSense</strong> and clicking <strong>Check your site status</strong>. This link will direct you to AdSense. If you see “Ready,” your account and site have been approved and should be displaying ads. If you see “Getting ready…,” your account and site are still under review and your site will not display ads until they have been approved.</p>
+<p>If Site Kit has successfully added the AdSense snippet to your site and your account and site have been approved, but your site is still not showing ads, <a href="https://support.google.com/adsense/#topic=3373519" rel="nofollow ugc">contact the AdSense Help Center for assistance</a>.</p>
+<p>You can find more information on how Site Kit works with AdSense in our <a href="https://sitekit.withgoogle.com/documentation/using-site-kit/managing-adsense/" rel="nofollow ugc">Managing AdSense guide</a>.</p>
+</p>
+<dt id="is%20site%20kit%20gdpr%20compliant%3F">
+Is Site Kit GDPR compliant?
+</h4>
+<p>
+<p>When using Site Kit, site owners are responsible for managing notice and consent requirements – including GDPR requirements – as described in <a href="https://policies.google.com/terms" rel="nofollow ugc">Google’s Terms of Service</a>.</p>
+<p>By default, Site Kit does anonymize IP addresses upon activation of the Google Analytics module. This setting can be turned off in <strong>Site Kit &gt; Settings &gt; Analytics &gt; Anonymize IP addresses</strong>.</p>
+<p>There are a number of third-party plugins that allow you to block Google Analytics, Tag Manager, or AdSense from capturing data until a visitor to the site consents. Some of these work natively with Site Kit by providing plugin-specific configurations. You can find out more about these by visiting our <a href="https://sitekit.withgoogle.com/documentation/using-site-kit/gdpr-compliance-and-privacy/" rel="nofollow ugc">GDPR compliance and privacy page</a>.</p>
+</p>
+<dt id="where%20can%20i%20get%20additional%20support%3F">
+Where can I get additional support?
+</h4>
+<p>
+<p>Please create a new topic on our <a href="https://wordpress.org/support/plugin/google-site-kit/" rel="ugc">WordPress.org support forum</a>. Be sure to follow the <a href="https://wordpress.org/support/guidelines/" rel="ugc">support forum guidelines</a> when posting.</p>
+</p>
+
+";s:9:"changelog";s:3731:"<h4>1.175.0</h4>
+<p><strong>Enhanced</strong></p>
+<ul>
+<li>Fix bug that caused admins without module access to get emails for modules. See <a href="https://github.com/google/site-kit-wp/issues/12200" rel="nofollow ugc">#12200</a>.</li>
+<li>Prevent the shared Key Metrics feature tour and Audience Segmentation introductory overlay from appearing when the Welcome modal is present for secondary admins and view-only users. See <a href="https://github.com/google/site-kit-wp/issues/12066" rel="nofollow ugc">#12066</a>.</li>
+<li>Update the Email Reporting settings panel to show the preview state while data is being loaded. See <a href="https://github.com/google/site-kit-wp/issues/12065" rel="nofollow ugc">#12065</a>.</li>
+<li>Add GA event tracking for user interaction with the updated help menu. See <a href="https://github.com/google/site-kit-wp/issues/12032" rel="nofollow ugc">#12032</a>.</li>
+<li>Add GA event tracking for user interaction with the &#8220;connect more services&#8221; notification. See <a href="https://github.com/google/site-kit-wp/issues/12029" rel="nofollow ugc">#12029</a>.</li>
+<li>Improve user filtering and requests for subscriptions. See <a href="https://github.com/google/site-kit-wp/issues/11889" rel="nofollow ugc">#11889</a>.</li>
+<li>Include user analytics in email reporting feature. See <a href="https://github.com/google/site-kit-wp/issues/11863" rel="nofollow ugc">#11863</a>.</li>
+<li>Add support for conversion events in email reports. See <a href="https://github.com/google/site-kit-wp/issues/11844" rel="nofollow ugc">#11844</a>.</li>
+<li>Add in-email notices support for Email Reporting emails. See <a href="https://github.com/google/site-kit-wp/issues/11843" rel="nofollow ugc">#11843</a>.</li>
+<li>Send emails to site admins when entire batches of emails fail to send. See <a href="https://github.com/google/site-kit-wp/issues/11841" rel="nofollow ugc">#11841</a>.</li>
+<li>Add dark mode support to email templates. See <a href="https://github.com/google/site-kit-wp/issues/11833" rel="nofollow ugc">#11833</a>.</li>
+<li>Improve Reader Revenue Manager publication data synchronization efficiency. See <a href="https://github.com/google/site-kit-wp/issues/10518" rel="nofollow ugc">#10518</a>.</li>
+<li>Fix bug with ad blocking banner overlapping other elements on some screen sizes. See <a href="https://github.com/google/site-kit-wp/issues/10415" rel="nofollow ugc">#10415</a>.</li>
+</ul>
+<p><strong>Fixed</strong></p>
+<ul>
+<li>Fix styling for the &#8220;Start a feature tour&#8221; help menu item. See <a href="https://github.com/google/site-kit-wp/issues/12240" rel="nofollow ugc">#12240</a>.</li>
+<li>Fix the Search Console-only dashboard tour to include the &#8220;Activate Analytics&#8221; step based on whether the notification is present. See <a href="https://github.com/google/site-kit-wp/issues/12235" rel="nofollow ugc">#12235</a>.</li>
+<li>Adjust/improve email template styles. Props 04cb. See <a href="https://github.com/google/site-kit-wp/issues/12202" rel="nofollow ugc">#12202</a>.</li>
+<li>Fix Analytics account creation in the new setup flow. Props fresh3nough. See <a href="https://github.com/google/site-kit-wp/issues/12194" rel="nofollow ugc">#12194</a>.</li>
+<li>Fix positioning bug on some panels when using mobile viewports. See <a href="https://github.com/google/site-kit-wp/issues/12053" rel="nofollow ugc">#12053</a>.</li>
+<li>Scroll to Email reporting settings from the &#8220;Edit settings&#8221; link. See <a href="https://github.com/google/site-kit-wp/issues/12025" rel="nofollow ugc">#12025</a>.</li>
+</ul>
+<p><a href="https://raw.githubusercontent.com/google/site-kit-wp/main/changelog.txt" rel="nofollow ugc">See changelog for all versions</a>.</p>
+";}s:17:"short_description";s:125:"Site Kit is a one-stop solution for WordPress users to use everything Google has to offer to make them successful on the web.";s:13:"download_link";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.175.0.zip";s:11:"screenshots";a:0:{}s:4:"tags";a:5:{s:7:"adsense";s:7:"adsense";s:9:"analytics";s:9:"analytics";s:6:"google";s:6:"google";s:18:"pagespeed-insights";s:18:"pagespeed insights";s:14:"search-console";s:14:"Search Console";}s:8:"versions";a:180:{s:5:"1.0.0";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.0.0.zip";s:5:"1.0.1";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.0.1.zip";s:5:"1.0.2";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.0.2.zip";s:5:"1.0.3";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.0.3.zip";s:5:"1.0.4";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.0.4.zip";s:5:"1.1.0";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.1.0.zip";s:5:"1.1.1";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.1.1.zip";s:5:"1.1.2";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.1.2.zip";s:5:"1.1.3";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.1.3.zip";s:5:"1.1.4";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.1.4.zip";s:6:"1.10.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.10.0.zip";s:7:"1.101.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.101.0.zip";s:7:"1.102.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.102.0.zip";s:7:"1.103.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.103.0.zip";s:7:"1.104.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.104.0.zip";s:7:"1.105.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.105.0.zip";s:7:"1.106.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.106.0.zip";s:7:"1.107.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.107.0.zip";s:7:"1.108.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.108.0.zip";s:7:"1.109.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.109.0.zip";s:6:"1.11.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.11.0.zip";s:6:"1.11.1";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.11.1.zip";s:7:"1.110.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.110.0.zip";s:7:"1.111.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.111.0.zip";s:7:"1.111.1";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.111.1.zip";s:7:"1.113.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.113.0.zip";s:7:"1.114.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.114.0.zip";s:7:"1.115.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.115.0.zip";s:7:"1.116.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.116.0.zip";s:7:"1.118.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.118.0.zip";s:7:"1.119.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.119.0.zip";s:6:"1.12.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.12.0.zip";s:7:"1.120.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.120.0.zip";s:7:"1.121.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.121.0.zip";s:7:"1.122.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.122.0.zip";s:7:"1.123.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.123.0.zip";s:7:"1.123.1";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.123.1.zip";s:7:"1.124.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.124.0.zip";s:7:"1.125.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.125.0.zip";s:7:"1.126.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.126.0.zip";s:7:"1.127.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.127.0.zip";s:7:"1.128.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.128.0.zip";s:7:"1.128.1";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.128.1.zip";s:7:"1.129.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.129.0.zip";s:7:"1.129.1";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.129.1.zip";s:6:"1.13.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.13.0.zip";s:6:"1.13.1";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.13.1.zip";s:7:"1.130.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.130.0.zip";s:7:"1.131.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.131.0.zip";s:7:"1.132.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.132.0.zip";s:7:"1.133.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.133.0.zip";s:7:"1.134.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.134.0.zip";s:7:"1.135.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.135.0.zip";s:7:"1.136.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.136.0.zip";s:7:"1.137.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.137.0.zip";s:7:"1.138.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.138.0.zip";s:7:"1.139.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.139.0.zip";s:6:"1.14.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.14.0.zip";s:7:"1.140.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.140.0.zip";s:7:"1.141.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.141.0.zip";s:7:"1.142.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.142.0.zip";s:7:"1.144.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.144.0.zip";s:7:"1.145.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.145.0.zip";s:7:"1.146.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.146.0.zip";s:7:"1.147.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.147.0.zip";s:7:"1.148.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.148.0.zip";s:7:"1.149.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.149.0.zip";s:7:"1.149.1";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.149.1.zip";s:6:"1.15.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.15.0.zip";s:7:"1.150.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.150.0.zip";s:7:"1.151.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.151.0.zip";s:7:"1.152.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.152.0.zip";s:7:"1.152.1";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.152.1.zip";s:7:"1.153.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.153.0.zip";s:7:"1.154.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.154.0.zip";s:7:"1.155.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.155.0.zip";s:7:"1.156.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.156.0.zip";s:7:"1.157.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.157.0.zip";s:7:"1.158.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.158.0.zip";s:7:"1.159.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.159.0.zip";s:6:"1.16.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.16.0.zip";s:7:"1.160.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.160.0.zip";s:7:"1.160.1";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.160.1.zip";s:7:"1.161.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.161.0.zip";s:7:"1.162.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.162.0.zip";s:7:"1.162.1";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.162.1.zip";s:7:"1.163.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.163.0.zip";s:7:"1.164.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.164.0.zip";s:7:"1.165.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.165.0.zip";s:7:"1.166.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.166.0.zip";s:7:"1.167.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.167.0.zip";s:7:"1.168.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.168.0.zip";s:6:"1.17.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.17.0.zip";s:7:"1.170.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.170.0.zip";s:7:"1.171.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.171.0.zip";s:7:"1.172.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.172.0.zip";s:7:"1.173.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.173.0.zip";s:7:"1.174.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.174.0.zip";s:7:"1.175.0";s:66:"https://downloads.wordpress.org/plugin/google-site-kit.1.175.0.zip";s:6:"1.18.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.18.0.zip";s:6:"1.19.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.19.0.zip";s:5:"1.2.0";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.2.0.zip";s:6:"1.20.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.20.0.zip";s:6:"1.21.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.21.0.zip";s:6:"1.22.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.22.0.zip";s:6:"1.23.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.23.0.zip";s:6:"1.24.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.24.0.zip";s:6:"1.25.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.25.0.zip";s:6:"1.26.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.26.0.zip";s:6:"1.27.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.27.0.zip";s:6:"1.28.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.28.0.zip";s:6:"1.29.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.29.0.zip";s:5:"1.3.0";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.3.0.zip";s:5:"1.3.1";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.3.1.zip";s:6:"1.30.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.30.0.zip";s:6:"1.31.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.31.0.zip";s:6:"1.32.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.32.0.zip";s:6:"1.33.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.33.0.zip";s:6:"1.34.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.34.0.zip";s:6:"1.34.1";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.34.1.zip";s:6:"1.35.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.35.0.zip";s:6:"1.36.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.36.0.zip";s:6:"1.37.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.37.0.zip";s:6:"1.38.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.38.0.zip";s:6:"1.38.1";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.38.1.zip";s:6:"1.39.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.39.0.zip";s:5:"1.4.0";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.4.0.zip";s:6:"1.40.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.40.0.zip";s:6:"1.41.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.41.0.zip";s:6:"1.42.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.42.0.zip";s:6:"1.43.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.43.0.zip";s:6:"1.44.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.44.0.zip";s:6:"1.45.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.45.0.zip";s:6:"1.46.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.46.0.zip";s:6:"1.47.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.47.0.zip";s:6:"1.48.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.48.0.zip";s:6:"1.48.1";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.48.1.zip";s:6:"1.49.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.49.0.zip";s:6:"1.49.1";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.49.1.zip";s:5:"1.5.0";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.5.0.zip";s:5:"1.5.1";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.5.1.zip";s:6:"1.50.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.50.0.zip";s:5:"1.6.0";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.6.0.zip";s:6:"1.68.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.68.0.zip";s:6:"1.69.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.69.0.zip";s:5:"1.7.0";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.7.0.zip";s:5:"1.7.1";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.7.1.zip";s:6:"1.70.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.70.0.zip";s:6:"1.71.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.71.0.zip";s:6:"1.72.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.72.0.zip";s:6:"1.73.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.73.0.zip";s:6:"1.74.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.74.0.zip";s:6:"1.75.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.75.0.zip";s:6:"1.77.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.77.0.zip";s:6:"1.78.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.78.0.zip";s:6:"1.79.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.79.0.zip";s:6:"1.79.1";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.79.1.zip";s:5:"1.8.0";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.8.0.zip";s:5:"1.8.1";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.8.1.zip";s:6:"1.80.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.80.0.zip";s:6:"1.81.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.81.0.zip";s:6:"1.82.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.82.0.zip";s:6:"1.83.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.83.0.zip";s:6:"1.84.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.84.0.zip";s:6:"1.85.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.85.0.zip";s:6:"1.86.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.86.0.zip";s:6:"1.87.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.87.0.zip";s:6:"1.88.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.88.0.zip";s:6:"1.89.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.89.0.zip";s:5:"1.9.0";s:64:"https://downloads.wordpress.org/plugin/google-site-kit.1.9.0.zip";s:6:"1.90.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.90.0.zip";s:6:"1.90.1";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.90.1.zip";s:6:"1.92.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.92.0.zip";s:6:"1.93.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.93.0.zip";s:6:"1.94.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.94.0.zip";s:6:"1.95.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.95.0.zip";s:6:"1.96.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.96.0.zip";s:6:"1.98.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.98.0.zip";s:6:"1.99.0";s:65:"https://downloads.wordpress.org/plugin/google-site-kit.1.99.0.zip";s:5:"trunk";s:58:"https://downloads.wordpress.org/plugin/google-site-kit.zip";}s:11:"donate_link";s:0:"";s:5:"icons";a:2:{s:2:"1x";s:68:"https://ps.w.org/google-site-kit/assets/icon-128x128.png?rev=3141863";s:2:"2x";s:68:"https://ps.w.org/google-site-kit/assets/icon-256x256.png?rev=3141863";}s:12:"contributors";a:1:{s:6:"google";s:38:"https://profiles.wordpress.org/google/";}s:6:"market";N;s:11:"custom_link";N;}}
