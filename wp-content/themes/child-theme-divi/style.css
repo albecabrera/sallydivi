@@ -10,18 +10,43 @@ This is the child theme for Divi theme, generated with Generate Child Theme plug
 (optional values you can add: Theme URI, Author URI, License, License URI, Tags, Text Domain)
 */
 
-/* Erfahre mehr button - darker background for contrast */
-/* Erfahre mehr button - darker background for contrast */
-body #page-container .et_pb_section .et_pb_button_0,
-body #page-container .et_pb_section .et_pb_button_0.et_pb_button {
-    background-color: #5c3344 !important;
-    border-color: #5c3344 !important;
+/* All buttons - unified style + hover lift animation */
+body #page-container .et_pb_button,
+body #page-container .et-pb-button,
+body #page-container a.et_pb_button,
+body #page-container .et_pb_more_button,
+body #page-container .et_pb_newsletter_button,
+body #page-container .et_pb_contact_submit,
+body #page-container button[type="submit"],
+body #page-container input[type="submit"] {
+    background-color: #b48e95 !important;
+    border-color: #b48e95 !important;
     color: #ffffff !important;
+    border-radius: 15px !important;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease !important;
 }
-body #page-container .et_pb_section .et_pb_button_0:hover {
-    background-color: #8a5566 !important;
-    border-color: #8a5566 !important;
+
+body #page-container .et_pb_button:hover,
+body #page-container .et-pb-button:hover,
+body #page-container a.et_pb_button:hover,
+body #page-container .et_pb_more_button:hover,
+body #page-container .et_pb_newsletter_button:hover,
+body #page-container .et_pb_contact_submit:hover,
+body #page-container button[type="submit"]:hover,
+body #page-container input[type="submit"]:hover {
+    background-color: #9a7880 !important;
+    border-color: #9a7880 !important;
     color: #ffffff !important;
+    transform: translateY(-5px) !important;
+}
+
+/* Keep newsletter popup hidden until the button is clicked.
+   Divi removes its own hide-on-load <style> tag via JS, which on some pages
+   causes the popup to flash open. This rule provides a permanent CSS-level hide.
+   Divi's JS uses element.style.setProperty("display","flex","important") on click,
+   which is an inline !important and overrides this rule – so the popup still opens. */
+.et-interaction-target-nds7mk13ev {
+    display: none !important;
 }
 
 /* Fix dropdown arrow "3" in nav menu items with children */
