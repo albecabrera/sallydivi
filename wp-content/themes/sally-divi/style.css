@@ -9,3 +9,10 @@ This is the child theme for Divi theme, generated with Generate Child Theme plug
 
 (optional values you can add: Theme URI, Author URI, License, License URI, Tags, Text Domain)
 */
+
+/* Newsletter signup success message */
+.et_pb_newsletter_result h2,
+.et_pb_newsletter_success h2 {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+}
