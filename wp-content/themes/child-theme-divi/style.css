@@ -326,6 +326,15 @@ body .sally-newsletter-form button[type="submit"]:hover {
     }
 }
 
+/* Newsletter signup success message - override dark layout white text */
+.et_pb_newsletter_result h2,
+.et_pb_newsletter_success h2,
+.et_pb_bg_layout_dark .et_pb_newsletter_result h2,
+.et_pb_bg_layout_dark .et_pb_newsletter_success h2 {
+    color: #2b2b2b !important;
+    -webkit-text-fill-color: #2b2b2b !important;
+}
+
 /* ETmodules icon font - fix mobile menu toggle icon */
 @font-face {
     font-family: ETmodules;

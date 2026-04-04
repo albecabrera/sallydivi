@@ -15,3 +15,16 @@ function child_theme_divi_enqueue_styles() {
 /*
  * Your code goes below
  */
+ // COPYRIGHT JAHR ALS SHORTCODE ///////////////////////////////////////////////
+function bh_year_shortcode( $atts ) {
+    $atts = shortcode_atts(
+        array(
+            'format' => 'Y',
+        ),
+        $atts,
+        'year'
+    );
+
+    return esc_html( date( sanitize_text_field( $atts['format'] ) ) );
+}
+add_shortcode( 'year', 'bh_year_shortcode' );
