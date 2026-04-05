@@ -23,8 +23,7 @@ body #page-container input[type="submit"] {
     border-color: #b48e95 !important;
     color: #ffffff !important;
     border-radius: 15px !important;
-    box-shadow: 0px 12px 18px -6px rgba(0,0,0,0.3) !important;
-    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease !important;
 }
 
 body #page-container .et_pb_button:hover,
@@ -41,14 +40,36 @@ body #page-container input[type="submit"]:hover {
     transform: translateY(-5px) !important;
 }
 
-/* Keep newsletter popups hidden until the button is clicked.
+/* Keep newsletter popup hidden until the button is clicked.
    Divi removes its own hide-on-load <style> tag via JS, which on some pages
    causes the popup to flash open. This rule provides a permanent CSS-level hide.
    Divi's JS uses element.style.setProperty("display","flex","important") on click,
    which is an inline !important and overrides this rule – so the popup still opens. */
-.et-interaction-target-nds7mk13ev,
-.et-interaction-target-jkr8gfytlw {
+.et-interaction-target-nds7mk13ev {
     display: none !important;
+}
+
+/* ── Newsletter-Popup: Grösse + Close-Button ──────────────────────────────── */
+
+/* Popup-Card: Höhe begrenzen, Positioning-Kontext für den Close-Button */
+.et_pb_row_6_tb_footer {
+    max-height: 88vh    !important;
+    overflow-y: auto    !important;
+    overflow-x: hidden  !important;
+    position: relative  !important;
+}
+
+/* Icon_5 ist der einzige funktionierende Close-Button.
+   Aus der Bildspalte herauslösen und absolut an die obere rechte Ecke der Card setzen. */
+.et_pb_icon_5_tb_footer {
+    display:  block    !important;
+    position: absolute !important;
+    top:   10px !important;
+    right: 10px !important;
+    z-index: 10 !important;
+    /* Aus dem normalen Spalten-Flow entfernen */
+    width:  auto !important;
+    height: auto !important;
 }
 
 /* Fix dropdown arrow "3" in nav menu items with children */

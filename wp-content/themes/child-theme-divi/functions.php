@@ -29,59 +29,50 @@ function bh_year_shortcode( $atts ) {
 }
 add_shortcode( 'year', 'bh_year_shortcode' );
 
-// Force-hide newsletter popups globally.
+// Force-hide the newsletter popup on Wechseljahrecoaching.
 // Divi's et_animated class triggers the animation system after window.load,
 // which can override display:none. A MutationObserver watches for any style
-// change that would make a popup visible, and immediately re-hides it —
+// change that would make the popup visible, and immediately re-hides it —
 // unless the newsletter button was explicitly clicked by the user.
-add_action( 'wp_footer', 'bh_hide_newsletter_popups' );
-function bh_hide_newsletter_popups() {
+add_action( 'wp_footer', 'bh_hide_popup_on_wechseljahre' );
+function bh_hide_popup_on_wechseljahre() {
+	if ( ! is_page( 'wechseljahrecoaching' ) ) {
+		return;
+	}
 	?>
 	<script>
 	(function () {
-		// Guard each popup independently.
-		// popup1 = canvas popup (nds7mk13ev), popup2 = footer popup (jkr8gfytlw)
-		var configs = [
-			{
-				popupSel:   '[data-interaction-target="nds7mk13ev"]',
-				triggerSel: '[data-interaction-trigger="p40hyahirx"]'
-			},
-			{
-				popupSel:   '[data-interaction-target="jkr8gfytlw"]',
-				triggerSel: '[data-interaction-trigger="p40hyahirx"]'
-			}
-		];
+		var popup     = document.querySelector('[data-interaction-target="nds7mk13ev"]');
+		var trigger   = document.querySelector('[data-interaction-trigger="p40hyahirx"]');
+		var intentional = false;
 
-		configs.forEach( function ( cfg ) {
-			var popup   = document.querySelector( cfg.popupSel );
-			var trigger = document.querySelector( cfg.triggerSel );
-			if ( ! popup ) return;
+		if ( ! popup ) return;
 
-			var intentional = false;
+		function forceHide() {
+			popup.style.setProperty( 'display', 'none', 'important' );
+		}
 
-			function forceHide() {
-				popup.style.setProperty( 'display', 'none', 'important' );
-			}
-
-			if ( trigger ) {
-				trigger.addEventListener( 'click', function () {
-					intentional = true;
-				});
-			}
-
-			var observer = new MutationObserver( function () {
-				if ( intentional ) return;
-				var display = popup.style.display;
-				if ( display && display !== 'none' ) {
-					forceHide();
-				}
+		// Mark popup as intentionally opened only when the newsletter button is clicked
+		if ( trigger ) {
+			trigger.addEventListener( 'click', function () {
+				intentional = true;
 			});
-			observer.observe( popup, { attributes: true, attributeFilter: ['style', 'class'] } );
+		}
 
-			forceHide();
-			window.addEventListener( 'load', forceHide );
-			setTimeout( forceHide, 500 );
+		// Watch for any style/attribute change that makes the popup visible
+		var observer = new MutationObserver( function () {
+			if ( intentional ) return;
+			var display = popup.style.display;
+			if ( display && display !== 'none' ) {
+				forceHide();
+			}
 		});
+		observer.observe( popup, { attributes: true, attributeFilter: ['style', 'class'] } );
+
+		// Also hide on load and after load to catch late Divi scripts
+		forceHide();
+		window.addEventListener( 'load', forceHide );
+		setTimeout( forceHide, 500 );
 	})();
 	</script>
 	<?php
