@@ -383,6 +383,90 @@ body .sally-newsletter-form button[type="submit"]:hover {
     -webkit-text-fill-color: #2b2b2b !important;
 }
 
+/* ── Footer menu – hamburger toggle on tablet + phone ───────────────────────
+   Divi's JS never populates et_mobile_menu inside the footer.
+   A custom script (functions.php) clones the nav, gives it the unique class
+   bh-footer-mobile-menu, appends it to <body>, and wires the toggle.
+   Using a unique class avoids Divi overriding position/display.           ── */
+
+@media only screen and (max-width: 980px) {
+    /* Keep the desktop nav hidden; show the hamburger */
+    .et_pb_menu_0_tb_footer .et_pb_menu__menu {
+        display: none !important;
+    }
+    .et_pb_menu_0_tb_footer .et_mobile_nav_menu {
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }
+    .et_pb_menu_0_tb_footer .mobile_menu_bar {
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+    }
+}
+
+/* Dropdown panel – fixed, appended to <body>, own class so Divi can't interfere */
+.bh-footer-mobile-menu {
+    display: none;
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;         /* overridden inline by JS to sit above the bar */
+    width: 100% !important;       /* left+right already fill the viewport; avoid 100vw which adds scrollbar width */
+    max-width: 100% !important;
+    max-height: 60vh !important;
+    overflow-y: auto !important;
+    background: #ffffff !important;
+    box-shadow: 0 -6px 20px rgba(0,0,0,0.2) !important;
+    border-top: 2px solid #e8d8da !important;
+    z-index: 999999 !important;
+    box-sizing: border-box !important;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.bh-footer-mobile-menu.open {
+    display: block !important;
+}
+.bh-footer-mobile-menu li {
+    border-bottom: 1px solid #f0f0f0 !important;
+    display: block !important;
+    width: 100% !important;
+}
+.bh-footer-mobile-menu li a {
+    display: block !important;
+    padding: clamp(9px, 2.2vw, 14px) clamp(14px, 3.5vw, 22px) !important;
+    font-size: clamp(13px, 3vw, 16px) !important;
+    color: #2b2b2b !important;
+    text-decoration: none !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    line-height: 1.4 !important;
+}
+.bh-footer-mobile-menu li a:hover,
+.bh-footer-mobile-menu li a:focus {
+    color: #b48e95 !important;
+    background: #fdf8f9 !important;
+}
+.bh-footer-mobile-menu .sub-menu {
+    display: block !important;
+    position: static !important;
+    background: #fafafa !important;
+    box-shadow: none !important;
+    border-top: 1px solid #f0f0f0 !important;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.bh-footer-mobile-menu .sub-menu li a {
+    padding-left: clamp(22px, 5vw, 35px) !important;
+    font-size: clamp(12px, 2.6vw, 14px) !important;
+}
+
 /* ── Form fields – focus highlight with accent color ────────────────────────
    Applies to all site forms (contact, login, search, etc.).
    More-specific newsletter rules below remain unaffected.               ── */
