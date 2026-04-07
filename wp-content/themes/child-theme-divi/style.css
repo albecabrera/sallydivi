@@ -383,6 +383,38 @@ body .sally-newsletter-form button[type="submit"]:hover {
     -webkit-text-fill-color: #2b2b2b !important;
 }
 
+/* ── Form fields – focus highlight with accent color ────────────────────────
+   Applies to all site forms (contact, login, search, etc.).
+   More-specific newsletter rules below remain unaffected.               ── */
+
+/* Base transition so the highlight animates in smoothly */
+body input[type="text"],
+body input[type="email"],
+body input[type="tel"],
+body input[type="url"],
+body input[type="number"],
+body input[type="search"],
+body input[type="password"],
+body textarea,
+body select {
+    transition: border-color .2s ease, box-shadow .2s ease !important;
+}
+
+/* Accent-color focus ring */
+body input[type="text"]:focus,
+body input[type="email"]:focus,
+body input[type="tel"]:focus,
+body input[type="url"]:focus,
+body input[type="number"]:focus,
+body input[type="search"]:focus,
+body input[type="password"]:focus,
+body textarea:focus,
+body select:focus {
+    border-color: #b48e95 !important;
+    box-shadow: 0 0 0 3px rgba(180, 142, 149, 0.25) !important;
+    outline: none !important;
+}
+
 /* ETmodules icon font - fix mobile menu toggle icon */
 @font-face {
     font-family: ETmodules;
