@@ -59,7 +59,179 @@ remove_action( 'wp_head', 'wp_generator' );
 /*
  * Your code goes below
  */
- // COPYRIGHT JAHR ALS SHORTCODE ///////////////////////////////////////////////
+
+// ── WordPress Cleanup ────────────────────────────────────────────────────────
+
+// Remove unused wp_head noise
+remove_action( 'wp_head', 'rsd_link' );
+remove_action( 'wp_head', 'wlwmanifest_link' );
+remove_action( 'wp_head', 'wp_shortlink_wp_head' );
+remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );
+remove_action( 'wp_head', 'wp_oembed_add_host_js' );
+remove_action( 'wp_head', 'rest_output_link_wp_head' );
+remove_action( 'wp_head', 'feed_links_extra', 3 );
+
+// Disable XML-RPC completely
+add_filter( 'xmlrpc_enabled', '__return_false' );
+
+// Remove X-Pingback header
+add_filter( 'wp_headers', function( $headers ) {
+    unset( $headers['X-Pingback'] );
+    return $headers;
+} );
+
+// Disable trackbacks on new posts
+add_filter( 'default_ping_status', '__return_false' );
+
+// Remove ?ver= query strings from CSS/JS (improves proxy/CDN caching)
+function bh_remove_ver_strings( $src ) {
+    if ( strpos( $src, '?ver=' ) !== false ) {
+        $src = remove_query_arg( 'ver', $src );
+    }
+    return $src;
+}
+add_filter( 'style_loader_src',  'bh_remove_ver_strings', 15 );
+add_filter( 'script_loader_src', 'bh_remove_ver_strings', 15 );
+
+// ── Security ─────────────────────────────────────────────────────────────────
+
+// Block user enumeration via ?author=N
+add_action( 'template_redirect', function() {
+    if ( ! is_admin() && ! is_user_logged_in() && isset( $_GET['author'] ) ) {
+        wp_safe_redirect( home_url( '/' ), 301 );
+        exit;
+    }
+} );
+
+// Obscure login error messages
+add_filter( 'login_errors', function() {
+    return 'Anmeldedaten falsch.';
+} );
+
+// Security response headers
+add_action( 'send_headers', function() {
+    header( 'X-Content-Type-Options: nosniff' );
+    header( 'X-Frame-Options: SAMEORIGIN' );
+    header( 'X-XSS-Protection: 1; mode=block' );
+    header( 'Referrer-Policy: strict-origin-when-cross-origin' );
+    header( 'Permissions-Policy: geolocation=(), microphone=(), camera=()' );
+} );
+
+// ── SEO: Resource hints ───────────────────────────────────────────────────────
+
+// dns-prefetch as fallback for browsers that don't support preconnect
+add_action( 'wp_head', function() {
+    echo '<link rel="dns-prefetch" href="//fonts.googleapis.com">' . "\n";
+    echo '<link rel="dns-prefetch" href="//fonts.gstatic.com">' . "\n";
+}, 0 );
+
+// ── SEO: Open Graph + Twitter Card ───────────────────────────────────────────
+// Note: disable Divi's built-in OG output (Divi > Theme Options > SEO) if
+// you see duplicate meta tags in the page source.
+
+add_action( 'wp_head', 'bh_social_meta', 4 );
+function bh_social_meta() {
+    global $post;
+
+    $site_name = get_bloginfo( 'name' );
+    $site_url  = home_url( '/' );
+
+    if ( is_singular() && $post ) {
+        $title = get_the_title( $post );
+        $raw   = has_excerpt( $post )
+            ? get_the_excerpt( $post )
+            : wp_trim_words( wp_strip_all_tags( get_the_content( null, false, $post ) ), 30, '...' );
+        $url   = get_permalink( $post );
+        $type  = 'article';
+        $img   = get_the_post_thumbnail_url( $post, 'large' );
+    } else {
+        $title = $site_name;
+        $raw   = get_bloginfo( 'description' );
+        $url   = $site_url;
+        $type  = 'website';
+        $img   = '';
+    }
+
+    if ( ! $img ) {
+        $logo_id = get_theme_mod( 'custom_logo' );
+        if ( $logo_id ) {
+            $img = wp_get_attachment_image_url( $logo_id, 'large' );
+        }
+    }
+
+    $desc = esc_attr( wp_strip_all_tags( $raw ) );
+    $t    = esc_attr( $title );
+
+    $tags = [
+        [ 'property' => 'og:type',        'content' => $type ],
+        [ 'property' => 'og:title',       'content' => $t ],
+        [ 'property' => 'og:description', 'content' => $desc ],
+        [ 'property' => 'og:url',         'content' => esc_url( $url ) ],
+        [ 'property' => 'og:site_name',   'content' => esc_attr( $site_name ) ],
+        [ 'property' => 'og:locale',      'content' => 'de_DE' ],
+        [ 'name'     => 'twitter:card',        'content' => 'summary_large_image' ],
+        [ 'name'     => 'twitter:title',       'content' => $t ],
+        [ 'name'     => 'twitter:description', 'content' => $desc ],
+    ];
+
+    if ( $img ) {
+        $tags[] = [ 'property' => 'og:image',      'content' => esc_url( $img ) ];
+        $tags[] = [ 'name'     => 'twitter:image', 'content' => esc_url( $img ) ];
+    }
+
+    foreach ( $tags as $tag ) {
+        if ( isset( $tag['property'] ) ) {
+            echo '<meta property="' . $tag['property'] . '" content="' . $tag['content'] . '">' . "\n";
+        } else {
+            echo '<meta name="' . $tag['name'] . '" content="' . $tag['content'] . '">' . "\n";
+        }
+    }
+}
+
+// ── SEO: Schema.org JSON-LD ───────────────────────────────────────────────────
+
+add_action( 'wp_head', 'bh_schema_json_ld', 5 );
+function bh_schema_json_ld() {
+    $url  = home_url( '/' );
+    $name = get_bloginfo( 'name' );
+    $desc = get_bloginfo( 'description' );
+
+    $schema = [
+        '@context' => 'https://schema.org',
+        '@graph'   => [
+            [
+                '@type'       => 'WebSite',
+                '@id'         => $url . '#website',
+                'url'         => $url,
+                'name'        => $name,
+                'description' => $desc,
+                'inLanguage'  => 'de-DE',
+                'potentialAction' => [
+                    '@type'       => 'SearchAction',
+                    'target'      => [
+                        '@type'       => 'EntryPoint',
+                        'urlTemplate' => $url . '?s={search_term_string}',
+                    ],
+                    'query-input' => 'required name=search_term_string',
+                ],
+            ],
+            [
+                '@type'    => 'Person',
+                '@id'      => $url . '#person',
+                'name'     => $name,
+                'url'      => $url,
+                'jobTitle' => 'Menopause Coach',
+                'sameAs'   => [],
+            ],
+        ],
+    ];
+
+    echo '<script type="application/ld+json">'
+        . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES )
+        . '</script>' . "\n";
+}
+
+// COPYRIGHT JAHR ALS SHORTCODE ///////////////////////////////////////////////
 function bh_year_shortcode( $atts ) {
     $atts = shortcode_atts(
         array(
