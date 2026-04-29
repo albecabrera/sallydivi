@@ -499,6 +499,203 @@ body select:focus {
     outline: none !important;
 }
 
+/* ── Header "Kontaktiere mich" – alineación desktop + responsivo ─────────────
+   El botón está en la 3ª columna (1/4) con disabledOn en phone/tablet.
+   En desktop: centramos verticalmente con los enlaces del menú.
+   En mobile/tablet: el botón se inyecta en el menú hamburguesa vía JS.    ── */
+
+/* Row → Flex-Container: alle 3 Spalten bekommen gleiche Höhe,
+   damit der Button auf exakt derselben Ebene wie die Nav-Links liegt. */
+@media (min-width: 981px) {
+    .social_header_sec1 .et_pb_row_0_tb_header {
+        display: flex !important;
+        align-items: stretch !important;
+        flex-wrap: nowrap !important;
+    }
+    .social_header_sec1 .et_pb_column_0_tb_header,
+    .social_header_sec1 .et_pb_column_2_tb_header {
+        flex: 0 0 25% !important;
+        max-width: 25% !important;
+    }
+    .social_header_sec1 .et_pb_column_1_tb_header {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+    /* Button-Spalte: rechts ausrichten + vertikal zentrieren */
+    .social_header_sec1 .et_pb_column:last-child {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+    }
+}
+
+/* Button-Wrapper: keine störenden Margins */
+.social_header_sec1 .et_pb_column:last-child .et_pb_button_module_wrapper,
+.social_header_sec1 .et_pb_column:last-child > div:first-child {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    align-self: center !important;
+}
+
+/* Espaciado simétrico entre enlaces del menú de navegación del header.
+   Divi usa sólo padding-right:22px en li, lo que crea gaps asimétricos.
+   Cambiamos a 11px en cada lado para mantener la misma separación visual. */
+.social_header_sec1 .et_pb_menu__menu .et-menu > li {
+    padding-left: 11px !important;
+    padding-right: 11px !important;
+}
+/* Restaurar el padding derecho del último ítem (Divi lo pone a 0 por defecto) */
+.social_header_sec1 .et_pb_menu__menu .et-menu > li:last-child {
+    padding-right: 11px !important;
+}
+
+/* Padding vertical simétrico en el <a> de cada enlace: sin esto, Divi usa
+   padding-top:0 / padding-bottom:29px, lo que desplaza el texto del enlace
+   hacia arriba y lo desalinea con el botón (que sí queda centrado en su columna). */
+.social_header_sec1 .et_pb_menu__menu .et-menu > li > a {
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+}
+
+/* ── Hamburger-Dropdown: Overflow-Fix (Mobile/Tablet) ────────────────────────
+   Divi-Custom-CSS setzt width:100vw + left:50% + translateX(-50%).
+   Da die Row nur 90% breit ist, verschiebt sich die Berechnung um ~5 vw
+   nach links → Dropdown überragt den linken Rand und erzeugt horizontalen
+   Scroll. Fix: höhere Spezifität (0,3,0 vs 0,2,0) setzt width:100% /
+   left:0 / right:0 / transform:none — trotz späterer Divi-CSS-Ladereihenfolge. */
+@media only screen and (max-width: 980px) {
+    /* Header: fixed directo en la sección — no depende del wrapper de Divi */
+    .social_header_sec1 {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 99999 !important;
+        width: 100% !important;
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+    }
+
+    /* Compensación: empuja el contenido para que no quede bajo el header fijo */
+    #page-container,
+    #main-content,
+    .et-l--body {
+        margin-top: 60px !important;
+    }
+
+    /* Row: contenedor relativo para centrado absoluto del logo */
+    .social_header_sec1 .et_pb_row_0_tb_header {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        position: relative !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Logo: izquierda */
+    .social_header_sec1 .et_pb_column_0_tb_header {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        position: static !important;
+        transform: none !important;
+        order: 1 !important;
+    }
+
+    /* Hamburger: centrado en el row */
+    .social_header_sec1 .et_pb_column_1_tb_header {
+        position: absolute !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        flex: none !important;
+        width: auto !important;
+        float: none !important;
+        order: 2 !important;
+    }
+
+    /* "Kontaktiere mich"-Button-Spalte auf Mobile/Tablet ausblenden */
+    .social_header_sec1 .et_pb_column_2_tb_header {
+        display: none !important;
+    }
+
+    /* Dropdown: breit genug für alle Links, rechtsbündig am Hamburger */
+    .social_header_sec1 .et_pb_menu_0_tb_header .et_mobile_menu {
+        width: auto !important;
+        min-width: 220px !important;
+        max-width: 90vw !important;
+        left: auto !important;
+        right: 0 !important;
+        transform: none !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+}
+
+/* ── Hero-Bild: Tablet + iPad Pro – stabile Position/Größe ───────────────────
+   Divi setzt je nach Breakpoint unterschiedliche Defaults (u.a. absolute Position
+   + fixe Offsets), was das Hero-Bild auf Tablets verschiebt/abschneidet.
+   Für 768-1100px wird ein einheitliches, normales Layout erzwungen. */
+@media only screen and (min-width: 768px) and (max-width: 1100px) {
+    .et_pb_fullwidth_slider_0.et_pb_slider .et_pb_slide_0 .et_pb_container {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 32px !important;
+    }
+
+    .et_pb_fullwidth_slider_0.et_pb_slider .et_pb_slide_0 .et_pb_slide_image {
+        order: 1 !important;
+        flex: 0 0 auto !important;
+        position: static !important;
+        display: block !important;
+        transform: none !important;
+        margin: 0 !important;
+        width: clamp(240px, 34vw, 320px) !important;
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    .et_pb_fullwidth_slider_0.et_pb_slider .et_pb_slide_0 .et_pb_slide_description {
+        order: 2 !important;
+        flex: 1 1 auto !important;
+        align-self: center !important;
+        width: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        transform: none !important;
+        text-align: left !important;
+    }
+}
+
+/* ── Kontaktformular-Sektion: Foto-Spalte auf Mobile ausblenden ──────────────
+   Divi 5 rendert cssClasses nicht als HTML-Klasse; Spalten werden per
+   et_pb_column_8 (Foto) / et_pb_column_9 (Formular) in et_pb_section_4 adressiert.
+   Die Formularspalte nimmt dann die volle Breite ein. */
+@media only screen and (max-width: 980px) {
+    .et_pb_section_4 .et_pb_column_8 {
+        display: none !important;
+    }
+    .et_pb_section_4 .et_pb_column_9 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+}
+
+/* ── Section "So begleite ich dich" – 3 Spalten nebeneinander (Desktop) ──────
+   Divi 5 lädt style-static.min.css auf dieser Seite nicht, weshalb die
+   Block-Layout-Breitenregel für et_pb_column_1_3 fehlt und die Spalten
+   untereinander fallen. Hier wird die identische Regel aus style-static.min.css
+   ergänzt, eingeschränkt auf Desktop (≥ 981 px), damit Mobile gestapelt bleibt. */
+@media (min-width: 981px) {
+    .et_pb_gutters2 .et_block_row .et_pb_column_1_3,
+    .et_pb_gutters2.et_block_row.et_pb_row > .et_pb_column_1_3 {
+        width: 31.3333% !important;
+    }
+}
+
 /* ETmodules icon font - fix mobile menu toggle icon */
 @font-face {
     font-family: ETmodules;
