@@ -640,15 +640,25 @@ body select:focus {
 @media only screen and (min-width: 768px) and (max-width: 1100px) {
     .et_pb_fullwidth_slider_0.et_pb_slider .et_pb_slide_0 .et_pb_container {
         display: flex !important;
-        flex-direction: row !important;
         align-items: center !important;
         justify-content: space-between !important;
-        gap: 40px !important;
+        gap: 32px !important;
     }
 
-    /* Texto izquierda — mismo orden que en desktop (orden DOM natural) */
-    .et_pb_fullwidth_slider_0.et_pb_slider .et_pb_slide_0 .et_pb_slide_description {
+    .et_pb_fullwidth_slider_0.et_pb_slider .et_pb_slide_0 .et_pb_slide_image {
         order: 1 !important;
+        flex: 0 0 auto !important;
+        position: static !important;
+        display: block !important;
+        transform: none !important;
+        margin: 0 !important;
+        width: clamp(240px, 34vw, 320px) !important;
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    .et_pb_fullwidth_slider_0.et_pb_slider .et_pb_slide_0 .et_pb_slide_description {
+        order: 2 !important;
         flex: 1 1 auto !important;
         align-self: center !important;
         width: auto !important;
@@ -656,19 +666,6 @@ body select:focus {
         margin: 0 !important;
         transform: none !important;
         text-align: left !important;
-    }
-
-    /* Imagen derecha — tamaño proporcional al desktop */
-    .et_pb_fullwidth_slider_0.et_pb_slider .et_pb_slide_0 .et_pb_slide_image {
-        order: 2 !important;
-        flex: 0 0 auto !important;
-        position: static !important;
-        display: block !important;
-        transform: none !important;
-        margin: 0 !important;
-        width: clamp(280px, 42vw, 440px) !important;
-        max-width: 100% !important;
-        height: auto !important;
     }
 }
 
