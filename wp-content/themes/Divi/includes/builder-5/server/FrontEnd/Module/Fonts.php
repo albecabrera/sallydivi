@@ -82,10 +82,14 @@ class Fonts {
 	 * @return void
 	 */
 	public static function enqueue(): void {
-		$heading_font        = et_get_option( 'heading_font', 'Open Sans' );
-		$body_font           = et_get_option( 'body_font', 'Open Sans' );
-		$body_font_weight    = et_get_option( 'body_font_weight', '500' );
-		$heading_font_weight = et_get_option( 'heading_font_weight', '500' );
+		$heading_font         = et_get_option( 'heading_font', 'Open Sans' );
+		$body_font            = et_get_option( 'body_font', 'Open Sans' );
+		$body_font_weight     = et_get_option( 'body_font_weight', '500' );
+		$heading_font_weight  = et_get_option( 'heading_font_weight', '500' );
+		$body_font_size_raw   = et_get_option( 'body_font_size', '14' );
+		$body_font_height_raw = et_get_option( 'body_font_height', '1.7' );
+		$body_font_size       = absint( '' === $body_font_size_raw ? '14' : $body_font_size_raw );
+		$body_font_height     = floatval( '' === $body_font_height_raw ? '1.7' : $body_font_height_raw );
 
 		// Map legacy Google Fonts names to their modern equivalents.
 		// Google Fonts renamed "Source Sans Pro" to "Source Sans 3" in their API.
@@ -119,11 +123,14 @@ class Fonts {
 			'--et_global_body_font'           => $body_font,
 			'--et_global_heading_font_weight' => $heading_font_weight ? $heading_font_weight : '500',
 			'--et_global_body_font_weight'    => $body_font_weight ? $body_font_weight : '500',
+			'--et_global_body_font_size'      => $body_font_size . 'px',
+			'--et_global_body_font_height'    => $body_font_height . 'em',
 		];
 
 		foreach ( $customizer_fonts as $var_name => $value ) {
 			if ( ! empty( $value ) ) {
-				$is_font = substr( $var_name, -5 ) === '_font' && 'none' !== $value;
+				$needs_ms_version = false;
+				$is_font          = substr( $var_name, -5 ) === '_font' && 'none' !== $value;
 				if ( $is_font ) {
 					$formatted_font_value = FontUtils::format_font_value_with_ms_version( $value );
 					$needs_ms_version     = str_contains( $formatted_font_value, " MS', '" );
@@ -139,7 +146,7 @@ class Fonts {
 
 		// Only load on FE. VB loads this via the modules root component.
 		if ( ! empty( $global_font_vars ) && ! Conditions::is_vb_enabled() ) {
-			$global_fonts_style = ':root{' . $global_font_vars . '}';
+			$global_fonts_style = ':root{' . $global_font_vars . '}body{line-height:var(--et_global_body_font_height);font-size:var(--et_global_body_font_size);}';
 
 			echo '<style class="et-vb-global-data et-vb-global-fonts">';
 			echo et_core_esc_previously( ( $global_fonts_style ) );

@@ -54,7 +54,6 @@ when no findings exist.
   "findings": [
     {
       "title": "Missing capability check on admin action",
-      "severity": "Blocker | Concern | Nit",
       "comment_label": "issue | suggestion | question | note | ... (optional)",
       "comment_decorations": ["blocking", "non-blocking", "..."],
       "confidence": 0.0,
@@ -75,14 +74,24 @@ when no findings exist.
 ```
 
 Rules:
+
+# Highest Priority Main Rule
+This system should **maximize real feedback**. Do not miss regressions, logic
+flaws, correctness bugs, type unsafety, or contract violations. Be quiet only
+about low-value polish or subjective preferences. Suggestions should be **rare**
+and only for material correctness, safety, or maintainability wins. The CI
+workflow may still omit non-blocking findings from PR comments, so if something
+is truly important, mark it **issue (blocking)**.
+
 - `findings` can be empty.
 - `confidence` is 0.0 to 1.0.
 - Aggregate locations by theme instead of per-line spam.
 - `comment_label` and `comment_decorations` optionally override default formatting.
-- Default to **blocking issues**. Suggestions are allowed only when high-confidence and truly high-value.
+- **Default to blocking issues.** Suggestions are allowed only when high-confidence and truly high-value.
 - Avoid `note`-level feedback unless it changes how the author should interpret a blocking issue.
 
 ### Conventional Comments Guidance
+
 
 Reviewers may choose `comment_label` and `comment_decorations` to control the
 rendered PR comment. Use these labels and intent rules:
@@ -90,5 +99,7 @@ rendered PR comment. Use these labels and intent rules:
 - `issue` + `blocking`: the default and expected label for merge-blocking problems.
 - `suggestion` + `non-blocking`: allowed only when the suggestion materially improves correctness, safety, or maintainability, something that the author would really be thankful for and not annoyed by you raising it.
 
-If `comment_label` is omitted, the orchestrator falls back to severity-based
-labels. Use `comment_decorations` for qualifiers like `blocking`.
+If `comment_label` is omitted, the orchestrator defaults to `issue` +
+`blocking`. If `comment_label=suggestion` and `comment_decorations` is omitted,
+the orchestrator defaults to `non-blocking`. Use `comment_decorations` for
+qualifiers like `blocking` or `non-blocking`.

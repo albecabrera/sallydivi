@@ -444,7 +444,7 @@ class GroupModule implements DependencyInterface {
 	 * This function assigns variables and sets script data options for the module.
 	 *
 	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
 	 * located in `@divi/module-library`.
 	 *
 	 * @since ??

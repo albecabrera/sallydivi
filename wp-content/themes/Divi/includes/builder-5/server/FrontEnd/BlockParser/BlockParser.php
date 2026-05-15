@@ -104,6 +104,7 @@ class BlockParser extends \WP_Block_Parser {
 			'divi/accordion'                   => $base_namespace . 'Accordion\AccordionModule',
 			'divi/audio'                       => $base_namespace . 'Audio\AudioModule',
 			'divi/before-after-image'          => $base_namespace . 'BeforeAfterImage\BeforeAfterImageModule',
+			'divi/breadcrumbs'                 => $base_namespace . 'Breadcrumbs\BreadcrumbsModule',
 			'divi/counter'                     => $base_namespace . 'BarCountersItem\BarCountersItemModule',
 			'divi/counters'                    => $base_namespace . 'BarCounters\BarCountersModule',
 			'divi/blog'                        => $base_namespace . 'Blog\BlogModule',
@@ -554,6 +555,43 @@ class BlockParser extends \WP_Block_Parser {
 	}
 
 	/**
+	 * Unwrap degenerate nested `localAttrs` chains on global-layout instances.
+	 *
+	 * Matches JS `unwrapDegenerateLocalAttrsChain` so PHP merge stays aligned with VB parsing.
+	 *
+	 * @since ??
+	 *
+	 * @param array $local_attrs Parsed `localAttrs` from `divi/global-layout` block attrs.
+	 * @param int   $max_iterations Maximum peel steps (guards malicious depth).
+	 *
+	 * @return array
+	 */
+	private function unwrap_degenerate_local_attrs_chain( array $local_attrs, int $max_iterations = 64 ): array {
+		$current       = $local_attrs;
+		$iterations    = 0;
+		$max_safe_loop = $max_iterations;
+
+		while ( $iterations < $max_safe_loop ) {
+			$keys = array_keys( $current );
+
+			if ( 1 !== count( $keys ) || 'localAttrs' !== $keys[0] ) {
+				break;
+			}
+
+			$inner = $current['localAttrs'] ?? null;
+
+			if ( ! is_array( $inner ) ) {
+				break;
+			}
+
+			$current     = $inner;
+			$iterations += 1;
+		}
+
+		return $current;
+	}
+
+	/**
 	 * Get `post_content` of a global layout if the post exists and matches the given arguments.
 	 *
 	 * This helper is intended to simplify the way to get `post_content` object of a global layout since we already know the ID.
@@ -609,6 +647,10 @@ class BlockParser extends \WP_Block_Parser {
 		}
 
 		$local_attrs = $parsed_global_layout[0]['attrs']['localAttrs'] ?? [];
+
+		if ( is_array( $local_attrs ) && ! empty( $local_attrs ) ) {
+			$local_attrs = $this->unwrap_degenerate_local_attrs_chain( $local_attrs );
+		}
 
 		// Update post attributes with the ones updated with local attributes.
 		$parsed_actual_post[ $content_block_index ]['attrs'] = $this->combine_local_attrs( $post_attrs, $local_attrs );

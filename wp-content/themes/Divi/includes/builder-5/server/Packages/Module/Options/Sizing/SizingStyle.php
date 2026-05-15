@@ -28,7 +28,7 @@ class SizingStyle {
 	 * Get sizing (width, max-width, alignment, min-height, height, max-height) styles.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/SizingStyle SizingStyle} in
+	 * {@link /api/js/divi-module/functions/SizingStyle SizingStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

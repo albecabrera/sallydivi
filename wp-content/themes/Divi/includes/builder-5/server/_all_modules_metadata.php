@@ -4030,6 +4030,406 @@ return [
             ]
         ]
     ],
+    'breadcrumbs' => [
+        'name' => 'divi/breadcrumbs',
+        'moduleClassName' => 'et_pb_breadcrumbs',
+        'moduleOrderClassName' => 'et_pb_breadcrumbs',
+        'title' => 'Breadcrumbs',
+        'titles' => 'Breadcrumbs',
+        'moduleIcon' => 'divi/module-woocommerce-breadcrumb',
+        'category' => 'module',
+        'childrenName' => [],
+        'attributes' => [
+            'module' => [
+                'type' => 'object',
+                'selector' => '{{selector}}',
+                'settings' => [
+                    'meta' => [
+                        'meta' => []
+                    ],
+                    'advanced' => [
+                        'elements' => [],
+                        'html' => [
+                            'component' => [
+                                'type' => 'group',
+                                'name' => 'divi/html',
+                                'props' => [
+                                    'fields' => [
+                                        'trailAdvancedHtmltag' => [
+                                            'render' => true,
+                                            'priority' => 40,
+                                            'label' => 'Trail HTML Tag',
+                                            'description' =>
+                                                'Choose the wrapper tag used for the breadcrumb trail.',
+                                            'attrName' =>
+                                                'trail.advanced.htmlTag',
+                                            'groupName' => 'divi/html',
+                                            'category' => 'configuration',
+                                            'features' => [
+                                                'sticky' => false,
+                                                'psuedo' => false,
+                                                'responsive' => false,
+                                                'preset' => ['html']
+                                            ],
+                                            'component' => [
+                                                'type' => 'field',
+                                                'name' => 'divi/select',
+                                                'props' => [
+                                                    'defaultValue' => 'nav',
+                                                    'options' => [
+                                                        'nav' => [
+                                                            'label' => 'nav'
+                                                        ],
+                                                        'div' => [
+                                                            'label' => 'div'
+                                                        ],
+                                                        'span' => [
+                                                            'label' => 'span'
+                                                        ],
+                                                        'p' => [
+                                                            'label' => 'p'
+                                                        ]
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'link' => [],
+                        'loop' => []
+                    ],
+                    'decoration' => [
+                        'animation' => [],
+                        'attributes' => [],
+                        'background' => [],
+                        'border' => [],
+                        'boxShadow' => [],
+                        'conditions' => [],
+                        'disabledOn' => [],
+                        'filters' => [],
+                        'interactions' => [],
+                        'layout' => [],
+                        'overflow' => [],
+                        'position' => [],
+                        'scroll' => [],
+                        'sizing' => [],
+                        'spacing' => [],
+                        'sticky' => [],
+                        'transform' => [],
+                        'transition' => [],
+                        'zIndex' => []
+                    ]
+                ]
+            ],
+            'trail' => [
+                'type' => 'object'
+            ],
+            'breadcrumb' => [
+                'type' => 'object',
+                'label' => 'Breadcrumb',
+                'elementType' => 'element',
+                'elementProps' => [
+                    'groupedOptionGroup' => true
+                ],
+                'selector' =>
+                    '{{selector}} .et_pb_breadcrumbs--trail .et_pb_breadcrumbs--breadcrumb',
+                'settings' => [
+                    'decoration' => [
+                        'background' => [
+                            'item' => [
+                                'groupSlug' => 'designBreadcrumb',
+                                'component' => [
+                                    'props' => [
+                                        'hidePanels' => [
+                                            'mask',
+                                            'pattern',
+                                            'video'
+                                        ],
+                                        'fields' => [
+                                            'image' => [
+                                                'parallaxEnabled' => [
+                                                    'render' => false
+                                                ],
+                                                'parallaxMethod' => [
+                                                    'render' => false
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'border' => [],
+                        'boxShadow' => [],
+                        'font' => [],
+                        'sizing' => [],
+                        'spacing' => []
+                    ]
+                ]
+            ],
+            'breadcrumbLink' => [
+                'type' => 'object',
+                'label' => 'Breadcrumb Link',
+                'elementType' => 'element',
+                'elementProps' => [
+                    'groupedOptionGroup' => true
+                ],
+                'selector' =>
+                    '{{selector}} .et_pb_breadcrumbs--trail a.et_pb_breadcrumbs--breadcrumb',
+                'settings' => [
+                    'decoration' => [
+                        'background' => [
+                            'item' => [
+                                'groupSlug' => 'designBreadcrumblink',
+                                'component' => [
+                                    'props' => [
+                                        'hidePanels' => [
+                                            'mask',
+                                            'pattern',
+                                            'video'
+                                        ],
+                                        'fields' => [
+                                            'image' => [
+                                                'parallaxEnabled' => [
+                                                    'render' => false
+                                                ],
+                                                'parallaxMethod' => [
+                                                    'render' => false
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'border' => [],
+                        'boxShadow' => [],
+                        'font' => [],
+                        'sizing' => [],
+                        'spacing' => []
+                    ]
+                ]
+            ],
+            'home' => [
+                'type' => 'object',
+                'label' => 'Home Link',
+                'elementType' => 'element',
+                'elementProps' => [
+                    'groupedOptionGroup' => true
+                ],
+                'selector' =>
+                    '{{selector}} .et_pb_breadcrumbs--trail a.et_pb_breadcrumbs--home',
+                'settings' => [
+                    'innerContent' => [
+                        'groupType' => 'group-items',
+                        'items' => [
+                            'text' => [
+                                'groupSlug' => 'contentBreadcrumbs',
+                                'attrName' => 'home.innerContent',
+                                'subName' => 'text',
+                                'label' => 'Home Text',
+                                'description' =>
+                                    'Set the Home item text in the breadcrumb trail.',
+                                'category' => 'basic_option',
+                                'priority' => 10,
+                                'render' => true,
+                                'features' => [
+                                    'dynamicContent' => [
+                                        'type' => 'text'
+                                    ],
+                                    'sticky' => false,
+                                    'psuedo' => true,
+                                    'responsive' => true,
+                                    'preset' => 'content'
+                                ],
+                                'component' => [
+                                    'type' => 'field',
+                                    'name' => 'divi/text'
+                                ]
+                            ],
+                            'url' => [
+                                'groupSlug' => 'contentBreadcrumbs',
+                                'attrName' => 'home.innerContent',
+                                'subName' => 'url',
+                                'label' => 'Home URL',
+                                'description' =>
+                                    'Set the Home item URL in the breadcrumb trail.',
+                                'category' => 'basic_option',
+                                'priority' => 20,
+                                'render' => true,
+                                'features' => [
+                                    'dynamicContent' => [
+                                        'type' => 'url'
+                                    ],
+                                    'sticky' => false,
+                                    'psuedo' => true,
+                                    'responsive' => true,
+                                    'preset' => 'content'
+                                ],
+                                'component' => [
+                                    'type' => 'field',
+                                    'name' => 'divi/text'
+                                ]
+                            ]
+                        ]
+                    ],
+                    'decoration' => [
+                        'background' => [
+                            'item' => [
+                                'groupSlug' => 'designHome',
+                                'component' => [
+                                    'props' => [
+                                        'hidePanels' => [
+                                            'mask',
+                                            'pattern',
+                                            'video'
+                                        ],
+                                        'fields' => [
+                                            'image' => [
+                                                'parallaxEnabled' => [
+                                                    'render' => false
+                                                ],
+                                                'parallaxMethod' => [
+                                                    'render' => false
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'border' => [],
+                        'boxShadow' => [],
+                        'font' => [],
+                        'sizing' => [],
+                        'spacing' => []
+                    ]
+                ]
+            ],
+            'separator' => [
+                'type' => 'object',
+                'label' => 'Separator',
+                'elementType' => 'element',
+                'elementProps' => [
+                    'groupedOptionGroup' => true
+                ],
+                'selector' =>
+                    '{{selector}} .et_pb_breadcrumbs--trail .et_pb_breadcrumbs--separator',
+                'settings' => [
+                    'innerContent' => [
+                        'groupType' => 'group-item',
+                        'item' => [
+                            'groupSlug' => 'contentBreadcrumbs',
+                            'attrName' => 'separator.innerContent',
+                            'subName' => 'text',
+                            'label' => 'Separator',
+                            'description' =>
+                                'Set the separator used between breadcrumb items.',
+                            'category' => 'basic_option',
+                            'priority' => 30,
+                            'render' => true,
+                            'features' => [
+                                'dynamicContent' => [
+                                    'type' => 'text'
+                                ],
+                                'sticky' => false,
+                                'psuedo' => true,
+                                'responsive' => true,
+                                'preset' => 'content'
+                            ],
+                            'component' => [
+                                'type' => 'field',
+                                'name' => 'divi/text'
+                            ]
+                        ]
+                    ],
+                    'decoration' => [
+                        'background' => [
+                            'item' => [
+                                'groupSlug' => 'designSeparator',
+                                'component' => [
+                                    'props' => [
+                                        'hidePanels' => [
+                                            'mask',
+                                            'pattern',
+                                            'video'
+                                        ],
+                                        'fields' => [
+                                            'image' => [
+                                                'parallaxEnabled' => [
+                                                    'render' => false
+                                                ],
+                                                'parallaxMethod' => [
+                                                    'render' => false
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'border' => [],
+                        'boxShadow' => [],
+                        'font' => [],
+                        'sizing' => [],
+                        'spacing' => []
+                    ]
+                ]
+            ]
+        ],
+        'customCssFields' => [
+            'breadcrumbWrapper' => [
+                'label' => 'Breadcrumb Wrapper',
+                'subName' => 'breadcrumbWrapper',
+                'selectorSuffix' => ''
+            ],
+            'breadcrumb' => [
+                'label' => 'Breadcrumb',
+                'subName' => 'breadcrumb',
+                'selectorSuffix' =>
+                    ' .et_pb_breadcrumbs--trail .et_pb_breadcrumbs--breadcrumb'
+            ],
+            'breadcrumbLink' => [
+                'label' => 'Breadcrumb Link',
+                'subName' => 'breadcrumbLink',
+                'selectorSuffix' =>
+                    ' .et_pb_breadcrumbs--trail a.et_pb_breadcrumbs--breadcrumb'
+            ],
+            'homeLink' => [
+                'label' => 'Home Link',
+                'subName' => 'homeLink',
+                'selectorSuffix' =>
+                    ' .et_pb_breadcrumbs--trail a.et_pb_breadcrumbs--home'
+            ],
+            'separator' => [
+                'label' => 'Separator',
+                'subName' => 'separator',
+                'selectorSuffix' =>
+                    ' .et_pb_breadcrumbs--trail .et_pb_breadcrumbs--separator'
+            ]
+        ],
+        'settings' => [
+            'content' => 'auto',
+            'design' => 'auto',
+            'advanced' => 'auto',
+            'groups' => [
+                'contentBreadcrumbs' => [
+                    'panel' => 'content',
+                    'priority' => 10,
+                    'multiElements' => true,
+                    'groupName' => 'breadcrumbs',
+                    'component' => [
+                        'name' => 'divi/composite',
+                        'props' => [
+                            'groupLabel' => 'Content'
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ],
     'button' => [
         'name' => 'divi/button',
         'd4Shortcode' => 'et_pb_button',
@@ -21380,6 +21780,7 @@ return [
                     'class' => 'et_pb_icon_list_text'
                 ],
                 'inlineEditor' => 'plainText',
+                'allowHtml' => true,
                 'childrenSanitizer' => 'et_core_esc_previously',
                 'styleProps' => [
                     'font' => [
@@ -44608,9 +45009,9 @@ return [
                             'desktop' => [
                                 'value' => [
                                     'border-radius' =>
-                                        '{{selector}} .select2-container--default.select2-container--open .select2-selection--single,{{selector}} form .form-row input.input-text:focus,{{selector}} form .form-row textarea:focus',
+                                        '{{selector}} .select2-container--default .select2-selection--single,{{selector}} form .form-row input.input-text:focus,{{selector}} form .form-row textarea:focus',
                                     'border-style' =>
-                                        '{{selector}} .select2-container--default.select2-container--open .select2-selection--single,{{selector}} form .form-row input.input-text:focus,{{selector}} form .form-row textarea:focus'
+                                        '{{selector}} .select2-container--default .select2-selection--single,{{selector}} form .form-row input.input-text:focus,{{selector}} form .form-row textarea:focus'
                                 ]
                             ]
                         ]
@@ -45360,6 +45761,14 @@ return [
                                     'font-family' => true,
                                     'color' => true,
                                     'text-shadow' => true
+                                ]
+                            ]
+                        ],
+                        'propertySelectors' => [
+                            'desktop' => [
+                                'value' => [
+                                    'color' =>
+                                        '.woocommerce {{selector}} .select2-container--default .select2-selection--single,.woocommerce {{selector}} form .form-row .input-text, {{selector}} .select2-container--default .select2-selection--single, {{selector}} form .form-row .input-text'
                                 ]
                             ]
                         ]
@@ -47908,6 +48317,14 @@ return [
                                     'font-family' => true,
                                     'color' => true,
                                     'text-shadow' => true
+                                ]
+                            ]
+                        ],
+                        'propertySelectors' => [
+                            'desktop' => [
+                                'value' => [
+                                    'color' =>
+                                        '.woocommerce {{selector}} .select2-container--default .select2-selection--single,.woocommerce {{selector}} form .form-row .input-text, {{selector}} .select2-container--default .select2-selection--single, {{selector}} form .form-row .input-text'
                                 ]
                             ]
                         ]

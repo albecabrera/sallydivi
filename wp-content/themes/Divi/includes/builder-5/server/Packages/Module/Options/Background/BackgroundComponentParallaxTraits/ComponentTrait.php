@@ -26,7 +26,7 @@ trait ComponentTrait {
 	 * This function generates parallax backgrounds based on the provided attributes.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BackgroundComponentParallax BackgroundComponentParallax} in
+	 * {@link /api/js/divi-module/functions/BackgroundComponentParallax BackgroundComponentParallax} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

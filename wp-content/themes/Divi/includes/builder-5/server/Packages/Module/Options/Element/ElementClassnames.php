@@ -36,7 +36,7 @@ class ElementClassnames {
 	 * It can be used to add class names to HTML elements dynamically.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/ElementClassnames ElementClassnames} in
+	 * {@link /api/js/divi-module/functions/ElementClassnames ElementClassnames} in
 	 * `@divi/module` package.
 	 *
 	 * @since 1.0.0

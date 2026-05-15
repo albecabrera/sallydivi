@@ -27,7 +27,7 @@ class TextClassnames {
 	 * This function generates classnames for aligning text based on the provided attributes.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetAlignmentClassnames getAlignmentClassnames} in
+	 * {@link /api/js/divi-module/functions/GetAlignmentClassnames getAlignmentClassnames} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -82,7 +82,7 @@ class TextClassnames {
 	 * This function retrieves the classnames for the background layout of a text group.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetBackgroundLayoutClassnames getBackgroundLayoutClassnames} in
+	 * {@link /api/js/divi-module/functions/GetBackgroundLayoutClassnames getBackgroundLayoutClassnames} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -230,7 +230,7 @@ class TextClassnames {
 	 * This function is used to retrieve the classnames for text options based on the given attributes and settings.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/TextOptionsClassnames textOptionsClassnames} in
+	 * {@link /api/js/divi-module/functions/TextOptionsClassnames textOptionsClassnames} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

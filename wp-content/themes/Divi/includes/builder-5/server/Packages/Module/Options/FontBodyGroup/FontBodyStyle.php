@@ -31,7 +31,7 @@ class FontBodyStyle {
 	 * Adjusts the font style component for the body group and its group tabs.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/FontBodyGroupStyle FontBodyStyle} in
+	 * {@link /api/js/divi-module/functions/FontBodyGroupStyle FontBodyStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -300,7 +300,7 @@ class FontBodyStyle {
 	 * Style method for advancedStyles compatibility.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/FontBodyGroupStyle FontBodyStyle} in
+	 * {@link /api/js/divi-module/functions/FontBodyGroupStyle FontBodyStyle} in
 	 * `@divi/module` package.
 	 *
 	 * This method wraps `font_body_style()` to provide the `style()` method expected by

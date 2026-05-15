@@ -27,7 +27,7 @@ class BorderStyle {
 	 * Get border style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BorderStyle BorderStyle} in
+	 * {@link /api/js/divi-module/functions/BorderStyle BorderStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -205,7 +205,21 @@ class BorderStyle {
 								]
 							);
 
-							foreach ( $styles as $style => $style_value ) {
+							if ( isset( $styles['all'] ) ) {
+								$side_styles = [ 'top', 'right', 'bottom', 'left' ];
+
+								foreach ( $side_styles as $side ) {
+									if ( isset( $values_normalized['styles'][ $side ] ) ) {
+										continue;
+									}
+
+									if ( isset( $inherit['styles'][ $side ] ) ) {
+										$values_normalized['styles'][ $side ] = $inherit['styles'][ $side ];
+									}
+								}
+							}
+
+							foreach ( $values_normalized['styles'] as $style => $style_value ) {
 								$width = $style_value['width'] ?? null;
 
 								// If width is set, then get the inherited for the other sub-attributes.

@@ -26,7 +26,7 @@ class BackgroundUtils {
 	 * Returns CSS Selectors for Background Pattern.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetBackgroundPatternSelectors getBackgroundPatternSelectors} in
+	 * {@link /api/js/divi-module/functions/GetBackgroundPatternSelectors getBackgroundPatternSelectors} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -68,7 +68,7 @@ class BackgroundUtils {
 	 * Returns CSS Selectors for Background Mask.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetBackgroundMaskSelectors getBackgroundMaskSelectors} in
+	 * {@link /api/js/divi-module/functions/GetBackgroundMaskSelectors getBackgroundMaskSelectors} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -113,7 +113,7 @@ class BackgroundUtils {
 	 *
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/HasBackgroundVideo hasBackgroundVideo} in
+	 * {@link /api/js/divi-module/functions/HasBackgroundVideo hasBackgroundVideo} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

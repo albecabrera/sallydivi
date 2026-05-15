@@ -465,6 +465,22 @@ class PackageBuildManager implements DependencyInterface {
 
 		self::register_divi_package_build(
 			[
+				'name'   => 'divi-variable-generator-modal',
+				'script' => [
+					'enqueue_top_window' => false,
+					// Defer this bundle so variable generator modal can load after first render.
+					'enqueue_app_window' => false,
+				],
+				'style'  => [
+					// Modal library UI is rendered in top window via <TopWindowWrapper>.
+					'enqueue_top_window' => true,
+					'enqueue_app_window' => false,
+				],
+			]
+		);
+
+		self::register_divi_package_build(
+			[
 				'name'   => 'divi-modal',
 				'script' => [
 					'enqueue_top_window' => false,

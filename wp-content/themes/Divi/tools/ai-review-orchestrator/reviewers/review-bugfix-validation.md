@@ -34,7 +34,7 @@ task docs at `et/tasks/<parent>/<issue>/implementation-plan.md`.
 ### Blame Context
 - Read the git blame/history section in the PR description. Flag when the fix
   reverses behavior that the original commit explicitly justified.
-- If the PR is a bugfix but lacks blame context, flag as **issue (non-blocking)** with **Concern** severity.
+- If the PR is a bugfix but lacks blame context, flag as **issue (non-blocking)**.
 - When blame or commit messages reference an issue number, check for a task
   folder under `et/tasks/` or `includes/builder-5/et/tasks/` (`<parent>/<issue>/`).
   If `implementation-plan.md` exists, use it as the authoritative source of

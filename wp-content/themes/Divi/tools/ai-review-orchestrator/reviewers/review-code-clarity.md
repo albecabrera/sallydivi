@@ -56,4 +56,4 @@ Prefer **one** of: a concise docblock (PHPDoc, JSDoc, or TSDoc) **or** a short i
 - Demanding `@param`/`@return` on every internal method, or docblocks that only repeat types visible in TypeScript.
 - Formatting, tag ordering, or rules better enforced by PHPCS, ESLint, or the IDE—do not substitute for linters.
 
-Severity: default to **nitpick** with **Nit** severity or **issue (non-blocking)** with **Concern** severity unless missing docs clearly risk incorrect use of a public contract (then **issue (non-blocking)** with **Concern** severity).
+Labeling: default to **nitpick** or **issue (non-blocking)** unless missing docs clearly risk incorrect use of a public contract (then **issue (blocking)** when it would block merge, otherwise **issue (non-blocking)**).

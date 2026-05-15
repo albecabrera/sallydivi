@@ -30,7 +30,7 @@ class ButtonStyle {
 	 * Get button style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/ButtonStyle ButtonStyle} in
+	 * {@link /api/js/divi-module/functions/ButtonStyle ButtonStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

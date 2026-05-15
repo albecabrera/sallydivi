@@ -126,10 +126,11 @@ class Settings {
 		$et_pb_saved_color_palette = '' !== $color_palette ? $color_palette : $default;
 		$is_default[]              = $et_pb_saved_color_palette === $default ? 'et_pb_color_palette' : '';
 
-		$gutter_width            = get_post_meta( $post_id, '_et_pb_gutter_width', true );
-		$default                 = ArrayUtility::get_value( $fields, 'et_pb_page_gutter_width.default', et_get_option( 'gutter_width', '3' ) );
-		$et_pb_page_gutter_width = '' !== $gutter_width ? $gutter_width : $default;
-		$is_default[]            = $et_pb_page_gutter_width === $default ? 'et_pb_page_gutter_width' : '';
+		$default                      = ArrayUtility::get_value( $fields, 'et_pb_page_gutter_width.default', et_get_option( 'gutter_width', '3' ) );
+		$resolved_gutter              = PageSettings::resolve_page_gutter_width( $post_id, intval( $default ) );
+		$et_pb_page_gutter_width      = $resolved_gutter['value'];
+		$et_pb_page_gutter_width_is_default = $resolved_gutter['is_default'];
+		$is_default[]                 = $et_pb_page_gutter_width_is_default ? 'et_pb_page_gutter_width' : '';
 
 		$content_area_background_color = get_post_meta( $post_id, '_et_pb_content_area_background_color', true );
 
@@ -205,7 +206,8 @@ class Settings {
 			'et_pb_color_palette'                    => $et_pb_saved_color_palette,
 			'et_pb_gc_palette'                       => maybe_unserialize( $et_pb_global_color_palette ),
 			'et_pb_global_variables'                 => maybe_unserialize( $et_pb_global_variables ),
-			'et_pb_page_gutter_width'                => $et_pb_page_gutter_width,
+			'et_pb_page_gutter_width'                 => $et_pb_page_gutter_width,
+			'et_pb_page_gutter_width_is_default'      => $et_pb_page_gutter_width_is_default,
 			'et_pb_content_area_background_color'    => strtolower( $et_pb_content_area_background_color ),
 			'et_pb_section_background_color'         => strtolower( $et_pb_section_background_color ),
 			'et_pb_post_settings_title'              => $post_settings_title,

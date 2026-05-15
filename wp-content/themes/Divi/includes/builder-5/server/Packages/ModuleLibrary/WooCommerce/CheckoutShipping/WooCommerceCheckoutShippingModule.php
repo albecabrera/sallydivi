@@ -245,7 +245,7 @@ class WooCommerceCheckoutShippingModule implements DependencyInterface {
 	 * This function assigns variables and sets script data options for the module.
 	 *
 	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
 	 * located in `@divi/module-library`.
 	 *
 	 * @since ??
@@ -361,6 +361,48 @@ class WooCommerceCheckoutShippingModule implements DependencyInterface {
 
 		$is_inside_sticky_module   = $elements->get_is_inside_sticky_module();
 		$sticky_parent_order_class = $elements->get_sticky_parent_order_class();
+		$field_select_selectors    = [
+			".woocommerce {$order_class} .select2-container--default .select2-selection--single",
+			"{$order_class} .select2-container--default .select2-selection--single",
+			".woocommerce {$order_class} form .form-row.woocommerce-validated .select2-container--default .select2-selection--single",
+			"{$order_class} form .form-row.woocommerce-validated .select2-container--default .select2-selection--single",
+		];
+		$field_input_selectors     = [
+			".woocommerce {$order_class} form .form-row .input-text",
+			"{$order_class} form .form-row .input-text",
+			".woocommerce {$order_class} form .form-row.woocommerce-validated .input-text",
+			"{$order_class} form .form-row.woocommerce-validated .input-text",
+		];
+		$field_input_text_selectors = [
+			".woocommerce {$order_class} form .form-row input.input-text",
+			"{$order_class} form .form-row input.input-text",
+			".woocommerce {$order_class} form .form-row.woocommerce-validated input.input-text",
+			"{$order_class} form .form-row.woocommerce-validated input.input-text",
+		];
+		$select_rendered_text_selectors = [
+			".woocommerce {$order_class} .select2-container--default .select2-selection--single .select2-selection__rendered",
+			"{$order_class} .select2-container--default .select2-selection--single .select2-selection__rendered",
+			".woocommerce {$order_class} .select2-container .select2-selection--single .select2-selection__rendered",
+			"{$order_class} .select2-container .select2-selection--single .select2-selection__rendered",
+		];
+		$select_rendered_text_open_selectors = [
+			".woocommerce {$order_class} .select2-container--default.select2-container--focus .select2-selection--single .select2-selection__rendered",
+			"{$order_class} .select2-container--default.select2-container--focus .select2-selection--single .select2-selection__rendered",
+			".woocommerce {$order_class} .select2-container--focus .select2-selection--single .select2-selection__rendered",
+			"{$order_class} .select2-container--focus .select2-selection--single .select2-selection__rendered",
+			".woocommerce {$order_class} .select2-container--focus .select2-selection__rendered",
+			"{$order_class} .select2-container--focus .select2-selection__rendered",
+			".woocommerce {$order_class} .select2-container--default.select2-container--open .select2-selection--single .select2-selection__rendered",
+			"{$order_class} .select2-container--default.select2-container--open .select2-selection--single .select2-selection__rendered",
+			".woocommerce {$order_class} .select2-container--open .select2-selection--single .select2-selection__rendered",
+			"{$order_class} .select2-container--open .select2-selection--single .select2-selection__rendered",
+			".woocommerce {$order_class} .select2-container--open .select2-selection__rendered",
+			"{$order_class} .select2-container--open .select2-selection__rendered",
+		];
+		$select_rendered_text_hover_selectors = [
+			".woocommerce {$order_class} .select2-container .select2-selection--single:hover .select2-selection__rendered",
+			"{$order_class} .select2-container .select2-selection--single:hover .select2-selection__rendered",
+		];
 
 		Style::add(
 			[
@@ -401,8 +443,8 @@ class WooCommerceCheckoutShippingModule implements DependencyInterface {
 							'selector'               => implode(
 								', ',
 								[
-									".woocommerce {$order_class} .select2-container--default .select2-selection--single",
-									".woocommerce {$order_class} form .form-row .input-text",
+									...$field_select_selectors,
+									...$field_input_selectors,
 								]
 							),
 							'attr'                   => array_merge(
@@ -462,34 +504,13 @@ class WooCommerceCheckoutShippingModule implements DependencyInterface {
 											],
 										],
 									],
-									'font'       => [
-										'font' => [
-											'desktop' => [
-												'value' => [
-													'color' => implode(
-														', ',
-														[
-															".woocommerce {$order_class} .select2-container--open .select2-selection__rendered",
-															".woocommerce {$order_class} form .form-row input.input-text:focus",
-														]
-													),
-												],
-												'hover' => [
-													'color' => implode(
-														', ',
-														[
-															".woocommerce {$order_class} .select2-container--open:hover .select2-selection__rendered",
-															".woocommerce {$order_class} form .form-row input.input-text:focus:hover",
-														]
-													),
-												],
-											],
-										],
-									],
 									'border'     => [
 										'desktop' => [
 											'value' => [
-												'border' => "{$order_class} form .form-row input.input-text",
+												'border' => implode(
+													', ',
+													$field_input_text_selectors
+												),
 											],
 										],
 									],
@@ -501,8 +522,8 @@ class WooCommerceCheckoutShippingModule implements DependencyInterface {
 												'color' => implode(
 													', ',
 													[
-														".woocommerce {$order_class} .select2-container .select2-selection--single .select2-selection__rendered",
 														".woocommerce {$order_class} form .form-row .input-text",
+														"{$order_class} form .form-row .input-text",
 													]
 												),
 											],
@@ -510,10 +531,12 @@ class WooCommerceCheckoutShippingModule implements DependencyInterface {
 												'color' => implode(
 													', ',
 													[
-														".woocommerce {$order_class} .select2-container .select2-selection--single:hover .select2-selection__rendered",
+														...$select_rendered_text_hover_selectors,
 														".woocommerce {$order_class} form .form-row .input-text:hover",
+														"{$order_class} form .form-row .input-text:hover",
 													]
 												),
+												'font-weight' => implode( ', ', $select_rendered_text_hover_selectors ),
 											],
 										],
 									],
@@ -577,6 +600,31 @@ class WooCommerceCheckoutShippingModule implements DependencyInterface {
 										],
 									],
 								],
+							],
+						]
+					),
+					ElementStyle::style(
+						[
+							'selector'               => implode( ', ', $select_rendered_text_selectors ),
+							'attrs'                  => [
+								'font' => self::get_select_rendered_text_value_font_attr( $attrs['field']['decoration']['font'] ?? [] ),
+							],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+						]
+					),
+					ElementStyle::style(
+						[
+							'selector'               => implode( ', ', $select_rendered_text_open_selectors ),
+							'attrs'                  => [
+								'font' => self::get_select_rendered_text_focus_font_attr( $attrs['field']['decoration']['font'] ?? [] ),
+							],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+							'font'                   => [
+								'important' => true,
 							],
 						]
 					),
@@ -772,12 +820,101 @@ class WooCommerceCheckoutShippingModule implements DependencyInterface {
 	}
 
 	/**
+	 * Get a value-state font attr from the field focus font attr.
+	 *
+	 * @since ??
+	 *
+	 * @param array $font_attr Field font attr.
+	 *
+	 * @return array
+	 */
+	private static function get_select_rendered_text_focus_font_attr( array $font_attr ): array {
+		$font_breakpoints = $font_attr['font'] ?? [];
+
+		if ( ! is_array( $font_breakpoints ) ) {
+			return [];
+		}
+
+		$focus_font = [];
+
+		foreach ( $font_breakpoints as $breakpoint => $states ) {
+			$color = $states['focus']['color'] ?? null;
+
+			if ( ! $color ) {
+				continue;
+			}
+
+			$focus_font[ $breakpoint ] = [
+				'value' => [
+					'color' => $color,
+				],
+			];
+		}
+
+		if ( empty( $focus_font ) ) {
+			return [];
+		}
+
+		return [
+			'font' => $focus_font,
+		];
+	}
+
+	/**
+	 * Get a value-state font attr for default Select2 rendered text.
+	 *
+	 * @since ??
+	 *
+	 * @param array $font_attr Field font attr.
+	 *
+	 * @return array
+	 */
+	private static function get_select_rendered_text_value_font_attr( array $font_attr ): array {
+		$font_breakpoints = $font_attr['font'] ?? [];
+
+		if ( ! is_array( $font_breakpoints ) ) {
+			return [];
+		}
+
+		$value_font = [];
+
+		foreach ( $font_breakpoints as $breakpoint => $states ) {
+			$value      = $states['value'] ?? [];
+			$font_value = [];
+
+			if ( ! empty( $value['color'] ) ) {
+				$font_value['color'] = $value['color'];
+			}
+
+			if ( ! empty( $value['weight'] ) ) {
+				$font_value['weight'] = $value['weight'];
+			}
+
+			if ( empty( $font_value ) ) {
+				continue;
+			}
+
+			$value_font[ $breakpoint ] = [
+				'value' => $font_value,
+			];
+		}
+
+		if ( empty( $value_font ) ) {
+			return [];
+		}
+
+		return [
+			'font' => $value_font,
+		];
+	}
+
+	/**
 	 * Get the custom CSS fields for the Divi WooCommerceCheckoutShipping module.
 	 *
 	 * This function retrieves the custom CSS fields defined for the Divi WooCommerceCheckoutShipping module.
 	 *
 	 * This function is equivalent to the JavaScript constant
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs cssFields}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs cssFields}
 	 * located in `@divi/module-library`. Note that this function does not have
 	 * a `label` property on each array item, unlike the JS const cssFields.
 	 *

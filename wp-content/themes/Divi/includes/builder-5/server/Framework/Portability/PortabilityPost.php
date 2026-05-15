@@ -2428,7 +2428,7 @@ class PortabilityPost {
 				$error_message = false === $error_message ? '' : $error_message;
 
 				/**
-				 * Filters the error message shown when [ET_Core_Portability::import()](/docs/builder-api/php/Framework/Portability/PortabilityPost#import) fails.
+				 * Filters the error message shown when [ET_Core_Portability::import()](/api/php/Framework/Portability/PortabilityPost#import) fails.
 				 *
 				 * @since ??
 				 *

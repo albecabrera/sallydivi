@@ -54,7 +54,7 @@ class ElementStyle {
 	 * Get element style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/ElementStyle ElementStyle} in
+	 * {@link /api/js/divi-module/functions/ElementStyle ElementStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

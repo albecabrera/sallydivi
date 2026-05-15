@@ -29,7 +29,7 @@ class PositionStyle {
 	 * Get position style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/PositionStyle PositionStyle} in
+	 * {@link /api/js/divi-module/functions/PositionStyle PositionStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

@@ -1260,6 +1260,9 @@ class DynamicAssetsUtils {
 					"{$prefix}/css/css_grid_grid{$suffix}.css",
 				],
 			],
+			'divi/breadcrumbs'                          => [
+				'css' => "{$prefix}/css/breadcrumbs{$suffix}.css",
+			],
 			'divi/blurb'                                => [
 				'css' => [
 					"{$prefix}/css/blurb{$suffix}.css",
@@ -2784,8 +2787,7 @@ class DynamicAssetsUtils {
 
 		// Build canvas metadata and categorize by usage type.
 		$all_canvas_metadata = [];
-		$appended_above      = [];
-		$appended_below      = [];
+		$canvas_owner_ids    = [];
 
 		// Process all canvases together (local and global use the same logic).
 		// Mark each canvas with its type (local vs global) for later use.
@@ -2809,15 +2811,33 @@ class DynamicAssetsUtils {
 			$all_canvas_posts
 		);
 
-		// Batch fetch canvas_id, append_to_main, z_index, and created_at for all posts in a single query.
+		// Batch fetch canvas_id, append_to_main, z_index, created_at, and owner post ID in one query.
 		$all_meta           = self::_batch_get_post_meta(
 			$canvas_post_ids,
-			[ '_divi_canvas_id', '_divi_canvas_append_to_main', '_divi_canvas_z_index', '_divi_canvas_created_at' ]
+			[ '_divi_canvas_id', '_divi_canvas_append_to_main', '_divi_canvas_z_index', '_divi_canvas_created_at', '_divi_canvas_parent_post_id' ]
 		);
 		$canvas_id_map      = $all_meta['_divi_canvas_id'] ?? [];
 		$append_to_main_map = $all_meta['_divi_canvas_append_to_main'] ?? [];
 		$z_index_map        = $all_meta['_divi_canvas_z_index'] ?? [];
 		$created_at_map     = $all_meta['_divi_canvas_created_at'] ?? [];
+		$parent_post_id_map = $all_meta['_divi_canvas_parent_post_id'] ?? [];
+		$owner_type_cache   = [];
+		$canvas_raw_ids     = [];
+
+		$is_theme_builder_area_owner = static function ( int $owner_post_id ) use ( &$owner_type_cache ): bool {
+			if ( 0 >= $owner_post_id ) {
+				return false;
+			}
+
+			if ( isset( $owner_type_cache[ $owner_post_id ] ) ) {
+				return $owner_type_cache[ $owner_post_id ];
+			}
+
+			$owner_post_type                    = get_post_type( $owner_post_id );
+			$owner_type_cache[ $owner_post_id ] = in_array( $owner_post_type, [ 'et_header_layout', 'et_body_layout', 'et_footer_layout' ], true );
+
+			return $owner_type_cache[ $owner_post_id ];
+		};
 
 		foreach ( $all_canvas_posts as $canvas_post_data ) {
 			$canvas_post = $canvas_post_data['post'];
@@ -2840,10 +2860,19 @@ class DynamicAssetsUtils {
 			// Get created_at from batch-fetched map.
 			$created_at = $created_at_map[ $canvas_post->ID ] ?? '';
 
+			$candidate_owner_id = absint( $parent_post_id_map[ $canvas_post->ID ] ?? 0 );
+
+			$dedupe_canvas_id = $is_global
+				? $canvas_id
+				: self::_normalize_local_canvas_id_for_owner( $canvas_id, $candidate_owner_id );
+			if ( '' === $dedupe_canvas_id ) {
+				continue;
+			}
+
 			// Store raw content in metadata (used by REST API for Visual Builder).
 			// Content will be processed for meta operations only when caching to post meta.
-			$canvas_content                    = $canvas_post->post_content;
-			$all_canvas_metadata[ $canvas_id ] = [
+			$canvas_content = $canvas_post->post_content;
+			$candidate_meta = [
 				'isGlobal'           => $is_global,
 				'appendToMainCanvas' => $append_to_main,
 				'zIndex'             => $z_index,
@@ -2852,7 +2881,47 @@ class DynamicAssetsUtils {
 				'createdAt'          => $created_at,
 			];
 
-			// Categorize by append position.
+			if ( isset( $all_canvas_metadata[ $dedupe_canvas_id ] ) ) {
+				$existing_meta     = $all_canvas_metadata[ $dedupe_canvas_id ];
+				$existing_owner_id = $canvas_owner_ids[ $dedupe_canvas_id ] ?? 0;
+				$existing_raw_id   = $canvas_raw_ids[ $dedupe_canvas_id ] ?? $dedupe_canvas_id;
+				$candidate_matches = $canvas_id === $dedupe_canvas_id;
+				$existing_matches  = $existing_raw_id === $dedupe_canvas_id;
+
+				// Default behavior keeps latest entry. For duplicate LOCAL IDs, prefer Theme Builder area owner.
+				// This aligns frontend with builder hydration dedupe expectations for template-owned canvases.
+				$replace_existing = true;
+				if ( empty( $existing_meta['isGlobal'] ) && ! $is_global ) {
+					$existing_is_area_owner  = $is_theme_builder_area_owner( $existing_owner_id );
+					$candidate_is_area_owner = $is_theme_builder_area_owner( $candidate_owner_id );
+					if ( $existing_is_area_owner && ! $candidate_is_area_owner ) {
+						$replace_existing = false;
+					} elseif ( $existing_is_area_owner === $candidate_is_area_owner ) {
+						// If owner type ties, prefer the raw ID that already matches the normalized key.
+						// Example: keep `header-<uid>` over `header-header-<uid>`.
+						if ( $existing_matches && ! $candidate_matches ) {
+							$replace_existing = false;
+						} elseif ( ! $existing_matches && $candidate_matches ) {
+							$replace_existing = true;
+						}
+					}
+				}
+
+				if ( ! $replace_existing ) {
+					continue;
+				}
+			}
+
+			$all_canvas_metadata[ $dedupe_canvas_id ] = $candidate_meta;
+			$canvas_owner_ids[ $dedupe_canvas_id ]    = $candidate_owner_id;
+			$canvas_raw_ids[ $dedupe_canvas_id ]      = $canvas_id;
+		}
+
+		$appended_above = [];
+		$appended_below = [];
+
+		foreach ( $all_canvas_metadata as $canvas_id => $canvas_meta ) {
+			$append_to_main = $canvas_meta['appendToMainCanvas'] ?? null;
 			if ( 'above' === $append_to_main ) {
 				$appended_above[] = $canvas_id;
 			} elseif ( 'below' === $append_to_main ) {
@@ -2860,8 +2929,8 @@ class DynamicAssetsUtils {
 			}
 		}
 
-		$canvas_data['appended_above']      = array_unique( $appended_above );
-		$canvas_data['appended_below']      = array_unique( $appended_below );
+		$canvas_data['appended_above']      = array_values( array_unique( $appended_above ) );
+		$canvas_data['appended_below']      = array_values( array_unique( $appended_below ) );
 		$canvas_data['all_canvas_metadata'] = $all_canvas_metadata;
 
 		// Extract interaction target IDs from content and find which canvases contain them.
@@ -2934,6 +3003,51 @@ class DynamicAssetsUtils {
 		self::$_canvas_posts_static_cache[ $post_id ] = $posts_map;
 
 		return $canvas_data;
+	}
+
+	/**
+	 * Normalize a local canvas ID to the owner-aware dedupe key.
+	 *
+	 * @since ??
+	 *
+	 * @param string $canvas_id Raw canvas ID.
+	 * @param int    $owner_post_id Local owner post ID.
+	 *
+	 * @return string
+	 */
+	private static function _normalize_local_canvas_id_for_owner( string $canvas_id, int $owner_post_id ): string {
+		$canvas_id = sanitize_text_field( $canvas_id );
+		if ( '' === $canvas_id ) {
+			return '';
+		}
+
+		$owner_post_type = get_post_type( $owner_post_id );
+		$layout_map      = [
+			'et_header_layout' => 'header',
+			'et_body_layout'   => 'body',
+			'et_footer_layout' => 'footer',
+		];
+		$layout          = $layout_map[ $owner_post_type ] ?? '';
+
+		if ( '' === $layout ) {
+			return $canvas_id;
+		}
+
+		$prefix = "{$layout}-";
+		if ( ! str_starts_with( $canvas_id, $prefix ) ) {
+			return $canvas_id;
+		}
+
+		$base_canvas_id = $canvas_id;
+		while ( str_starts_with( $base_canvas_id, $prefix ) ) {
+			$base_canvas_id = substr( $base_canvas_id, strlen( $prefix ) );
+		}
+
+		if ( '' === $base_canvas_id ) {
+			return '';
+		}
+
+		return $prefix . $base_canvas_id;
 	}
 
 	/**

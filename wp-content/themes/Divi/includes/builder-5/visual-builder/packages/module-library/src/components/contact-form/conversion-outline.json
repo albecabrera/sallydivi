@@ -71,6 +71,8 @@
     "redirect_url": "redirect.innerContent.*",
     "recaptcha_account_name": "module.advanced.spamProtection.*.account",
     "recaptcha_list": "module.advanced.spamProtection.*.account",
+    "recaptcha_site_key": "module.advanced.spamProtection.*.siteKey",
+    "recaptcha_secret_key": "module.advanced.spamProtection.*.secretKey",
     "recaptcha_min_score": "module.advanced.spamProtection.*.minScore",
     "use_spam_service": "module.advanced.spamProtection.*.enabled",
     "captcha": "module.advanced.spamProtection.*.useBasicCaptcha",

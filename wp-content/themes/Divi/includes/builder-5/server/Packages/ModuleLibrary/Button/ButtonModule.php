@@ -107,7 +107,7 @@ class ButtonModule implements DependencyInterface {
 	 * This function generates classnames for the module wrapper based on the provided arguments.
 	 *
 	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs wrapperClassnames}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs wrapperClassnames}
 	 * located in `@divi/module-library`.
 	 *
 	 * @since ??
@@ -150,7 +150,7 @@ class ButtonModule implements DependencyInterface {
 	 * This function assigns variables and sets script data options for the module.
 	 *
 	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
 	 * located in `@divi/module-library`.
 	 *
 	 * @since ??

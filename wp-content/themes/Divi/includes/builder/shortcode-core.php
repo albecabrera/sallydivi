@@ -761,10 +761,23 @@ if ( ! function_exists( 'et_pb_create_layout' ) ) :
 			$category_names = explode( ',', $new_category );
 
 			foreach ( $category_names as $term_name ) {
+				$term_name = trim( $term_name );
+
+				if ( '' === $term_name ) {
+					continue;
+				}
+
 				$new_term = wp_insert_term( $term_name, 'layout_category' );
 
 				if ( ! is_wp_error( $new_term ) && isset( $new_term['term_id'] ) ) {
 					$tax_input['layout_category'][] = (int) $new_term['term_id'];
+				} elseif ( is_wp_error( $new_term ) && 'term_exists' === $new_term->get_error_code() ) {
+					// Reuse an existing term when the name already exists (otherwise the layout saves with no category).
+					$existing_term_id = $new_term->get_error_data();
+
+					if ( is_numeric( $existing_term_id ) ) {
+						$tax_input['layout_category'][] = (int) $existing_term_id;
+					}
 				}
 			}
 		}
@@ -774,10 +787,22 @@ if ( ! function_exists( 'et_pb_create_layout' ) ) :
 			$tag_names = explode( ',', $new_tag );
 
 			foreach ( $tag_names as $term_name ) {
+				$term_name = trim( $term_name );
+
+				if ( '' === $term_name ) {
+					continue;
+				}
+
 				$new_term = wp_insert_term( $term_name, 'layout_tag' );
 
 				if ( ! is_wp_error( $new_term ) && isset( $new_term['term_id'] ) ) {
 					$tax_input['layout_tag'][] = (int) $new_term['term_id'];
+				} elseif ( is_wp_error( $new_term ) && 'term_exists' === $new_term->get_error_code() ) {
+					$existing_term_id = $new_term->get_error_data();
+
+					if ( is_numeric( $existing_term_id ) ) {
+						$tax_input['layout_tag'][] = (int) $existing_term_id;
+					}
 				}
 			}
 		}

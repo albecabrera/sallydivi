@@ -46,7 +46,7 @@ class Module {
 	 * This function is used to render a module in FE.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/Module Module}
+	 * {@link /api/js/divi-module/functions/Module Module}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??
@@ -1287,12 +1287,21 @@ class Module {
 		$stacked_preset_ids = GlobalPreset::normalize_preset_stack( $preset_value );
 		$has_module_preset  = ! empty( $stacked_preset_ids );
 
-		$selected_group_presets = GlobalPreset::get_selected_group_presets(
+		$selected_group_presets          = GlobalPreset::get_selected_group_presets(
 			[
 				'moduleAttrs' => $attrs,
 				'moduleName'  => $name,
 			]
 		);
+		$groups_with_non_default_presets = [];
+
+		foreach ( $selected_group_presets as $selected_group_preset ) {
+			if ( $selected_group_preset instanceof GlobalPresetItemGroup
+				&& $selected_group_preset->is_exist()
+				&& ! $selected_group_preset->as_default() ) {
+				$groups_with_non_default_presets[ $selected_group_preset->get_group_id() ] = true;
+			}
+		}
 
 		$parent_selected_group_presets = ( $parent_id && $parent_name ) ? GlobalPreset::get_selected_group_presets(
 			[
@@ -1347,13 +1356,15 @@ class Module {
 				continue;
 			}
 
-			// Skip default group presets that are NOT nested when a module preset is assigned.
-			// This matches VB behavior where default group presets are only used when no module preset is assigned,
-			// or when they are explicitly nested from the module preset.
+			// Skip default non-nested group presets only when the same group has
+			// an explicit/nested non-default override.
 			if ( $has_module_preset && $group_preset_item instanceof GlobalPresetItemGroup ) {
-				$is_default = $group_preset_item->as_default();
-				$is_nested  = $group_preset_item->is_nested();
-				if ( $is_default && ! $is_nested ) {
+				$is_default                      = $group_preset_item->as_default();
+				$is_nested                       = $group_preset_item->is_nested();
+				$group_id                        = $group_preset_item->get_group_id();
+				$has_non_default_preset_in_group = ! empty( $groups_with_non_default_presets[ $group_id ] );
+
+				if ( $is_default && ! $is_nested && $has_non_default_preset_in_group ) {
 					continue;
 				}
 			}

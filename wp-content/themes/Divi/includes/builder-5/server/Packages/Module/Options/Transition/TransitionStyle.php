@@ -32,7 +32,7 @@ class TransitionStyle {
 	 * Get Transition style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/TransitionStyle TransitionStyle} in
+	 * {@link /api/js/divi-module/functions/TransitionStyle TransitionStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -582,7 +582,7 @@ class TransitionStyle {
 	 * element style.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/TransitionStyle/utils/get-advanced-transition-styles-css-properties getAdvancedTransitionStylesCssProperties} in
+	 * {@link /api/js/divi-module/functions/TransitionStyle/utils/get-advanced-transition-styles-css-properties getAdvancedTransitionStylesCssProperties} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -1165,20 +1165,23 @@ class TransitionStyle {
 
 					if ( is_array( $attr_mode_value ) && ! empty( $attr_mode_value ) ) {
 						if ( 'textShadow' === $key ) {
-							$text_shadow_declaration_props      = [
-								'attrValue'  => $attr_desktop_value['value'],
-								'important'  => false,
-								'returnType' => 'string',
-							];
-							$text_shadow_declaration_css        = TextShadow::style_declaration( $text_shadow_declaration_props );
-							$text_shadow_declaration_css_string = is_string( $text_shadow_declaration_css ) ? $text_shadow_declaration_css : '';
+							$text_shadow_value = $attr_desktop_value['value'] ?? null;
+							if ( ! empty( $text_shadow_value ) ) {
+								$text_shadow_declaration_props      = [
+									'attrValue'  => $text_shadow_value,
+									'important'  => false,
+									'returnType' => 'string',
+								];
+								$text_shadow_declaration_css        = TextShadow::style_declaration( $text_shadow_declaration_props );
+								$text_shadow_declaration_css_string = is_string( $text_shadow_declaration_css ) ? $text_shadow_declaration_css : '';
 
-							if ( '' !== $text_shadow_declaration_css_string ) {
-								foreach ( explode( ';', $text_shadow_declaration_css_string ) as $item ) {
-									if ( $item && '' !== $item ) {
-										$parts = explode( ':', $item );
-										if ( $parts[0] && '' !== $parts[0] ) {
-											$css_properties[] = trim( $parts[0] );
+								if ( '' !== $text_shadow_declaration_css_string ) {
+									foreach ( explode( ';', $text_shadow_declaration_css_string ) as $item ) {
+										if ( $item && '' !== $item ) {
+											$parts = explode( ':', $item );
+											if ( $parts[0] && '' !== $parts[0] ) {
+												$css_properties[] = trim( $parts[0] );
+											}
 										}
 									}
 								}

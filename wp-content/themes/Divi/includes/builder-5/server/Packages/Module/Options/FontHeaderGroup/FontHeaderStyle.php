@@ -29,7 +29,7 @@ class FontHeaderStyle {
 	 * Adjusts the font style component for the header group and its group tabs.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/FontHeaderStyle/ FontHeaderStyle} in
+	 * {@link /api/js/divi-module/functions/FontHeaderStyle/ FontHeaderStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

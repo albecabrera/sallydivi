@@ -255,7 +255,7 @@ class LoginModule implements DependencyInterface {
 	 * This function retrieves the custom CSS fields defined for the Divi login block.
 	 *
 	 * This function is equivalent of JS const:
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs cssFields} located in `@divi/module-library`.
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs cssFields} located in `@divi/module-library`.
 	 *
 	 * Note that this function does not have a `label` property on each array item, unlike the JS const cssFields.
 	 *

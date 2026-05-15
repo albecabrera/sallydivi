@@ -1,6 +1,9 @@
 import path from "node:path";
 import { SUMMARY_MODEL } from "../core/constants.mjs";
-import { buildConventionalHeaderFromFinding } from "./formatting.mjs";
+import {
+  buildConventionalHeaderFromFinding,
+  resolveConventionalMeta,
+} from "./formatting.mjs";
 import { log } from "../core/logging.mjs";
 import { getOpenAIClient } from "../core/openai.mjs";
 import { parseJsonSafe } from "../core/utils.mjs";
@@ -238,15 +241,19 @@ const repairInlineMapping = async ({
   return parsed;
 };
 
-export const buildFindingKey = (finding, location) =>
-  [
-    finding?.severity || "",
+export const buildFindingKey = (finding, location) => {
+  const meta = resolveConventionalMeta(finding);
+  const decorationKey = meta.decorations.join(",");
+  return [
+    meta.label || "",
+    decorationKey,
     finding?.title || "",
     location?.path || "",
     location?.lines || "",
   ]
     .map((value) => String(value).trim())
     .join("|");
+};
 
 export const buildInlineComments = async (summary, facts) => {
   if ("pr-compare" !== facts.mode) {

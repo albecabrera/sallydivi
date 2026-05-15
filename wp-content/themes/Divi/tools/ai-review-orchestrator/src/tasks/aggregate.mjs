@@ -16,10 +16,36 @@ import {
 import { applyRetroDupeFilter } from "../comments/retro-dupe-filter.mjs";
 import { applyRetroActions } from "../comments/retro-actions.mjs";
 
-const severityOrder = {
-  Blocker: 3,
-  Concern: 2,
-  Nit: 1,
+const labelOrder = {
+  issue_blocking: 5,
+  issue_non_blocking: 4,
+  suggestion: 3,
+  question: 2,
+  note: 1,
+  nitpick: 0,
+  other: 1,
+};
+
+const getFindingBucket = (finding) => {
+  const meta = resolveConventionalMeta(finding);
+  if ("issue" === meta.label) {
+    return meta.decorations.includes("blocking")
+      ? "issue_blocking"
+      : "issue_non_blocking";
+  }
+  if ("suggestion" === meta.label) {
+    return "suggestion";
+  }
+  if ("question" === meta.label) {
+    return "question";
+  }
+  if ("note" === meta.label) {
+    return "note";
+  }
+  if ("nitpick" === meta.label) {
+    return "nitpick";
+  }
+  return "other";
 };
 
 const normalizeLocationPath = (locationPath) => {
@@ -70,45 +96,77 @@ const applyConfidenceRules = (finding, thresholds) => {
   if (confidence < thresholds.drop_below) {
     return null;
   }
+  const blockingMin = thresholds.blocking_min ?? thresholds.blocker_min ?? 0.9;
+  const nonBlockingMin =
+    thresholds.non_blocking_min ?? thresholds.concern_min ?? 0.75;
+  const suggestionMin =
+    thresholds.suggestion_min ?? thresholds.concern_min ?? nonBlockingMin;
   const updated = { ...finding };
-  if (confidence < thresholds.concern_min && "Concern" === updated.severity) {
-    updated.severity = "Nit";
+  const meta = resolveConventionalMeta(updated);
+  if ("issue" === meta.label && meta.decorations.includes("blocking")) {
+    if (confidence < blockingMin) {
+      updated.comment_label = "issue";
+      updated.comment_decorations = ["non-blocking"];
+    }
+    return updated;
   }
-  if (confidence < thresholds.blocker_min && "Blocker" === updated.severity) {
-    updated.severity = "Concern";
+  if ("issue" === meta.label && confidence < nonBlockingMin) {
+    return null;
+  }
+  if ("suggestion" === meta.label && confidence < suggestionMin) {
+    return null;
+  }
+  if ("issue" !== meta.label && "suggestion" !== meta.label) {
+    if (confidence < nonBlockingMin) {
+      return null;
+    }
   }
   return updated;
 };
 
 const enforceCaps = (findings, config, sizeKey) => {
-  const caps = config?.severity_caps || {};
+  const caps = config?.comment_label_caps || {};
   const budget = config?.comment_budget_by_size?.[sizeKey] ?? Infinity;
   const grouped = {
-    Blocker: [],
-    Concern: [],
-    Nit: [],
+    issue_blocking: [],
+    issue_non_blocking: [],
+    suggestion: [],
+    question: [],
+    note: [],
+    nitpick: [],
+    other: [],
   };
   findings.forEach((finding) => {
-    const severity = grouped[finding.severity] ? finding.severity : "Nit";
-    grouped[severity].push(finding);
+    const bucket = getFindingBucket(finding);
+    const key = grouped[bucket] ? bucket : "other";
+    grouped[key].push(finding);
   });
   const capped = [];
   const overflow = [];
-  const capFor = (severity) => caps[`${severity.toLowerCase()}_max`] ?? Infinity;
-  ["Blocker", "Concern", "Nit"].forEach((severity) => {
-    const list = grouped[severity].sort(
+  const capFor = (bucket) => caps[`${bucket}_max`] ?? Infinity;
+  [
+    "issue_blocking",
+    "issue_non_blocking",
+    "suggestion",
+    "question",
+    "note",
+    "nitpick",
+    "other",
+  ].forEach((bucket) => {
+    const list = grouped[bucket].sort(
       (a, b) => (b.confidence || 0) - (a.confidence || 0)
     );
-    const keep = list.slice(0, capFor(severity));
-    const drop = list.slice(capFor(severity));
+    const keep = list.slice(0, capFor(bucket));
+    const drop = list.slice(capFor(bucket));
     capped.push(...keep);
     overflow.push(...drop);
   });
   const sorted = capped.sort((a, b) => {
-    const severityDiff =
-      (severityOrder[b.severity] || 0) - (severityOrder[a.severity] || 0);
-    if (0 !== severityDiff) {
-      return severityDiff;
+    const bucketDiff =
+      (labelOrder[getFindingBucket(b)] || 0) -
+      (labelOrder[getFindingBucket(a)] || 0);
+    if (0 !== bucketDiff) {
+      return bucketDiff;
     }
     return (b.confidence || 0) - (a.confidence || 0);
   });
@@ -156,6 +214,7 @@ export const aggregateResults = task(
     const retroDroppedCount = Array.isArray(retroFiltered?.dropped)
       ? retroFiltered.dropped.length
       : 0;
+    const retroReport = retroFiltered?.report ?? null;
     const { budgeted, overflow } = enforceCaps(
       filteredFindings,
       facts.config,
@@ -165,10 +224,12 @@ export const aggregateResults = task(
       const meta = resolveConventionalMeta(finding);
       if ("suggestion" === meta.label) {
         const confidenceMin =
-          facts.config?.confidence_thresholds?.concern_min ?? 0.75;
+          facts.config?.confidence_thresholds?.suggestion_min ??
+          facts.config?.confidence_thresholds?.non_blocking_min ??
+          0.75;
         return Number(finding?.confidence ?? 0) >= confidenceMin;
       }
-      return meta.decorations.includes("blocking");
+      return "issue" === meta.label && meta.decorations.includes("blocking");
     });
     const summaryForInline = { pr_comment: { findings: prFindings } };
     const inlineResult = facts.outputPaths
@@ -215,6 +276,9 @@ export const aggregateResults = task(
     );
     if (facts.outputPaths) {
       writeJson(facts.outputPaths.aggregateFindings, summary);
+      if (facts.outputPaths.retroDupeReport && retroReport) {
+        writeJson(facts.outputPaths.retroDupeReport, retroReport);
+      }
       const inlineComments = inlineResult?.comments || [];
       writeJson(
         path.join(facts.outputPaths.outputRoot, "aggregate/inline-comments.json"),
@@ -306,11 +370,20 @@ export const aggregateResults = task(
       const reviewFindings = prFindingsForComment.filter(
         (finding) => true !== finding.posted_inline
       );
+      const exactDropped = retroReport?.prefilter?.dropped_count ?? 0;
+      const modelDropped = retroReport?.model?.dropped_count ?? 0;
+      const dropParts =
+        retroDroppedCount > 0
+          ? [
+              exactDropped ? `${exactDropped} exact` : null,
+              modelDropped ? `${modelDropped} model` : null,
+            ].filter(Boolean)
+          : [];
       const retroDropLine =
         retroDroppedCount > 0
           ? `Retro dupe filter: Dropped ${retroDroppedCount} duplicate finding${
               retroDroppedCount === 1 ? "" : "s"
-            }.`
+            }${dropParts.length ? ` (${dropParts.join(", ")})` : ""}.`
           : null;
       const summaryCommentLines = [
         "<!-- dh:review-summary -->",
@@ -399,10 +472,14 @@ export const aggregateResults = task(
         "",
         "## Findings",
         summary.private_summary.findings
-          .map(
-            (finding, index) =>
-              `${index + 1}. [${finding.severity}] ${finding.title || "Finding"}`
-          )
+          .map((finding, index) => {
+            const meta = resolveConventionalMeta(finding);
+            const decorationText = meta.decorations.length
+              ? ` (${meta.decorations.join(", ")})`
+              : "";
+            const labelText = `${meta.label}${decorationText}`;
+            return `${index + 1}. [${labelText}] ${finding.title || "Finding"}`;
+          })
           .join("\n") || "No findings.",
         "",
         "## Reviewer Stats",

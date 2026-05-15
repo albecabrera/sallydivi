@@ -23,8 +23,10 @@ use ET\Builder\Packages\Module\Layout\Components\MultiView\MultiViewUtils;
 use ET\Builder\Packages\Module\Module;
 use ET\Builder\Packages\Module\Options\Css\CssStyle;
 use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
+use ET\Builder\Packages\Module\Options\Loop\LoopUtils;
 use ET\Builder\Packages\Module\Options\Text\TextClassnames;
 use ET\Builder\Packages\ModuleLibrary\Blog\BlogModule;
+use ET\Builder\Packages\ModuleLibrary\PostSlider\PostSliderBackgroundStyles;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
 use ET\Builder\Packages\ModuleUtils\ModuleUtils;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
@@ -825,8 +827,53 @@ class FullwidthPostSliderModule implements DependencyInterface {
 					]
 				);
 
-				// Featured image URL.
-				$featured_image = esc_url( wp_get_attachment_url( get_post_thumbnail_id() ) );
+				$background_attrs        = $attrs['module']['decoration']['background'] ?? [];
+				$loop_background_attrs   = LoopUtils::replace_loop_variables_in_attrs( $background_attrs, 'post_types', get_post() );
+				$background_attr_value   = ModuleUtils::use_attr_value(
+					[
+						'attr'         => $loop_background_attrs,
+						'breakpoint'   => 'desktop',
+						'state'        => 'value',
+						'mode'         => 'getAndInheritAll',
+						'defaultValue' => [],
+					]
+				);
+				$background_image_url    = $background_attr_value['image']['url'] ?? '';
+				$background_image_url    = is_string( $background_image_url ) ? esc_url( $background_image_url ) : '';
+				$featured_image          = has_post_thumbnail() ? esc_url( wp_get_attachment_url( get_post_thumbnail_id() ) ) : '';
+				$slide_image             = ! empty( $background_image_url ) ? $background_image_url : $featured_image;
+				$slide_selector          = sprintf( '.et_pb_post_slide-%d', get_the_ID() );
+				$slide_style             = 'background' === $image_placement && ! empty( $slide_image )
+					? PostSliderBackgroundStyles::get_slide_background_styles(
+						$loop_background_attrs,
+						$attrs['image']['advanced']['enable'] ?? [],
+						$image_placement,
+						$slide_image
+					)
+					: [];
+				$slide_responsive_styles = 'background' === $image_placement && ! empty( $slide_image )
+					? PostSliderBackgroundStyles::get_slide_background_responsive_styles(
+						$loop_background_attrs,
+						$attrs['image']['advanced']['enable'] ?? [],
+						$image_placement,
+						$slide_image,
+						$slide_selector
+					)
+					: [];
+
+				if ( ! empty( $slide_responsive_styles ) ) {
+					Style::add(
+						[
+							'id'            => sprintf( 'fullwidth-post-slider-slide-%d-%d', $block->parsed_block['orderIndex'] ?? 0, get_the_ID() ),
+							'name'          => 'divi/fullwidth-post-slider',
+							'orderIndex'    => $block->parsed_block['orderIndex'] ?? 0,
+							'storeInstance' => $block->parsed_block['storeInstance'] ?? null,
+							'styles'        => [
+								$slide_responsive_styles,
+							],
+						]
+					);
+				}
 
 				// Slide.
 				$slides[] = $elements->render(
@@ -834,19 +881,7 @@ class FullwidthPostSliderModule implements DependencyInterface {
 						'tagName'           => 'div',
 						'attributes'        => [
 							'class' => $slide_classnames->value(),
-							'style' => [
-								'background-image' => [
-									'attr'          => $attrs['image']['advanced']['enable'] ?? [],
-									'valueResolver' => function ( $value ) use ( $image_placement, $featured_image ) {
-
-										if ( ! empty( $featured_image ) && 'background' === $image_placement && 'on' === $value ) {
-											return 'url(' . ( $featured_image ) . ')';
-										}
-										return '';
-									},
-									'selector'      => '{{selector}} .et_pb_post_slide-' . get_the_ID(),
-								],
-							],
+							'style' => ! empty( $slide_style ) ? $slide_style : null,
 						],
 						'children'          => [
 							$slide_overlay,

@@ -181,6 +181,13 @@
                 "text-shadow": true
               }
             }
+          },
+          "propertySelectors": {
+            "desktop": {
+              "value": {
+                "color": ".woocommerce {{selector}} .select2-container--default .select2-selection--single,.woocommerce {{selector}} form .form-row .input-text, {{selector}} .select2-container--default .select2-selection--single, {{selector}} form .form-row .input-text"
+              }
+            }
           }
         },
         "spacing": {

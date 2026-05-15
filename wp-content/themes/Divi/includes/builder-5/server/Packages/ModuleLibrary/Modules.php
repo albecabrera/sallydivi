@@ -24,8 +24,9 @@ use ET\Builder\Packages\ModuleLibrary\Audio\AudioModule;
 use ET\Builder\Packages\ModuleLibrary\BarCountersItem\BarCountersItemModule;
 use ET\Builder\Packages\ModuleLibrary\BarCounters\BarCountersModule;
 use ET\Builder\Packages\ModuleLibrary\BeforeAfterImage\BeforeAfterImageModule;
-use ET\Builder\Packages\ModuleLibrary\Blurb\BlurbModule;
 use ET\Builder\Packages\ModuleLibrary\Blog\BlogModule;
+use ET\Builder\Packages\ModuleLibrary\Blurb\BlurbModule;
+use ET\Builder\Packages\ModuleLibrary\Breadcrumbs\BreadcrumbsModule;
 use ET\Builder\Packages\ModuleLibrary\Button\ButtonModule;
 use ET\Builder\Packages\ModuleLibrary\CanvasPortal\CanvasPortalModule;
 use ET\Builder\Packages\ModuleLibrary\CTA\CTAModule;
@@ -444,6 +445,7 @@ if ( ConditionsUtility::should_register_all_d5_modules() ) {
 	$dependency_tree->add_dependency( new BeforeAfterImageModule() );
 	$dependency_tree->add_dependency( new BlogModule() );
 	$dependency_tree->add_dependency( new BlurbModule() );
+	$dependency_tree->add_dependency( new BreadcrumbsModule() );
 	$dependency_tree->add_dependency( new CanvasPortalModule() );
 	$dependency_tree->add_dependency( new ButtonModule() );
 	$dependency_tree->add_dependency( new GroupCarouselModule() );
@@ -548,7 +550,7 @@ if ( ConditionsUtility::should_register_all_d5_modules() ) {
  * @since ??
  *
  * @param DependencyTree $dependency_tree Dependency tree for VisualBuilder to load.
- *                                        See [DependencyTree](/docs/builder-api/php/Framework/DependencyManagement/DependencyTree).
+ *                                        See [DependencyTree](/api/php/Framework/DependencyManagement/DependencyTree).
  */
 do_action( 'divi_module_library_modules_dependency_tree', $dependency_tree );
 

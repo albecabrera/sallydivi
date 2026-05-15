@@ -19,6 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use ET\Builder\Framework\Breakpoint\Breakpoint;
 use ET\Builder\Framework\DependencyManagement\DependencyTree;
+use ET\Builder\FrontEnd\Assets\DetectFeature;
 use ET\Builder\FrontEnd\Assets\DynamicAssetsUtils;
 use ET\Builder\FrontEnd\Module\ScriptData;
 use ET\Builder\FrontEnd\Module\Style;
@@ -31,6 +32,7 @@ use ET\Builder\Framework\Utility\Conditions;
 use ET\Builder\Packages\Module\Layout\Components\MultiView\MultiViewAssets;
 use ET\Builder\Packages\Module\Options\Background\BackgroundAssets;
 use ET\Builder\Packages\WooCommerce\WooCommerceHooks;
+use ET\Builder\VisualBuilder\OffCanvas\OffCanvasHooks;
 
 /**
  * FrontEnd Class.
@@ -625,8 +627,45 @@ class FrontEnd {
 	 */
 	public function enqueue_global_numeric_and_fonts_vars(): void {
 		if ( ! Conditions::is_vb_enabled() && ! Conditions::is_admin_request() ) {
-			// Get all the global colors CSS variable.
-			$global_vars_style = Style::get_global_numeric_and_fonts_vars_style();
+			$global_vars_style     = Style::get_global_numeric_and_fonts_vars_style();
+			$post_id               = Style::get_current_post_id_reverse();
+			$content_for_ids       = '';
+			$detected_variable_ids = [];
+
+			// Bail early when there are no active global variables to print.
+			if ( empty( $global_vars_style ) ) {
+				return;
+			}
+
+			if ( $post_id ) {
+				$post_content = get_post_field( 'post_content', $post_id );
+				if ( is_string( $post_content ) ) {
+					$content_for_ids .= $post_content;
+				}
+
+				// Include active Theme Builder template content used by this request.
+				$tb_template_ids = DynamicAssetsUtils::get_theme_builder_template_ids();
+				foreach ( $tb_template_ids as $tb_template_id ) {
+					$template_post = get_post( (int) $tb_template_id );
+					if ( $template_post instanceof \WP_Post && ! empty( $template_post->post_content ) ) {
+						$content_for_ids .= ' ' . $template_post->post_content;
+					}
+				}
+
+				// Include all appended canvas content to cover interaction-targeted and appended canvases.
+				// This must run for all frontend requests because canvases can be attached via Theme Builder
+				// contexts that are not singular.
+				$appended_canvas_content = OffCanvasHooks::get_all_appended_canvas_content_for_post_and_templates( (int) $post_id, $content_for_ids );
+				if ( ! empty( $appended_canvas_content ) ) {
+					$content_for_ids .= ' ' . $appended_canvas_content;
+				}
+			}
+
+			if ( '' !== $content_for_ids ) {
+				$detected_variable_ids = DetectFeature::get_page_global_variable_ids( $content_for_ids );
+
+				$global_vars_style = Style::get_global_numeric_and_fonts_vars_style( $detected_variable_ids );
+			}
 
 			if ( ! empty( $global_vars_style ) ) {
 				echo '<style class="et-vb-global-data et-vb-global-numeric-vars">';
@@ -670,7 +709,7 @@ class FrontEnd {
 	 */
 	public function fix_code_module_wptexturize( string $content ): string {
 		// Only process if contains Code Module content and &#038; entities.
-		if ( false === strpos( $content, 'et_pb_code_inner' ) || false === strpos( $content, '&#038;' ) ) {
+		if ( ! str_contains( $content, 'et_pb_code_inner' ) || ! str_contains( $content, '&#038;' ) ) {
 			return $content;
 		}
 
@@ -750,10 +789,10 @@ class FrontEnd {
 		// 1. Raw D5 blocks: `<!-- wp:divi/` (before do_blocks processes them).
 		// 2. Rendered D5 HTML: `et_pb_module` or `et_pb_section` classes (after rendering).
 		// 3. Any Gutenberg blocks: `<!-- wp:` (pure Gutenberg pages without Divi).
-		$has_block_content = false !== strpos( $content, '<!-- wp:divi' ) ||
-			false !== strpos( $content, 'et_pb_module' ) ||
-			false !== strpos( $content, 'et_pb_section' ) ||
-			false !== strpos( $content, '<!-- wp:' );
+		$has_block_content = str_contains( $content, '<!-- wp:divi' ) ||
+			str_contains( $content, 'et_pb_module' ) ||
+			str_contains( $content, 'et_pb_section' ) ||
+			str_contains( $content, '<!-- wp:' );
 
 		if ( ! $has_block_content ) {
 			return $content;

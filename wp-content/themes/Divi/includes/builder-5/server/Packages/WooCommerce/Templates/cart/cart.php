@@ -17,9 +17,21 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// Theme Builder layouts (e.g. et_body_layout) can make `wc_get_cart_url()` return the
+// layout permalink; the cart form must POST to the real cart page or WooCommerce AJAX
+// gets a 404 and totals never refresh (#48217). Same class of bug as TB headers (#44571).
+$divi_woocommerce_cart_form_action = '';
+if ( function_exists( 'wc_get_page_permalink' ) ) {
+	$divi_woocommerce_cart_form_action = wc_get_page_permalink( 'cart' );
+}
+
+if ( ! $divi_woocommerce_cart_form_action ) {
+	$divi_woocommerce_cart_form_action = wc_get_cart_url();
+}
+
 do_action( 'woocommerce_before_cart' ); ?>
 
-<form class="woocommerce-cart-form" action="<?php echo esc_url( wc_get_cart_url() ); ?>" method="post">
+<form class="woocommerce-cart-form" action="<?php echo esc_url( $divi_woocommerce_cart_form_action ); ?>" method="post">
 	<?php do_action( 'woocommerce_before_cart_table' ); ?>
 
 	<table class="shop_table shop_table_responsive cart woocommerce-cart-form__contents" cellspacing="0">

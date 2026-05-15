@@ -85,6 +85,7 @@
         "class": "et_pb_icon_list_text"
       },
       "inlineEditor": "plainText",
+      "allowHtml": true,
       "childrenSanitizer": "et_core_esc_previously",
       "styleProps": {
         "font": {

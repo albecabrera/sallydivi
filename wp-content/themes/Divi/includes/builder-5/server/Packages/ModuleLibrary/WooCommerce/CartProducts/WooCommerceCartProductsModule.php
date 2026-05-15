@@ -367,7 +367,7 @@ class WooCommerceCartProductsModule implements DependencyInterface {
 	 * This function assigns variables and sets script data options for the module.
 	 *
 	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
 	 * located in `@divi/module-library`.
 	 *
 	 * @since ??
@@ -953,6 +953,38 @@ class WooCommerceCartProductsModule implements DependencyInterface {
 	}
 
 	/**
+	 * Whether to load Divi's `cart/cart.php` override (correct form `action`, etc.).
+	 *
+	 * `conditional_tags['is_tb']` means Theme Builder / REST preview contexts; it must not
+	 * be set from `render_callback` on the live cart only to enable this swap, because
+	 * {@see get_cart_products()} also uses `is_tb` for placeholder dummy cart content when
+	 * the cart is empty. Frontend TB body assignments are detected via
+	 * `et_theme_builder_overrides_layout()` instead (#48217).
+	 *
+	 * @since ??
+	 *
+	 * @param array $conditional_tags Request tags (e.g. REST `is_tb`).
+	 *
+	 * @return bool
+	 */
+	private static function should_swap_divi_cart_template( array $conditional_tags ): bool {
+		if ( Conditions::is_rest_api_request() || is_et_pb_preview() ) {
+			return true;
+		}
+
+		$is_tb = $conditional_tags['is_tb'] ?? false;
+		if ( in_array( $is_tb, [ true, 1, '1', 'true', 'on' ], true ) ) {
+			return true;
+		}
+
+		if ( function_exists( 'et_theme_builder_overrides_layout' ) && defined( 'ET_THEME_BUILDER_BODY_LAYOUT_POST_TYPE' ) ) {
+			return et_theme_builder_overrides_layout( ET_THEME_BUILDER_BODY_LAYOUT_POST_TYPE );
+		}
+
+		return false;
+	}
+
+	/**
 	 * Handle hooks.
 	 *
 	 * @since ??
@@ -965,8 +997,6 @@ class WooCommerceCartProductsModule implements DependencyInterface {
 		remove_action( 'woocommerce_cart_collaterals', 'woocommerce_cart_totals', 10 );
 		remove_action( 'woocommerce_before_cart', 'woocommerce_output_all_notices', 10 );
 
-		$is_tb = $conditional_tags['is_tb'] ?? false;
-
 		// Runs on both VB and FE.
 		add_filter(
 			'wc_get_template',
@@ -975,8 +1005,7 @@ class WooCommerceCartProductsModule implements DependencyInterface {
 			5
 		);
 
-		if ( Conditions::is_rest_api_request() || $is_tb || is_et_pb_preview() ) {
-			// Runs only on Builder mode.
+		if ( self::should_swap_divi_cart_template( $conditional_tags ) ) {
 			add_filter(
 				'wc_get_template',
 				[ self::class, 'swap_template' ],
@@ -999,14 +1028,12 @@ class WooCommerceCartProductsModule implements DependencyInterface {
 		add_action( 'woocommerce_cart_collaterals', 'woocommerce_cart_totals', 10 );
 		add_action( 'woocommerce_before_cart', 'woocommerce_output_all_notices', 10 );
 
-		$is_tb = $conditional_tags['is_tb'] ?? false;
-
 		remove_filter(
 			'wc_get_template',
 			[ self::class, 'swap_quantity_input_template' ]
 		);
 
-		if ( Conditions::is_rest_api_request() || $is_tb || is_et_pb_preview() ) {
+		if ( self::should_swap_divi_cart_template( $conditional_tags ) ) {
 			remove_filter(
 				'wc_get_template',
 				[ self::class, 'swap_template' ]
@@ -1491,7 +1518,7 @@ class WooCommerceCartProductsModule implements DependencyInterface {
 	 * This function retrieves the custom CSS fields defined for the Divi WooCommerceCartProducts module.
 	 *
 	 * This function is equivalent to the JavaScript constant
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs cssFields}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs cssFields}
 	 * located in `@divi/module-library`. Note that this function does not have
 	 * a `label` property on each array item, unlike the JS const cssFields.
 	 *

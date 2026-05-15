@@ -27,7 +27,7 @@ class TransformStyle {
 	 * Get transform style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/TransformStyle TransformStyle} in
+	 * {@link /api/js/divi-module/functions/TransformStyle TransformStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

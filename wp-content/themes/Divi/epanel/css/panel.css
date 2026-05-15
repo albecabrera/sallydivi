@@ -1464,7 +1464,7 @@ Copyright (c) 2015 Daniel Eden
 }
 
 #epanel .CodeMirror {
-	padding: 0 13px 13px 0px;
+	padding: 0 13px 47px 0px;
 	border-radius: 3px;
 }
 
@@ -1629,10 +1629,6 @@ Copyright (c) 2015 Daniel Eden
 
 #epanel .CodeMirror-vscrollbar {
 	top: 34px;
-}
-
-#epanel .CodeMirror-sizer {
-	padding-bottom: 34px !important;
 }
 
 .et-code-snippets-open {

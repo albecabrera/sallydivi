@@ -30,7 +30,7 @@ class BoxShadowStyle {
 	 * Get box shadow style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BoxShadowStyle BoxShadowStyle} in
+	 * {@link /api/js/divi-module/functions/BoxShadowStyle BoxShadowStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

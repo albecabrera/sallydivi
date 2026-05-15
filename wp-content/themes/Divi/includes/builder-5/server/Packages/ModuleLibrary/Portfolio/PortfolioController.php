@@ -221,15 +221,15 @@ class PortfolioController extends RESTController {
 					];
 				}
 
-				$new_post                 = [];
-				$new_post['id']           = $post_id;
-				$new_post['title']        = get_the_title( $post_id );
-				$new_post['permalink']    = get_permalink( $post_id );
-				$new_post['thumbnails']   = $has_post_thumbnail ? $thumbnails : null;
-				$new_post['categories']   = $categories;
-				$new_post['classNames']   = get_post_class( '', $post_id );
-				$new_post['classNames'][] = 'et_pb_portfolio_item';
-				$posts[]                  = $new_post;
+				$new_post               = [];
+				$new_post['id']         = $post_id;
+				$new_post['title']      = get_the_title( $post_id );
+				$new_post['permalink']  = get_permalink( $post_id );
+				$new_post['thumbnails'] = $has_post_thumbnail ? $thumbnails : null;
+				$new_post['categories'] = $categories;
+				$post_default_classes   = get_post_class( 'et_pb_portfolio_item', $post_id );
+				$new_post['classNames'] = array_merge( [ 'et_pb_grid_item' ], $post_default_classes );
+				$posts[]                = $new_post;
 			}
 		}
 

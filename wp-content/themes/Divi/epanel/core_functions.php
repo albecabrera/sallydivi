@@ -482,7 +482,7 @@ if ( ! function_exists( 'et_build_epanel' ) ) {
 															// get the custom css value from WP custom CSS option if supported
 															if ( ( $shortname . '_custom_css' ) === $value['id'] && function_exists( 'wp_get_custom_css') ) {
 																$et_textarea_value = wp_get_custom_css();
-																$et_textarea_value = strip_tags( $et_textarea_value );
+																$et_textarea_value = et_core_sanitize_custom_css_meta_value( $et_textarea_value );
 															} else {
 																$et_textarea_value = et_get_option( $value['id'], '', '', false, $is_new_global_setting, $global_setting_main_name, $global_setting_sub_name );
 																$et_textarea_value = ! empty( $et_textarea_value ) ? $et_textarea_value : $value['std'];
@@ -990,10 +990,10 @@ if ( ! function_exists( 'epanel_save_data' ) ) {
 											if ( function_exists( 'wp_update_custom_css_post' ) ) {
 												// Data sent via AJAX is automatically escaped by browser, thus it needs
 												// to be unslashed befor being saved into custom CSS post
-												wp_update_custom_css_post( wp_unslash( wp_strip_all_tags( $_POST[ $value['id'] ] ) ) );
+												wp_update_custom_css_post( et_core_sanitize_custom_css_meta_value( wp_unslash( $_POST[ $value['id'] ] ) ) );
 											} else {
 												// don't strip slashes from custom css, it should be possible to use \ for icon fonts
-												$et_option_new_value = wp_strip_all_tags( $_POST[ $value['id'] ] );
+												$et_option_new_value = et_core_sanitize_custom_css_meta_value( $_POST[ $value['id'] ] );
 											}
 										} else {
 											$et_option_new_value = wp_strip_all_tags( stripslashes( $_POST[ $value['id'] ] ) );

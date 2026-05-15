@@ -26,6 +26,31 @@ use WP_Error;
  * @since ??
  */
 class WooCommerceRelatedProductsController extends RESTController {
+	/**
+	 * Normalize includeCategories request value into a string array.
+	 *
+	 * Supports array payloads only to keep REST contract strict and explicit.
+	 *
+	 * @since ??
+	 *
+	 * @param mixed $param Raw include categories request value.
+	 *
+	 * @return array
+	 */
+	private static function _normalize_include_categories_param( $param ): array {
+		if ( is_array( $param ) ) {
+			return array_values(
+				array_filter(
+					array_map( 'sanitize_text_field', $param ),
+					static function ( $category ) {
+						return is_string( $category ) && '' !== $category;
+					}
+				)
+			);
+		}
+
+		return [];
+	}
 
 	/**
 	 * Retrieve the rendered HTML for the WooCommerce Related Products module.
@@ -59,7 +84,7 @@ class WooCommerceRelatedProductsController extends RESTController {
 
 		$conditional_tags = $common_required_params['conditional_tags'];
 
-		$include_categories = $request->get_param( 'includeCategories' );
+		$include_categories = self::_normalize_include_categories_param( $request->get_param( 'includeCategories' ) );
 		$show_price         = $request->get_param( 'showPrice' );
 		$offset_number      = $request->get_param( 'offsetNumber' );
 		$posts_number       = $request->get_param( 'postsNumber' );
@@ -130,7 +155,7 @@ class WooCommerceRelatedProductsController extends RESTController {
 				'type'              => 'array',
 				'required'          => false,
 				'sanitize_callback' => function ( $param ) {
-					return array_map( 'sanitize_text_field', $param );
+					return self::_normalize_include_categories_param( $param );
 				},
 				'validate_callback' => function ( $param ) {
 					/**

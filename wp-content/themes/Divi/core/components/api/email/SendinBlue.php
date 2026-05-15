@@ -76,31 +76,42 @@ class ET_Core_API_Email_SendinBlue extends ET_Core_API_Email_Provider {
 			return $args;
 		}
 
-		$fields      = $args['custom_fields'];
-		$fileds_info = $args['fileds_info'];
+		$fields            = (array) $args['custom_fields'];
+		$fileds_info       = (array) self::$_->array_get( $args, 'fileds_info', array() );
+		$normalized_fields = array();
+
+		// Internal metadata used only for field resolution, should not be sent to provider API.
+		unset( $args['fileds_info'] );
+
+		foreach ( array_keys( $fileds_info ) as $api_field_name ) {
+			$normalized_fields[ strtolower( (string) $api_field_name ) ] = $api_field_name;
+		}
 
 		unset( $args['custom_fields'] );
 
 		foreach ( $fields as $field_id => $value ) {
-			if ( ! isset( $fileds_info[ $field_id ] ) ) {
+			$key         = (string) $field_id;
+			$resolved_id = isset( $fileds_info[ $key ] ) ? $key : ( $normalized_fields[ strtolower( $key ) ] ?? null );
+
+			if ( null === $resolved_id ) {
 				continue;
 			}
 
 			if ( is_array( $value ) && $value ) {
-				// This is a multiple choice field (eg. checkbox, radio, select)
+				// This is a multiple choice field (eg. checkbox, radio, select).
 				$value = array_values( $value );
 
 				if ( count( $value ) > 1 ) {
 					$value = implode( ',', $value );
 				} else {
-					$type = self::$_->array_get( $fileds_info, "{$field_id}.native_type" );
+					$type = self::$_->array_get( $fileds_info, "{$resolved_id}.native_type" );
 
 					// User checked the checkbox, when native type is Boolean.
 					$value = 'boolean' === $type ? true : array_pop( $value );
 				}
 			}
 
-			self::$_->array_set( $args, "attributes.{$field_id}", $value );
+			self::$_->array_set( $args, "attributes.{$resolved_id}", $value );
 		}
 
 		return $args;

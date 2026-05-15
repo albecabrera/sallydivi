@@ -1,9 +1,3 @@
-const SEVERITY_TO_CONVENTIONAL = {
-  Blocker: { label: "issue", decorations: ["blocking"] },
-  Concern: { label: "issue", decorations: [] },
-  Nit: { label: "nitpick", decorations: ["non-blocking"] },
-};
-
 const normalizeLabel = (value) =>
   null == value || "" === String(value).trim()
     ? null
@@ -17,12 +11,17 @@ const normalizeDecorations = (value) =>
     : null;
 
 export const resolveConventionalMeta = (finding) => {
-  const fallback = { label: "note", decorations: [] };
-  const severityConfig = SEVERITY_TO_CONVENTIONAL[finding?.severity] || fallback;
-  const label = normalizeLabel(finding?.comment_label) || severityConfig.label;
+  const fallback = { label: "issue", decorations: ["blocking"] };
+  const label = normalizeLabel(finding?.comment_label) || fallback.label;
+  const explicitDecorations = normalizeDecorations(finding?.comment_decorations);
+  const defaultDecorations =
+    label === "issue"
+      ? fallback.decorations
+      : label === "suggestion"
+        ? ["non-blocking"]
+        : [];
   const decorations =
-    normalizeDecorations(finding?.comment_decorations) ??
-    severityConfig.decorations;
+    explicitDecorations ?? defaultDecorations;
   return {
     label: label || fallback.label,
     decorations: Array.isArray(decorations) ? decorations : [],

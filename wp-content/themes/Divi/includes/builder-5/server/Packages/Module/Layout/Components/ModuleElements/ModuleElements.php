@@ -1623,6 +1623,7 @@ class ModuleElements {
 				break;
 
 			case 'content':
+				$children          = $args['children'] ?? null;
 				$has_value_content = ModuleUtils::has_value(
 					$element_attr['innerContent'] ?? [],
 					[
@@ -1631,7 +1632,9 @@ class ModuleElements {
 				);
 
 				// Render if: content has value, OR empty values are allowed, OR children are provided.
-				$has_children = ! empty( $args['children'] );
+				$nested_children_content             = is_string( $children ) ? $children : '';
+				$has_children                        = ! empty( $children );
+				$render_nested_children_with_payload = '' !== $nested_children_content;
 
 				if ( $has_value_content || $allow_empty_value || $has_children ) {
 					$target_element       = $this->_map_attr_name_to_target_element( $attr_name );
@@ -1650,7 +1653,7 @@ class ModuleElements {
 									'attrName'      => $args['attrName'] ?? null,
 									'attr'          => $args['attr'] ?? null,
 									'subName'       => $attr_sub_name,
-									'valueResolver' => function ( $value, $resolver_args ) use ( $args, $element_settings ) {
+									'valueResolver' => function ( $value, $resolver_args ) use ( $args, $element_settings, $nested_children_content, $render_nested_children_with_payload ) {
 										$value_resolver = $args['valueResolver'] ?? null;
 
 										if ( null !== $value_resolver ) {
@@ -1688,6 +1691,10 @@ class ModuleElements {
 										if ( $allow_shortcodes ) {
 											$value = shortcode_unautop( $value );
 											$value = do_shortcode( $value );
+										}
+
+										if ( $render_nested_children_with_payload ) {
+											return $value . $nested_children_content;
 										}
 
 										return $value;
@@ -1744,12 +1751,17 @@ class ModuleElements {
 					//
 					// TEST: See ModuleElementsChildrenSanitizationTest.php for security validation.
 					// REGEX PROOF: https://regex101.com/r/2ILQCp/1.
-					if ( ! empty( $args['children'] ) && ! $skip_attr_children && $this->_is_attr_array( $args ) ) {
-									$element = preg_replace(
-										'/(<\/' . preg_quote( $tag_name, '/' ) . '>)$/',
-										str_replace( '$', '\\$', $args['children'] ) . '$1',
-										$element
-									);
+					if (
+						! empty( $children ) &&
+						! $skip_attr_children &&
+						$this->_is_attr_array( $args ) &&
+						! $render_nested_children_with_payload
+					) {
+						$element = preg_replace(
+							'/(<\/' . preg_quote( $tag_name, '/' ) . '>)$/',
+							str_replace( '$', '\\$', $children ) . '$1',
+							$element
+						);
 					}
 				}
 				break;

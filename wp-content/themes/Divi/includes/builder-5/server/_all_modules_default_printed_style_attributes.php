@@ -272,6 +272,35 @@ return [
             ]
         ]
     ],
+    'breadcrumbs' => [
+        'trail' => [
+            'decoration' => [
+                'font' => [
+                    'font' => [
+                        'desktop' => [
+                            'value' => [
+                                'lineHeight' => '1.7em'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ],
+        'separator' => [
+            'decoration' => [
+                'spacing' => [
+                    'desktop' => [
+                        'value' => [
+                            'margin' => [
+                                'left' => '0.35em',
+                                'right' => '0.35em'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ],
     'button' => [],
     'canvas-portal' => [],
     'circle-counter' => [

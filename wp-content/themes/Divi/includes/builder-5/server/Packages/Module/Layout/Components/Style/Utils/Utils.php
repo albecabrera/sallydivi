@@ -421,7 +421,7 @@ class Utils {
 	 * Get CSS At-rules based on given breakpoint name.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetAtRules getAtRules}
+	 * {@link /api/js/divi-module/functions/GetAtRules getAtRules}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??
@@ -495,7 +495,7 @@ class Utils {
 	 * | Phone   |   ^   |  <--  |  <--   |
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetCurrentImportant getCurrentImportant}
+	 * {@link /api/js/divi-module/functions/GetCurrentImportant getCurrentImportant}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??
@@ -548,7 +548,7 @@ class Utils {
 	 * | Phone   |   ^   |  <--  |  <--   |
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetCurrentPropertySelectorNames getCurrentPropertySelectorNames}
+	 * {@link /api/js/divi-module/functions/GetCurrentPropertySelectorNames getCurrentPropertySelectorNames}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??
@@ -589,7 +589,7 @@ class Utils {
 	 * We then update the values in the important array and return the updated important array.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetExpandedShorthandImportant getExpandedShorthandImportant}
+	 * {@link /api/js/divi-module/functions/GetExpandedShorthandImportant getExpandedShorthandImportant}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??
@@ -667,7 +667,7 @@ class Utils {
 	 * Get CSS ruleset based on given selector and declaration.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetRuleset getRuleset}
+	 * {@link /api/js/divi-module/functions/GetRuleset getRuleset}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??
@@ -696,7 +696,7 @@ class Utils {
 	 * Get CSS selector from property selectors based on sets of selectors, current state, and property name given.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetSelectorOfPropertySelectors getSelectorOfPropertySelectors}
+	 * {@link /api/js/divi-module/functions/GetSelectorOfPropertySelectors getSelectorOfPropertySelectors}
 	 * in `@divi/module` package.
 	 *
 	 * @param array $args {
@@ -799,7 +799,7 @@ class Utils {
 	 * Get CSS selector based on sets of selectors, breakpoint, and state is given.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetSelector getSelector}
+	 * {@link /api/js/divi-module/functions/GetSelector getSelector}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??
@@ -904,7 +904,7 @@ class Utils {
 	 * If a non-string value is provided for `atRules`, the `ruleset` is returned as-is.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetStatement getStatement}
+	 * {@link /api/js/divi-module/functions/GetStatement getStatement}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??
@@ -937,7 +937,7 @@ class Utils {
 	 * Initially created to group declaration that has property-specific selector.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GroupDeclarationsByPropertySelectorNames groupDeclarationsByPropertySelectorNames}
+	 * {@link /api/js/divi-module/functions/GroupDeclarationsByPropertySelectorNames groupDeclarationsByPropertySelectorNames}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??
@@ -1020,7 +1020,7 @@ class Utils {
 	 * Utils component to wrap style component output.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/StyleWrapper StyleWrapper}
+	 * {@link /api/js/divi-module/functions/StyleWrapper StyleWrapper}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??
@@ -1049,7 +1049,7 @@ class Utils {
 	 * Unpack property selectors shorthand map into property selectors.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/UnpackPropertySelectorsShorthandMap unpackPropertySelectorsShorthandMap}
+	 * {@link /api/js/divi-module/functions/UnpackPropertySelectorsShorthandMap unpackPropertySelectorsShorthandMap}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??

@@ -29,7 +29,7 @@ The orchestrator aggregates and enforces budgets to produce two outputs:
 ```
 
 Notes:
-- PR comments omit nits by default.
+- The CI workflow posts only **issue (blocking)** findings to PR comments by default. High-confidence suggestions may also be posted, but non-blocking feedback is otherwise kept out of PR comments.
 - Summary-only mode outputs a single line in `pr_comment.summary`.
 - PR comment markdown renders findings using Conventional Comments format.
 - `pr_comment.summary` counts Conventional Comment labels, not severities.

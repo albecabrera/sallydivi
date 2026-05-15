@@ -28,7 +28,7 @@ class DisabledOnStyle {
 	 * Get disabled-on style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/DisabledOnStyle DisabledOnStyle} in
+	 * {@link /api/js/divi-module/functions/DisabledOnStyle DisabledOnStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

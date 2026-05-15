@@ -30,7 +30,7 @@ class ElementComponents {
 	 * This function takes an array of arguments and returns a string containing the rendered background element.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/ElementClassnames ElementComponents} in
+	 * {@link /api/js/divi-module/functions/ElementClassnames ElementComponents} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

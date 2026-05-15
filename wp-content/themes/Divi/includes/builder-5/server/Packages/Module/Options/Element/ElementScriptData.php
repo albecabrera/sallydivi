@@ -38,7 +38,7 @@ class ElementScriptData {
 	 * Set the attributes and options and generate script data for a given element.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/UseElementScriptData useElementScriptData} in
+	 * {@link /api/js/divi-module/functions/UseElementScriptData useElementScriptData} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

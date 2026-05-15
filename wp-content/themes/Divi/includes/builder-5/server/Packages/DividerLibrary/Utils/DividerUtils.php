@@ -88,7 +88,7 @@ class DividerUtils {
 	 * Default viewBox Settings for Divider Style.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-divider-library/functions/getDividerDefaultViewboxSettings getDividerDefaultViewboxSettings}
+	 * {@link /api/js/divi-divider-library/functions/getDividerDefaultViewboxSettings getDividerDefaultViewboxSettings}
 	 * in `@divi/divider-library` package.
 	 *
 	 * @since ??
@@ -111,7 +111,7 @@ class DividerUtils {
 	 * Get SVG Settings for a Divider Style.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-divider-library/variables/getDividerJson getDividerJson}
+	 * {@link /api/js/divi-divider-library/variables/getDividerJson getDividerJson}
 	 * in `@divi/divider-library` package.
 	 *
 	 * @since ??
@@ -138,7 +138,7 @@ class DividerUtils {
 	 * Divider SVG Settings.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-divider-library/variables/getDividerSettings getDividerSettings}
+	 * {@link /api/js/divi-divider-library/variables/getDividerSettings getDividerSettings}
 	 * in `@divi/divider-library` package.
 	 *
 	 * @since ??
@@ -246,7 +246,7 @@ class DividerUtils {
 	 * Divider Style Options.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-divider-library/variables/getDividerStyleOptions getDividerStyleOptions}
+	 * {@link /api/js/divi-divider-library/variables/getDividerStyleOptions getDividerStyleOptions}
 	 * in `@divi/divider-library` package.
 	 *
 	 * @since ??
@@ -291,7 +291,7 @@ class DividerUtils {
 	 * SVG for a Divider style.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-divider-library/variables/getDividerSvg getDividerSvg}
+	 * {@link /api/js/divi-divider-library/variables/getDividerSvg getDividerSvg}
 	 * in `@divi/divider-library` package.
 	 *
 	 * @since ??

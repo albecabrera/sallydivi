@@ -34,7 +34,7 @@ class BackgroundComponents {
 	 * The function will return Video, Parallax, Mask, and Pattern, each added if it is enabled in the provided settings.
 	 *
 	 *  This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BackgroundComponent BackgroundComponent} in
+	 * {@link /api/js/divi-module/functions/BackgroundComponent BackgroundComponent} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

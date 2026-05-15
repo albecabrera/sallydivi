@@ -31,7 +31,7 @@ class DividersStyle {
 	 * Get border style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BorderStyle BorderStyle} in
+	 * {@link /api/js/divi-module/functions/BorderStyle BorderStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

@@ -31,7 +31,7 @@ class BlockquoteFontStyle {
 	 * the blockquote element and its children.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BlockquoteFontStyle BlockquoteFontStyle} in
+	 * {@link /api/js/divi-module/functions/BlockquoteFontStyle BlockquoteFontStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @param array $args {

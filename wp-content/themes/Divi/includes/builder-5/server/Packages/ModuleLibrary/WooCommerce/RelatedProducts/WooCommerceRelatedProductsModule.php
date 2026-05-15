@@ -53,6 +53,14 @@ use ET\Builder\Packages\ModuleUtils\ModuleUtils;
  * @see DependencyInterface
  */
 class WooCommerceRelatedProductsModule implements DependencyInterface {
+	/**
+	 * Context transient TTL for related-products cache fingerprinting.
+	 *
+	 * Keep this bounded so context entries do not become non-expiring/autoloaded options.
+	 *
+	 * @var int
+	 */
+	const RELATED_PRODUCTS_CONTEXT_CACHE_TTL = DAY_IN_SECONDS;
 
 	/**
 	 * Static properties for the WooCommerceRelatedProducts module.
@@ -393,7 +401,7 @@ class WooCommerceRelatedProductsModule implements DependencyInterface {
 	 * This function assigns variables and sets script data options for the module.
 	 *
 	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
 	 * located in `@divi/module-library`.
 	 *
 	 * @since ??
@@ -690,7 +698,7 @@ class WooCommerceRelatedProductsModule implements DependencyInterface {
 	 * This function retrieves the custom CSS fields defined for the Divi WooCommerceRelatedProducts module.
 	 *
 	 * This function is equivalent to the JavaScript constant
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs cssFields}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs cssFields}
 	 * located in `@divi/module-library`. Note that this function does not have
 	 * a `label` property on each array item, unlike the JS const cssFields.
 	 *
@@ -765,18 +773,156 @@ class WooCommerceRelatedProductsModule implements DependencyInterface {
 	 * @return array
 	 */
 	public static function set_related_products_categories( array $term_ids ): array {
-		$include_cats = ArrayUtility::get_value( self::$static_props, 'include_categories', [] );
-		$meta_cats    = [ 'all', 'current' ];
+		$normalized_include_categories = self::_normalize_include_categories(
+			ArrayUtility::get_value( self::$static_props, 'include_categories', [] )
+		);
+		$include_mode                  = $normalized_include_categories['mode'];
+		$include_cats                  = $normalized_include_categories['categories'];
 
-		// WooCommerce by default handles All & Current based on the global $product.
-		// So return the filtered $term_ids to let WooCommerce take control.
-		$has_meta_cat = is_array( $include_cats ) && array_intersect( $include_cats, $meta_cats );
-		if ( $has_meta_cat || in_array( $include_cats, $meta_cats, true ) || empty( $include_cats ) ) {
+		if ( 'all' === $include_mode ) {
+			return self::_get_all_product_category_ids();
+		}
+
+		// WooCommerce by default handles Current Category based on the global $product.
+		if ( 'current' === $include_mode || 'none' === $include_mode ) {
 			return $term_ids;
 		}
 
 		// Return user-selected categories.
 		return $include_cats;
+	}
+
+	/**
+	 * Normalize include_categories values from module attributes.
+	 *
+	 * @since ??
+	 *
+	 * @param mixed $include_categories Raw include categories value.
+	 *
+	 * @return array{
+	 *     mode: string,
+	 *     categories: array
+	 * }
+	 */
+	private static function _normalize_include_categories( $include_categories ): array {
+		$normalized_include_categories = [
+			'mode'       => 'none',
+			'categories' => [],
+		];
+
+		if ( ! is_array( $include_categories ) ) {
+			if ( 'all' === $include_categories ) {
+				$normalized_include_categories['mode'] = 'all';
+			} elseif ( 'current' === $include_categories ) {
+				$normalized_include_categories['mode'] = 'current';
+			} elseif ( is_string( $include_categories ) && '' !== $include_categories ) {
+				$normalized_include_categories['mode']       = 'explicit';
+				$normalized_include_categories['categories'] = [ $include_categories ];
+			}
+
+			return $normalized_include_categories;
+		}
+
+		if ( in_array( 'all', $include_categories, true ) ) {
+			$normalized_include_categories['mode'] = 'all';
+
+			return $normalized_include_categories;
+		}
+
+		$selected_categories = array_values(
+			array_filter(
+				$include_categories,
+				static function ( $category ) {
+					return is_scalar( $category ) && 'current' !== $category && '' !== (string) $category;
+				}
+			)
+		);
+
+		if ( empty( $selected_categories ) && in_array( 'current', $include_categories, true ) ) {
+			$normalized_include_categories['mode'] = 'current';
+
+			return $normalized_include_categories;
+		}
+
+		if ( ! empty( $selected_categories ) ) {
+			$normalized_include_categories['mode']       = 'explicit';
+			$normalized_include_categories['categories'] = $selected_categories;
+		}
+
+		return $normalized_include_categories;
+	}
+
+	/**
+	 * Builds a deterministic fingerprint for related-products category context.
+	 *
+	 * @since ??
+	 *
+	 * @param array $normalized_include_categories Normalized include categories payload.
+	 *
+	 * @return string
+	 */
+	private static function _get_related_products_cache_context_fingerprint( array $normalized_include_categories ): string {
+		$include_mode = $normalized_include_categories['mode'] ?? 'none';
+
+		if ( 'explicit' !== $include_mode ) {
+			return $include_mode;
+		}
+
+		$selected_categories = array_map( 'strval', $normalized_include_categories['categories'] ?? [] );
+
+		sort( $selected_categories, SORT_STRING );
+
+		return $include_mode . ':' . implode( ',', $selected_categories );
+	}
+
+	/**
+	 * Invalidates WooCommerce related-products cache when category context changes.
+	 *
+	 * @since ??
+	 *
+	 * @param int   $product_id                   Current product ID.
+	 * @param array $normalized_include_categories Normalized include categories payload.
+	 *
+	 * @return void
+	 */
+	private static function _maybe_invalidate_related_products_cache( int $product_id, array $normalized_include_categories ): void {
+		if ( 0 >= $product_id ) {
+			return;
+		}
+
+		$context_transient_name = 'et_wc_related_context_' . $product_id;
+		$context_fingerprint    = self::_get_related_products_cache_context_fingerprint( $normalized_include_categories );
+		$cached_context         = get_transient( $context_transient_name );
+
+		if ( $context_fingerprint === $cached_context ) {
+			return;
+		}
+
+		delete_transient( 'wc_related_' . $product_id );
+		set_transient( $context_transient_name, $context_fingerprint, self::RELATED_PRODUCTS_CONTEXT_CACHE_TTL );
+	}
+
+	/**
+	 * Get all product category IDs.
+	 *
+	 * @since ??
+	 *
+	 * @return array
+	 */
+	private static function _get_all_product_category_ids(): array {
+		$category_ids = get_terms(
+			[
+				'taxonomy'   => 'product_cat',
+				'fields'     => 'ids',
+				'hide_empty' => false,
+			]
+		);
+
+		if ( is_wp_error( $category_ids ) || ! is_array( $category_ids ) ) {
+			return [];
+		}
+
+		return array_map( 'absint', $category_ids );
 	}
 
 	/**
@@ -918,7 +1064,7 @@ class WooCommerceRelatedProductsModule implements DependencyInterface {
 	 * // Returns the related products for the product with ID 123.
 	 * ```
 	 */
-	public static function get_related_products( array $args = [], array $conditional_tags = [] ) {
+	public static function get_related_products( array $args = [], array $conditional_tags = [] ): string {
 		/*
 		 * User selected posts-per-page, columns and orderby values are passed to WooCommerce
 		 * using the `woocommerce_output_related_products_args` filter.
@@ -932,12 +1078,18 @@ class WooCommerceRelatedProductsModule implements DependencyInterface {
 			$args['product'] = WooCommerceUtils::get_product_id( 'current' );
 		}
 
-		$include_cats    = ArrayUtility::get_value( $args, 'include_categories', [] );
-		$is_meta_cat     = is_array( $include_cats ) && 1 === count( $include_cats ) && in_array( $include_cats[0], [ 'all', 'current' ], true );
-		$include_cats    = $is_meta_cat ? $include_cats[0] : $include_cats;
-		$is_include_cats = is_array( $include_cats ) && count( $include_cats ) > 0;
-		$offset_number   = ArrayUtility::get_value( $args, 'offset_number', 0 );
-		$show_price      = ArrayUtility::get_value( $args, 'show_price', 'on' );
+		$normalized_include_categories = self::_normalize_include_categories( ArrayUtility::get_value( $args, 'include_categories', [] ) );
+		$is_include_cats               = in_array( $normalized_include_categories['mode'], [ 'all', 'explicit' ], true );
+		$should_disable_tag_matching   = in_array( $normalized_include_categories['mode'], [ 'all', 'current', 'explicit' ], true );
+		$offset_number                 = ArrayUtility::get_value( $args, 'offset_number', 0 );
+		$show_price                    = ArrayUtility::get_value( $args, 'show_price', 'on' );
+		$product_id                    = WooCommerceUtils::get_product_id_from_attributes( $args );
+
+		/*
+		 * WooCommerce related-product cache is keyed by product ID only,
+		 * so we reset it whenever include-categories context changes.
+		 */
+		self::_maybe_invalidate_related_products_cache( $product_id, $normalized_include_categories );
 
 		// Force set product's class to WooCommerceProductVariablePlaceholder
 		// in TB, so related product can output visible content based on pre-filled value in TB.
@@ -967,11 +1119,6 @@ class WooCommerceRelatedProductsModule implements DependencyInterface {
 		}
 
 		if ( $is_include_cats ) {
-			$product_id = WooCommerceUtils::get_product_id_from_attributes( $args );
-			// To include only selected categories the cached transient should be flushed,
-			// so WooCommerce can compute the categories and cache it again.
-			delete_transient( 'wc_related_' . $product_id );
-
 			add_filter(
 				'woocommerce_get_related_product_cat_terms',
 				[
@@ -980,9 +1127,10 @@ class WooCommerceRelatedProductsModule implements DependencyInterface {
 					'set_related_products_categories',
 				]
 			);
+		}
 
-			// Also disable related Products by tag
-			// so Products from other categories are not included.
+		if ( $should_disable_tag_matching ) {
+			// Disable tag-based matching so current/selected category scopes stay strict.
 			add_filter( 'woocommerce_product_related_posts_relate_by_tag', '__return_false' );
 		}
 
@@ -1029,7 +1177,9 @@ class WooCommerceRelatedProductsModule implements DependencyInterface {
 					'set_related_products_categories',
 				]
 			);
+		}
 
+		if ( $should_disable_tag_matching ) {
 			remove_filter( 'woocommerce_product_related_posts_relate_by_tag', '__return_false' );
 		}
 

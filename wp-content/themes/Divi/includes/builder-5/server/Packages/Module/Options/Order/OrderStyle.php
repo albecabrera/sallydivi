@@ -28,7 +28,7 @@ class OrderStyle {
 	 * Get order style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/OrderStyle OrderStyle} in
+	 * {@link /api/js/divi-module/functions/OrderStyle OrderStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

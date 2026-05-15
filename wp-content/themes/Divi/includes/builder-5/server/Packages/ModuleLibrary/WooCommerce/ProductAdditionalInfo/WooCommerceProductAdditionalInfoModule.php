@@ -224,7 +224,7 @@ class WooCommerceProductAdditionalInfoModule implements DependencyInterface {
 	 * This function assigns variables and sets script data options for the module.
 	 *
 	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
 	 * located in `@divi/module-library`.
 	 *
 	 * @since ??
@@ -465,7 +465,7 @@ class WooCommerceProductAdditionalInfoModule implements DependencyInterface {
 	 * This function retrieves the custom CSS fields defined for the Divi WooCommerceProductAdditionalInfo module.
 	 *
 	 * This function is equivalent to the JavaScript constant
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs cssFields}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs cssFields}
 	 * located in `@divi/module-library`. Note that this function does not have
 	 * a `label` property on each array item, unlike the JS const cssFields.
 	 *

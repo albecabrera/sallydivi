@@ -32,7 +32,7 @@ class BackgroundStyle {
 	 * Get background style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BackgroundStyle BackgroundStyle} in
+	 * {@link /api/js/divi-module/functions/BackgroundStyle BackgroundStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

@@ -32,7 +32,7 @@ class LayoutStyle {
 	 * Get layout style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/LayoutStyle LayoutStyle} in
+	 * {@link /api/js/divi-module/functions/LayoutStyle LayoutStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

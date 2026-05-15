@@ -85,6 +85,49 @@ class PageSettings implements DependencyInterface {
 	}
 
 	/**
+	 * Resolve effective page gutter width and default status using explicit/default contract.
+	 *
+	 * @since ??
+	 *
+	 * @param int      $post_id       Post ID.
+	 * @param int|null $default_value Optional. Default gutter value to use when inherited.
+	 *                                If null, uses Theme Customizer gutter setting.
+	 *
+	 * @return array {
+	 *     Resolved gutter width information.
+	 *
+	 *     @type bool $is_default Whether the gutter width is inherited from customizer (true)
+	 *                            or an explicit page override (false).
+	 *     @type int  $value      The effective gutter width value.
+	 * }
+	 */
+	public static function resolve_page_gutter_width( int $post_id, ?int $default_value = null ): array {
+		$customizer_gutter        = $default_value ?? intval( et_get_option( 'gutter_width', '3' ) );
+		$page_custom_gutter       = get_post_meta( $post_id, '_et_pb_gutter_width', true );
+		$page_custom_gutter_width = intval( $page_custom_gutter );
+		$gutter_is_default_meta   = get_post_meta( $post_id, '_et_pb_page_gutter_width_is_default', true );
+		$has_default_meta         = '' !== $gutter_is_default_meta;
+
+		// If explicitness meta exists, honor it.
+		// Otherwise treat legacy pages as inherited-safe so stale page meta does not pin gutter width.
+		$is_default = $has_default_meta
+			? ( true === filter_var( $gutter_is_default_meta, FILTER_VALIDATE_BOOLEAN ) )
+			: true;
+
+		if ( $is_default || 0 === $page_custom_gutter_width ) {
+			return [
+				'is_default' => true,
+				'value'      => $customizer_gutter,
+			];
+		}
+
+		return [
+			'is_default' => false,
+			'value'      => $page_custom_gutter_width,
+		];
+	}
+
+	/**
 	 * Register a page settings item.
 	 *
 	 * @since ??

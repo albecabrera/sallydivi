@@ -224,26 +224,9 @@ class DynamicAssetsContent {
 			return $content;
 		}
 
-		// Get all appended canvas content (both interaction-targeted and explicitly appended).
-		// This includes:
-		// 1. Canvases with modules targeted by interactions from the main content.
-		// 2. Canvases explicitly appended above or below the main canvas.
-		$canvas_content = OffCanvasHooks::get_all_appended_canvas_content( $post_id, $content );
-
-		// For Theme Builder templates, canvases are stored with the template post ID as parent,
-		// not the current page post ID. Check for canvases using all active template post IDs
-		// (header, body, and footer) to ensure early detection works for all template types.
-		// Use existing utility to get all active Theme Builder template IDs.
-		$tb_template_ids = DynamicAssetsUtils::get_theme_builder_template_ids();
-		foreach ( $tb_template_ids as $tb_template_id ) {
-			// Only check TB template if it's different from the current post ID.
-			if ( $tb_template_id !== $post_id ) {
-				$tb_canvas_content = OffCanvasHooks::get_all_appended_canvas_content( $tb_template_id, $content );
-				if ( $tb_canvas_content ) {
-					$canvas_content .= $tb_canvas_content;
-				}
-			}
-		}
+		// Get all appended canvas content (both interaction-targeted and explicitly appended)
+		// for the current post and active Theme Builder templates.
+		$canvas_content = OffCanvasHooks::get_all_appended_canvas_content_for_post_and_templates( $post_id, $content );
 
 		if ( $canvas_content ) {
 			// Append canvas content to post content so DynamicAssets can process it.

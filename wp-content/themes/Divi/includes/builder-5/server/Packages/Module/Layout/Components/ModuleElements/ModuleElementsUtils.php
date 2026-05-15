@@ -61,7 +61,7 @@ class ModuleElementsUtils {
 	 * Interpolate a selector template with a value.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/InterpolateSelector interpolateSelector} in
+	 * {@link /api/js/divi-module/functions/InterpolateSelector interpolateSelector} in
 	 * `@divi/module` packages.
 	 *
 	 * @since ??

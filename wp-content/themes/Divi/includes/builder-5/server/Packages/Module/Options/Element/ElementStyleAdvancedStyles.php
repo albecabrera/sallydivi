@@ -49,7 +49,7 @@ class ElementStyleAdvancedStyles {
 	 * Get style component based on style component name.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/ElementStyle/advanced-styles/utils/get-style-components getStyleComponents} in
+	 * {@link /api/js/divi-module/functions/ElementStyle/advanced-styles/utils/get-style-components getStyleComponents} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -85,7 +85,7 @@ class ElementStyleAdvancedStyles {
 	 * Get style component map.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/ElementStyle/advanced-styles/utils/style-component-map styleComponentMap} in
+	 * {@link /api/js/divi-module/functions/ElementStyle/advanced-styles/utils/style-component-map styleComponentMap} in
 	 * `@divi/module` package.
 	 *
 	 * There are missing style components in this trait:
@@ -203,7 +203,7 @@ class ElementStyleAdvancedStyles {
 	 * Get advanced styles style declaration.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/ElementStyle/advanced-styles AdvancedStyles} in
+	 * {@link /api/js/divi-module/functions/ElementStyle/advanced-styles AdvancedStyles} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

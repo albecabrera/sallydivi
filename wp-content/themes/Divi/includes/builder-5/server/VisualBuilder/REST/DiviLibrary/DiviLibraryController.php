@@ -712,11 +712,11 @@ class DiviLibraryController extends RESTController {
 		}
 
 		// Save layout to the database.
-		$new_layout_meta = et_pb_submit_layout( $args );
+		$new_layout_meta = json_decode( et_pb_submit_layout( $args ), true );
 
 		// Mark imported layout as D5 format.
-		if ( ! empty( $new_layout_meta['layout_id'] ) ) {
-			update_post_meta( $new_layout_meta['layout_id'], '_et_pb_use_divi_5', 'on' );
+		if ( ! empty( $new_layout_meta['post_id'] ) ) {
+			update_post_meta( (int) $new_layout_meta['post_id'], '_et_pb_use_divi_5', 'on' );
 		}
 
 		foreach ( [ 'layout_category', 'layout_tag' ] as $taxonomy ) {
@@ -760,7 +760,6 @@ class DiviLibraryController extends RESTController {
 			$updated_terms[ $taxonomy ] = $clean_terms_array;
 		}
 
-		$new_layout_meta      = json_decode( $new_layout_meta, true );
 		$saved_layout_content = get_post_field( 'post_content', $new_layout_meta['post_id'], 'raw' );
 		$verification         = $layout_content === $saved_layout_content;
 
@@ -2223,7 +2222,7 @@ class DiviLibraryController extends RESTController {
 		if ( ! empty( $cloud_content['images'] ) ) {
 			foreach ( $cloud_content['images'] as $url => $img ) {
 				// Use strpos because str_contains() is not present in PHP version 7.4 or earlier.
-				if ( strpos( $content, $url ) !== false ) {
+				if ( str_contains( $content, $url ) ) {
 					$images[ $url ] = $img;
 				}
 			}
@@ -2232,7 +2231,7 @@ class DiviLibraryController extends RESTController {
 		if ( ! empty( $cloud_content['presets'] ) ) {
 			foreach ( $cloud_content['presets'] as $module => $preset ) {
 				// Use strpos because str_contains() is not present in PHP version 7.4 or earlier.
-				if ( strpos( $content, $module ) !== false ) {
+				if ( str_contains( $content, $module ) ) {
 					$presets[ $module ] = $preset;
 				}
 			}
@@ -2241,7 +2240,7 @@ class DiviLibraryController extends RESTController {
 		if ( ! empty( $cloud_content['global_colors'] ) ) {
 			foreach ( $cloud_content['global_colors'] as $key => $global_color ) {
 				// Use strpos because str_contains() is not present in PHP version 7.4 or earlier.
-				if ( strpos( $content, $global_color[0] ) !== false ) {
+				if ( str_contains( $content, $global_color[0] ) ) {
 					$global_colors[ $key ] = $global_color;
 				}
 			}
@@ -2451,7 +2450,7 @@ class DiviLibraryController extends RESTController {
 		if ( 'convert_module_to_section' === $action ) {
 			$module_type = get_post_meta( $post_id, '_et_pb_module_type', true );
 
-			if ( false !== strpos( $module_type, 'et_pb_fullwidth' ) ) {
+			if ( str_contains( $module_type, 'et_pb_fullwidth' ) ) {
 				// For fullwidth module, there is no row and column.
 				$wrapper_start = $fullwidth_wrapper;
 				$wrapper_end   = $section_end;

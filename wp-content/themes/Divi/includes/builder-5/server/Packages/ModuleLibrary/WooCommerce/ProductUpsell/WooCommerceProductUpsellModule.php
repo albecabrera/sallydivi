@@ -339,7 +339,7 @@ class WooCommerceProductUpsellModule implements DependencyInterface {
 	 * It ensures proper initialization of module elements and their associated scripts.
 	 *
 	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
 	 * located in `@divi/module-library`.
 	 *
 	 * @since ??
@@ -711,7 +711,7 @@ class WooCommerceProductUpsellModule implements DependencyInterface {
 	 * specific parts of the module for styling.
 	 *
 	 * This function is equivalent to the JavaScript constant
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs cssFields}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs cssFields}
 	 * located in `@divi/module-library`. Note that this function does not have
 	 * a `label` property on each array item, unlike the JS const cssFields.
 	 *

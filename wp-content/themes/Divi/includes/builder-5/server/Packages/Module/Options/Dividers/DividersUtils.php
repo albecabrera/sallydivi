@@ -30,7 +30,7 @@ class DividersUtils {
 	 * are constructed based on the divider attributes and returned as a string.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/DividersClassnames dividersClassnames} in
+	 * {@link /api/js/divi-module/functions/DividersClassnames dividersClassnames} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -88,7 +88,7 @@ class DividersUtils {
 	 *
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/HasDividers hasDividers} in
+	 * {@link /api/js/divi-module/functions/HasDividers hasDividers} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

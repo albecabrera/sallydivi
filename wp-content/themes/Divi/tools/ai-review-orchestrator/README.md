@@ -192,7 +192,7 @@ The orchestrator loads reviewer definitions from
 `tools/ai-review-orchestrator/reviewers/` and runs a **decision agent** that
 chooses a reviewer subset. The decision prompt includes:
 - Changed files, task files, task context.
-- Review size, comment budgets, severity caps, and confidence thresholds.
+- Review size, comment budgets, comment-label caps, and confidence thresholds.
 
 If the decision agent fails, all reviewers are selected. You can always
 override with `--force-reviewer` or `--force-reviewers`.
@@ -218,9 +218,9 @@ Reviewer prompts and outputs are stored under:
 ### 5) Aggregation + PR Outputs
 
 Reviewer outputs are merged into a unified findings set:
-- Applies confidence thresholds (drop or demote severity).
-- Enforces severity caps and size-based comment budgets.
-- Produces a PR-safe summary by Conventional Comment labels (excludes nits).
+- Applies confidence thresholds (drop or downgrade blocking to non-blocking).
+- Enforces comment-label caps and size-based comment budgets.
+- Produces a PR-safe summary by Conventional Comment labels (defaults to blocking issues only).
 - Formats PR findings using Conventional Comments labels and decorations.
 - Reviewers can override labels via `comment_label` and `comment_decorations`.
 

@@ -25,6 +25,7 @@ use ET\Builder\Packages\Module\Layout\Components\MultiView\MultiViewUtils;
 use ET\Builder\Packages\Module\Module;
 use ET\Builder\Packages\Module\Options\Css\CssStyle;
 use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
+use ET\Builder\Packages\Module\Options\Element\ElementStyle;
 use ET\Builder\Packages\Module\Options\Text\TextClassnames;
 use ET\Builder\Packages\Module\Options\FormField\FormFieldStyle;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
@@ -281,7 +282,7 @@ class WooCommerceCartTotalsModule implements DependencyInterface {
 	 * This function assigns variables and sets script data options for the module.
 	 *
 	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
 	 * located in `@divi/module-library`.
 	 *
 	 * @since ??
@@ -610,6 +611,33 @@ class WooCommerceCartTotalsModule implements DependencyInterface {
 	}
 
 	/**
+	 * Keep Select2 open-state bottom corners connected with dropdown panel.
+	 *
+	 * @since ??
+	 *
+	 * @param array $params Style declaration parameters.
+	 *
+	 * @return string Generated CSS declarations.
+	 */
+	public static function open_select_border_radius_style_declaration( array $params ): string {
+		if ( empty( $params['attrValue'] ) || ! is_array( $params['attrValue'] ) ) {
+			return '';
+		}
+
+		$style_declarations = new StyleDeclarations(
+			[
+				'returnType' => 'string',
+				'important'  => true,
+			]
+		);
+
+		$style_declarations->add( 'border-bottom-left-radius', '0' );
+		$style_declarations->add( 'border-bottom-right-radius', '0' );
+
+		return $style_declarations->value();
+	}
+
+	/**
 	 * Button icon style declaration for WooCommerce Cart Totals module.
 	 *
 	 * This declaration also sets `right: inherit` ( or `left: inherit` ) instead of `right: 0.6em`
@@ -698,11 +726,42 @@ class WooCommerceCartTotalsModule implements DependencyInterface {
 	 * @return void
 	 */
 	public static function module_styles( array $args ): void {
-		$attrs       = $args['attrs'] ?? [];
-		$elements    = $args['elements'];
-		$settings    = $args['settings'] ?? [];
-		$order_class = $args['orderClass'] ?? '';
-		$style_group = $args['styleGroup'] ?? 'module';
+		$attrs                                      = $args['attrs'] ?? [];
+		$elements                                   = $args['elements'];
+		$settings                                   = $args['settings'] ?? [];
+		$order_class                                = $args['orderClass'] ?? '';
+		$style_group                                = $args['styleGroup'] ?? 'module';
+		$breakpoints_states_info                    = MultiViewUtils::get_breakpoints_states_info();
+		$default_breakpoint                         = $breakpoints_states_info->default_breakpoint();
+		$default_state                              = $breakpoints_states_info->default_state();
+		$focus_use_border_value                     = ModuleUtils::use_attr_value(
+			[
+				'attr'         => $attrs['field']['advanced']['focusUseBorder'] ?? [],
+				'breakpoint'   => $default_breakpoint,
+				'state'        => $default_state,
+				'mode'         => 'getAndInheritAll',
+				'defaultValue' => 'off',
+			]
+		);
+		$is_field_focus_border_enabled              = 'on' === $focus_use_border_value;
+		$has_field_border_config                    = ! empty( $attrs['field']['decoration']['border'] );
+		$has_focus_background_config                = ! empty( $attrs['field']['advanced']['focus']['background'] );
+		$has_focus_border_config                    = ! empty( $attrs['field']['advanced']['focus']['border'] );
+		$should_apply_open_select_border_radius_fix = ( $has_field_border_config && $has_focus_background_config ) || ( $is_field_focus_border_enabled && $has_focus_border_config );
+		$open_select_border_radius_attr             = [];
+		$form_field_attr                            = $attrs['field'] ?? [];
+
+		if ( $should_apply_open_select_border_radius_fix ) {
+			$open_select_border_radius_attr = $has_field_border_config && $has_focus_background_config
+				? ( $attrs['field']['decoration']['border'] ?? [] )
+				: ( $attrs['field']['advanced']['focus']['border'] ?? [] );
+		}
+
+		if ( empty( $form_field_attr['advanced']['focusUseBorder'] ) ) {
+			// Align with Cart Totals default toggle behavior when attr is absent,
+			// while preserving explicit values coming from module attrs.
+			$form_field_attr['advanced']['focusUseBorder']['desktop']['value'] = 'off';
+		}
 
 		$is_inside_sticky_module   = $elements->get_is_inside_sticky_module();
 		$sticky_parent_order_class = $elements->get_sticky_parent_order_class();
@@ -870,6 +929,65 @@ class WooCommerceCartTotalsModule implements DependencyInterface {
 											'declarationFunction' => [ self::class, 'dropdown_arrow_style_declaration' ],
 										],
 									],
+									[
+										'componentName' => 'divi/text',
+										'props'         => [
+											'selector' => implode(
+												', ',
+												[
+													".woocommerce {$order_class} .select2-container--open .select2-selection__rendered",
+													"{$order_class} .select2-container--open .select2-selection__rendered",
+												]
+											),
+											'attr'     => $attrs['field']['advanced']['focus']['font'] ?? [],
+										],
+									],
+									[
+										'componentName' => 'divi/background',
+										'props'         => [
+											'selector'  => implode(
+												', ',
+												[
+													".woocommerce {$order_class} .select2-container--open .select2-selection",
+													"{$order_class} .select2-container--open .select2-selection",
+												]
+											),
+											'attr'      => $attrs['field']['advanced']['focus']['background'] ?? [],
+											'important' => true,
+										],
+									],
+									[
+										'componentName' => 'divi/common',
+										'props'         => [
+											'selector' => implode(
+												', ',
+												[
+													".woocommerce {$order_class} .select2-container--default.select2-container--open.select2-container--below .select2-selection--single",
+													"{$order_class} .select2-container--default.select2-container--open.select2-container--below .select2-selection--single",
+													".woocommerce {$order_class} .select2-container--default.select2-container--open.select2-container--above .select2-selection--single",
+													"{$order_class} .select2-container--default.select2-container--open.select2-container--above .select2-selection--single",
+												]
+											),
+											'attr'     => $open_select_border_radius_attr,
+											'declarationFunction' => [ self::class, 'open_select_border_radius_style_declaration' ],
+										],
+									],
+									[
+										'componentName' => 'divi/common',
+										'props'         => [
+											'selector' => implode(
+												', ',
+												[
+													".woocommerce {$order_class} .select2-container--default.select2-container--open .select2-selection--single",
+													"{$order_class} .select2-container--default.select2-container--open .select2-selection--single",
+												]
+											),
+											'attr'     => $is_field_focus_border_enabled
+												? ( $attrs['field']['advanced']['focus']['border'] ?? [] )
+												: [],
+											'declarationFunction' => [ self::class, 'border_style_declaration' ],
+										],
+									],
 								],
 							],
 						]
@@ -878,21 +996,130 @@ class WooCommerceCartTotalsModule implements DependencyInterface {
 					// Form Field Style.
 					FormFieldStyle::style(
 						[
-							'selector'               => "{$order_class} form .form-row input.input-text",
-							'attr'                   => array_merge_recursive(
-								$attrs['field'] ?? [],
+							'selector'               => implode(
+								', ',
 								[
-									'advanced' => [
-										'focusUseBorder' => [
-											'desktop' => [ 'value' => 'on' ],
-										],
-									],
+									".woocommerce {$order_class} .select2-container--default .select2-selection--single",
+									"{$order_class} .select2-container--default .select2-selection--single",
+									".woocommerce {$order_class} form .form-row .input-text",
+									"{$order_class} form .form-row .input-text",
 								]
 							),
+							'attr'                   => $form_field_attr,
 							'orderClass'             => $order_class,
 							'isInsideStickyModule'   => $is_inside_sticky_module,
 							'stickyParentOrderClass' => $sticky_parent_order_class,
 							'propertySelectors'      => [
+								'background'  => [
+									'desktop' => [
+										'hover' => [
+											'background-color' => implode(
+												', ',
+												[
+													"{$order_class} .select2-container--default .select2-selection--single:hover",
+													".woocommerce {$order_class} form .form-row .input-text:hover",
+													"{$order_class} form .form-row .input-text:hover",
+												]
+											),
+										],
+									],
+								],
+								'focus'       => [
+									'background' => [
+										'desktop' => [
+											'value' => [
+												'background-color' => implode(
+													', ',
+													[
+														".woocommerce {$order_class} .select2-container--open .select2-selection",
+														"{$order_class} .select2-container--open .select2-selection",
+														".woocommerce {$order_class} form .input-text",
+														"{$order_class} form .input-text",
+													]
+												),
+											],
+											'hover' => [
+												'background-color' => implode(
+													', ',
+													[
+														".woocommerce {$order_class} .select2-container--open:hover .select2-selection",
+														"{$order_class} .select2-container--open:hover .select2-selection",
+														".woocommerce {$order_class} form .input-text:hover",
+														"{$order_class} form .input-text:hover",
+													]
+												),
+											],
+										],
+									],
+									'font'       => [
+										'font' => [
+											'desktop' => [
+												'value' => [
+													'color' => implode(
+														', ',
+														[
+															".woocommerce {$order_class} .select2-container--open .select2-selection__rendered",
+															"{$order_class} .select2-container--open .select2-selection__rendered",
+															".woocommerce {$order_class} form .form-row input.input-text",
+															"{$order_class} form .form-row input.input-text",
+														]
+													),
+												],
+												'hover' => [
+													'color' => implode(
+														', ',
+														[
+															".woocommerce {$order_class} .select2-container--open:hover .select2-selection__rendered",
+															"{$order_class} .select2-container--open:hover .select2-selection__rendered",
+															".woocommerce {$order_class} form .form-row input.input-text:hover",
+															"{$order_class} form .form-row input.input-text:hover",
+														]
+													),
+												],
+											],
+										],
+									],
+									'border'     => [
+										'desktop' => [
+											'value' => [
+												'border-radius' => implode(
+													', ',
+													[
+														".woocommerce {$order_class} form .form-row input.input-text",
+														"{$order_class} form .form-row input.input-text",
+													]
+												),
+												'border-style'  => implode(
+													', ',
+													[
+														".woocommerce {$order_class} .select2-container--default.select2-container--open .select2-selection--single",
+														"{$order_class} .select2-container--default.select2-container--open .select2-selection--single",
+														".woocommerce {$order_class} form .form-row .input-text",
+														"{$order_class} form .form-row .input-text",
+													]
+												),
+											],
+											'hover' => [
+												'border-radius' => implode(
+													', ',
+													[
+														".woocommerce {$order_class} form .form-row input.input-text:hover",
+														"{$order_class} form .form-row input.input-text:hover",
+													]
+												),
+												'border-style'  => implode(
+													', ',
+													[
+														".woocommerce {$order_class} .select2-container--default.select2-container--open:hover .select2-selection--single",
+														"{$order_class} .select2-container--default.select2-container--open:hover .select2-selection--single",
+														".woocommerce {$order_class} form .form-row .input-text:hover",
+														"{$order_class} form .form-row .input-text:hover",
+													]
+												),
+											],
+										],
+									],
+								],
 								'placeholder' => [
 									'font' => [
 										'font' => [
@@ -901,8 +1128,8 @@ class WooCommerceCartTotalsModule implements DependencyInterface {
 													'color' => implode(
 														', ',
 														[
-															"{$order_class} form .form-row input.input-text::placeholder",
-															"{$order_class} form .form-row textarea::placeholder",
+															"{$order_class} form .form-row input.input-text",
+															"{$order_class} form .form-row textarea",
 														]
 													),
 												],
@@ -910,6 +1137,39 @@ class WooCommerceCartTotalsModule implements DependencyInterface {
 										],
 									],
 								],
+							],
+						]
+					),
+
+					// PHP FormFieldStyle does not fall back to field.advanced.placeholder.font.
+					// Keep this separate ElementStyle for parity with the Visual Builder fallback.
+					ElementStyle::style(
+						[
+							'selector'               => implode(
+								', ',
+								[
+									"{$order_class} form .form-row input.input-text",
+									"{$order_class} form .form-row textarea",
+								]
+							),
+							'attrs'                  => [
+								'font' => $attrs['field']['advanced']['placeholder']['font'] ?? [],
+							],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+							'font'                   => [
+								'selectorFunction' => function ( $params ) {
+									$maybe_multiple_selectors = $params['selector'] ?? '';
+									$base_selectors           = array_map( 'trim', explode( ',', $maybe_multiple_selectors ) );
+									$placeholder_selectors    = [];
+
+									foreach ( $base_selectors as $selector ) {
+										$placeholder_selectors[] = "{$selector}::placeholder";
+									}
+
+									return implode( ', ', $placeholder_selectors );
+								},
 							],
 						]
 					),
@@ -1017,7 +1277,7 @@ class WooCommerceCartTotalsModule implements DependencyInterface {
 	 * This function retrieves the custom CSS fields defined for the Divi WooCommerceCartTotals module.
 	 *
 	 * This function is equivalent to the JavaScript constant
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs cssFields}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs cssFields}
 	 * located in `@divi/module-library`. Note that this function does not have
 	 * a `label` property on each array item, unlike the JS const cssFields.
 	 *

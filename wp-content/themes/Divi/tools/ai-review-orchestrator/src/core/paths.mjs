@@ -45,13 +45,13 @@ export const resolveLatestRunId = (repoRoot) => {
   return entries[entries.length - 1];
 };
 
-export const resolveLatestPrRun = (repoRoot, prNumber) => {
+export const resolvePrRuns = (repoRoot, prNumber) => {
   if (null == repoRoot || null == prNumber) {
-    return null;
+    return [];
   }
   const outputRoot = path.join(repoRoot, OUTPUT_DIR);
   if (false === fs.existsSync(outputRoot)) {
-    return null;
+    return [];
   }
   const entries = fs
     .readdirSync(outputRoot, { withFileTypes: true })
@@ -59,7 +59,7 @@ export const resolveLatestPrRun = (repoRoot, prNumber) => {
     .map((entry) => entry.name)
     .sort();
   if (0 === entries.length) {
-    return null;
+    return [];
   }
   const runs = entries
     .map((entry) => {
@@ -72,11 +72,12 @@ export const resolveLatestPrRun = (repoRoot, prNumber) => {
         run_id: entry,
         started_at: runInfo?.started_at || null,
         run: runInfo || null,
+        output_root: path.join(outputRoot, entry),
       };
     })
     .filter(Boolean);
   if (0 === runs.length) {
-    return null;
+    return [];
   }
   runs.sort((a, b) => {
     const timeA = a.started_at ? new Date(a.started_at).getTime() : 0;
@@ -86,6 +87,14 @@ export const resolveLatestPrRun = (repoRoot, prNumber) => {
     }
     return String(a.run_id).localeCompare(String(b.run_id));
   });
+  return runs;
+};
+
+export const resolveLatestPrRun = (repoRoot, prNumber) => {
+  const runs = resolvePrRuns(repoRoot, prNumber);
+  if (0 === runs.length) {
+    return null;
+  }
   return runs[runs.length - 1];
 };
 
@@ -131,6 +140,9 @@ export const buildOutputPaths = (repoRoot, runId) => {
     reviewersDecision: path.join(outputRoot, "reviewers/decision.json"),
     reviewersPromptsRoot: path.join(outputRoot, "reviewers/prompts"),
     reviewersOutputsRoot: path.join(outputRoot, "reviewers/outputs"),
+    retroReview: path.join(outputRoot, "retro/review.json"),
+    retroSummary: path.join(outputRoot, "retro/summary.json"),
+    retroDupeReport: path.join(outputRoot, "retro/dupe-report.json"),
     aggregateFindings: path.join(outputRoot, "aggregate/findings.json"),
     aggregateSummaryComment: path.join(outputRoot, "aggregate/summary-comment.md"),
     aggregateReviewComment: path.join(outputRoot, "aggregate/review-comment.md"),

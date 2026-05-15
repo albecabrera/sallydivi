@@ -13,6 +13,27 @@ function child_theme_divi_enqueue_styles() {
 	);
 }
 
+add_action( 'wp_enqueue_scripts', 'bh_enqueue_main_script' );
+function bh_enqueue_main_script() {
+	wp_enqueue_script(
+		'bh-main',
+		get_stylesheet_directory_uri() . '/bh-main.js',
+		array(),
+		'1.0.0',
+		true
+	);
+
+	$impressum_page   = get_page_by_path( 'impressum',   OBJECT, 'page' );
+	$datenschutz_page = get_page_by_path( 'datenschutz', OBJECT, 'page' );
+
+	wp_localize_script( 'bh-main', 'bhData', array(
+		'impressumUrl'     => $impressum_page   ? get_permalink( $impressum_page )   : home_url( '/impressum/' ),
+		'datenschutzUrl'   => $datenschutz_page ? get_permalink( $datenschutz_page ) : home_url( '/datenschutz/' ),
+		'carouselEndpoint' => rest_url( 'bh/v1/ig-sally-latest' ),
+		'isWechseljahre'   => (int) is_page( 'wechseljahrecoaching' ),
+	) );
+}
+
 // ── Performance & SEO ────────────────────────────────────────────────────────
 
 // 1. Fix Divi's hardcoded viewport meta (removes user-scalable=0 / maximum-scale=1.0
@@ -282,181 +303,6 @@ function bh_year_shortcode( $atts ) {
 }
 add_shortcode( 'year', 'bh_year_shortcode' );
 
-// Header sidenav – panel deslizante desde la izquierda para mobile/tablet.
-// Intercepta el click de la hamburguesa de Divi (capture:true) antes de que
-// Divi abra su dropdown nativo, y abre el sidenav personalizado en su lugar.
-add_action( 'wp_footer', 'bh_header_sidenav' );
-function bh_header_sidenav() {
-	?>
-	<script>
-	(function () {
-		if ( window.innerWidth >= 980 ) return;
-
-		// Crear overlay
-		var overlay = document.createElement('div');
-		overlay.className = 'bh-sidenav-overlay';
-		document.body.appendChild(overlay);
-
-		// Crear panel sidenav
-		var sidenav = document.createElement('nav');
-		sidenav.className = 'bh-sidenav';
-		sidenav.setAttribute('aria-label', 'Navegación principal');
-
-		// Clonar los enlaces del menú de escritorio del header
-		var headerMenu = document.querySelector('.social_header_sec1 .et_pb_menu__menu ul.et-menu');
-		if ( headerMenu ) {
-			var clone = headerMenu.cloneNode(true);
-			clone.removeAttribute('id');
-			sidenav.appendChild(clone);
-		}
-
-		document.body.appendChild(sidenav);
-
-		var isOpen = false;
-		var mobileNav = document.querySelector('.social_header_sec1 .mobile_nav');
-
-		function openNav() {
-			sidenav.classList.add('open');
-			overlay.classList.add('open');
-			document.body.classList.add('bh-sidenav-open');
-			if ( mobileNav ) { mobileNav.classList.remove('closed'); mobileNav.classList.add('opened'); }
-			isOpen = true;
-		}
-
-		function closeNav() {
-			sidenav.classList.remove('open');
-			overlay.classList.remove('open');
-			document.body.classList.remove('bh-sidenav-open');
-			if ( mobileNav ) { mobileNav.classList.remove('opened'); mobileNav.classList.add('closed'); }
-			isOpen = false;
-		}
-
-		// Interceptar click de la hamburguesa ANTES que Divi (capture: true)
-		var bar = document.querySelector('.social_header_sec1 .mobile_menu_bar');
-		if ( bar ) {
-			bar.addEventListener('click', function (e) {
-				e.stopImmediatePropagation();
-				e.preventDefault();
-				isOpen ? closeNav() : openNav();
-			}, true);
-		}
-
-		// Cerrar al tocar el overlay
-		overlay.addEventListener('click', closeNav);
-
-		// Cerrar con ESC
-		document.addEventListener('keydown', function (e) {
-			if ( e.key === 'Escape' && isOpen ) closeNav();
-		});
-
-		// Cerrar al navegar a un enlace dentro del sidenav
-		sidenav.addEventListener('click', function (e) {
-			if ( e.target.tagName === 'A' && e.target.getAttribute('href') ) closeNav();
-		});
-
-		// Reset si el viewport crece a desktop
-		window.addEventListener('resize', function () {
-			if ( window.innerWidth >= 980 && isOpen ) closeNav();
-		});
-	})();
-	</script>
-	<?php
-}
-
-// Footer hamburger menu – Divi never populates et_mobile_menu inside footer
-// menus, so the toggle does nothing out of the box. This script clones the
-// desktop nav into a new et_mobile_menu list and wires the open/close toggle.
-add_action( 'wp_footer', 'bh_footer_mobile_menu_toggle' );
-function bh_footer_mobile_menu_toggle() {
-	?>
-	<script>
-	(function () {
-		// Single panel appended to body, rebuilt fresh on each open
-		var mobileMenu = null;
-
-		function buildMenu() {
-			var wrap    = document.querySelector('.et_pb_menu_0_tb_footer');
-			if ( ! wrap ) return null;
-			var desktop = wrap.querySelector('.et_pb_menu__menu ul.et-menu');
-			if ( ! desktop ) return null;
-
-			var ul = document.createElement('ul');
-			ul.className = 'bh-footer-mobile-menu';
-			Array.prototype.forEach.call( desktop.children, function (li) {
-				ul.appendChild( li.cloneNode(true) );
-			});
-			document.body.appendChild(ul);
-			return ul;
-		}
-
-		function closeMenu() {
-			if ( ! mobileMenu ) return;
-			mobileMenu.classList.remove('open');
-			var nav = document.querySelector('.et_pb_menu_0_tb_footer .mobile_nav');
-			if ( nav ) { nav.classList.remove('opened'); nav.classList.add('closed'); }
-		}
-
-		var lastToggleTime = 0;
-
-		function handleBarInteraction(e) {
-			var bar = e.target.closest
-				? e.target.closest('.et_pb_menu_0_tb_footer .mobile_menu_bar')
-				: null;
-
-			if ( ! bar ) {
-				// tap/click outside → close
-				if ( mobileMenu && ! mobileMenu.contains(e.target) ) {
-					closeMenu();
-				}
-				return;
-			}
-
-			e.preventDefault();
-			e.stopPropagation();
-
-			// Deduplicate: touchend + click fire within ms of each other
-			var now = Date.now();
-			if ( now - lastToggleTime < 400 ) { return; }
-			lastToggleTime = now;
-
-			var isOpen = mobileMenu && mobileMenu.classList.contains('open');
-			if ( isOpen ) {
-				closeMenu();
-			} else {
-				if ( mobileMenu && mobileMenu.parentNode ) {
-					mobileMenu.parentNode.removeChild( mobileMenu );
-				}
-				mobileMenu = buildMenu();
-				if ( ! mobileMenu ) return;
-
-				var rect   = bar.getBoundingClientRect();
-				mobileMenu.style.setProperty('bottom', (window.innerHeight - rect.top) + 'px', 'important');
-				mobileMenu.classList.add('open');
-
-				var nav = document.querySelector('.et_pb_menu_0_tb_footer .mobile_nav');
-				if ( nav ) { nav.classList.add('opened'); nav.classList.remove('closed'); }
-			}
-		}
-
-		// capture:true fires BEFORE jQuery Mobile or any other handler
-		document.addEventListener('touchend', handleBarInteraction, true);
-		document.addEventListener('click',    handleBarInteraction, true);
-
-		window.addEventListener('resize', function () {
-			if ( mobileMenu && mobileMenu.classList.contains('open') ) {
-				var bar = document.querySelector('.et_pb_menu_0_tb_footer .mobile_menu_bar');
-				if ( bar ) {
-					var rect = bar.getBoundingClientRect();
-					mobileMenu.style.setProperty('bottom', (window.innerHeight - rect.top) + 'px', 'important');
-				}
-			}
-		});
-
-	})();
-	</script>
-	<?php
-}
-
 // Newsletter popup guard for Wechseljahrecoaching.
 //
 // WHY THREE LAYERS:
@@ -496,93 +342,6 @@ function bh_popup_head_style() {
 	<?php
 }
 
-add_action( 'wp_footer', 'bh_hide_popup_on_wechseljahre' );
-function bh_hide_popup_on_wechseljahre() {
-	if ( ! is_page( 'wechseljahrecoaching' ) ) return;
-	?>
-	<script>
-	(function () {
-		var popup = document.querySelector('.et-interaction-target-nds7mk13ev')
-		         || document.querySelector('.et_pb_section_3_tb_footer');
-		var trigger = document.querySelector('[data-interaction-trigger="p40hyahirx"]');
-
-		if (!popup) return;
-
-		var intentional = false;
-
-		function hide() {
-			popup.style.setProperty('display',        'none',   'important');
-			popup.style.setProperty('visibility',     'hidden', 'important');
-			popup.style.setProperty('opacity',        '0',      'important');
-			popup.style.setProperty('pointer-events', 'none',   'important');
-		}
-
-		function release() {
-			intentional = true;
-			// Remove the <head> style so Divi can show the popup via its own CSS
-			var s = document.getElementById('bh-nl-popup-hide');
-			if (s) s.parentNode.removeChild(s);
-			// Remove all inline overrides so Divi's open animation works
-			popup.style.removeProperty('display');
-			popup.style.removeProperty('visibility');
-			popup.style.removeProperty('opacity');
-			popup.style.removeProperty('pointer-events');
-			// Restore native style methods
-			try { delete popup.style.setProperty;    } catch(e) {}
-			try { delete popup.style.removeProperty; } catch(e) {}
-			popupObs.disconnect();
-			headObs.disconnect();
-		}
-
-		// LAYER 2a – intercept setProperty: block any Divi "show" calls
-		try {
-			var nativeSP = CSSStyleDeclaration.prototype.setProperty;
-			popup.style.setProperty = function (prop, val, priority) {
-				if (!intentional && prop === 'display' && val !== 'none') {
-					return nativeSP.call(this, 'display', 'none', 'important');
-				}
-				return nativeSP.call(this, prop, val, priority);
-			};
-		} catch(e) {}
-
-		// LAYER 2b – intercept removeProperty: keep display:none from being removed
-		try {
-			var nativeRP = CSSStyleDeclaration.prototype.removeProperty;
-			popup.style.removeProperty = function (prop) {
-				if (!intentional && prop === 'display') return '';
-				return nativeRP.call(this, prop);
-			};
-		} catch(e) {}
-
-		// Release all guards when user explicitly triggers the popup
-		if (trigger) {
-			trigger.addEventListener('click', release, true);
-		}
-
-		// LAYER 3a – watch popup attributes (inline style / class changes)
-		var popupObs = new MutationObserver(function () {
-			if (intentional) { popupObs.disconnect(); return; }
-			if (window.getComputedStyle(popup).display !== 'none') hide();
-		});
-		popupObs.observe(popup, { attributes: true, attributeFilter: ['style', 'class'] });
-
-		// LAYER 3b – watch <head> childList to catch Divi removing its own <style>
-		var headObs = new MutationObserver(function () {
-			if (intentional) { headObs.disconnect(); return; }
-			if (window.getComputedStyle(popup).display !== 'none') hide();
-		});
-		headObs.observe(document.head, { childList: true });
-
-		// Immediate hide + re-check on load
-		hide();
-		window.addEventListener('load', function () {
-			if (!intentional) hide();
-		});
-	})();
-	</script>
-	<?php
-}
-
 // Über mich photo overlay disabled:
 // it was duplicating/overlaying the portrait and could make the hero image look split.
 
@@ -610,122 +369,6 @@ function bh_ensure_impressum_page() {
 		'post_name'    => 'impressum',
 		'post_content' => $content,
 	) );
-}
-
-add_action( 'wp_footer', 'bh_footer_legal_bar', 100 );
-function bh_footer_legal_bar() {
-	$impressum_page = get_page_by_path( 'impressum', OBJECT, 'page' );
-	$impressum_url  = $impressum_page ? get_permalink( $impressum_page ) : home_url( '/impressum/' );
-	$datenschutz_page = get_page_by_path( 'datenschutz', OBJECT, 'page' );
-	$datenschutz_url  = $datenschutz_page ? get_permalink( $datenschutz_page ) : home_url( '/datenschutz/' );
-	?>
-	<style id="bh-impressum-below-footer-style">
-		.bh-impressum-below-footer {
-			text-align: center;
-			padding: 12px 16px 20px;
-			font-size: 14px;
-			line-height: 1.4;
-		}
-		.bh-impressum-below-footer a { text-decoration: none; }
-		.bh-impressum-below-footer a:hover,
-		.bh-impressum-below-footer a:focus { text-decoration: underline; }
-	</style>
-	<script>
-	(function () {
-		var impressumUrl = <?php echo wp_json_encode( esc_url( $impressum_url ) ); ?>;
-		var datenschutzUrl = <?php echo wp_json_encode( esc_url( $datenschutz_url ) ); ?>;
-
-		function hideHeaderImpressum() {
-			document.querySelectorAll('header a, #main-header a, .et-l--header a').forEach(function (a) {
-				var text = (a.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
-				if (text === 'impressum') {
-					a.style.display = 'none';
-				}
-			});
-		}
-
-		function hideFooterImpressumLinks() {
-			document.querySelectorAll('footer a, .et-l--footer a, #footer-bottom a').forEach(function (a) {
-				if (a.closest('.bh-impressum-below-footer')) return; // keep the one below footer
-				var text = (a.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
-				if (text === 'impressum') {
-					a.style.display = 'none';
-				}
-			});
-		}
-
-		function ensureImpressumBelowFooter() {
-			var footerBottom = document.querySelector('#footer-bottom') || document.querySelector('.et-l--footer') || document.querySelector('footer');
-			if (!footerBottom) return;
-
-			var existing = document.querySelector('.bh-impressum-below-footer');
-			if (!existing) {
-				var wrap = document.createElement('div');
-				wrap.className = 'bh-impressum-below-footer';
-				wrap.innerHTML = '<a href="' + impressumUrl + '">Impressum</a> | <a href="' + datenschutzUrl + '">Datenschutz</a>';
-				footerBottom.insertAdjacentElement('afterend', wrap);
-			}
-		}
-
-		function replaceLegalTextInFooter() {
-			// Remove custom injected bar from previous iteration
-			document.querySelectorAll('.bh-legal-bar').forEach(function (el) { el.remove(); });
-
-			var roots = document.querySelectorAll('#footer-bottom, .et-l--footer, footer');
-			roots.forEach(function (root) {
-				root.querySelectorAll('*').forEach(function (node) {
-					var text = (node.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
-					if (!text) return;
-					if (text === 'impressum | datenschutz' || text === 'impressum|datenschutz') {
-						node.innerHTML = '<p>Design &amp; Entwicklung: <a href="https://deinewebseite.de">Alberto Cabrera</a></p>';
-					}
-				});
-			});
-
-			hideHeaderImpressum();
-			hideFooterImpressumLinks();
-			ensureImpressumBelowFooter();
-		}
-
-		replaceLegalTextInFooter();
-		var mo = new MutationObserver(replaceLegalTextInFooter);
-		mo.observe(document.body, { childList: true, subtree: true });
-	})();
-	</script>
-	<?php
-}
-
-// ── Über mich: remove leftover hidden feed blocks behind "Meine letztes Feed" ─
-add_action( 'wp_footer', 'bh_remove_hidden_feed_leftovers', 130 );
-function bh_remove_hidden_feed_leftovers() {
-	?>
-	<script>
-	(function () {
-		function norm(s){ return (s||'').replace(/\s+/g,' ').trim().toLowerCase(); }
-		function cleanup() {
-			var hasMarker = Array.from(document.querySelectorAll('h1,h2,h3,h4,p,strong,.et_pb_text_inner'))
-				.some(function(el){
-					var t = norm(el.textContent);
-					return t.indexOf('meine letztes feed') !== -1 || t.indexOf('mein letztes feed') !== -1;
-				});
-			if (!hasMarker) return;
-
-			// Remove known feed containers/artifacts that may remain hidden.
-			document.querySelectorAll(
-				'#bh-ig-feeds-wrap, #sb_instagram, .sbi, .sbi_item, .instagram-media, iframe[src*=\"instagram.com\"]'
-			).forEach(function(el){
-				if (el.id === 'bh-ig-carousel-wrap' || el.closest('#bh-ig-carousel-wrap')) return;
-				if (el.id === 'sif-wrap' || el.closest('.sif-wrap')) return;
-				if (el && el.closest('.et-l--footer, footer, header, .et-l--header')) return;
-				if (el && el.parentNode) el.parentNode.removeChild(el);
-			});
-		}
-		cleanup();
-		var mo = new MutationObserver(cleanup);
-		mo.observe(document.body, { childList:true, subtree:true });
-	})();
-	</script>
-	<?php
 }
 
 // ── Über mich: Instagram carousel (latest 4 posts) ──────────────────────────
@@ -781,132 +424,6 @@ function bh_ig_sally_latest_endpoint() {
 	) );
 }
 
-add_action( 'wp_footer', 'bh_ueber_mich_ig_carousel', 150 );
-function bh_ueber_mich_ig_carousel() {
-	?>
-	<style id="bh-ig-carousel-style">
-		#bh-ig-carousel-wrap { margin: 26px auto 0; width: 90%; max-width: 1200px; }
-		.bh-feed-block-center { width: 90% !important; max-width: 1200px !important; margin-left: auto !important; margin-right: auto !important; }
-		#bh-ig-carousel-wrap .bh-ig-row { display:flex; align-items:center; gap:10px; }
-		#bh-ig-carousel-wrap .bh-ig-track {
-			display:grid;
-			grid-auto-flow:column;
-			grid-auto-columns:minmax(260px,1fr);
-			gap:12px;
-			overflow-x:auto;
-			width:100%;
-			padding:2px;
-			scroll-snap-type:x mandatory;
-		}
-		#bh-ig-carousel-wrap .bh-ig-item { scroll-snap-align:start; background:#fff; border:1px solid #eee; border-radius:8px; overflow:hidden; }
-		#bh-ig-carousel-wrap .instagram-media { min-width:0!important; width:100%!important; max-width:100%!important; margin:0!important; }
-		#bh-ig-carousel-wrap .bh-ig-nav { width:34px; height:34px; border:0; border-radius:50%; background:#ddd; cursor:pointer; }
-		@media (max-width: 1200px) { #bh-ig-carousel-wrap, .bh-feed-block-center { width: 90% !important; max-width: 90% !important; } }
-	</style>
-	<script>
-	(function () {
-		function norm(s){ return (s||'').replace(/\s+/g,' ').trim().toLowerCase(); }
-		function mountCarousel(){
-			var existingWrap = document.getElementById('bh-ig-carousel-wrap');
-			if (existingWrap) {
-				existingWrap.style.display = 'block';
-				if (existingWrap.querySelector('.instagram-media, iframe, .sbi_item')) return;
-				existingWrap.remove();
-			}
-			var readMoreBtn = Array.from(document.querySelectorAll('a,button,.et_pb_button'))
-				.find(function(el){ return norm(el.textContent) === 'read more'; });
-			var marker = readMoreBtn || Array.from(document.querySelectorAll('h1,h2,h3,h4,p,strong,.et_pb_text_inner'))
-				.find(function(el){ return norm(el.textContent).indexOf('meine letztes feeds') !== -1; });
-			if (!marker) return;
-
-			fetch('<?php echo esc_url( rest_url( 'bh/v1/ig-sally-latest' ) ); ?>')
-				.then(function(r){ return r.json(); })
-				.then(function(data){
-					if (!data || !Array.isArray(data.posts) || data.posts.length === 0) return;
-
-					var wrap = document.createElement('div');
-					wrap.id = 'bh-ig-carousel-wrap';
-					wrap.innerHTML = '<div class="bh-ig-row"><button type="button" class="bh-ig-nav bh-ig-prev" aria-label="Zurück">‹</button><div class="bh-ig-track"></div><button type="button" class="bh-ig-nav bh-ig-next" aria-label="Weiter">›</button></div>';
-					var track = wrap.querySelector('.bh-ig-track');
-
-					data.posts.slice(0,4).forEach(function(url){
-						var item = document.createElement('div');
-						item.className = 'bh-ig-item';
-						item.innerHTML = '<blockquote class="instagram-media" data-instgrm-permalink="'+url+'" data-instgrm-version="14"></blockquote>';
-						track.appendChild(item);
-					});
-
-					var row = marker.closest('.et_pb_row');
-					if (row) {
-						row.classList.add('bh-feed-block-center');
-						row.insertAdjacentElement('afterend', wrap);
-					} else {
-						var anchor =
-							(marker.closest('.et_pb_button_module_wrapper') ||
-							 marker.closest('.et_pb_module') ||
-							 marker);
-						anchor.insertAdjacentElement('afterend', wrap);
-					}
-					wrap.style.display = 'block';
-
-					wrap.querySelector('.bh-ig-prev').addEventListener('click', function(){ track.scrollBy({left:-320, behavior:'smooth'}); });
-					wrap.querySelector('.bh-ig-next').addEventListener('click', function(){ track.scrollBy({left: 320, behavior:'smooth'}); });
-
-					if (!document.getElementById('instagram-embed-js')) {
-						var s = document.createElement('script');
-						s.id = 'instagram-embed-js';
-						s.async = true;
-						s.src = 'https://www.instagram.com/embed.js';
-						s.onload = function(){ if(window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process(); };
-						document.body.appendChild(s);
-					} else if (window.instgrm && window.instgrm.Embeds) {
-						window.instgrm.Embeds.process();
-					}
-				})
-				.catch(function(){});
-		}
-
-		if (document.readyState === 'loading') {
-			document.addEventListener('DOMContentLoaded', mountCarousel);
-		} else {
-			mountCarousel();
-		}
-	})();
-	</script>
-	<?php
-}
-
-// ── Clean hidden object replacement chars shown as [OBJ] in text ────────────
-add_action( 'wp_footer', 'bh_remove_obj_marker_from_text', 140 );
-function bh_remove_obj_marker_from_text() {
-	?>
-	<script>
-	(function () {
-		function cleanObjChars(root) {
-			if (!root) return;
-			var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
-			var nodes = [];
-			while (walker.nextNode()) nodes.push(walker.currentNode);
-			nodes.forEach(function (n) {
-				var t = n.nodeValue || '';
-				// U+FFFC object replacement char + visible fallback token [OBJ]
-				var cleaned = t.replace(/\uFFFC/g, '').replace(/\[OBJ\]/gi, '');
-				if (cleaned !== t) n.nodeValue = cleaned;
-			});
-		}
-
-		function run() {
-			var content = document.querySelector('#main-content, #page-container, body');
-			cleanObjChars(content);
-		}
-
-		run();
-		var mo = new MutationObserver(run);
-		mo.observe(document.body, { childList: true, subtree: true, characterData: true });
-	})();
-	</script>
-	<?php
-}
 
 // ── Force render of shortcode feed on Über mich (Divi builder-safe) ─────────
 // add_action( 'wp_footer', 'bh_force_sally_instagram_shortcode_render', 170 );

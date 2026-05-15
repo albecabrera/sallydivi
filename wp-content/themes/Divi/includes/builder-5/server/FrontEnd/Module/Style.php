@@ -345,6 +345,51 @@ class Style {
 	 * ] );
 	 * ```
 	 */
+	/**
+	 * Merge free-form CSS (empty selector) declaration strings.
+	 *
+	 * Appends with a space separator (no `;` between full rules), matching {@see self::add()}.
+	 *
+	 * @param string $existing            Prior declaration text.
+	 * @param string $declaration         Incoming declaration text.
+	 * @param bool   $append_when_identical When true, always append with a space (legacy {@see self::add()} behavior).
+	 *                                      When false, return `$existing` unchanged if both strings are identical.
+	 *
+	 * @return string Combined declaration string.
+	 */
+	private static function merge_free_form_declaration_strings( string $existing, string $declaration, bool $append_when_identical ): string {
+		if ( ! $append_when_identical && $declaration === $existing ) {
+			return $existing;
+		}
+
+		return sprintf(
+			'%1$s %2$s',
+			$existing,
+			$declaration
+		);
+	}
+
+	/**
+	 * Merge two declaration strings for the same selector (non-empty), matching {@see self::add()}.
+	 *
+	 * @param string $existing_declaration Prior declaration.
+	 * @param string $declaration         Incoming declaration (must differ from existing when caller requires an update).
+	 *
+	 * @return string Combined declarations with correct `;` separation.
+	 */
+	private static function merge_keyed_selector_declaration_strings( string $existing_declaration, string $declaration ): string {
+		$last_char = substr( $existing_declaration, -1 );
+
+		if ( ';' === $last_char ) {
+			return $existing_declaration . ' ' . $declaration;
+		}
+
+		$existing_trimmed = rtrim( $existing_declaration, '; ' );
+		$new_trimmed      = rtrim( $declaration, '; ' );
+
+		return $existing_trimmed . '; ' . $new_trimmed;
+	}
+
 	public static function add( array $args ): void {
 		$id             = $args['id'] ?? null;
 		$styles         = $args['styles'] ?? [];
@@ -451,10 +496,10 @@ class Style {
 					$existing_declaration = $styles_flattened[ $media_query ][ $selector ]['declaration'];
 
 					// Append free-form CSS with space separator (no semicolons between complete rules).
-					$styles_flattened[ $media_query ][ $selector ]['declaration'] = sprintf(
-						'%1$s %2$s',
+					$styles_flattened[ $media_query ][ $selector ]['declaration'] = self::merge_free_form_declaration_strings(
 						$existing_declaration,
-						$declaration
+						$declaration,
+						true
 					);
 
 					$styles_flattened[ $media_query ][ $selector ]['priority'] = $priority;
@@ -473,19 +518,10 @@ class Style {
 					if ( $declaration !== $existing_declaration ) {
 						// Ensure proper semicolon separation between CSS declarations.
 						// Check last character directly without trim() for better performance.
-						$last_char = substr( $existing_declaration, -1 );
-
-						if ( ';' === $last_char ) {
-							// Already properly formatted - just append with space.
-							$styles_flattened[ $media_query ][ $selector ]['declaration'] = $existing_declaration . ' ' . $declaration;
-						} else {
-							// Missing semicolon - add it to prevent CSS corruption.
-							// Only trim when necessary (semicolon is missing).
-							$existing_trimmed = rtrim( $existing_declaration, '; ' );
-							$new_trimmed      = rtrim( $declaration, '; ' );
-
-							$styles_flattened[ $media_query ][ $selector ]['declaration'] = $existing_trimmed . '; ' . $new_trimmed;
-						}
+						$styles_flattened[ $media_query ][ $selector ]['declaration'] = self::merge_keyed_selector_declaration_strings(
+							$existing_declaration,
+							$declaration
+						);
 					}
 				} else {
 					$styles_flattened[ $media_query ][ $selector ]['declaration'] = $declaration;
@@ -502,6 +538,96 @@ class Style {
 		// Store styles without sorting. Media query sorting is deferred to render time for better performance.
 		// This avoids expensive regex matching and sorting operations on every Style::add() call.
 		self::$_styles[ $style_key ][ $group ] = $styles_flattened;
+	}
+
+	/**
+	 * Merge module style data from multiple Theme Builder layout passes into one structure.
+	 *
+	 * Module order classes (e.g. `.et_pb_blurb_0`) reset per layout, so identical rules can be
+	 * collected under separate style keys. Outputting each layout's module styles separately then
+	 * duplicates identical selector/declaration pairs in unified CSS. This merge drops exact
+	 * duplicates while preserving cascade order and concatenating conflicting declarations on the
+	 * same selector like {@see self::add()}.
+	 *
+	 * @since ??
+	 *
+	 * @param array $into Existing styles data keyed by media query then selector.
+	 * @param array $from Styles data to merge in (same shape as {@see self::get_style_array()}).
+	 *
+	 * @return array Merged styles data.
+	 */
+	public static function merge_module_styles_data( array $into, array $from ): array {
+		foreach ( $from as $media_query => $selectors ) {
+			if ( ! is_array( $selectors ) ) {
+				continue;
+			}
+
+			if ( ! isset( $into[ $media_query ] ) ) {
+				$into[ $media_query ] = [];
+			}
+
+			foreach ( $selectors as $selector => $settings ) {
+				if ( ! is_array( $settings ) ) {
+					continue;
+				}
+
+				$declaration = $settings['declaration'] ?? '';
+
+				// Free-form CSS (empty selector): append full rule strings.
+				if ( '' === $selector && isset( $into[ $media_query ][ $selector ]['declaration'] ) ) {
+					$existing_declaration = $into[ $media_query ][ $selector ]['declaration'];
+
+					if ( $declaration !== $existing_declaration ) {
+						$into[ $media_query ][ $selector ]['declaration'] = self::merge_free_form_declaration_strings(
+							$existing_declaration,
+							$declaration,
+							false
+						);
+					}
+
+					if ( ! empty( $settings['priority'] ) ) {
+						$into[ $media_query ][ $selector ]['priority'] = $settings['priority'];
+					}
+
+					if ( ! empty( $settings['critical'] ) ) {
+						$into[ $media_query ][ $selector ]['critical'] = 1;
+					}
+
+					continue;
+				}
+
+				if ( '' === $selector ) {
+					$into[ $media_query ][ $selector ] = $settings;
+					continue;
+				}
+
+				if ( ! isset( $into[ $media_query ][ $selector ] ) ) {
+					$into[ $media_query ][ $selector ] = $settings;
+					continue;
+				}
+
+				$existing_declaration = $into[ $media_query ][ $selector ]['declaration'] ?? '';
+
+				if ( $declaration === $existing_declaration ) {
+					continue;
+				}
+
+				$into[ $media_query ][ $selector ]['declaration'] = self::merge_keyed_selector_declaration_strings(
+					$existing_declaration,
+					$declaration
+				);
+
+				if ( ! empty( $settings['priority'] ) ) {
+					$into[ $media_query ][ $selector ]['priority'] = $settings['priority'];
+				}
+
+				if ( ! empty( $settings['critical'] ) ) {
+					$into[ $media_query ][ $selector ]['critical'] = 1;
+				}
+			}
+		}
+
+		return $into;
 	}
 
 	/**
@@ -983,28 +1109,47 @@ class Style {
 	}
 
 	/**
-	 * Get global numeric and fonts variables as CSS styles.
+	 * Get global variable groups as CSS styles.
 	 *
-	 * This function retrieves numeric and fonts global variables from the global data and formats them
-	 * into CSS variable declarations for use in stylesheets.
+	 * This function retrieves active numeric, font, and image global variables from global data and formats
+	 * them into CSS custom property declarations for `:root`.
+	 *
+	 * Image values are normalized to CSS image values and wrapped with `url(...)` only when they are not
+	 * already wrapped.
 	 *
 	 * @since ??
 	 *
-	 * @return string The generated CSS style block containing global numeric and fonts variables.
+	 * @param array $global_variable_ids Optional list of global variable IDs to include.
+	 *                                   If omitted, all active numeric and font variables are included.
+	 *
+	 * @return string The generated `:root{...}` CSS style block containing numeric, font, and image variables.
 	 */
-	public static function get_global_numeric_and_fonts_vars_style(): string {
+	public static function get_global_numeric_and_fonts_vars_style( array $global_variable_ids = [] ): string {
 		$global_variables         = GlobalData::get_global_variables();
 		$numeric_global_variables = $global_variables['numbers'] ?? (object) [];
 		$font_global_variables    = $global_variables['fonts'] ?? (object) [];
+		$image_global_variables   = $global_variables['images'] ?? (object) [];
 		$css_statements           = '';
-
-		$merged_global_variables     = array_merge( (array) $numeric_global_variables, (array) $font_global_variables );
+		$merged_global_variables     = array_merge( (array) $numeric_global_variables, (array) $font_global_variables, (array) $image_global_variables );
 		$font_global_variables_array = (array) $font_global_variables;
+		$image_global_variables_array = (array) $image_global_variables;
+		$include_all_variables       = func_num_args() === 0;
 
 		foreach ( $merged_global_variables as $key => $value ) {
 			if ( is_array( $value ) ) {
-				$id     = $value['id'];
+				$id     = $value['id'] ?? '';
 				$result = $value['value'];
+				$status = $value['status'] ?? '';
+
+				// Only include active variables in frontend output.
+				if ( 'active' !== $status ) {
+					continue;
+				}
+
+				// When IDs are passed, include only the variables associated with those IDs.
+				if ( ! $include_all_variables && ! empty( $global_variable_ids ) && ! in_array( $id, $global_variable_ids, true ) ) {
+					continue;
+				}
 
 				// If there are no ids provided, include the styles for all the global variables.
 				if ( ! empty( $result ) ) {
@@ -1022,6 +1167,9 @@ class Style {
 						} else {
 							$result = "'" . $formatted_font_value . "'";
 						}
+					} elseif ( isset( $image_global_variables_array[ $key ] ) || isset( $image_global_variables_array[ $id ] ) ) {
+						$is_already_wrapped = 1 === preg_match( '/^\s*url\(/i', $result );
+						$result             = $is_already_wrapped ? $result : "url({$result})";
 					} else {
 						$result = esc_html( $result );
 					}

@@ -59,7 +59,7 @@ class ButtonComponent {
 	 * The function supports both button and link types, with options to customize the appearance and behavior of the component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/ButtonComponent/ ButtonComponent} in
+	 * {@link /api/js/divi-module/functions/ButtonComponent/ ButtonComponent} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

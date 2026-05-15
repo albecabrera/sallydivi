@@ -63,7 +63,7 @@ export const decisionPrompt = ({
     JSON.stringify(
       {
         comment_budget_by_size: config?.comment_budget_by_size || {},
-        severity_caps: config?.severity_caps || {},
+        comment_label_caps: config?.comment_label_caps || {},
         confidence_thresholds: config?.confidence_thresholds || {},
       },
       null,

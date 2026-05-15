@@ -32,7 +32,7 @@ class BackgroundComponentVideo {
 	 * The component includes a video element with specified attributes and a parent span element with a class for styling.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BackgroundComponentVideo BackgroundComponentVideo} in
+	 * {@link /api/js/divi-module/functions/BackgroundComponentVideo BackgroundComponentVideo} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -130,7 +130,7 @@ class BackgroundComponentVideo {
 	 * and finds the first attribute with a non-empty `style` value and `enabled` set to `'on'`.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BackgroundComponentVideoContainer BackgroundComponentVideoContainer} in
+	 * {@link /api/js/divi-module/functions/BackgroundComponentVideoContainer BackgroundComponentVideoContainer} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -240,7 +240,7 @@ class BackgroundComponentVideo {
 	 * Therefore, this function renames the classname to 'et-pb-background-video'.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetVideoClassName getVideoClassName} in
+	 * {@link /api/js/divi-module/functions/GetVideoClassName getVideoClassName} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

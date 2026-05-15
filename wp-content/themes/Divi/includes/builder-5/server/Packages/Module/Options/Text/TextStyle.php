@@ -27,7 +27,7 @@ class TextStyle {
 	 * Get text style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/TextStyle TextStyle} in
+	 * {@link /api/js/divi-module/functions/TextStyle TextStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

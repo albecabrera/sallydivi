@@ -28,7 +28,7 @@ class IdClassesClassnames {
 	 *
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetHtmlAttributes getHtmlAttributes} in
+	 * {@link /api/js/divi-module/functions/GetHtmlAttributes getHtmlAttributes} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

@@ -20,6 +20,7 @@ use ET\Builder\FrontEnd\Assets\DynamicAssets\State\DetectionState;
 use ET\Builder\FrontEnd\Assets\DynamicAssets\State\FeatureState;
 use ET\Builder\FrontEnd\Assets\DynamicAssetsUtils;
 use ET\Builder\Framework\Breakpoint\Breakpoint;
+use ET\Builder\Framework\Settings\PageSettings;
 use ET\Builder\Packages\GlobalData\GlobalData;
 use ET\Builder\FrontEnd\Module\Style;
 use ET\Builder\VisualBuilder\OffCanvas\OffCanvasHooks;
@@ -153,6 +154,20 @@ class DynamicAssetsListBuilder {
 
 		// Fallback to preset features if not found in early_attributes.
 		return ! empty( $this->feature_state->presets_feature_used[ $feature_name ] );
+	}
+
+	/**
+	 * Resolve effective page gutter width using explicit/default contract.
+	 *
+	 * @since ??
+	 *
+	 * @param int $post_id Post ID.
+	 *
+	 * @return int
+	 */
+	private function _get_effective_page_gutter_width( int $post_id ): int {
+		$resolved = PageSettings::resolve_page_gutter_width( $post_id );
+		return $resolved['value'];
 	}
 
 	/**
@@ -399,13 +414,13 @@ class DynamicAssetsListBuilder {
 
 		// Check for custom gutter widths.
 		$page_custom_gutter = is_singular()
-			? [ intval( get_post_meta( $this->cache_state->post_id, '_et_pb_gutter_width', true ) ) ]
+			? [ $this->_get_effective_page_gutter_width( $this->cache_state->post_id ) ]
 			: [];
 
 		// Add custom gutters in TB templates.
 		if ( ! empty( $this->cache_state->tb_template_ids ) ) {
 			foreach ( $this->cache_state->tb_template_ids as $template_id ) {
-				$page_custom_gutter[] = intval( get_post_meta( $template_id, '_et_pb_gutter_width', true ) );
+				$page_custom_gutter[] = $this->_get_effective_page_gutter_width( (int) $template_id );
 			}
 		}
 
@@ -1424,9 +1439,7 @@ class DynamicAssetsListBuilder {
 		$header_style           = et_get_option( 'header_style', 'left' );
 		$et_slide_header        = in_array( $header_style, [ 'slide', 'fullscreen' ], true );
 		$color_scheme           = et_get_option( 'color_schemes', 'none' );
-		$page_custom_gutter     = get_post_meta( $post_id, '_et_pb_gutter_width', true );
-		$customizer_gutter      = et_get_option( 'gutter_width', '3' );
-		$gutter_width           = ! empty( $page_custom_gutter ) ? $page_custom_gutter : $customizer_gutter;
+		$gutter_width           = (string) $this->_get_effective_page_gutter_width( (int) $post_id );
 		$back_to_top            = et_get_option( 'divi_back_to_top', 'false' );
 		$et_secondary_nav_items = et_divi_get_top_nav_items();
 		$et_top_info_defined    = $et_secondary_nav_items->top_info_defined;

@@ -29,7 +29,7 @@ class FormFieldStyle {
 	 * Get form-field styles.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/FormFieldStyle FormFieldStyle} in
+	 * {@link /api/js/divi-module/functions/FormFieldStyle FormFieldStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

@@ -28,7 +28,7 @@ class SpacingStyle {
 	 * Get spacing (margin & padding) style.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/SpacingStyle SpacingStyle} in
+	 * {@link /api/js/divi-module/functions/SpacingStyle SpacingStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

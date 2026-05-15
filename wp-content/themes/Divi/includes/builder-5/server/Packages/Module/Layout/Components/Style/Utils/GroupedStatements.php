@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * GroupedStatements class.
  *
  * This class is equivalent of JS class:
- * {@link /docs/builder-api/js-beta/divi-module/functions/GroupedStatements GroupedStatements} in:
+ * {@link /api/js/divi-module/functions/GroupedStatements GroupedStatements} in:
  * `@divi/module` package.
  *
  * @since ??

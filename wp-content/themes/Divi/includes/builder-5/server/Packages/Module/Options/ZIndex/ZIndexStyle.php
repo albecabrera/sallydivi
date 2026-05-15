@@ -26,7 +26,7 @@ class ZIndexStyle {
 	 * Get z-index's style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/ZIndexStyle/ ZIndexStyle} in
+	 * {@link /api/js/divi-module/functions/ZIndexStyle/ ZIndexStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

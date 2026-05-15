@@ -708,7 +708,7 @@ class GlobalData {
 	 * If the value is a valid CSS variable color value e.g var(--gcid-2d8c4bca77), this function will return the
 	 * global color id (gcid-2d8c4bca77) from the variable name. If the value is not a valid CSS variable
 	 * color value with the correct global color ID pattern (`gcid-{uuid}`), this function will return `null`.
-	 * This is equivalent to the JS function {@link /docs/builder-api/js-beta/divi-global-data/functions/getGlobalColorIdFromValue getGlobalColorIdFromValue}
+	 * This is equivalent to the JS function {@link /api/js/divi-global-data/functions/getGlobalColorIdFromValue getGlobalColorIdFromValue}
 	 *
 	 * @since ??
 	 *

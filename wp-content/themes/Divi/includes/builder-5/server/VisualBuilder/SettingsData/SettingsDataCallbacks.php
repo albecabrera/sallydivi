@@ -1889,7 +1889,7 @@ class SettingsDataCallbacks {
 		if ( ! empty( array_filter( $current_tb_layout_ids ) ) ) {
 			$theme_builder_layouts = [
 				ET_THEME_BUILDER_HEADER_LAYOUT_POST_TYPE => [ 'id' => absint( $current_tb_layout_ids['header'] ?? 0 ) ],
-				ET_THEME_BUILDER_BODY_LAYOUT_POST_TYPE => [ 'id' => absint( $current_tb_layout_ids['body'] ?? 0 ) ],
+				ET_THEME_BUILDER_BODY_LAYOUT_POST_TYPE   => [ 'id' => absint( $current_tb_layout_ids['body'] ?? 0 ) ],
 				ET_THEME_BUILDER_FOOTER_LAYOUT_POST_TYPE => [ 'id' => absint( $current_tb_layout_ids['footer'] ?? 0 ) ],
 			];
 		}
@@ -1931,6 +1931,56 @@ class SettingsDataCallbacks {
 			}
 		}
 
+		// Regression note:
+		// - c338657b769 introduced slot-prefixed merge IDs (`{$layout}-{$canvas_id}`) for template canvases.
+		// - 68d40d92680 retained that merge behavior in the current off_canvas() implementation.
+		// We have always used `_divi_dynamic_assets_canvases_used` cache, but cached keys can already be
+		// prefixed (e.g. `footer-<uuid>`). Re-prefixing during merge created duplicate hydration entries.
+		// Remove template-owned local canvases from base payload before template merge so each template
+		// canvas appears once in the builder payload.
+		$template_owner_post_ids = array_values(
+			array_filter(
+				array_map(
+					'absint',
+					$template_post_ids
+				),
+				static function ( int $template_owner_post_id ) use ( $post_id ): bool {
+					return 0 !== $template_owner_post_id && $template_owner_post_id !== $post_id;
+				}
+			)
+		);
+
+		if ( ! empty( $template_owner_post_ids ) && isset( $off_canvas_data['canvases'] ) && is_array( $off_canvas_data['canvases'] ) ) {
+			foreach ( $off_canvas_data['canvases'] as $existing_canvas_id => $existing_canvas ) {
+				if ( ! empty( $existing_canvas['isGlobal'] ) ) {
+					continue;
+				}
+
+				$existing_parent_post_id = isset( $existing_canvas['parentPostId'] ) ? absint( $existing_canvas['parentPostId'] ) : 0;
+				if ( in_array( $existing_parent_post_id, $template_owner_post_ids, true ) ) {
+					unset( $off_canvas_data['canvases'][ $existing_canvas_id ] );
+				}
+			}
+		}
+
+		$normalize_template_canvas_id = static function ( string $canvas_id, string $layout ): string {
+			$canvas_id = sanitize_text_field( $canvas_id );
+			$layout    = sanitize_key( $layout );
+
+			if ( '' === $canvas_id || ! in_array( $layout, [ 'header', 'body', 'footer' ], true ) ) {
+				return $canvas_id;
+			}
+
+			$layout_prefix = "{$layout}-";
+			$prefix_length = strlen( $layout_prefix );
+
+			while ( str_starts_with( $canvas_id, $layout_prefix ) ) {
+				$canvas_id = substr( $canvas_id, $prefix_length );
+			}
+
+			return $canvas_id;
+		};
+
 		foreach ( $template_post_ids as $layout => $template_post_id ) {
 			if ( 0 === $template_post_id || $template_post_id === $post_id ) {
 				continue;
@@ -1947,9 +1997,18 @@ class SettingsDataCallbacks {
 				$is_global = ! empty( $template_canvas['isGlobal'] );
 
 				if ( ! $is_global ) {
+					$raw_canvas_id  = isset( $template_canvas['id'] ) && is_string( $template_canvas['id'] )
+						? $template_canvas['id']
+						: ( is_string( $canvas_id ) ? $canvas_id : '' );
+					$base_canvas_id = $normalize_template_canvas_id( $raw_canvas_id, $layout );
+
+					// Local canvases merged from assigned template layouts belong to a slot area.
+					// Include the slot so UI badges/grouping can show Header/Body/Footer labels.
+					$template_canvas['themeBuilderLayout'] = $layout;
+
 					// Local canvases from TB layouts are owned by the areas themselves, but
 					// they need a distinct ID to avoid collisions with main post canvases.
-					$canvas_id = "{$layout}-{$canvas_id}";
+					$canvas_id = "{$layout}-{$base_canvas_id}";
 
 					// For local canvases, ensure the data also reflects the prefixed ID.
 					$template_canvas['id'] = $canvas_id;

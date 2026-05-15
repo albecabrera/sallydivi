@@ -355,6 +355,56 @@ return [
             ]
         ]
     ],
+    'breadcrumbs' => [
+        'module' => [
+            'meta' => [
+                'adminLabel' => [
+                    'desktop' => [
+                        'value' => 'Breadcrumbs'
+                    ]
+                ]
+            ],
+            'decoration' => [
+                'spacing' => [
+                    'desktop' => [
+                        'value' => [
+                            'margin' => [
+                                'bottom' => '0px'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ],
+        'trail' => [
+            'advanced' => [
+                'htmlTag' => [
+                    'desktop' => [
+                        'value' => 'nav'
+                    ]
+                ]
+            ]
+        ],
+        'home' => [
+            'innerContent' => [
+                'desktop' => [
+                    'value' => [
+                        'text' => 'Home',
+                        'url' => ''
+                    ]
+                ]
+            ]
+        ],
+        'separator' => [
+            'innerContent' => [
+                'desktop' => [
+                    'value' => [
+                        'text' => '/'
+                    ]
+                ]
+            ]
+        ]
+    ],
     'button' => [
         'module' => [
             'meta' => [
@@ -3508,7 +3558,6 @@ return [
                         'font' => [
                             'desktop' => [
                                 'value' => [
-                                    'lineHeight' => '1.7em',
                                     'size' => '14px'
                                 ]
                             ]
@@ -3518,7 +3567,6 @@ return [
                         'font' => [
                             'desktop' => [
                                 'value' => [
-                                    'lineHeight' => '1em',
                                     'size' => '14px'
                                 ]
                             ]
@@ -3528,7 +3576,6 @@ return [
                         'font' => [
                             'desktop' => [
                                 'value' => [
-                                    'lineHeight' => '1em',
                                     'size' => '14px'
                                 ]
                             ]
@@ -3538,7 +3585,6 @@ return [
                         'font' => [
                             'desktop' => [
                                 'value' => [
-                                    'lineHeight' => '1em',
                                     'size' => '14px'
                                 ]
                             ]
@@ -3548,7 +3594,6 @@ return [
                         'font' => [
                             'desktop' => [
                                 'value' => [
-                                    'lineHeight' => '1em',
                                     'size' => '14px'
                                 ]
                             ]

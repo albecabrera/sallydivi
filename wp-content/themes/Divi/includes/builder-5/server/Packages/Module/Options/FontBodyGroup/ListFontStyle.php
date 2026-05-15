@@ -151,7 +151,7 @@ class ListFontStyle {
 	 *
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/3 ListFontStyle} in
+	 * {@link /api/js/divi-module/functions/3 ListFontStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

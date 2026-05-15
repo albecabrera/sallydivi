@@ -33,7 +33,7 @@ class BackgroundComponentParallax {
 	 * and finds the first attribute with a non-empty `style` value and `enabled` set to `'on'`.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BackgroundComponentParallaxContainer BackgroundComponentParallaxContainer} in
+	 * {@link /api/js/divi-module/functions/BackgroundComponentParallaxContainer BackgroundComponentParallaxContainer} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

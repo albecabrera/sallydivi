@@ -18,8 +18,8 @@ use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
  * FontStyle class.
  *
  * This class provides style declaration functionality for Icon List text alignment.
- * Since .et_pb_icon_list_text uses display: flex, we need to convert
- * text-align values to justify-content for proper alignment.
+ * Declarations use `text-align` on `.et_pb_icon_list_text` so inline HTML keeps spaces;
+ * flexbox `justify-content` is not used on that element.
  *
  * @since ??
  */
@@ -28,7 +28,7 @@ class FontStyle {
 	/**
 	 * Generate CSS for Icon List text alignment.
 	 *
-	 * Converts text-align values to justify-content for flexbox compatibility.
+	 * Maps font textAlign values to text-align declarations.
 	 *
 	 * @since ??
 	 *
@@ -54,23 +54,21 @@ class FontStyle {
 		$text_align = isset( $font_attr['textAlign'] ) ? $font_attr['textAlign'] : null;
 
 		if ( $text_align ) {
-			// Convert text-align values to justify-content for flexbox.
 			switch ( $text_align ) {
 				case 'left':
-					$style_declarations->add( 'justify-content', 'flex-start' );
+					$style_declarations->add( 'text-align', 'left' );
 					break;
 				case 'center':
-					$style_declarations->add( 'justify-content', 'center' );
+					$style_declarations->add( 'text-align', 'center' );
 					break;
 				case 'right':
-					$style_declarations->add( 'justify-content', 'flex-end' );
+					$style_declarations->add( 'text-align', 'right' );
 					break;
 				case 'justify':
-					$style_declarations->add( 'justify-content', 'space-between' );
+					$style_declarations->add( 'text-align', 'justify' );
 					break;
 				default:
-					// For any other values, fall back to flex-start.
-					$style_declarations->add( 'justify-content', 'flex-start' );
+					$style_declarations->add( 'text-align', 'left' );
 					break;
 			}
 		}

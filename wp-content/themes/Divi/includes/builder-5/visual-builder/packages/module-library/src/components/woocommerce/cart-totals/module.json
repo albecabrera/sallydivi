@@ -382,8 +382,8 @@
           "propertySelectors": {
             "desktop": {
               "value": {
-                "border-radius": "{{selector}} .select2-container--default.select2-container--open .select2-selection--single,{{selector}} form .form-row input.input-text:focus,{{selector}} form .form-row textarea:focus",
-                "border-style": "{{selector}} .select2-container--default.select2-container--open .select2-selection--single,{{selector}} form .form-row input.input-text:focus,{{selector}} form .form-row textarea:focus"
+                "border-radius": "{{selector}} .select2-container--default .select2-selection--single,{{selector}} form .form-row input.input-text:focus,{{selector}} form .form-row textarea:focus",
+                "border-style": "{{selector}} .select2-container--default .select2-selection--single,{{selector}} form .form-row input.input-text:focus,{{selector}} form .form-row textarea:focus"
               }
             }
           }

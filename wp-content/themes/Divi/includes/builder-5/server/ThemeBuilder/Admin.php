@@ -34,6 +34,35 @@ class Admin implements DependencyInterface {
 			// that's used by the Theme Builder UI. The action is registered in default-filters.php
 			// which loads early, so it's safe to remove it here.
 			remove_action( 'admin_enqueue_scripts', 'wp_enqueue_command_palette_assets' );
+
+			// WP 7+ global forms.css breaks D5 input sizing; TB is admin but builder UI should match VB.
+			// Must run before core `print_admin_styles` (priority 20, wp-admin/includes/admin-filters.php), which calls
+			// `WP_Styles::do_items()` and emits `load-styles.php`; dequeuing later leaves `forms` in the concat bundle.
+			add_action( 'admin_print_styles', [ $this, 'remove_forms_from_wp_admin_style_dependencies' ], 19 );
+		}
+	}
+
+	/**
+	 * Stop core `forms.css` on Theme Builder so WP 7+ global input rules do not override D5 controls.
+	 *
+	 * @since ??
+	 *
+	 * @return void
+	 */
+	public function remove_forms_from_wp_admin_style_dependencies(): void {
+		if ( ! et_builder_is_tb_admin_screen() ) {
+			return;
+		}
+
+		$wp_styles = wp_styles();
+
+		// `forms` is not a top-level queued handle; it is only loaded as a dependency of the `wp-admin` group style
+		// (see `wp_default_styles` in `wp-includes/script-loader.php`). `wp_dequeue_style( 'forms' )` only removes
+		// handles from `$wp_styles->queue`, so it does not stop `all_deps()` from adding `forms` to the concat bundle.
+		if ( isset( $wp_styles->registered['wp-admin'] ) && is_array( $wp_styles->registered['wp-admin']->deps ) ) {
+			$wp_styles->registered['wp-admin']->deps = array_values(
+				array_diff( $wp_styles->registered['wp-admin']->deps, [ 'forms' ] )
+			);
 		}
 	}
 

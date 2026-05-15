@@ -411,6 +411,18 @@ class OffCanvasHooks {
 									update_post_meta( $existing_post->ID, '_divi_canvas_z_index', $new_z_index );
 								}
 
+								// Update canvas title when metadata changes are saved without content changes.
+								$existing_name = $existing_post->post_title;
+								$new_name      = $canvas['name'] ?? 'Global Canvas';
+								if ( $existing_name !== $new_name ) {
+									wp_update_post(
+										[
+											'ID'         => $existing_post->ID,
+											'post_title' => $new_name,
+										]
+									);
+								}
+
 								// Remove parent_post_id meta to convert local canvas to global (if converting).
 								delete_post_meta( $existing_post->ID, '_divi_canvas_parent_post_id' );
 								delete_post_meta( $existing_post->ID, '_divi_canvas_parent_context' );
@@ -464,6 +476,17 @@ class OffCanvasHooks {
 					$is_context_owned  = '' !== $canvas_parent_context;
 					$resolved_post_id  = $canvas_parent_post_id > 0 ? $canvas_parent_post_id : (int) $post_id;
 					$is_template_owned = $is_context_owned ? false : ( (int) $resolved_post_id !== (int) $post_id );
+					$storage_canvas_id = (string) $canvas_id;
+
+					// Slot template canvases are persisted using canonical/base IDs in DB.
+					// Builder runtime IDs can be prefixed (e.g. `header-<id>`), so normalize
+					// before lookup/write to avoid creating duplicate prefixed rows.
+					if ( $is_slot_template_owned ) {
+						$normalized_template_canvas_id = self::_normalize_slot_prefixed_canvas_id( (string) $canvas_id );
+						if ( '' !== $normalized_template_canvas_id ) {
+							$storage_canvas_id = $normalized_template_canvas_id;
+						}
+					}
 
 					if ( $is_context_owned && ! in_array( $canvas_parent_context, $allowed_parent_context_keys, true ) ) {
 						continue;
@@ -488,30 +511,49 @@ class OffCanvasHooks {
 						continue;
 					}
 
-					// Check for existing local canvas using batch-fetched map, but also verify it's local (has parent_post_id).
-					$existing_post = $existing_canvas_posts_map[ $canvas_id ] ?? null;
-					// Verify it's actually a local canvas owned by the resolved parent.
-					// Use batch-fetched parent_post_id/parent_context values.
-					if ( $existing_post ) {
-						$parent_post_id = $parent_post_id_map[ $existing_post->ID ] ?? '';
-						$parent_context = $parent_context_map[ $existing_post->ID ] ?? '';
+					// Resolve existing local canvas by trying canonical + raw runtime IDs.
+					$existing_post               = null;
+					$lookup_canvas_id_candidates = array_values(
+						array_unique(
+							array_filter(
+								[
+									$storage_canvas_id,
+									(string) $canvas_id,
+								],
+								static function ( $candidate_id ) {
+									return is_string( $candidate_id ) && '' !== $candidate_id;
+								}
+							)
+						)
+					);
+
+					foreach ( $lookup_canvas_id_candidates as $lookup_canvas_id_candidate ) {
+						$candidate_post = $existing_canvas_posts_map[ $lookup_canvas_id_candidate ] ?? null;
+						if ( ! $candidate_post ) {
+							continue;
+						}
+
+						$parent_post_id = $parent_post_id_map[ $candidate_post->ID ] ?? '';
+						$parent_context = $parent_context_map[ $candidate_post->ID ] ?? '';
 
 						if ( $is_context_owned ) {
 							if ( (string) $parent_context !== (string) $canvas_parent_context ) {
-								$existing_post = null;
+								continue;
 							}
 						} elseif ( (int) $parent_post_id !== (int) $resolved_post_id ) {
-								// This canvas exists but is not local to this post (might be global or local to another post/context).
-								$existing_post = null;
+							continue;
 						}
+
+						$existing_post = $candidate_post;
+						break;
 					}
 
 					if ( ! $existing_post ) {
 						// New canvas - save it.
 						if ( $is_context_owned ) {
-							self::_save_local_canvas_for_context( $canvas_id, $canvas, $canvas_parent_context );
+							self::_save_local_canvas_for_context( $storage_canvas_id, $canvas, $canvas_parent_context );
 						} else {
-							self::_save_local_canvas( $canvas_id, $canvas, $resolved_post_id );
+							self::_save_local_canvas( $storage_canvas_id, $canvas, $resolved_post_id );
 						}
 					} else {
 						// Existing canvas - check if content changed.
@@ -522,9 +564,9 @@ class OffCanvasHooks {
 						if ( $normalized_new_content !== $existing_content ) {
 							// Content changed - save and clear cache.
 							if ( $is_context_owned ) {
-								self::_save_local_canvas_for_context( $canvas_id, $canvas, $canvas_parent_context );
+								self::_save_local_canvas_for_context( $storage_canvas_id, $canvas, $canvas_parent_context );
 							} else {
-								self::_save_local_canvas( $canvas_id, $canvas, $resolved_post_id );
+								self::_save_local_canvas( $storage_canvas_id, $canvas, $resolved_post_id );
 							}
 						} else {
 							// Content unchanged - only update metadata if it changed.
@@ -1842,6 +1884,9 @@ class OffCanvasHooks {
 
 		// Track processed canvases per post_id to avoid duplicate rendering.
 		$processed_canvases = self::_get_per_post_global_value( 'divi_off_canvas_processed_canvases', $post_id, [] );
+		if ( ! isset( $GLOBALS['divi_off_canvas_local_interaction_rendered'] ) || ! is_array( $GLOBALS['divi_off_canvas_local_interaction_rendered'] ) ) {
+			$GLOBALS['divi_off_canvas_local_interaction_rendered'] = [];
+		}
 
 		// Get all canvas data (this will cache if not already cached).
 		$canvas_data              = DynamicAssetsUtils::get_all_canvas_data_for_post( $post_id );
@@ -1911,12 +1956,28 @@ class OffCanvasHooks {
 				}
 
 				$is_global = $canvas_meta_data['isGlobal'] ?? false;
+				if ( ! $is_global ) {
+					$canonical_local_canvas_id = self::_normalize_slot_prefixed_canvas_id( (string) $canvas_id );
+					if ( '' === $canonical_local_canvas_id ) {
+						continue;
+					}
+
+					// Builder hydration dedupes template-local duplicates by canonical UID.
+					// Mirror that on frontend interaction rendering so duplicate local rows
+					// (e.g., `header-<uid>` and `<uid>`) do not both render.
+					if ( isset( $GLOBALS['divi_off_canvas_local_interaction_rendered'][ $canonical_local_canvas_id ] ) ) {
+						continue;
+					}
+				}
 
 				$canvases_to_process[] = [
 					'canvas_id' => $canvas_id,
 					'is_global' => $is_global,
 				];
 				$processed_canvases[]  = $canvas_id;
+				if ( ! $is_global ) {
+					$GLOBALS['divi_off_canvas_local_interaction_rendered'][ $canonical_local_canvas_id ] = true;
+				}
 			}
 		}
 		// Update processed canvases tracking.
@@ -1934,6 +1995,39 @@ class OffCanvasHooks {
 
 			self::_render_off_canvas_content_with_css( $canvas_id, $post_id );
 		}
+	}
+
+	/**
+	 * Normalize slot-prefixed canvas IDs to canonical UID.
+	 *
+	 * @since ??
+	 *
+	 * @param string $canvas_id Raw canvas ID.
+	 *
+	 * @return string
+	 */
+	private static function _normalize_slot_prefixed_canvas_id( string $canvas_id ): string {
+		$canvas_id = sanitize_text_field( $canvas_id );
+		if ( '' === $canvas_id ) {
+			return '';
+		}
+
+		$prefixes = [ 'header-', 'body-', 'footer-' ];
+		$changed  = true;
+
+		while ( $changed ) {
+			$changed = false;
+
+			foreach ( $prefixes as $prefix ) {
+				if ( str_starts_with( $canvas_id, $prefix ) ) {
+					$canvas_id = substr( $canvas_id, strlen( $prefix ) );
+					$changed   = true;
+					break;
+				}
+			}
+		}
+
+		return $canvas_id;
 	}
 
 	/**
@@ -2050,6 +2144,9 @@ class OffCanvasHooks {
 		if ( ! isset( $GLOBALS['divi_off_canvas_global_rendered'] ) ) {
 			$GLOBALS['divi_off_canvas_global_rendered'] = [];
 		}
+		if ( ! isset( $GLOBALS['divi_off_canvas_local_rendered'] ) || ! is_array( $GLOBALS['divi_off_canvas_local_rendered'] ) ) {
+			$GLOBALS['divi_off_canvas_local_rendered'] = [];
+		}
 
 		// Convert metadata to the format expected by the rest of the function.
 		$all_canvases = [];
@@ -2111,6 +2208,12 @@ class OffCanvasHooks {
 					'rendering_context' => $rendering_context,
 				];
 			} else {
+				// Local canvases can be reachable from multiple owner contexts (post + active templates)
+				// in the same request. Render each local canvas UID once to prevent duplicate output.
+				if ( isset( $GLOBALS['divi_off_canvas_local_rendered'][ $canvas_id ] ) ) {
+					continue;
+				}
+
 				$canvases_to_process[] = [
 					'canvas_id' => $canvas_id,
 					'is_global' => $is_global,
@@ -2138,6 +2241,8 @@ class OffCanvasHooks {
 			// Mark global canvas as rendered after successful render.
 			if ( $is_global && isset( $canvas_info['rendering_context'] ) ) {
 				$GLOBALS['divi_off_canvas_global_rendered'][ $canvas_id ] = $canvas_info['rendering_context'];
+			} elseif ( ! $is_global ) {
+				$GLOBALS['divi_off_canvas_local_rendered'][ $canvas_id ] = true;
 			}
 		}
 	}
@@ -2833,8 +2938,16 @@ class OffCanvasHooks {
 	 * @return string Combined canvas content from all appended canvases.
 	 */
 	public static function get_all_appended_canvas_content( $post_id, $main_content = '' ) {
+		static $cache = [];
+
+		$cache_key = md5( (string) $post_id . '|' . (string) $main_content );
+		if ( isset( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
+		}
+
 		if ( ! $post_id ) {
-			return '';
+			$cache[ $cache_key ] = '';
+			return $cache[ $cache_key ];
 		}
 
 		// Skip expensive canvas content fetching when not in a cacheable frontend request.
@@ -2842,13 +2955,15 @@ class OffCanvasHooks {
 		// performance issues during builder load. Canvas content will be handled
 		// on the client side in the builder.
 		if ( ! DynamicAssetsUtils::is_dynamic_front_end_request() ) {
-			return '';
+			$cache[ $cache_key ] = '';
+			return $cache[ $cache_key ];
 		}
 
 		// Early exit: Check if any canvases exist before doing expensive operations.
 		// This avoids database queries and content parsing when no canvases exist.
 		if ( ! self::_has_any_canvases( $post_id ) ) {
-			return '';
+			$cache[ $cache_key ] = '';
+			return $cache[ $cache_key ];
 		}
 
 		$all_canvas_content = '';
@@ -2929,6 +3044,50 @@ class OffCanvasHooks {
 						$canvas_portal_ids_to_expand = array_unique( array_merge( $canvas_portal_ids_to_expand, $nested_portal_ids ) );
 					}
 				}
+			}
+		}
+
+		$cache[ $cache_key ] = $all_canvas_content;
+
+		return $cache[ $cache_key ];
+	}
+
+	/**
+	 * Get all appended canvas content for the current post and active Theme Builder templates.
+	 *
+	 * @since ??
+	 *
+	 * @param int    $post_id      Current post ID.
+	 * @param string $main_content Main content used to resolve interaction targets.
+	 *
+	 * @return string Combined canvas content for post and active templates.
+	 */
+	public static function get_all_appended_canvas_content_for_post_and_templates( int $post_id, string $main_content = '' ): string {
+		if ( ! $post_id ) {
+			return '';
+		}
+
+		$all_canvas_content = self::get_all_appended_canvas_content( $post_id, $main_content );
+		$tb_template_ids    = DynamicAssetsUtils::get_theme_builder_template_ids();
+
+		if ( empty( $tb_template_ids ) || ! is_array( $tb_template_ids ) ) {
+			return $all_canvas_content;
+		}
+
+		$processed_post_ids = [ $post_id => true ];
+
+		foreach ( $tb_template_ids as $tb_template_id ) {
+			$tb_template_id = (int) $tb_template_id;
+
+			if ( 0 >= $tb_template_id || isset( $processed_post_ids[ $tb_template_id ] ) ) {
+				continue;
+			}
+
+			$processed_post_ids[ $tb_template_id ] = true;
+			$tb_canvas_content                     = self::get_all_appended_canvas_content( $tb_template_id, $main_content );
+
+			if ( ! empty( $tb_canvas_content ) ) {
+				$all_canvas_content .= $tb_canvas_content;
 			}
 		}
 

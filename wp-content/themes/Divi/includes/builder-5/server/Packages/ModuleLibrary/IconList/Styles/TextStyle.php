@@ -18,8 +18,8 @@ use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
  * TextStyle class.
  *
  * This class provides style declaration functionality for Icon List text orientation alignment.
- * Since .et_pb_icon_list_text uses display: flex, we need to convert
- * text orientation values to justify-content for proper alignment.
+ * Text alignment is applied to `.et_pb_icon_list_text` using `text-align` so inline HTML
+ * preserves normal whitespace; flexbox `justify-content` is not used on that element.
  * This handles module.advanced.text.text.desktop.value.orientation attributes.
  *
  * @since ??
@@ -29,7 +29,7 @@ class TextStyle {
 	/**
 	 * Generate CSS for Icon List text orientation alignment.
 	 *
-	 * Converts text orientation values to justify-content for flexbox compatibility.
+	 * Maps text orientation values to text-align declarations.
 	 *
 	 * @since ??
 	 *
@@ -55,23 +55,21 @@ class TextStyle {
 		$orientation = isset( $text_attr['orientation'] ) ? $text_attr['orientation'] : null;
 
 		if ( $orientation ) {
-			// Convert text orientation values to justify-content for flexbox.
 			switch ( $orientation ) {
 				case 'left':
-					$style_declarations->add( 'justify-content', 'flex-start' );
+					$style_declarations->add( 'text-align', 'left' );
 					break;
 				case 'center':
-					$style_declarations->add( 'justify-content', 'center' );
+					$style_declarations->add( 'text-align', 'center' );
 					break;
 				case 'right':
-					$style_declarations->add( 'justify-content', 'flex-end' );
+					$style_declarations->add( 'text-align', 'right' );
 					break;
 				case 'justify':
-					$style_declarations->add( 'justify-content', 'space-between' );
+					$style_declarations->add( 'text-align', 'justify' );
 					break;
 				default:
-					// For any other values, fall back to flex-start.
-					$style_declarations->add( 'justify-content', 'flex-start' );
+					$style_declarations->add( 'text-align', 'left' );
 					break;
 			}
 		}

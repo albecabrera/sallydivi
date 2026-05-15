@@ -2036,7 +2036,14 @@ class SavingUtility {
 	 * @return void
 	 */
 	public static function save_page_settings( array $settings, $post_id ) {
+		$has_page_gutter_width_is_default = array_key_exists( 'pageGutterWidthIsDefault', $settings );
+		$page_gutter_width_is_default     = $has_page_gutter_width_is_default
+			&& true === filter_var( $settings['pageGutterWidthIsDefault'], FILTER_VALIDATE_BOOLEAN );
+
 		$mapped_page_settings = self::map_page_settings( $settings );
+		if ( $has_page_gutter_width_is_default && $page_gutter_width_is_default ) {
+			unset( $mapped_page_settings['et_pb_page_gutter_width'] );
+		}
 
 		// Exclude postTitle and postExcerpt from et_builder_update_settings() because they were.
 		// already saved in the main wp_update_post() call in SyncToServerController::update().
@@ -2064,6 +2071,15 @@ class SavingUtility {
 		if ( true === $should_persist_custom_css_directly ) {
 			update_post_meta( $post_id, '_et_pb_custom_css', $custom_css_value );
 			delete_post_meta( $post_id, '_et_pb_custom_css_draft' );
+		}
+
+		if ( $has_page_gutter_width_is_default ) {
+			if ( $page_gutter_width_is_default ) {
+				delete_post_meta( $post_id, '_et_pb_gutter_width' );
+				update_post_meta( $post_id, '_et_pb_page_gutter_width_is_default', '1' );
+			} else {
+				update_post_meta( $post_id, '_et_pb_page_gutter_width_is_default', '0' );
+			}
 		}
 
 		// Keep legacy post settings meta in sync without triggering additional wp_update_post calls.

@@ -1,12 +1,15 @@
+import path from "node:path";
+
 import { task } from "@langchain/langgraph";
 
 import { SUMMARY_MODEL } from "../core/constants.mjs";
 import { getRepoRoot } from "../core/git.mjs";
 import { run } from "../core/exec.mjs";
 import { log } from "../core/logging.mjs";
+import { readJson } from "../core/io.mjs";
 import { resolveSummaryCacheDir } from "../summary/summary.mjs";
 import { loadConfig } from "../core/config.mjs";
-import { resolveLatestPrRun } from "../core/paths.mjs";
+import { resolveLatestPrRun, resolvePrRuns } from "../core/paths.mjs";
 import { classifySize } from "../reviewers/selection.mjs";
 import {
   buildTaskContext,
@@ -65,6 +68,143 @@ const truncateBody = (value, limit = 1200) => {
   return `${trimmed.slice(0, limit)}\n... (truncated)`;
 };
 
+const REBUTTAL_REGEX = [
+  /\bdisagree\b/i,
+  /\bwon't fix\b/i,
+  /\bwill not\b/i,
+  /\bnot going to\b/i,
+  /\bby design\b/i,
+  /\bintended\b/i,
+  /\bexpected\b/i,
+  /\bno change\b/i,
+  /\bnot needed\b/i,
+  /\bnot necessary\b/i,
+  /\bnot applicable\b/i,
+  /\bfalse positive\b/i,
+];
+
+const CONFIRM_REGEX = [
+  /\bfixed\b/i,
+  /\baddressed\b/i,
+  /\bresolved\b/i,
+  /\bimplemented\b/i,
+  /\bupdated\b/i,
+  /\bhandled\b/i,
+  /\badded\b/i,
+  /\bremoved\b/i,
+  /\bdone\b/i,
+];
+
+const normalizeFindingKey = (finding) => {
+  const title = String(finding?.title || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+  const location = Array.isArray(finding?.locations)
+    ? finding.locations[0]?.path ?? ""
+    : "";
+  const normalizedLocation = location ? location.replace(/^(\.\/)+/, "") : "";
+  return `${title}::${normalizedLocation}`.trim();
+};
+
+const buildPriorRunDigest = ({ repoRoot, prNumber }) => {
+  const runs = resolvePrRuns(repoRoot, prNumber);
+  if (0 === runs.length) {
+    return {
+      runs: [],
+      stats: {
+        run_count: 0,
+        total_findings: 0,
+        pr_findings: 0,
+        repeat_findings: 0,
+        label_counts: {},
+      },
+      finding_history: [],
+    };
+  }
+  const history = [];
+  const findingMap = new Map();
+  const labelCounts = new Map();
+  let totalFindings = 0;
+  let prFindings = 0;
+
+  runs.forEach((run) => {
+    const findingsPath = path.join(run.output_root, "aggregate/findings.json");
+    const reviewPayloadPath = path.join(
+      run.output_root,
+      "aggregate/review-payload.json"
+    );
+    const findingsPayload = readJson(findingsPath);
+    const reviewPayload = readJson(reviewPayloadPath);
+    const findingsList = Array.isArray(findingsPayload?.private_summary?.findings)
+      ? findingsPayload.private_summary.findings
+      : [];
+    const prFindingsList = Array.isArray(findingsPayload?.pr_comment?.findings)
+      ? findingsPayload.pr_comment.findings
+      : [];
+    totalFindings += findingsList.length;
+    prFindings += prFindingsList.length;
+    findingsList.forEach((finding) => {
+      const label = String(finding?.comment_label || "issue").toLowerCase();
+      labelCounts.set(label, (labelCounts.get(label) || 0) + 1);
+      const key = normalizeFindingKey(finding);
+      if ("" === key) {
+        return;
+      }
+      const existing = findingMap.get(key);
+      if (existing) {
+        existing.count += 1;
+        existing.last_seen_run = run.run_id;
+        existing.last_seen_at = run.started_at || null;
+        if (finding?.reviewer && !existing.reviewers.includes(finding.reviewer)) {
+          existing.reviewers.push(finding.reviewer);
+        }
+      } else {
+        findingMap.set(key, {
+          key,
+          title: finding?.title || "Finding",
+          path: Array.isArray(finding?.locations)
+            ? finding.locations[0]?.path ?? null
+            : null,
+          count: 1,
+          reviewers: finding?.reviewer ? [finding.reviewer] : [],
+          last_seen_run: run.run_id,
+          last_seen_at: run.started_at || null,
+        });
+      }
+    });
+    history.push({
+      run_id: run.run_id,
+      started_at: run.started_at || null,
+      head_sha: run.run?.head_sha ?? null,
+      findings_count: findingsList.length,
+      pr_findings_count: prFindingsList.length,
+      summary: findingsPayload?.pr_comment?.summary ?? null,
+      review_event: reviewPayload?.event ?? null,
+    });
+  });
+
+  const findingHistory = [...findingMap.values()].sort((a, b) => {
+    if (a.count !== b.count) {
+      return b.count - a.count;
+    }
+    return String(a.title).localeCompare(String(b.title));
+  });
+  const repeatFindings = findingHistory.filter((entry) => entry.count > 1).length;
+
+  return {
+    runs: history.slice(-10),
+    stats: {
+      run_count: runs.length,
+      total_findings: totalFindings,
+      pr_findings: prFindings,
+      repeat_findings: repeatFindings,
+      label_counts: Object.fromEntries(labelCounts.entries()),
+    },
+    finding_history: findingHistory.slice(0, 50),
+  };
+};
+
 const buildRetroReviewContext = ({
   repoRoot,
   repoSlug,
@@ -77,13 +217,13 @@ const buildRetroReviewContext = ({
     return null;
   }
   const previousRun = resolveLatestPrRun(repoRoot, prNumber);
-  if (null == previousRun?.started_at) {
-    return null;
-  }
-  const sinceTimestamp = toTimestamp(previousRun.started_at);
-  const untilTimestamp = toTimestamp(runStartedAt);
-  if (null == sinceTimestamp || null == untilTimestamp) {
-    return null;
+  const priorDigest = buildPriorRunDigest({ repoRoot, prNumber });
+  const sinceTimestamp =
+    toTimestamp(previousRun?.started_at) ?? toTimestamp(runStartedAt) ?? 0;
+  if (0 < priorDigest.stats.run_count) {
+    log(
+      `[retro-review] prior runs=${priorDigest.stats.run_count} total_findings=${priorDigest.stats.total_findings} repeat_findings=${priorDigest.stats.repeat_findings}`
+    );
   }
   const botLogin = normalizeLogin(config?.feedback_bot_login || "DeepHiveET");
   let threads = [];
@@ -102,22 +242,16 @@ const buildRetroReviewContext = ({
       ? thread.comments.nodes
       : [];
     return comments.some((comment) => {
-      const createdAt = toTimestamp(comment?.createdAt);
-      if (null == createdAt) {
-        return false;
-      }
       const author = normalizeLogin(comment?.author?.login);
-      if (botLogin !== author) {
-        return false;
-      }
-      return createdAt >= sinceTimestamp && createdAt <= untilTimestamp;
+      return botLogin === author;
     });
   });
   const normalizedThreads = filteredThreads.map((thread) => {
     const comments = Array.isArray(thread?.comments?.nodes)
       ? thread.comments.nodes
       : [];
-    const mapped = comments.map((comment) => ({
+    const mapped = comments
+      .map((comment) => ({
       id: comment?.databaseId ?? comment?.id ?? null,
       author: comment?.author?.login ?? null,
       created_at: comment?.createdAt ?? null,
@@ -127,7 +261,12 @@ const buildRetroReviewContext = ({
       position: comment?.position ?? null,
       diff_hunk: comment?.diffHunk ?? null,
       url: comment?.url ?? null,
-    }));
+    }))
+      .sort((a, b) => {
+        const timeA = toTimestamp(a.created_at) || 0;
+        const timeB = toTimestamp(b.created_at) || 0;
+        return timeA - timeB;
+      });
     const recentComments = mapped.filter((comment) => {
       const createdAt = toTimestamp(comment?.created_at);
       if (null == createdAt) {
@@ -138,6 +277,9 @@ const buildRetroReviewContext = ({
     const botComments = mapped.filter(
       (comment) => normalizeLogin(comment.author) === botLogin
     );
+    const humanComments = mapped.filter(
+      (comment) => normalizeLogin(comment.author) !== botLogin
+    );
     const botCommentIds = botComments
       .map((comment) => comment.id)
       .filter(Boolean);
@@ -146,16 +288,54 @@ const buildRetroReviewContext = ({
         `[retro-review] warning: missing bot comment id for thread ${thread?.id || "unknown"}`
       );
     }
+    const lastBotComment = botComments.length
+      ? botComments[botComments.length - 1]
+      : null;
+    const lastBotTimestamp = lastBotComment
+      ? toTimestamp(lastBotComment.created_at)
+      : null;
+    const developerResponses = humanComments.filter((comment) => {
+      const createdAt = toTimestamp(comment?.created_at);
+      if (null == createdAt) {
+        return false;
+      }
+      if (null == lastBotTimestamp) {
+        return createdAt >= sinceTimestamp;
+      }
+      return createdAt >= lastBotTimestamp;
+    });
+    const rebuttals = developerResponses.filter((comment) =>
+      REBUTTAL_REGEX.some((pattern) => pattern.test(comment.body || ""))
+    );
+    const confirmations = developerResponses.filter((comment) =>
+      CONFIRM_REGEX.some((pattern) => pattern.test(comment.body || ""))
+    );
+    const status = rebuttals.length
+      ? "rebutted"
+      : true === thread?.isResolved
+        ? "resolved"
+        : confirmations.length
+          ? "acknowledged"
+          : "open";
+
     return {
       thread_id: thread?.id ?? null,
       is_resolved: true === thread?.isResolved,
       resolved_at: thread?.resolvedAt ?? null,
       resolved_by: thread?.resolvedBy?.login ?? null,
+      status,
       bot_comment_count: botComments.length,
       bot_comment_id: botCommentIds[0] ?? null,
       bot_comment_ids: botCommentIds,
+      bot_comment_first_at: botComments[0]?.created_at ?? null,
+      bot_comment_last_at: lastBotComment?.created_at ?? null,
       recent_comment_count: recentComments.length,
       recent_comments: recentComments.slice(0, 10),
+      developer_response_count: developerResponses.length,
+      developer_rebuttal_count: rebuttals.length,
+      developer_confirm_count: confirmations.length,
+      developer_responses: developerResponses.slice(0, 8),
+      developer_rebuttals: rebuttals.slice(0, 5),
       comments: mapped.slice(0, 25),
     };
   });
@@ -164,6 +344,16 @@ const buildRetroReviewContext = ({
   ).length;
   if (0 === normalizedThreads.length) {
     log("[retro-review] warning: no prior DeepHive review threads found.");
+  } else {
+    const rebuttedCount = normalizedThreads.filter(
+      (thread) => "rebutted" === thread.status
+    ).length;
+    const acknowledgedCount = normalizedThreads.filter(
+      (thread) => "acknowledged" === thread.status
+    ).length;
+    log(
+      `[retro-review] threads=${normalizedThreads.length} resolved=${resolvedCount} rebutted=${rebuttedCount} acknowledged=${acknowledgedCount}`
+    );
   }
   let commits = [];
   try {
@@ -195,7 +385,7 @@ const buildRetroReviewContext = ({
       return date >= sinceTimestamp;
     });
   let diffSinceLastRun = null;
-  const previousHeadSha = previousRun.run?.head_sha || null;
+  const previousHeadSha = previousRun?.run?.head_sha || null;
   if (
     null != previousHeadSha &&
     null != currentHeadSha &&
@@ -217,14 +407,19 @@ const buildRetroReviewContext = ({
   }
   return {
     enabled: true,
-    previous_run: {
-      run_id: previousRun.run_id,
-      started_at: previousRun.started_at,
-    },
+    previous_run: previousRun
+      ? {
+          run_id: previousRun.run_id,
+          started_at: previousRun.started_at,
+        }
+      : null,
     diff_base_sha: previousHeadSha,
     diff_head_sha: currentHeadSha || null,
     diff_since_last_run: diffSinceLastRun,
     bot_login: botLogin,
+    summary: priorDigest.stats,
+    prior_runs: priorDigest.runs,
+    prior_findings: priorDigest.finding_history,
     thread_count: normalizedThreads.length,
     resolved_threads: resolvedCount,
     unresolved_threads: normalizedThreads.length - resolvedCount,

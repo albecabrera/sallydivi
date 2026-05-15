@@ -530,6 +530,20 @@ class StaticCSS implements DependencyInterface {
 				}
 			}
 
+			// Merge module styles from all static CSS elements (Theme Builder layouts + main) in render order.
+			// Deduplicates identical rules that repeat because module order indices reset per TB layout.
+			$merged_module_styles_data = [];
+			foreach ( self::$_elements as $element_for_merge ) {
+				$module_for_layout = Style::get_style_array( 'module', $element_for_merge->get_layout_id() );
+
+				if ( ! empty( $module_for_layout ) ) {
+					$merged_module_styles_data = Style::merge_module_styles_data(
+						$merged_module_styles_data,
+						$module_for_layout
+					);
+				}
+			}
+
 			// Process each element in priority order.
 			foreach ( self::$_elements as $element_index => $element ) {
 				// Output all collected preset styles with the main content element (layout_id 0) or first element if not found.
@@ -543,11 +557,19 @@ class StaticCSS implements DependencyInterface {
 					$preset_styles_data_used = true;
 				}
 
-				// Get and set module-specific styles for this element's layout.
-				$module_styles_data = Style::get_style_array( 'module', $element->get_layout_id() );
+				// Output merged module styles once on the main content element (same target as merged presets).
+				$is_main_content_target = $main_content_element === $element || ( null === $main_content_element && 0 === $element_index );
 
-				if ( ! empty( $module_styles_data ) ) {
-					$element->set_styles_data( 'module', $module_styles_data );
+				if ( $is_main_content_target ) {
+					if ( ! empty( $merged_module_styles_data ) ) {
+						$element->set_styles_data( 'module', $merged_module_styles_data );
+					} else {
+						$module_styles_data = Style::get_style_array( 'module', $element->get_layout_id() );
+
+						if ( ! empty( $module_styles_data ) ) {
+							$element->set_styles_data( 'module', $module_styles_data );
+						}
+					}
 				}
 
 				// Output the styles for this element.

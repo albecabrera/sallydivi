@@ -141,6 +141,61 @@ class Utils {
 	}
 
 	/**
+	 * Check whether a value contains a global image variable token.
+	 *
+	 * @since ??
+	 *
+	 * @param mixed $value The value to inspect.
+	 *
+	 * @return bool Whether the value contains a global image variable token.
+	 */
+	public static function is_global_image_variable( $value ): bool {
+		if ( ! is_string( $value ) || false === strpos( $value, '$variable(' ) ) {
+			return false;
+		}
+
+		$global_variables       = GlobalData::get_global_variables();
+		$image_global_variables = (array) ( $global_variables['images'] ?? (object) [] );
+		$has_global_image_variable = false;
+
+		preg_replace_callback(
+			'/\$variable\((.+?)\)\$/',
+			function ( $matches ) use ( &$has_global_image_variable, $image_global_variables ) {
+				$json = $matches[1];
+
+				// Handle escaped quotes in JSON string.
+				if ( false !== strpos( $json, '\"' ) ) {
+					$json = stripslashes( $json );
+				}
+
+				$decoded              = json_decode( $json, true );
+				$type                 = $decoded['type'] ?? '';
+				$name                 = $decoded['value']['name'] ?? '';
+				$is_global_image_type = 'image' === $type && is_string( $name ) && 0 === strpos( $name, 'gvid-' );
+				$is_registered_image  = is_string( $name ) && isset( $image_global_variables[ $name ] );
+
+				if ( ! $is_registered_image && is_string( $name ) ) {
+					foreach ( $image_global_variables as $image_global_variable ) {
+						if ( is_array( $image_global_variable ) && $name === ( $image_global_variable['id'] ?? '' ) ) {
+							$is_registered_image = true;
+							break;
+						}
+					}
+				}
+
+				if ( $is_global_image_type || $is_registered_image ) {
+					$has_global_image_variable = true;
+				}
+
+				return $matches[0];
+			},
+			$value
+		);
+
+		return $has_global_image_variable;
+	}
+
+	/**
 	 * Check if a dynamic variable represents an ACF color picker field.
 	 *
 	 * @since ??

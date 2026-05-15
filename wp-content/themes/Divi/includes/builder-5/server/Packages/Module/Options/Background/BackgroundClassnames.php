@@ -140,7 +140,7 @@ class BackgroundClassnames {
 	 * a combination of the class prefix, breakpoint suffix, state suffix, and "_exist" suffix.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BackgroundClassnames backgroundClassnames} in
+	 * {@link /api/js/divi-module/functions/BackgroundClassnames backgroundClassnames} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -179,7 +179,7 @@ class BackgroundClassnames {
 	 * if no class names are found.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BackgroundClassnames backgroundClassnames} in
+	 * {@link /api/js/divi-module/functions/BackgroundClassnames backgroundClassnames} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

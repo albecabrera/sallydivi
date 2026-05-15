@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
+use ET\Builder\Packages\StyleLibrary\Utils\Utils;
 use ET\Builder\Packages\StyleLibrary\Declarations\Background\Background;
 use ET\Builder\Packages\StyleLibrary\Declarations\Background\Utils\BackgroundStyleUtils;
 use ET\Builder\Packages\ModuleUtils\ModuleUtils;
@@ -228,7 +229,7 @@ trait StyleDeclarationTrait {
 			$vertical_offset   = $image_values['verticalOffset'];
 			$repeat            = $image_values['repeat'];
 			$blend             = $image_values['blend'];
-			$is_img_var        = str_contains( $url, 'var(' );
+			$is_img_var        = str_contains( $url, 'var(' ) || Utils::is_global_image_variable( $url );
 
 			$should_output_property = function ( $prop, $value, $attr, $breakpoint, $state ) use ( $image ) {
 				if ( 'desktop' === $breakpoint || null === $attr ) {
@@ -448,7 +449,7 @@ trait StyleDeclarationTrait {
 		if ( ! empty( $background_images ) && $gradient && isset( $gradient['enabled'] ) && 'on' === $gradient['enabled'] && ! empty( $gradient['stops'] ) ) {
 			if ( ( $image || $responsive_url ) && ! $is_image_not_enabled && isset( $image_values['url'] ) && '' !== $image_values['url'] && isset( $parallax['enabled'] ) && 'on' !== $parallax['enabled'] ) {
 				$image_url      = $image_values['url'];
-				$is_image_var   = str_contains( $image_url, 'var(' );
+				$is_image_var   = str_contains( $image_url, 'var(' ) || Utils::is_global_image_variable( $image_url );
 				$background_url = $is_image_var ? "{$image_url}" : "url({$image_url})";
 
 				// Only add if it's not already in the array (it may have been added earlier if URL changed).

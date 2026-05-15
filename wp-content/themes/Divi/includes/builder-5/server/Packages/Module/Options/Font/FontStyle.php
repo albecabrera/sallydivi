@@ -31,7 +31,7 @@ class FontStyle {
 	 * Get font style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/FontStyle FontStyle} in
+	 * {@link /api/js/divi-module/functions/FontStyle FontStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

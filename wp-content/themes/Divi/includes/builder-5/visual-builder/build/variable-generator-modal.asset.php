@@ -1,0 +1,1 @@
+<?php return array('dependencies' => array('divi-conversion', 'divi-data', 'divi-error-boundary', 'divi-field-library', 'divi-global-data', 'divi-modal', 'divi-rest', 'divi-ui-library', 'divi-vendor-react', 'divi-vendor-react-dom', 'divi-vendor-wp-i18n', 'divi-window'), 'version' => 'dc1734e933c1d650f84a');

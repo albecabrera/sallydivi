@@ -81,7 +81,7 @@ class CssStyleUtils {
 	 * This function retrieves the CSS statements based on the provided arguments.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetStatements getStatements} in
+	 * {@link /api/js/divi-module/functions/GetStatements getStatements} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

@@ -118,7 +118,7 @@ class BlurbModule implements DependencyInterface {
 	 * This function assigns variables and sets script data options for the module.
 	 *
 	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
 	 * located in `@divi/module-library`.
 	 *
 	 * @since ??
@@ -219,7 +219,7 @@ class BlurbModule implements DependencyInterface {
 	 * Get the custom CSS fields for the Divi Blurb module.
 	 *
 	 * This function is equivalent to the JavaScript constant
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs cssFields}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs cssFields}
 	 * located in `@divi/module-library`. Note that this function does not have
 	 * a `label` property on each array item, unlike the JS const cssFields.
 	 *
@@ -706,9 +706,11 @@ class BlurbModule implements DependencyInterface {
 			}
 		}
 
-		// Width should only render in image mode; icon font-size should only render in icon mode.
-		$render_icon_width_style_declaration  = $use_icon;
-		$render_image_width_style_declaration = ! $use_icon;
+		// Preset attrs omit use_icon, so icon font-size must still run on preset style passes.
+		$render_icon_width_style_declaration = ( 'module' !== $style_group ) || $use_icon;
+
+		// Same for image width on preset passes; module path still gates on image mode.
+		$render_image_width_style_declaration = ( 'module' !== $style_group ) || ! $use_icon;
 
 		// Create icon width style props if icon width styles should be rendered.
 		$render_icon_width_props = $render_icon_width_style_declaration ? [

@@ -31,7 +31,7 @@ class Utils {
 	 * If the provided icon attribute value does not match any icon in the list, return `null`.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-icon-library/functions/findIconInList findIconInList}
+	 * {@link /api/js/divi-icon-library/functions/findIconInList findIconInList}
 	 * in `@divi/icon-library` package.
 	 *
 	 * @since ??
@@ -86,7 +86,7 @@ class Utils {
 	 * The font icon is considered to be `FontAwesome` if the icon's type attribute value is `fa`.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-icon-library/functions/isFaIcon isFaIcon}
+	 * {@link /api/js/divi-icon-library/functions/isFaIcon isFaIcon}
 	 * in `@divi/icon-library` package.
 	 *
 	 * @since ??
@@ -109,7 +109,7 @@ class Utils {
 	 * Process the font icon and return the decoded unicode.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-icon-library/functions/processFontIcon processFontIcon}
+	 * {@link /api/js/divi-icon-library/functions/processFontIcon processFontIcon}
 	 * in `@divi/icon-library` package.
 	 *
 	 * @since ??

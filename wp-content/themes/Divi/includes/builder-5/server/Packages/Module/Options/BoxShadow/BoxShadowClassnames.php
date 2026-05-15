@@ -27,7 +27,7 @@ class BoxShadowClassnames {
 	 * Check if the box shadow overlay is enabled and return the corresponding classname(s).
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BoxShadowHasOverlayClassnames boxShadowHasOverlayClassnames} in
+	 * {@link /api/js/divi-module/functions/BoxShadowHasOverlayClassnames boxShadowHasOverlayClassnames} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

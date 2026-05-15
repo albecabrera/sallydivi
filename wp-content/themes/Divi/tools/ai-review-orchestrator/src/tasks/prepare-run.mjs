@@ -47,5 +47,11 @@ export const prepareRun = task({ name: "prepareRun" }, async (facts) => {
   writeJson(outputPaths.run, runInfo);
   writeJson(outputPaths.facts, buildFactsPayload(facts));
   writeJson(outputPaths.filesIndex, buildFilesIndex(facts));
+  if (facts.retroReview) {
+    writeJson(outputPaths.retroReview, facts.retroReview);
+    if (facts.retroReview?.summary) {
+      writeJson(outputPaths.retroSummary, facts.retroReview.summary);
+    }
+  }
   return { ...facts, runId, outputPaths };
 });

@@ -373,8 +373,8 @@ export const summarizeOverall = async ({ groupSummaries, taskContext, openai, su
 
 export const buildDynamicGroupsPrompt = ({
   files,
-  maxGroups = 8,
-  maxFilesPerGroup = 8,
+  maxGroups = 20,
+  maxFilesPerGroup = 10,
   maxFileCount = 200,
 }) => {
   const fileList = Array.isArray(files) ? files : [];
@@ -382,7 +382,26 @@ export const buildDynamicGroupsPrompt = ({
   const truncated = limited.length < fileList.length;
   return [
     "You are clustering file changes by theme for a large code review.",
+    "These groupings must aid successful, semantic code review.",
+    "Each group should be reviewable on its own, one at a time.",
+    "Use the group summary to tell the reviewer how to approach the review,",
+    "including any hot paths, risk areas, or security implications.",
     "Group by change intent and subsystem, not by directory structure.",
+    "Prefer pairing shared utilities/helpers with their consumers in the same group.",
+    "Example: if a new util like isActive.ts is added, group it with components",
+    "or modules that import or are updated to use it.",
+    "Group tests, types, specs/docs, and package wiring with the feature they support.",
+    "When snapshot tests change, pair a representative subset of those snapshots",
+    "with the code change that caused them, and mention that other snapshots follow",
+    "the same pattern when applicable.",
+    "Prefer a focused group that combines a change with its tests when it improves",
+    "review context and cause/effect understanding.",
+    "Avoid generic groups (e.g., 'misc', 'other', 'assorted').",
+    "Avoid singleton groups unless the change is truly isolated or cross-cutting.",
+    "If a file fits multiple groups, allow overlap when it improves reviewer flow,",
+    "but keep overlap intentional and limited to avoid noise.",
+    "Prefer as many groups as needed to keep groupings natural and reviewable,",
+    "rather than forcing unrelated changes into a small number of buckets.",
     "Use the file summaries to infer themes like data flow, UI, tests, migrations, etc.",
     "",
     "Return JSON only with:",

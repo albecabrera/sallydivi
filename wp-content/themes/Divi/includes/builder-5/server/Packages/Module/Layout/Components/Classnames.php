@@ -18,7 +18,7 @@ use ET\Builder\Framework\Utility\HTMLUtility;
  * Class for populating classnames.
  *
  * This class is equivalent of JS function:
- * {@link /docs/builder-api/js-beta/divi-module/functions/Classnames Classnames} in
+ * {@link /api/js/divi-module/functions/Classnames Classnames} in
  * `@divi/module` package.
  *
  * @since ??

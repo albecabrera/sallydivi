@@ -16,7 +16,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use ET\Builder\Framework\Breakpoint\Breakpoint;
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
-use ET\Builder\Framework\Utility\SanitizerUtility;
 use ET\Builder\FrontEnd\BlockParser\BlockParserStore;
 use ET\Builder\FrontEnd\Module\Style;
 use ET\Builder\Packages\IconLibrary\IconFont\Utils as IconFontUtils;
@@ -32,7 +31,6 @@ use ET\Builder\Packages\ModuleUtils\ModuleUtils;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
 use Exception;
 use WP_Block;
-use ET\Builder\Packages\GlobalData\GlobalData;
 use ET\Builder\Packages\GlobalData\GlobalPresetItemGroupAttrNameResolved;
 use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
 use ET\Builder\Packages\StyleLibrary\Utils\Utils;
@@ -150,7 +148,7 @@ class ImageModule implements DependencyInterface {
 	 * This function assigns variables and sets script data options for the module.
 	 *
 	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
 	 * located in `@divi/module-library`.
 	 *
 	 * @since ??
@@ -707,16 +705,135 @@ class ImageModule implements DependencyInterface {
 	}
 
 	/**
-	 * Add border-radius inheritance on image bitmap when wrapper has radius.
+	 * Whether the resolved string is an explicit zero length (mirrors TS `isExplicitZeroLength` in border-decoration-flags).
 	 *
-	 * @param array $params Style declaration params.
+	 * {@link https://regex101.com/r/MAwFp8/1 Regex101}
+	 *
+	 * @param string $value Resolved border width or radius.
+	 *
+	 * @return bool
+	 */
+	public static function border_decoration_length_is_explicit_zero( string $value ): bool {
+		return (bool) preg_match( '/^0(?:[a-z%]+)?$/i', trim( $value ) );
+	}
+
+	/**
+	 * Resolves a border width fragment like TS `resolveBorderLength` in border-decoration-flags (parseFloat vs non-numeric string).
+	 *
+	 * {@link https://regex101.com/r/hDd8Gs/1 Regex101}
+	 *
+	 * @param mixed $raw Raw width from border attribute.
+	 *
+	 * @return float|string|null Parsed leading number as float, or unresolved string, or null when empty.
+	 */
+	public static function resolve_border_length_for_decoration_flag( $raw ) {
+		if ( null === $raw || false === $raw || '' === $raw ) {
+			return null;
+		}
+
+		$resolved = Utils::resolve_dynamic_variables_recursive( $raw );
+
+		if ( null === $resolved || false === $resolved ) {
+			return null;
+		}
+
+		if ( is_array( $resolved ) ) {
+			return null;
+		}
+
+		$resolved_string = trim( (string) $resolved );
+
+		if ( '' === $resolved_string ) {
+			return null;
+		}
+
+		// {@link https://regex101.com/r/hDd8Gs/1 Regex101}.
+		if ( preg_match( '/^\s*([-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?)/', $resolved_string, $matches ) ) {
+			return floatval( $matches[1] );
+		}
+
+		return $resolved_string;
+	}
+
+	/**
+	 * Whether the image border decoration defines any border width greater than zero.
+	 *
+	 * When width is present, omit `border-radius: inherit` on the inner `img` to avoid corner gaps.
+	 *
+	 * Parity with TS `borderDecorationHasNonZeroWidth` in `@divi/style-library` border-decoration-flags.
+	 *
+	 * @since ??
+	 *
+	 * @param array $attr_value Border attribute value for the current breakpoint/state.
+	 *
+	 * @return bool
+	 */
+	public static function image_border_decoration_has_nonzero_width( array $attr_value ): bool {
+		$styles = $attr_value['styles'] ?? null;
+
+		if ( ! is_array( $styles ) ) {
+			return false;
+		}
+
+		$sides = [ 'all', 'top', 'right', 'bottom', 'left' ];
+
+		foreach ( $sides as $side ) {
+			if ( ! isset( $styles[ $side ]['width'] ) ) {
+				continue;
+			}
+
+			$resolved = self::resolve_border_length_for_decoration_flag( $styles[ $side ]['width'] );
+
+			if ( null === $resolved ) {
+				continue;
+			}
+
+			if ( is_float( $resolved ) ) {
+				if ( 0.0 < $resolved ) {
+					return true;
+				}
+				continue;
+			}
+
+			if ( is_string( $resolved ) && ! self::border_decoration_length_is_explicit_zero( $resolved ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Image-level `border-radius: inherit` for `.et_pb_image_wrap img` when radius is set and no border width.
+	 *
+	 * This function is equivalent to the JavaScript `imageBorderRadiusInheritStyleDeclaration` closure in
+	 * {@link /docs/builder-api/js/module-library/module-styles moduleStyles} (`@divi/module-library`), which uses
+	 * `borderDecorationHasNonZeroWidth` / `borderDecorationHasNonZeroRadius` from `@divi/style-library`.
+	 *
+	 * @since ??
+	 *
+	 * @param array $params {
+	 *     Declaration parameters.
+	 *
+	 *     @type array $attrValue Border attribute value.
+	 * }
 	 *
 	 * @return string
 	 */
 	public static function image_border_radius_inherit_style_declaration( array $params ): string {
-		$radius = $params['attrValue']['radius'] ?? [];
+		$attr_value = $params['attrValue'] ?? [];
 
-		if ( ! $radius || 0 === count( $radius ) ) {
+		if ( ! is_array( $attr_value ) ) {
+			return '';
+		}
+
+		if ( self::image_border_decoration_has_nonzero_width( $attr_value ) ) {
+			return '';
+		}
+
+		$radius = $attr_value['radius'] ?? null;
+
+		if ( ! is_array( $radius ) || empty( $radius ) ) {
 			return '';
 		}
 
@@ -727,13 +844,19 @@ class ImageModule implements DependencyInterface {
 				continue;
 			}
 
-			if ( GlobalData::is_global_variable_value( $value ?? '' ) ) {
-				$all_corners_zero = false;
-				break;
+			$resolved = Utils::resolve_dynamic_variables_recursive( $value );
+
+			if ( is_array( $resolved ) ) {
+				continue;
 			}
 
-			$corner_value = SanitizerUtility::numeric_parse_value( $value ?? '' );
-			if ( 0.0 !== ( $corner_value['valueNumber'] ?? 0.0 ) ) {
+			$resolved_string = (string) $resolved;
+
+			if ( '' === $resolved_string ) {
+				continue;
+			}
+
+			if ( 0.0 !== floatval( $resolved_string ) ) {
 				$all_corners_zero = false;
 				break;
 			}
@@ -916,7 +1039,7 @@ class ImageModule implements DependencyInterface {
 									[
 										'componentName' => 'divi/common',
 										'props'         => [
-											'selector' => $args['orderClass'] . ' .et_pb_image_wrap img',
+											'selector' => "{$args['orderClass']} .et_pb_image_wrap img",
 											'attr'     => $attrs['image']['decoration']['border'] ?? [],
 											'declarationFunction' => [ self::class, 'image_border_radius_inherit_style_declaration' ],
 										],
@@ -961,7 +1084,7 @@ class ImageModule implements DependencyInterface {
 	 * This function retrieves the custom CSS fields defined for the Divi image module.
 	 *
 	 * This function is equivalent to the JavaScript constant
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs cssFields} located in
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs cssFields} located in
 	 * `@divi/module-library`. Note that this function does not have a `label` property on each
 	 * array item, unlike the JS const cssFields.
 	 *

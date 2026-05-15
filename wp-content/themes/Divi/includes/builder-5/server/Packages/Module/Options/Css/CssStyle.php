@@ -26,7 +26,7 @@ class CssStyle {
 	 * Get custom CSS style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/CssStyle CssStyle} in
+	 * {@link /api/js/divi-module/functions/CssStyle CssStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

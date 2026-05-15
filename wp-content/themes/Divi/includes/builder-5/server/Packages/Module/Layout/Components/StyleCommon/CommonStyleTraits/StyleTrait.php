@@ -21,7 +21,7 @@ trait StyleTrait {
 	 * Render custom CSS.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/CommonStyle CommonStyle}
+	 * {@link /api/js/divi-module/functions/CommonStyle CommonStyle}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??

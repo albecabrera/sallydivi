@@ -47,7 +47,7 @@ class BoxShadowComponents {
 	 *
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/BoxShadowComponent BoxShadowComponent} in
+	 * {@link /api/js/divi-module/functions/BoxShadowComponent BoxShadowComponent} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

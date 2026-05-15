@@ -28,7 +28,7 @@ class DividerSvg {
 	 * Divider SVG Settings.
 	 *
 	 * This function is the equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-divider-library/variables/defaultDividerStyles defaultDividerStyles}
+	 * {@link /api/js/divi-divider-library/variables/defaultDividerStyles defaultDividerStyles}
 	 * from `@divi/divider-library` package.
 	 *
 	 * @since ??

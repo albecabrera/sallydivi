@@ -28,7 +28,7 @@ class FiltersStyle {
 	 * Get filter style component.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/FilterStyle FiltersStyle} in
+	 * {@link /api/js/divi-module/functions/FilterStyle FiltersStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

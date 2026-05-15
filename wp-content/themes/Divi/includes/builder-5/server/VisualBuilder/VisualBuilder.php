@@ -568,12 +568,13 @@ class VisualBuilder {
 			return;
 		}
 
-		$cache_buster = $this->_get_lazy_assets_cache_buster();
-		$ai_payload   = $this->_get_ai_lazy_asset_payload( 'data_app_window' );
-		$ai_agent_src = $this->_get_package_script_src( 'divi-ai-agent' );
-		$mask_lib_src = $this->_get_package_script_src( 'divi-mask-and-pattern-library' );
-		$cloud_css    = $this->_get_package_style_src( 'divi-cloud-app' );
-		$lazy_assets  = $this->_build_cloud_and_ai_lazy_assets_payload(
+		$cache_buster                 = $this->_get_lazy_assets_cache_buster();
+		$ai_payload                   = $this->_get_ai_lazy_asset_payload( 'data_app_window' );
+		$ai_agent_src                 = $this->_get_package_script_src( 'divi-ai-agent' );
+		$mask_lib_src                 = $this->_get_package_script_src( 'divi-mask-and-pattern-library' );
+		$variable_generator_modal_src = $this->_get_package_script_src( 'divi-variable-generator-modal' );
+		$cloud_css                    = $this->_get_package_style_src( 'divi-cloud-app' );
+		$lazy_assets                  = $this->_build_cloud_and_ai_lazy_assets_payload(
 			'et-cloud-app-lazy-script',
 			add_query_arg( 'ver', $cache_buster, \ET_Cloud_App::get_bundle_uri() ),
 			'et-ai-app-lazy-script',
@@ -588,6 +589,10 @@ class VisualBuilder {
 		if ( '' !== $mask_lib_src ) {
 			// Lazy-load mask/pattern runtime and let VB refresh CSS declarations after runtime is ready.
 			$lazy_assets['scripts']['divi-mask-and-pattern-library-lazy-script'] = $mask_lib_src;
+		}
+
+		if ( '' !== $variable_generator_modal_src ) {
+			$lazy_assets['scripts']['divi-variable-generator-modal-lazy-script'] = $variable_generator_modal_src;
 		}
 
 		if ( '' !== $cloud_css ) {

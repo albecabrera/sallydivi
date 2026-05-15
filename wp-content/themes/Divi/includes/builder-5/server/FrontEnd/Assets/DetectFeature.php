@@ -87,6 +87,109 @@ class DetectFeature {
 	}
 
 	/**
+	 * Parse block content once per unique content string.
+	 *
+	 * @since ??
+	 *
+	 * @param string $content The content string to parse.
+	 *
+	 * @return array Parsed block results.
+	 */
+	private static function _get_cached_parsed_blocks( string $content ): array {
+		static $cache = [];
+
+		$cache_key = md5( $content );
+		if ( isset( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
+		}
+
+		$cache[ $cache_key ] = SimpleBlockParser::parse( $content )->results();
+
+		return $cache[ $cache_key ];
+	}
+
+	/**
+	 * Extract unique global IDs by prefix from raw content.
+	 *
+	 * @since ??
+	 *
+	 * @param string $content The content string to scan.
+	 * @param string $prefix  Global id prefix, e.g. `gcid-` or `gvid-`.
+	 *
+	 * @return array Unique matching IDs.
+	 */
+	private static function _get_global_ids_by_prefix( string $content, string $prefix ): array {
+		static $cache = [];
+
+		$cache_key = md5( $prefix . '|' . $content );
+		if ( isset( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
+		}
+
+		// Perform a quick check before regex.
+		if ( empty( $content ) || ! str_contains( $content, $prefix ) ) {
+			$cache[ $cache_key ] = [];
+			return [];
+		}
+
+		/*
+		 * The pattern to search for global ids in the content.
+		 * regex test: https://regex101.com/r/Yba3oz/1.
+		 */
+		$pattern = '(' . preg_quote( $prefix, '~' ) . '[0-9a-z-]*)';
+
+		// Perform regex search.
+		preg_match_all( "~$pattern~", $content, $matches );
+
+		$matched_ids         = $matches[1] ?? [];
+		$cache[ $cache_key ] = ! empty( $matched_ids ) ? array_values( array_unique( $matched_ids ) ) : [];
+
+		return $cache[ $cache_key ];
+	}
+
+	/**
+	 * Build preset attrs payload used for global id extraction.
+	 *
+	 * @since ??
+	 *
+	 * @param string $content Content to inspect.
+	 *
+	 * @return array Payload containing module and group attrs.
+	 */
+	private static function _get_used_preset_attrs_payload( string $content ): array {
+		static $cache = [];
+
+		$cache_key = md5( $content );
+		if ( isset( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
+		}
+
+		// Preset extraction applies to Divi block content only.
+		if ( empty( $content ) || ! str_contains( $content, 'wp:divi/' ) ) {
+			$cache[ $cache_key ] = [];
+			return [];
+		}
+
+		$module_preset_ids = self::get_block_preset_ids( $content );
+		$group_preset_ids  = self::get_group_preset_ids( $content );
+
+		$module_attrs = DynamicAssetsUtils::get_module_preset_attributes( $module_preset_ids );
+		$group_attrs  = DynamicAssetsUtils::get_group_preset_attributes( $group_preset_ids );
+
+		if ( empty( $module_attrs ) && empty( $group_attrs ) ) {
+			$cache[ $cache_key ] = [];
+			return [];
+		}
+
+		$cache[ $cache_key ] = [
+			'module_attrs' => $module_attrs,
+			'group_attrs'  => $group_attrs,
+		];
+
+		return $cache[ $cache_key ];
+	}
+
+	/**
 	 * Retrieves the block names and preset IDs from a given content in Gutenberg format.
 	 *
 	 * D4 attribute names: `_module_preset`.
@@ -118,7 +221,7 @@ class DetectFeature {
 		}
 
 		$results = [];
-		$parseds = SimpleBlockParser::parse( $content )->results();
+		$parseds = self::_get_cached_parsed_blocks( $content );
 
 		foreach ( $parseds as $block ) {
 			if ( $block->error() ) {
@@ -204,7 +307,7 @@ class DetectFeature {
 
 		$results = [];
 
-		$parseds = SimpleBlockParser::parse( $content )->results();
+		$parseds = self::_get_cached_parsed_blocks( $content );
 
 		foreach ( $parseds as $block ) {
 			if ( $block->error() ) {
@@ -303,37 +406,20 @@ class DetectFeature {
 	 * @return array The array of global color IDs (empty if none found).
 	 */
 	public static function get_global_color_ids( string $content ): array {
-		static $cached = [];
+		return self::_get_global_ids_by_prefix( $content, 'gcid-' );
+	}
 
-		$cache_key = md5( $content );
-
-		// If cached result exists, return it early.
-		if ( isset( $cached[ $cache_key ] ) ) {
-			return $cached[ $cache_key ];
-		}
-
-		// Perform a quick check to see if "gcid-" is in the content at all.
-		if ( empty( $content ) || ( ! str_contains( $content, 'gcid-' ) ) ) {
-			$cached[ $cache_key ] = [];
-			return [];
-		}
-
-		/*
-		 * The pattern to search for global color ids in the content.
-		 * regex test: https://regex101.com/r/Yba3oz/1
-		 */
-		static $pattern = '(gcid-[0-9a-z-]*)';
-
-		// Perform regex search.
-		preg_match_all( "~$pattern~", $content, $matches );
-
-		// Merge matches from both capture groups if both patterns were used.
-		$global_color_ids = $matches[1] ?? [];
-
-		// Track unique global color IDs and reset array keys.
-		$cached[ $cache_key ] = ! empty( $global_color_ids ) ? array_values( array_unique( $global_color_ids ) ) : [];
-
-		return $cached[ $cache_key ];
+	/**
+	 * Retrieves the global variable IDs from a given content in Gutenberg/Shortcode format.
+	 *
+	 * @since ??
+	 *
+	 * @param string $content The content string to search.
+	 *
+	 * @return array The array of global variable IDs (empty if none found).
+	 */
+	public static function get_global_variable_ids( string $content ): array {
+		return self::_get_global_ids_by_prefix( $content, 'gvid-' );
 	}
 
 	/**
@@ -1932,24 +2018,97 @@ class DetectFeature {
 	 * @return array Array of global color IDs found in page-specific presets.
 	 */
 	public static function get_preset_global_color_ids( string $content = '' ): array {
-		// Get both types of presets.
-		$module_preset_ids = self::get_block_preset_ids( $content );
+		static $cache = [];
 
-		$module_attrs = DynamicAssetsUtils::get_module_preset_attributes( $module_preset_ids );
+		$cache_key = md5( $content );
+		if ( isset( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
+		}
 
-		$group_preset_ids = self::get_group_preset_ids( $content );
-
-		$group_attrs = DynamicAssetsUtils::get_group_preset_attributes( $group_preset_ids );
+		$preset_attrs_payload = self::_get_used_preset_attrs_payload( $content );
+		if ( empty( $preset_attrs_payload ) ) {
+			$cache[ $cache_key ] = [];
+			return [];
+		}
 
 		// Extract global colors from the specific presets used on this page.
-		return self::get_global_color_ids(
-			wp_json_encode(
-				[
-					'module_attrs' => $module_attrs,
-					'group_attrs'  => $group_attrs,
-				]
-			)
+		$cache[ $cache_key ] = self::get_global_color_ids(
+			wp_json_encode( $preset_attrs_payload )
 		);
+
+		return $cache[ $cache_key ];
+	}
+
+	/**
+	 * Retrieves global variable IDs from module presets used on the current page.
+	 *
+	 * This method extracts global variable IDs from module presets that are actually
+	 * used on the current page to ensure preset-only global variables are included
+	 * in CSS generation.
+	 *
+	 * @since ??
+	 *
+	 * @param string $content The content string to search for preset usage.
+	 *
+	 * @return array Array of global variable IDs found in page-specific presets.
+	 */
+	public static function get_preset_global_variable_ids( string $content = '' ): array {
+		static $cache = [];
+
+		$cache_key = md5( $content );
+		if ( isset( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
+		}
+
+		$preset_attrs_payload = self::_get_used_preset_attrs_payload( $content );
+		if ( empty( $preset_attrs_payload ) ) {
+			$cache[ $cache_key ] = [];
+			return [];
+		}
+
+		// Extract global variables from the specific presets used on this page.
+		$cache[ $cache_key ] = self::get_global_variable_ids(
+			wp_json_encode( $preset_attrs_payload )
+		);
+
+		return $cache[ $cache_key ];
+	}
+
+	/**
+	 * Retrieves all page-level global variable IDs from content and used presets.
+	 *
+	 * @since ??
+	 *
+	 * @param string $content The content string to search.
+	 *
+	 * @return array Array of unique global variable IDs.
+	 */
+	public static function get_page_global_variable_ids( string $content = '' ): array {
+		static $cache = [];
+
+		$cache_key = md5( $content );
+		if ( isset( $cache[ $cache_key ] ) ) {
+			return $cache[ $cache_key ];
+		}
+
+		if ( empty( $content ) ) {
+			$cache[ $cache_key ] = [];
+			return [];
+		}
+
+		$content_variable_ids = self::get_global_variable_ids( $content );
+
+		// Preset-level detection is only meaningful for Divi block content.
+		if ( ! str_contains( $content, 'wp:divi/' ) ) {
+			$cache[ $cache_key ] = $content_variable_ids;
+			return $cache[ $cache_key ];
+		}
+
+		$preset_variable_ids = self::get_preset_global_variable_ids( $content );
+
+		$cache[ $cache_key ] = array_values( array_unique( array_merge( $content_variable_ids, $preset_variable_ids ) ) );
+
+		return $cache[ $cache_key ];
 	}
 
 	/**

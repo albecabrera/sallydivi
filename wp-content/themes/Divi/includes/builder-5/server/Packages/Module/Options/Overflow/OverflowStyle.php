@@ -26,7 +26,7 @@ class OverflowStyle {
 	 * Get overflow-x and overflow-y styles.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/OverflowStyle OverflowStyle} in
+	 * {@link /api/js/divi-module/functions/OverflowStyle OverflowStyle} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

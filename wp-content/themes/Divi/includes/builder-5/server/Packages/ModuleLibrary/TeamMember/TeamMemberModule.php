@@ -312,7 +312,8 @@ class TeamMemberModule implements DependencyInterface {
 	 * @return string The generated style declaration. Returns empty string if display is not 'flex'.
 	 */
 	public static function description_flex_style_declaration( array $params ): string {
-		$display = $params['attrValue']['display'] ?? 'flex';
+		$display        = $params['attrValue']['display'] ?? 'flex';
+		$flex_direction = $params['attrValue']['flexDirection'] ?? 'row';
 
 		if ( 'flex' !== $display ) {
 			return '';
@@ -326,6 +327,11 @@ class TeamMemberModule implements DependencyInterface {
 
 		// Match D4 behavior: flex: 1 (grow to fill space, no explicit width).
 		$style_declarations->add( 'flex', '1' );
+
+		// When flex-direction is column, stretch to fill cross-axis (width) for proper text alignment.
+		if ( 'column' === $flex_direction || 'column-reverse' === $flex_direction ) {
+			$style_declarations->add( 'align-self', 'stretch' );
+		}
 
 		return $style_declarations->value();
 	}

@@ -35,9 +35,9 @@ Prefer immutable inputs and transformations by default. Request changes when cod
 
 Also flag avoidable cloning patterns (e.g., deep mutable copy followed by additional object spreads) and ask for evidence that each copy is necessary. For read-only traversal/extraction logic, avoid mutable conversion. If mutable conversion appears to be compensating for type friction, require a root-cause type fix instead of local type hacks/casts. Keep naming focused on domain intent; avoid suffix-heavy variable names that encode mutability state unless it is essential for correctness.
 
-## Severity Guidance
+## Labeling Guidance
 
-Use **issue (blocking)** with **Blocker** severity when:
+Use **issue (blocking)** when:
 - A public or shared type uses `Function`, `any`, or `unknown` instead of a concrete callable signature or constrained type, and it weakens correctness guarantees for call sites.
 - A read-only or render-path helper performs deep mutable conversion (e.g., `asMutable({ deep: true })`) without a verified mutation need.
 

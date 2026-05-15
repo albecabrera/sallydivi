@@ -23,7 +23,7 @@ trait GetStatementsTrait {
 	 * Get CSS statements based on given params.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/GetStatements getStatements}
+	 * {@link /api/js/divi-module/functions/GetStatements getStatements}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??
@@ -291,7 +291,7 @@ trait GetStatementsTrait {
 	 * Customizable Breakpoint, it is preferable to use function component to render statements because this
 	 * automatically gets necessary breakpoints configuration.
 	 *
-	 * This function is equivalent of JS function: {@link /docs/builder-api/js-beta/divi-module/functions/StyleStatements
+	 * This function is equivalent of JS function: {@link /api/js/divi-module/functions/StyleStatements
 	 * styleStatements} in `@divi/module` package.
 	 *
 	 * @since ??

@@ -38,7 +38,7 @@ class MaskAndPatternUtils {
 	 * Note: we don't decode it anywhere, the browser does that.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-mask-and-pattern-library/variables/encodeSvgForDataUri encodeSvgForDataURI}
+	 * {@link /api/js/divi-mask-and-pattern-library/variables/encodeSvgForDataUri encodeSvgForDataURI}
 	 * in `@divi/mask-and-pattern-library` package.
 	 *
 	 * @since ??
@@ -87,7 +87,7 @@ class MaskAndPatternUtils {
 	 * Default viewBox Settings for Mask Style.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-mask-and-pattern-library/functions/getMaskDefaultViewboxSettings getMaskDefaultViewboxSettings}
+	 * {@link /api/js/divi-mask-and-pattern-library/functions/getMaskDefaultViewboxSettings getMaskDefaultViewboxSettings}
 	 * in `@divi/mask-and-pattern-library` package.
 	 *
 	 * @since ??
@@ -114,7 +114,7 @@ class MaskAndPatternUtils {
 	 * Get SVG Settings for a Mask Style.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-mask-and-pattern-library/variables/getMaskJson getMaskJson}
+	 * {@link /api/js/divi-mask-and-pattern-library/variables/getMaskJson getMaskJson}
 	 * in `@divi/mask-and-pattern-library` package.
 	 *
 	 * @since ??
@@ -139,7 +139,7 @@ class MaskAndPatternUtils {
 	 * Mask SVG Settings.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-mask-and-pattern-library/variables/getMaskSettings getMaskSettings}
+	 * {@link /api/js/divi-mask-and-pattern-library/variables/getMaskSettings getMaskSettings}
 	 * in `@divi/mask-and-pattern-library` package.
 	 *
 	 * @since ??
@@ -235,7 +235,7 @@ class MaskAndPatternUtils {
 	 * Get Mask Style Options.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-mask-and-pattern-library/variables/getMaskStyleOptions getMaskStyleOptions}
+	 * {@link /api/js/divi-mask-and-pattern-library/variables/getMaskStyleOptions getMaskStyleOptions}
 	 * in `@divi/mask-and-pattern-library` package.
 	 *
 	 * @since ??
@@ -274,7 +274,7 @@ class MaskAndPatternUtils {
 	 * Get SVG for a Mask style.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-mask-and-pattern-library/variables/getMaskSvg getMaskSvg}
+	 * {@link /api/js/divi-mask-and-pattern-library/variables/getMaskSvg getMaskSvg}
 	 * in `@divi/mask-and-pattern-library` package.
 	 *
 	 * @since ??
@@ -344,7 +344,7 @@ class MaskAndPatternUtils {
 	 * Default Thumbnail Settings for Pattern Style.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-mask-and-pattern-library/functions/getPatternDefaultThumbnailSettings getPatternDefaultThumbnailSettings}
+	 * {@link /api/js/divi-mask-and-pattern-library/functions/getPatternDefaultThumbnailSettings getPatternDefaultThumbnailSettings}
 	 * in `@divi/mask-and-pattern-library` package.
 	 *
 	 * @since ??
@@ -367,7 +367,7 @@ class MaskAndPatternUtils {
 	 * Get SVG Settings for a Pattern Style.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-mask-and-pattern-library/variables/getPatternJson getPatternJSON}
+	 * {@link /api/js/divi-mask-and-pattern-library/variables/getPatternJson getPatternJSON}
 	 * in `@divi/mask-and-pattern-library` package.
 	 *
 	 * @since ??
@@ -392,7 +392,7 @@ class MaskAndPatternUtils {
 	 * Pattern SVG Settings.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-mask-and-pattern-library/variables/getPatternSettings getPatternSettings}
+	 * {@link /api/js/divi-mask-and-pattern-library/variables/getPatternSettings getPatternSettings}
 	 * in `@divi/mask-and-pattern-library` package.
 	 *
 	 * @since ??
@@ -490,7 +490,7 @@ class MaskAndPatternUtils {
 	 * Pattern Style Options.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-mask-and-pattern-library/variables/getPatternStyleOptions getPatternStyleOptions}
+	 * {@link /api/js/divi-mask-and-pattern-library/variables/getPatternStyleOptions getPatternStyleOptions}
 	 * in `@divi/mask-and-pattern-library` package.
 	 *
 	 * @since ??
@@ -529,7 +529,7 @@ class MaskAndPatternUtils {
 	 * Get SVG for a Pattern style.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-mask-and-pattern-library/variables/getPatternSvg getPatternSvg}
+	 * {@link /api/js/divi-mask-and-pattern-library/variables/getPatternSvg getPatternSvg}
 	 * in `@divi/mask-and-pattern-library` package.
 	 *
 	 * @since ??
@@ -613,7 +613,7 @@ class MaskAndPatternUtils {
 	 * This function adds `xmlns => http://www.w3.org/2000/svg` attribute to the provided props.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-mask-and-pattern-library/variables/getSvgAttrs getSvgAttrs}
+	 * {@link /api/js/divi-mask-and-pattern-library/variables/getSvgAttrs getSvgAttrs}
 	 * in `@divi/mask-and-pattern-library` package.
 	 *
 	 * @since ??

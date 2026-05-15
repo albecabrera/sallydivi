@@ -52,7 +52,7 @@ class ColumnModule implements DependencyInterface {
 	 * Get column inner's column type which is affected by its own column type and column parent's type.
 	 *
 	 * This function is equivalent to the JS function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs getColumnInnerType}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs getColumnInnerType}
 	 * located in `@divi/module-library`.
 	 *
 	 * @since ??
@@ -469,7 +469,7 @@ class ColumnModule implements DependencyInterface {
 	 * This function assigns variables and sets script data options for the module.
 	 *
 	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
+	 * {@link /api/js/divi-module-library/functions/generateDefaultAttrs ModuleScriptData}
 	 * located in `@divi/module-library`.
 	 *
 	 * @since ??

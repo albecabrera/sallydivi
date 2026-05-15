@@ -160,14 +160,7 @@ class GroupCarouselModule implements DependencyInterface {
 
 		// Define show_dots variable for dot-related classes.
 		$dots_attr = $attrs['dotNav']['advanced']['showDots'] ?? [];
-		$show_dots = empty( $dots_attr ) ? true : ModuleUtils::has_value(
-			$dots_attr,
-			[
-				'valueResolver' => function ( $value ) {
-					return 'on' === ( $value ?? 'on' );
-				},
-			]
-		);
+		$show_dots = self::_is_dot_navigation_enabled( $dots_attr );
 
 		// Add dot alignment classes.
 		$dot_alignment = $attrs['dotNav']['advanced']['alignment']['desktop']['value'] ?? 'center';
@@ -288,6 +281,38 @@ class GroupCarouselModule implements DependencyInterface {
 		);
 	}
 
+	/**
+	 * Determine whether dot navigation should be considered enabled for any responsive breakpoint.
+	 *
+	 * This method resolves inherited values per breakpoint so frontend rendering remains aligned
+	 * with responsive settings when non-desktop values are inherited rather than explicitly serialized.
+	 *
+	 * @param array $attrs Dot navigation showDots attributes.
+	 *
+	 * @return bool
+	 */
+	private static function _is_dot_navigation_enabled( array $attrs ): bool {
+		if ( empty( $attrs ) ) {
+			return true;
+		}
+
+		foreach ( Breakpoint::get_enabled_breakpoint_names() as $breakpoint ) {
+			$value = ModuleUtils::use_attr_value(
+				[
+					'attr'       => $attrs,
+					'breakpoint' => $breakpoint,
+					'state'      => 'value',
+					'mode'       => 'getAndInheritAll',
+				]
+			);
+
+			if ( 'on' === ( $value ?? 'on' ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	/**
 	 * Extract auto rotate data with responsive support.
@@ -586,8 +611,9 @@ class GroupCarouselModule implements DependencyInterface {
 				'data_name'    => 'group_carousel',
 				'data_item_id' => null,
 				'data_item'    => [
-					'selector' => $selector,
-					'data'     => self::_get_desktop_carousel_data( $attrs ),
+					'selector'   => $selector,
+					'data'       => self::_get_desktop_carousel_data( $attrs ),
+					'responsive' => self::_get_responsive_carousel_settings_by_breakpoint( $attrs ),
 				],
 			]
 		);
@@ -614,6 +640,67 @@ class GroupCarouselModule implements DependencyInterface {
 			'dotAlignment'    => $attrs['dotNav']['advanced']['alignment']['desktop']['value'] ?? 'center',
 			'dotPosition'     => $attrs['dotNav']['advanced']['position']['desktop']['value'] ?? 'below',
 		];
+	}
+
+	/**
+	 * Resolved carousel settings per enabled breakpoint (same inheritance as {@see _set_responsive_carousel_data}).
+	 *
+	 * Exposed in localized script so front-end JS does not depend on MultiView `unique_data` omitting
+	 * breakpoint rows that match a wider row — per-key multiview resolution can then jump to the wrong
+	 * row (e.g. tablet) for narrow breakpoints.
+	 *
+	 * @param array $attrs Module attributes.
+	 * @return array<string, array<string, int|bool|string>> Map of breakpoint name to settings (same shape as {@see _get_desktop_carousel_data}).
+	 */
+	private static function _get_responsive_carousel_settings_by_breakpoint( array $attrs ): array {
+		$desktop = self::_get_desktop_carousel_data( $attrs );
+		$by_breakpoint = [];
+
+		foreach ( Breakpoint::get_enabled_breakpoint_names() as $breakpoint ) {
+			$get = function ( array $attr_path ) use ( $attrs, $breakpoint ) {
+				if ( empty( $attr_path ) ) {
+					return null;
+				}
+				return ModuleUtils::use_attr_value(
+					[
+						'attr'       => $attr_path,
+						'breakpoint' => $breakpoint,
+						'state'      => 'value',
+						'mode'       => 'getAndInheritAll',
+					]
+				);
+			};
+
+			$auto_v     = $get( $attrs['module']['advanced']['auto'] ?? [] );
+			$speed_v    = $get( $attrs['module']['advanced']['speed'] ?? [] );
+			$tspeed_v   = $get( $attrs['module']['advanced']['transitionSpeed'] ?? [] );
+			$pause_v    = $get( $attrs['module']['advanced']['pauseOnHover'] ?? [] );
+			$center_v   = $get( $attrs['module']['advanced']['centerMode'] ?? [] );
+			$sts_v      = $get( $attrs['module']['advanced']['slidesToShow'] ?? [] );
+			$stsc_v     = $get( $attrs['module']['advanced']['slidesToScroll'] ?? [] );
+			$sarr_v     = $get( $attrs['arrows']['advanced']['showArrows'] ?? [] );
+			$sdots_v    = $get( $attrs['dotNav']['advanced']['showDots'] ?? [] );
+			$ap_v       = $get( $attrs['arrows']['advanced']['position'] ?? [] );
+			$da_v       = $get( $attrs['dotNav']['advanced']['alignment'] ?? [] );
+			$dp_v       = $get( $attrs['dotNav']['advanced']['position'] ?? [] );
+
+			$by_breakpoint[ $breakpoint ] = [
+				'auto'            => 'on' === ( null !== $auto_v ? $auto_v : ( $attrs['module']['advanced']['auto']['desktop']['value'] ?? 'off' ) ),
+				'speed'           => TimeUtils::value_to_ms( null !== $speed_v ? $speed_v : ( $attrs['module']['advanced']['speed']['desktop']['value'] ?? '2000ms' ) ),
+				'transitionSpeed' => TimeUtils::value_to_ms( null !== $tspeed_v ? $tspeed_v : ( $attrs['module']['advanced']['transitionSpeed']['desktop']['value'] ?? '200ms' ) ),
+				'pauseOnHover'    => 'on' === ( null !== $pause_v ? $pause_v : ( $attrs['module']['advanced']['pauseOnHover']['desktop']['value'] ?? 'on' ) ),
+				'centerMode'      => 'on' === ( null !== $center_v ? $center_v : ( $attrs['module']['advanced']['centerMode']['desktop']['value'] ?? 'off' ) ),
+				'slidesToShow'    => (int) ( null !== $sts_v ? $sts_v : ( $attrs['module']['advanced']['slidesToShow']['desktop']['value'] ?? '1' ) ),
+				'slidesToScroll'  => (int) ( null !== $stsc_v ? $stsc_v : ( $attrs['module']['advanced']['slidesToScroll']['desktop']['value'] ?? '1' ) ),
+				'showArrows'      => 'on' === ( null !== $sarr_v ? $sarr_v : ( $attrs['arrows']['advanced']['showArrows']['desktop']['value'] ?? 'on' ) ),
+				'showDots'        => 'on' === ( null !== $sdots_v ? $sdots_v : ( $attrs['dotNav']['advanced']['showDots']['desktop']['value'] ?? 'on' ) ),
+				'arrowPosition'   => null !== $ap_v ? (string) $ap_v : $desktop['arrowPosition'],
+				'dotAlignment'    => null !== $da_v ? (string) $da_v : $desktop['dotAlignment'],
+				'dotPosition'     => null !== $dp_v ? (string) $dp_v : $desktop['dotPosition'],
+			];
+		}
+
+		return $by_breakpoint;
 	}
 
 	/**
@@ -668,25 +755,18 @@ class GroupCarouselModule implements DependencyInterface {
 
 			$setting_data = [];
 
-			// Extract values for each breakpoint and state, with proper inheritance resolution.
+			// Extract values for each breakpoint and state with full responsive inheritance.
 			foreach ( Breakpoint::get_enabled_breakpoint_names() as $breakpoint ) {
 				// Process each state: value, hover, sticky.
 				foreach ( [ 'value', 'hover', 'sticky' ] as $state ) {
-					$value = null;
-
-					// Get explicit value if set, otherwise inherit from parent breakpoint.
-					if ( isset( $setting_attrs[ $breakpoint ][ $state ] ) ) {
-						$value = $setting_attrs[ $breakpoint ][ $state ];
-					} else {
-						// Use ModuleUtils inheritance to resolve inherited value.
-						$value = ModuleUtils::inherit_attr_value(
-							[
-								'attr'       => $setting_attrs,
-								'breakpoint' => $breakpoint,
-								'state'      => $state,
-							]
-						);
-					}
+					$value = ModuleUtils::use_attr_value(
+						[
+							'attr'       => $setting_attrs,
+							'breakpoint' => $breakpoint,
+							'state'      => $state,
+							'mode'       => 'getAndInheritAll',
+						]
+					);
 
 					// Only process if we have a value (explicit or inherited).
 					if ( null !== $value ) {
@@ -974,14 +1054,7 @@ class GroupCarouselModule implements DependencyInterface {
 		);
 
 		$dots_attr = $attrs['dotNav']['advanced']['showDots'] ?? [];
-		$show_dots = empty( $dots_attr ) ? true : ModuleUtils::has_value(
-			$dots_attr,
-			[
-				'valueResolver' => function ( $value ) {
-					return 'on' === ( $value ?? 'on' );
-				},
-			]
-		);
+		$show_dots = self::_is_dot_navigation_enabled( $dots_attr );
 
 		// Render inner blocks without manual slide wrappers.
 		// Child Groups will automatically wrap themselves in carousel slide containers
@@ -1069,22 +1142,25 @@ class GroupCarouselModule implements DependencyInterface {
 		);
 
 		// Build dots HTML (outside container).
-		$dots_content = '';
-		if ( $show_dots ) {
-			// Render dots using elements->render for custom attributes support.
-			$dots_content = $elements->render(
-				[
-					'attrName'          => 'dotNav',
-					'tagName'           => 'div',
-					'attributes'        => [
-						'class' => 'et_pb_group_carousel_dots',
-					],
-					'skipAttrChildren'  => true,
-					'childrenSanitizer' => 'et_core_esc_previously',
-					'children'          => '', // Dots are created and managed entirely by JavaScript.
-				]
-			);
+		$dots_attributes = [
+			'class' => 'et_pb_group_carousel_dots',
+		];
+
+		if ( ! $show_dots ) {
+			$dots_attributes['style'] = 'display: none;';
 		}
+
+		// Always render dots container so frontend runtime can update visibility per breakpoint.
+		$dots_content = $elements->render(
+			[
+				'attrName'          => 'dotNav',
+				'tagName'           => 'div',
+				'attributes'        => $dots_attributes,
+				'skipAttrChildren'  => true,
+				'childrenSanitizer' => 'et_core_esc_previously',
+				'children'          => '', // Dots are created and managed entirely by JavaScript.
+			]
+		);
 
 		// Return container, arrows, and dots together (arrows between container and dots).
 		return $carousel_container . $arrows_html . $dots_content;

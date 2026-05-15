@@ -25,7 +25,7 @@ class ModuleWrapper {
 	 * Module wrapper renderer.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/ModuleWrapper ModuleWrapper}
+	 * {@link /api/js/divi-module/functions/ModuleWrapper ModuleWrapper}
 	 * in `@divi/module` package.
 	 *
 	 * @since ??

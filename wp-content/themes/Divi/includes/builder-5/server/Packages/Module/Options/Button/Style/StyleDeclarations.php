@@ -27,7 +27,7 @@ class StyleDeclarations {
 	 * Retrieve the style declarations for the spacing icon.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/SpacingIconStyleDeclaration spacingIconStyleDeclaration} in
+	 * {@link /api/js/divi-module/functions/SpacingIconStyleDeclaration spacingIconStyleDeclaration} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??
@@ -91,7 +91,7 @@ class StyleDeclarations {
 	 * Retrieve the style declarations for the spacing icon hover.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module/functions/SpacingIconHoverStyleDeclaration spacingIconHoverStyleDeclaration} in
+	 * {@link /api/js/divi-module/functions/SpacingIconHoverStyleDeclaration spacingIconHoverStyleDeclaration} in
 	 * `@divi/module` package.
 	 *
 	 * @since ??

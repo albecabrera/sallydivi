@@ -90,7 +90,7 @@ class ModuleUtils {
 	 * This function runs the value through the `divi_module_utils_breakpoints` filter.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module-utils/variables/breakpoints breakpoints } located in `@divi/module-utils`.
+	 * {@link /api/js/divi-module-utils/variables/breakpoints breakpoints } located in `@divi/module-utils`.
 	 *
 	 * @since ??
 	 *
@@ -124,7 +124,7 @@ class ModuleUtils {
 	 * Retrieve the inherited attribute value based on the given arguments.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module-utils/functions/inheritAttrValue inheritAttrValue} located in
+	 * {@link /api/js/divi-module-utils/functions/inheritAttrValue inheritAttrValue} located in
 	 * `@divi/module-utils`.
 	 *
 	 * This function takes an array of arguments and returns the value of the specified attribute.
@@ -478,7 +478,7 @@ class ModuleUtils {
 	 * Retrieve the value of an attribute based on the provided arguments.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module-utils/functions/getAttrValue/ getAttrValue} located in
+	 * {@link /api/js/divi-module-utils/functions/getAttrValue/ getAttrValue} located in
 	 * `@divi/module-utils`.
 	 *
 	 * This function takes an array of arguments and returns the value of the specified attribute.
@@ -2228,7 +2228,7 @@ class ModuleUtils {
 	 * Get the module class name by the given namespaced module name.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module-utils/functions/getModuleClassByName/ getModuleClassByName} located in
+	 * {@link /api/js/divi-module-utils/functions/getModuleClassByName/ getModuleClassByName} located in
 	 * `@divi/module-utils`.
 	 *
 	 * This function takes a namespaced module name as input and returns the corresponding module class name.
@@ -2282,7 +2282,7 @@ class ModuleUtils {
 	 * Unwrap divi/placeholder block from the given serialized block content.
 	 *
 	 * This function is equivalent to JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module-utils/functions/maybeUnwrapPlaceholderBlock/ maybeUnwrapPlaceholderBlock} located in
+	 * {@link /api/js/divi-module-utils/functions/maybeUnwrapPlaceholderBlock/ maybeUnwrapPlaceholderBlock} located in
 	 * `@divi/module-utils`.
 	 *
 	 * @since ??
@@ -2418,7 +2418,7 @@ class ModuleUtils {
 	 * This function runs the value through the `divi_module_utils_states` filter.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module-utils/variables/states/ states } located in `@divi/module-utils`.
+	 * {@link /api/js/divi-module-utils/variables/states/ states } located in `@divi/module-utils`.
 	 *
 	 * @since ??
 	 *
@@ -3789,7 +3789,7 @@ class ModuleUtils {
 	 * Check if parent module's layout is set to flex.
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module-utils/functions/isParentFlexLayout isParentFlexLayout}
+	 * {@link /api/js/divi-module-utils/functions/isParentFlexLayout isParentFlexLayout}
 	 * in `@divi/module-utils` package.
 	 *
 	 * @since ??
@@ -3844,7 +3844,7 @@ class ModuleUtils {
 	 * Determines if the parent module's layout is set to "grid".
 	 *
 	 * This function is equivalent of JS function:
-	 * {@link /docs/builder-api/js-beta/divi-module-utils/functions/isParentGridLayout isParentGridLayout}
+	 * {@link /api/js/divi-module-utils/functions/isParentGridLayout isParentGridLayout}
 	 * in `@divi/module-utils` package.
 	 *
 	 * @since ??
@@ -4558,7 +4558,7 @@ class ModuleUtils {
 	 * attribute state array.
 	 *
 	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-utils/functions/removeButtonIconAttrValue removeButtonIconAttrValue}
+	 * {@link /api/js/divi-module-utils/functions/removeButtonIconAttrValue removeButtonIconAttrValue}
 	 * located in `@divi/module-utils`.
 	 *
 	 * @since ??
