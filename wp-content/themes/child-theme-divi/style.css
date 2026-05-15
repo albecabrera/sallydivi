@@ -874,18 +874,67 @@ body.bh-sidenav-open {
     }
 }
 
-/* ── Kontaktformular-Sektion: Foto-Spalte auf Mobile ausblenden ──────────────
-   Divi 5 rendert cssClasses nicht als HTML-Klasse; Spalten werden per
-   et_pb_column_8 (Foto) / et_pb_column_9 (Formular) in et_pb_section_4 adressiert.
-   Die Formularspalte nimmt dann die volle Breite ein. */
-@media only screen and (max-width: 980px) {
+/* ── Kontaktformular-Sektion: layout responsivo ───────────────────────────
+   Columnas: et_pb_column_8 (Foto) · et_pb_column_9 (Formular)
+   Desktop (≥ 981px): side-by-side — Divi lo maneja por defecto.
+   Tablet  (768–980px): side-by-side con foto visible.
+   Mobile  (< 768px): foto arriba, formulario abajo.           ── */
+
+/* Tablet: mostrar foto, mantener side-by-side */
+@media only screen and (min-width: 768px) and (max-width: 980px) {
+    .et_pb_section_4 .et_pb_row {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: stretch !important;
+        flex-wrap: nowrap !important;
+    }
     .et_pb_section_4 .et_pb_column_8 {
-        display: none !important;
+        display: flex !important;
+        flex: 0 0 42% !important;
+        max-width: 42% !important;
     }
     .et_pb_section_4 .et_pb_column_9 {
+        flex: 1 1 auto !important;
+        max-width: 58% !important;
+    }
+    /* Imagen ocupa toda la altura de la columna */
+    .et_pb_section_4 .et_pb_column_8 img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        display: block !important;
+    }
+}
+
+/* Mobile (< 768px): foto arriba, formulario abajo */
+@media only screen and (max-width: 767px) {
+    .et_pb_section_4 .et_pb_row {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+    .et_pb_section_4 .et_pb_column_8 {
+        display: block !important;
+        order: 1 !important;
         flex: 0 0 100% !important;
         max-width: 100% !important;
         width: 100% !important;
+        margin-bottom: 24px !important;
+    }
+    .et_pb_section_4 .et_pb_column_9 {
+        order: 2 !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    /* Imagen: altura razonable en mobile, sin overflow */
+    .et_pb_section_4 .et_pb_column_8 img {
+        width: 100% !important;
+        max-height: 320px !important;
+        object-fit: cover !important;
+        object-position: top center !important;
+        display: block !important;
+        border-radius: 8px !important;
     }
 }
 
