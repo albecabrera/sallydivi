@@ -875,66 +875,73 @@ body.bh-sidenav-open {
 }
 
 /* ── Kontaktformular-Sektion: layout responsivo ───────────────────────────
-   Columnas: et_pb_column_8 (Foto) · et_pb_column_9 (Formular)
-   Desktop (≥ 981px): side-by-side — Divi lo maneja por defecto.
-   Tablet  (768–980px): side-by-side con foto visible.
-   Mobile  (< 768px): foto arriba, formulario abajo.           ── */
+   Estrategia: :has(.et_pb_contact_form_container) — no depende de números
+   de sección/columna que cambian por página.
+   Desktop (≥ 981px): side-by-side — Divi nativo.
+   Tablet  (768–980px): side-by-side con foto visible (42/58).
+   Mobile  (< 768px): foto arriba (pequeña), formulario abajo.  ── */
 
-/* Tablet: mostrar foto, mantener side-by-side */
+/* Tablet: row horizontal con foto visible */
 @media only screen and (min-width: 768px) and (max-width: 980px) {
-    .et_pb_section_4 .et_pb_row {
+    .et_pb_row:has(.et_pb_contact_form_container) {
         display: flex !important;
         flex-direction: row !important;
         align-items: stretch !important;
         flex-wrap: nowrap !important;
+        gap: 24px !important;
     }
-    .et_pb_section_4 .et_pb_column_8 {
+    /* Columna foto */
+    .et_pb_row:has(.et_pb_contact_form_container) > .et_pb_column:not(:has(.et_pb_contact_form_container)) {
         display: flex !important;
-        flex: 0 0 42% !important;
-        max-width: 42% !important;
+        flex: 0 0 40% !important;
+        max-width: 40% !important;
+        width: 40% !important;
     }
-    .et_pb_section_4 .et_pb_column_9 {
+    /* Columna form */
+    .et_pb_row:has(.et_pb_contact_form_container) > .et_pb_column:has(.et_pb_contact_form_container) {
         flex: 1 1 auto !important;
-        max-width: 58% !important;
+        max-width: 60% !important;
     }
-    /* Imagen ocupa toda la altura de la columna */
-    .et_pb_section_4 .et_pb_column_8 img {
+    .et_pb_row:has(.et_pb_contact_form_container) > .et_pb_column:not(:has(.et_pb_contact_form_container)) img {
         width: 100% !important;
         height: 100% !important;
-        object-fit: cover !important;
-        display: block !important;
-    }
-}
-
-/* Mobile (< 768px): foto arriba, formulario abajo */
-@media only screen and (max-width: 767px) {
-    .et_pb_section_4 .et_pb_row {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: stretch !important;
-    }
-    .et_pb_section_4 .et_pb_column_8 {
-        display: block !important;
-        order: 1 !important;
-        flex: 0 0 100% !important;
-        max-width: 100% !important;
-        width: 100% !important;
-        margin-bottom: 24px !important;
-    }
-    .et_pb_section_4 .et_pb_column_9 {
-        order: 2 !important;
-        flex: 0 0 100% !important;
-        max-width: 100% !important;
-        width: 100% !important;
-    }
-    /* Imagen: altura razonable en mobile, sin overflow */
-    .et_pb_section_4 .et_pb_column_8 img {
-        width: 100% !important;
-        max-height: 320px !important;
         object-fit: cover !important;
         object-position: top center !important;
         display: block !important;
         border-radius: 8px !important;
+    }
+}
+
+/* Mobile (< 768px): foto arriba compacta, formulario abajo */
+@media only screen and (max-width: 767px) {
+    .et_pb_row:has(.et_pb_contact_form_container) {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 20px !important;
+    }
+    /* Foto: orden 1, ancho completo, altura contenida */
+    .et_pb_row:has(.et_pb_contact_form_container) > .et_pb_column:not(:has(.et_pb_contact_form_container)) {
+        order: 1 !important;
+        display: block !important;
+        flex: 0 0 auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    .et_pb_row:has(.et_pb_contact_form_container) > .et_pb_column:not(:has(.et_pb_contact_form_container)) img {
+        width: 100% !important;
+        height: 200px !important;
+        object-fit: cover !important;
+        object-position: top center !important;
+        display: block !important;
+        border-radius: 10px !important;
+    }
+    /* Formulario: orden 2, ancho completo */
+    .et_pb_row:has(.et_pb_contact_form_container) > .et_pb_column:has(.et_pb_contact_form_container) {
+        order: 2 !important;
+        flex: 0 0 auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
     }
 }
 
