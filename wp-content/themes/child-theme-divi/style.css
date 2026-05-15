@@ -788,6 +788,7 @@ body select:focus {
     color: #666;
     text-decoration: none;
     transition: color 0.2s, background 0.2s;
+    white-space: nowrap;
 }
 .bh-sidenav .sub-menu li a:hover {
     color: #b48e95;
@@ -942,6 +943,17 @@ body.bh-sidenav-open {
         flex: 0 0 auto !important;
         max-width: 100% !important;
         width: 100% !important;
+    }
+    /* Icono email: más pequeño y desplazado abajo para que la cara quede visible */
+    .et_pb_row:has(.et_pb_contact_form_container)
+    > .et_pb_column:not(:has(.et_pb_contact_form_container))
+    .et_pb_icon .et-pb-icon {
+        font-size: 36px !important;
+    }
+    .et_pb_row:has(.et_pb_contact_form_container)
+    > .et_pb_column:not(:has(.et_pb_contact_form_container))
+    .et_pb_icon {
+        margin-top: 130px !important;
     }
 }
 
