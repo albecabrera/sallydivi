@@ -34,6 +34,8 @@ use ET\Builder\Migration\DynamicContentPostIdMigration;
 use ET\Builder\Migration\EmptyArrayCorruptionMigration;
 use ET\Builder\Migration\ComposibleOptionsMigration;
 use ET\Builder\Migration\ComposibleOptionsPresetMigration;
+use ET\Builder\Migration\FocusFieldsMigration;
+use ET\Builder\Migration\FocusFieldsPresetMigration;
 use ET\Builder\Framework\Utility\StringUtility;
 
 /**
@@ -525,11 +527,13 @@ class Migration {
 		$migration->register_content_migration( new DynamicContentPostIdMigration() );
 		$migration->register_content_migration( new EmptyArrayCorruptionMigration() );
 		$migration->register_content_migration( new ComposibleOptionsMigration() );
+		$migration->register_content_migration( new FocusFieldsMigration() );
 
 		// Register preset migrations here.
 		$migration->register_presets_migration( new AttributePresetMigration() );
 		$migration->register_presets_migration( new NestedModulePresetMigration() );
 		$migration->register_presets_migration( new ComposibleOptionsPresetMigration() );
+		$migration->register_presets_migration( new FocusFieldsPresetMigration() );
 
 		return $migration;
 	}

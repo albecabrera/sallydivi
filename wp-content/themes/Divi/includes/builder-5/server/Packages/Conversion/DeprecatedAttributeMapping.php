@@ -71,87 +71,95 @@ class DeprecatedAttributeMapping {
 	 */
 	private static function _get_module_attribute_types() {
 		return [
-			'divi/accordion'                           => [ 'htmlAttributes' ],
-			'divi/audio'                               => [ 'htmlAttributes' ],
-			'divi/blog'                                => [ 'htmlAttributes', 'blogLayout', 'blogGridFlexType' ],
-			'divi/blurb'                               => [ 'htmlAttributes', 'imageIconAlt', 'imageIconAnimation', 'imageIconWidth', 'imageIconAlignment', 'imageIconBackground' ],
-			'divi/button'                              => [ 'htmlAttributes', 'buttonRel', 'buttonEnable', 'buttonAlignment' ],
-			'divi/circle-counter'                      => [ 'htmlAttributes' ],
-			'divi/code'                                => [ 'htmlAttributes' ],
-			'divi/column'                              => [ 'htmlAttributes' ],
-			'divi/column-inner'                        => [ 'htmlAttributes' ],
-			'divi/comments'                            => [ 'htmlAttributes', 'buttonEnable', 'buttonAlignment' ],
-			'divi/contact-field'                       => [ 'htmlAttributes', 'contactFieldFullwidth' ],
-			'divi/contact-form'                        => [ 'htmlAttributes', 'buttonEnable', 'buttonAlignment' ],
-			'divi/countdown-timer'                     => [ 'htmlAttributes' ],
-			'divi/counters'                            => [ 'htmlAttributes' ],
-			'divi/cta'                                 => [ 'htmlAttributes', 'buttonRel', 'buttonEnable', 'buttonAlignment' ],
-			'divi/divider'                             => [ 'htmlAttributes' ],
-			'divi/filterable-portfolio'                => [ 'htmlAttributes', 'portfolioLayout', 'portfolioGridFlexType' ],
-			'divi/fullwidth-code'                      => [ 'htmlAttributes' ],
-			'divi/fullwidth-header'                    => [ 'htmlAttributes', 'logoAlt', 'imageAlt', 'buttonOneRel', 'buttonTwoRel', 'buttonOneEnable', 'buttonTwoEnable', 'imageTitle', 'logoTitle' ],
-			'divi/fullwidth-image'                     => [ 'htmlAttributes', 'imageAlt', 'imageTitleText' ],
-			'divi/fullwidth-map'                       => [ 'htmlAttributes' ],
-			'divi/fullwidth-menu'                      => [ 'htmlAttributes', 'logoAlt' ],
-			'divi/fullwidth-portfolio'                 => [ 'htmlAttributes', 'portfolioGridFlexType' ],
-			'divi/fullwidth-post-content'              => [ 'htmlAttributes' ],
-			'divi/fullwidth-post-slider'               => [ 'htmlAttributes', 'buttonRel', 'buttonEnable', 'buttonAlignment' ],
-			'divi/fullwidth-post-title'                => [ 'htmlAttributes' ],
-			'divi/fullwidth-slider'                    => [ 'htmlAttributes', 'childrenButtonRel', 'childrenButtonEnable' ],
-			'divi/gallery'                             => [ 'htmlAttributes', 'galleryGridFlexType' ],
-			'divi/group'                               => [ 'htmlAttributes' ],
-			'divi/group-carousel'                      => [ 'htmlAttributes' ],
-			'divi/heading'                             => [ 'htmlAttributes' ],
-			'divi/icon'                                => [ 'htmlAttributes', 'iconTitle' ],
-			'divi/icon-list'                           => [ 'htmlAttributes' ],
-			'divi/icon-list-item'                      => [ 'htmlAttributes', 'iconTitle' ],
-			'divi/image'                               => [ 'htmlAttributes', 'imageAlt', 'imageTitleText', 'imageRel' ],
-			'divi/login'                               => [ 'htmlAttributes', 'buttonEnable', 'buttonAlignment' ],
-			'divi/lottie'                              => [ 'htmlAttributes' ],
-			'divi/map'                                 => [ 'htmlAttributes' ],
-			'divi/menu'                                => [ 'htmlAttributes', 'logoAlt' ],
-			'divi/number-counter'                      => [ 'htmlAttributes' ],
-			'divi/portfolio'                           => [ 'htmlAttributes', 'portfolioLayout', 'portfolioGridFlexType' ],
-			'divi/post-content'                        => [ 'htmlAttributes' ],
-			'divi/post-nav'                            => [ 'htmlAttributes' ],
-			'divi/post-slider'                         => [ 'htmlAttributes', 'buttonRel', 'buttonEnable', 'buttonAlignment' ],
-			'divi/post-title'                          => [ 'htmlAttributes' ],
-			'divi/pricing-table'                       => [ 'buttonRel', 'buttonEnable', 'buttonAlignment' ],
-			'divi/pricing-tables'                      => [ 'htmlAttributes', 'childrenButtonRel', 'childrenButtonEnable' ],
-			'divi/pricing-tables-item'                 => [ 'htmlAttributes', 'buttonEnable', 'buttonAlignment' ],
-			'divi/row'                                 => [ 'htmlAttributes' ],
-			'divi/row-inner'                           => [ 'htmlAttributes' ],
-			'divi/search'                              => [ 'htmlAttributes' ],
-			'divi/section'                             => [ 'htmlAttributes' ],
-			'divi/shop'                                => [ 'htmlAttributes' ],
-			'divi/sidebar'                             => [ 'htmlAttributes' ],
-			'divi/signup'                              => [ 'htmlAttributes', 'buttonRel', 'buttonEnable', 'buttonAlignment', 'formLayout' ],
-			'divi/slide'                               => [ 'imageAlt', 'buttonRel', 'buttonEnable', 'buttonAlignment' ],
-			'divi/slider'                              => [ 'htmlAttributes', 'childrenButtonRel', 'childrenButtonEnable' ],
-			'divi/social-media-follow'                 => [ 'htmlAttributes', 'buttonEnable', 'buttonAlignment' ],
-			'divi/tabs'                                => [ 'htmlAttributes', 'inactiveTabBackground' ],
-			'divi/team-member'                         => [ 'htmlAttributes' ],
-			'divi/testimonial'                         => [ 'htmlAttributes' ],
-			'divi/text'                                => [ 'htmlAttributes' ],
-			'divi/toggle'                              => [ 'htmlAttributes' ],
-			'divi/video'                               => [ 'htmlAttributes' ],
-			'divi/video-slider'                        => [ 'htmlAttributes' ],
-			'divi/woocommerce-breadcrumb'              => [ 'htmlAttributes' ],
-			'divi/woocommerce-cart-notice'             => [ 'htmlAttributes' ],
-			'divi/woocommerce-product-add-to-cart'     => [ 'htmlAttributes' ],
-			'divi/woocommerce-product-additional-info' => [ 'htmlAttributes' ],
-			'divi/woocommerce-product-description'     => [ 'htmlAttributes' ],
-			'divi/woocommerce-product-gallery'         => [ 'htmlAttributes' ],
-			'divi/woocommerce-product-images'          => [ 'htmlAttributes' ],
-			'divi/woocommerce-product-meta'            => [ 'htmlAttributes' ],
-			'divi/woocommerce-product-price'           => [ 'htmlAttributes' ],
-			'divi/woocommerce-product-rating'          => [ 'htmlAttributes' ],
-			'divi/woocommerce-product-reviews'         => [ 'htmlAttributes' ],
-			'divi/woocommerce-product-stock'           => [ 'htmlAttributes' ],
-			'divi/woocommerce-product-tabs'            => [ 'htmlAttributes' ],
-			'divi/woocommerce-product-title'           => [ 'htmlAttributes' ],
-			'divi/woocommerce-product-upsell'          => [ 'htmlAttributes' ],
-			'divi/woocommerce-related-products'        => [ 'htmlAttributes' ],
+			'divi/accordion'                            => [ 'htmlAttributes' ],
+			'divi/audio'                                => [ 'htmlAttributes' ],
+			'divi/blog'                                 => [ 'htmlAttributes', 'blogLayout', 'blogGridFlexType' ],
+			'divi/blurb'                                => [ 'htmlAttributes', 'imageIconAlt', 'imageIconAnimation', 'imageIconWidth', 'imageIconAlignment', 'imageIconBackground' ],
+			'divi/button'                               => [ 'htmlAttributes', 'buttonRel', 'buttonEnable', 'buttonAlignment' ],
+			'divi/circle-counter'                       => [ 'htmlAttributes' ],
+			'divi/code'                                 => [ 'htmlAttributes' ],
+			'divi/column'                               => [ 'htmlAttributes' ],
+			'divi/column-inner'                         => [ 'htmlAttributes' ],
+			'divi/comments'                             => [ 'htmlAttributes', 'buttonEnable', 'buttonAlignment', 'focusFieldLegacyColors', 'focusFieldLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/contact-field'                        => [ 'htmlAttributes', 'contactFieldFullwidth', 'focusFieldLegacyColors', 'focusFieldLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/contact-form'                         => [ 'htmlAttributes', 'buttonEnable', 'buttonAlignment', 'focusFieldLegacyColors', 'fieldLegacyPlaceholderFont' ],
+			'divi/countdown-timer'                      => [ 'htmlAttributes' ],
+			'divi/counters'                             => [ 'htmlAttributes' ],
+			'divi/cta'                                  => [ 'htmlAttributes', 'buttonRel', 'buttonEnable', 'buttonAlignment' ],
+			'divi/divider'                              => [ 'htmlAttributes' ],
+			'divi/filterable-portfolio'                 => [ 'htmlAttributes', 'portfolioLayout', 'portfolioGridFlexType' ],
+			'divi/fullwidth-code'                       => [ 'htmlAttributes' ],
+			'divi/fullwidth-header'                     => [ 'htmlAttributes', 'logoAlt', 'imageAlt', 'buttonOneRel', 'buttonTwoRel', 'buttonOneEnable', 'buttonTwoEnable', 'imageTitle', 'logoTitle' ],
+			'divi/fullwidth-image'                      => [ 'htmlAttributes', 'imageAlt', 'imageTitleText' ],
+			'divi/fullwidth-map'                        => [ 'htmlAttributes' ],
+			'divi/fullwidth-menu'                       => [ 'htmlAttributes', 'logoAlt' ],
+			'divi/fullwidth-portfolio'                  => [ 'htmlAttributes', 'portfolioGridFlexType' ],
+			'divi/fullwidth-post-content'               => [ 'htmlAttributes' ],
+			'divi/fullwidth-post-slider'                => [ 'htmlAttributes', 'buttonRel', 'buttonEnable', 'buttonAlignment' ],
+			'divi/fullwidth-post-title'                 => [ 'htmlAttributes' ],
+			'divi/fullwidth-slider'                     => [ 'htmlAttributes', 'childrenButtonRel', 'childrenButtonEnable' ],
+			'divi/gallery'                              => [ 'htmlAttributes', 'galleryGridFlexType' ],
+			'divi/group'                                => [ 'htmlAttributes' ],
+			'divi/group-carousel'                       => [ 'htmlAttributes' ],
+			'divi/heading'                              => [ 'htmlAttributes' ],
+			'divi/icon'                                 => [ 'htmlAttributes', 'iconTitle' ],
+			'divi/icon-list'                            => [ 'htmlAttributes' ],
+			'divi/icon-list-item'                       => [ 'htmlAttributes', 'iconTitle' ],
+			'divi/image'                                => [ 'htmlAttributes', 'imageAlt', 'imageTitleText', 'imageRel' ],
+			'divi/login'                                => [ 'htmlAttributes', 'buttonEnable', 'buttonAlignment', 'focusFieldLegacyColors', 'focusFieldLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/lottie'                               => [ 'htmlAttributes' ],
+			'divi/map'                                  => [ 'htmlAttributes' ],
+			'divi/menu'                                 => [ 'htmlAttributes', 'logoAlt' ],
+			'divi/number-counter'                       => [ 'htmlAttributes' ],
+			'divi/portfolio'                            => [ 'htmlAttributes', 'portfolioLayout', 'portfolioGridFlexType' ],
+			'divi/post-content'                         => [ 'htmlAttributes' ],
+			'divi/post-nav'                             => [ 'htmlAttributes' ],
+			'divi/post-slider'                          => [ 'htmlAttributes', 'buttonRel', 'buttonEnable', 'buttonAlignment' ],
+			'divi/post-title'                           => [ 'htmlAttributes' ],
+			'divi/pricing-table'                        => [ 'buttonRel', 'buttonEnable', 'buttonAlignment' ],
+			'divi/pricing-tables'                       => [ 'htmlAttributes', 'childrenButtonRel', 'childrenButtonEnable' ],
+			'divi/pricing-tables-item'                  => [ 'htmlAttributes', 'buttonEnable', 'buttonAlignment' ],
+			'divi/row'                                  => [ 'htmlAttributes' ],
+			'divi/row-inner'                            => [ 'htmlAttributes' ],
+			'divi/search'                               => [ 'htmlAttributes', 'focusFieldLegacyColors', 'fieldLegacyPlaceholderFont' ],
+			'divi/section'                              => [ 'htmlAttributes' ],
+			'divi/shop'                                 => [ 'htmlAttributes' ],
+			'divi/sidebar'                              => [ 'htmlAttributes' ],
+			'divi/signup'                               => [ 'htmlAttributes', 'buttonRel', 'buttonEnable', 'buttonAlignment', 'formLayout', 'focusFieldLegacyColors', 'focusFieldLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/signup-custom-field'                  => [ 'focusFieldLegacyColors', 'focusFieldLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/slide'                                => [ 'imageAlt', 'buttonRel', 'buttonEnable', 'buttonAlignment' ],
+			'divi/slider'                               => [ 'htmlAttributes', 'childrenButtonRel', 'childrenButtonEnable' ],
+			'divi/social-media-follow'                  => [ 'htmlAttributes', 'buttonEnable', 'buttonAlignment' ],
+			'divi/tabs'                                 => [ 'htmlAttributes', 'inactiveTabBackground' ],
+			'divi/team-member'                          => [ 'htmlAttributes' ],
+			'divi/testimonial'                          => [ 'htmlAttributes' ],
+			'divi/text'                                 => [ 'htmlAttributes' ],
+			'divi/toggle'                               => [ 'htmlAttributes' ],
+			'divi/video'                                => [ 'htmlAttributes' ],
+			'divi/video-slider'                         => [ 'htmlAttributes' ],
+			'divi/woocommerce-breadcrumb'               => [ 'htmlAttributes' ],
+			'divi/woocommerce-cart-products'            => [ 'htmlAttributes', 'focusFieldLegacyColors', 'focusFieldLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/woocommerce-cart-notice'              => [ 'htmlAttributes', 'fieldLegacyFieldLabelsFont', 'fieldLegacyRequiredFieldIndicatorColor', 'focusFieldLegacyColors', 'focusFieldLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/woocommerce-cart-totals'              => [ 'htmlAttributes', 'focusFieldLegacyColors', 'focusFieldLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/woocommerce-checkout-additional-info' => [ 'htmlAttributes', 'focusFieldLegacyColors', 'focusFieldLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/woocommerce-checkout-billing'         => [ 'htmlAttributes', 'fieldLegacyFieldLabelsFont', 'fieldLegacyRequiredFieldIndicatorColor', 'focusFieldLegacyColors', 'focusFieldLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/woocommerce-checkout-information'     => [ 'htmlAttributes', 'fieldLegacyFieldLabelsFont', 'focusFieldLegacyColors', 'focusFieldLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/woocommerce-checkout-payment-info'    => [ 'htmlAttributes', 'focusTooltipLegacyBorder' ],
+			'divi/woocommerce-checkout-shipping'        => [ 'htmlAttributes', 'fieldLegacyFieldLabelsFont', 'fieldLegacyRequiredFieldIndicatorColor', 'focusFieldLegacyColors', 'focusFieldLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/woocommerce-product-add-to-cart'      => [ 'htmlAttributes', 'fieldLegacyFieldLabelsFont', 'focusFieldLegacyColors', 'focusDropdownMenusLegacyColors', 'focusDropdownMenusLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/woocommerce-product-additional-info'  => [ 'htmlAttributes' ],
+			'divi/woocommerce-product-description'      => [ 'htmlAttributes' ],
+			'divi/woocommerce-product-gallery'          => [ 'htmlAttributes' ],
+			'divi/woocommerce-product-images'           => [ 'htmlAttributes' ],
+			'divi/woocommerce-product-meta'             => [ 'htmlAttributes' ],
+			'divi/woocommerce-product-price'            => [ 'htmlAttributes' ],
+			'divi/woocommerce-product-rating'           => [ 'htmlAttributes' ],
+			'divi/woocommerce-product-reviews'          => [ 'htmlAttributes', 'focusFieldLegacyColors', 'focusFieldLegacyBorder', 'fieldLegacyPlaceholderFont' ],
+			'divi/woocommerce-product-stock'            => [ 'htmlAttributes' ],
+			'divi/woocommerce-product-tabs'             => [ 'htmlAttributes' ],
+			'divi/woocommerce-product-title'            => [ 'htmlAttributes' ],
+			'divi/woocommerce-product-upsell'           => [ 'htmlAttributes' ],
+			'divi/woocommerce-related-products'         => [ 'htmlAttributes' ],
 		];
 	}
 
@@ -164,36 +172,44 @@ class DeprecatedAttributeMapping {
 	 */
 	private static function _get_attribute_definitions() {
 		return [
-			'htmlAttributes'        => self::_get_html_attributes_definition(),
-			'imageIconAlt'          => self::_get_image_icon_alt_definition(),
-			'imageAlt'              => self::_get_image_alt_definition(),
-			'imageTitleText'        => self::_get_image_title_text_definition(),
-			'logoAlt'               => self::_get_logo_alt_definition(),
-			'buttonRel'             => self::_get_button_rel_definition(),
-			'buttonEnable'          => self::_get_button_enable_definition(),
-			'buttonAlignment'       => self::_get_button_alignment_definition(),
-			'iconTitle'             => self::_get_icon_title_definition(),
-			'buttonOneRel'          => self::_get_button_one_rel_definition(),
-			'buttonOneEnable'       => self::_get_button_one_enable_definition(),
-			'buttonTwoRel'          => self::_get_button_two_rel_definition(),
-			'buttonTwoEnable'       => self::_get_button_two_enable_definition(),
-			'imageTitle'            => self::_get_image_title_definition(),
-			'logoTitle'             => self::_get_logo_title_definition(),
-			'childrenButtonRel'     => self::_get_children_button_rel_definition(),
-			'childrenButtonEnable'  => self::_get_children_button_enable_definition(),
-			'imageRel'              => self::_get_image_rel_definition(),
-			'imageIconAnimation'    => self::_get_image_icon_animation_definition(),
-			'imageIconWidth'        => self::_get_image_icon_width_definition(),
-			'imageIconAlignment'    => self::_get_image_icon_alignment_definition(),
-			'imageIconBackground'   => self::_get_image_icon_background_definition(),
-			'inactiveTabBackground' => self::_get_inactive_tab_background_definition(),
-			'formLayout'            => self::_get_form_layout_definition(),
-			'portfolioLayout'       => self::_get_portfolio_layout_definition(),
-			'blogLayout'            => self::_get_blog_layout_definition(),
-			'portfolioGridFlexType' => self::_get_portfolio_grid_flex_type_definition(),
-			'blogGridFlexType'      => self::_get_blog_grid_flex_type_definition(),
-			'galleryGridFlexType'   => self::_get_gallery_grid_flex_type_definition(),
-			'contactFieldFullwidth' => self::_get_contact_field_fullwidth_definition(),
+			'htmlAttributes'                         => self::_get_html_attributes_definition(),
+			'imageIconAlt'                           => self::_get_image_icon_alt_definition(),
+			'imageAlt'                               => self::_get_image_alt_definition(),
+			'imageTitleText'                         => self::_get_image_title_text_definition(),
+			'logoAlt'                                => self::_get_logo_alt_definition(),
+			'buttonRel'                              => self::_get_button_rel_definition(),
+			'buttonEnable'                           => self::_get_button_enable_definition(),
+			'buttonAlignment'                        => self::_get_button_alignment_definition(),
+			'iconTitle'                              => self::_get_icon_title_definition(),
+			'buttonOneRel'                           => self::_get_button_one_rel_definition(),
+			'buttonOneEnable'                        => self::_get_button_one_enable_definition(),
+			'buttonTwoRel'                           => self::_get_button_two_rel_definition(),
+			'buttonTwoEnable'                        => self::_get_button_two_enable_definition(),
+			'imageTitle'                             => self::_get_image_title_definition(),
+			'logoTitle'                              => self::_get_logo_title_definition(),
+			'childrenButtonRel'                      => self::_get_children_button_rel_definition(),
+			'childrenButtonEnable'                   => self::_get_children_button_enable_definition(),
+			'imageRel'                               => self::_get_image_rel_definition(),
+			'imageIconAnimation'                     => self::_get_image_icon_animation_definition(),
+			'imageIconWidth'                         => self::_get_image_icon_width_definition(),
+			'imageIconAlignment'                     => self::_get_image_icon_alignment_definition(),
+			'imageIconBackground'                    => self::_get_image_icon_background_definition(),
+			'inactiveTabBackground'                  => self::_get_inactive_tab_background_definition(),
+			'formLayout'                             => self::_get_form_layout_definition(),
+			'portfolioLayout'                        => self::_get_portfolio_layout_definition(),
+			'blogLayout'                             => self::_get_blog_layout_definition(),
+			'portfolioGridFlexType'                  => self::_get_portfolio_grid_flex_type_definition(),
+			'blogGridFlexType'                       => self::_get_blog_grid_flex_type_definition(),
+			'galleryGridFlexType'                    => self::_get_gallery_grid_flex_type_definition(),
+			'contactFieldFullwidth'                  => self::_get_contact_field_fullwidth_definition(),
+			'focusFieldLegacyColors'                 => self::_get_focus_field_legacy_colors_definition(),
+			'focusFieldLegacyBorder'                 => self::_get_focus_field_legacy_border_definition(),
+			'fieldLegacyPlaceholderFont'             => self::_get_field_legacy_placeholder_font_definition(),
+			'fieldLegacyFieldLabelsFont'             => self::_get_field_legacy_field_labels_font_definition(),
+			'fieldLegacyRequiredFieldIndicatorColor' => self::_get_field_legacy_required_field_indicator_color_definition(),
+			'focusDropdownMenusLegacyColors'         => self::_get_focus_dropdown_menus_legacy_colors_definition(),
+			'focusDropdownMenusLegacyBorder'         => self::_get_focus_dropdown_menus_legacy_border_definition(),
+			'focusTooltipLegacyBorder'               => self::_get_focus_tooltip_legacy_border_definition(),
 		];
 	}
 
@@ -420,6 +436,476 @@ class DeprecatedAttributeMapping {
 			'fieldItem.advanced.fullwidth' => [
 				'attrName' => 'fieldItem.advanced.fullwidth',
 				'preset'   => [ 'html' ],
+			],
+		];
+	}
+
+	/**
+	 * Get focusFieldLegacyColors deprecated attribute definition.
+	 *
+	 * Used by modules with form fields for legacy focus color keys that are
+	 * migrated to decoration focus states.
+	 *
+	 * @since ??
+	 *
+	 * @return array Array of focusFieldLegacyColors deprecated attribute mappings.
+	 */
+	private static function _get_focus_field_legacy_colors_definition() {
+		return [
+			'field.advanced.focus.background__color'       => [
+				'attrName' => 'field.advanced.focus.background',
+				'preset'   => [ 'style' ],
+				'subName'  => 'color',
+			],
+			'field.advanced.focus.background__backgroundColor' => [
+				'attrName' => 'field.advanced.focus.background',
+				'preset'   => [ 'style' ],
+				'subName'  => 'backgroundColor',
+			],
+			'field.advanced.focus.font.font__color'        => [
+				'attrName' => 'field.advanced.focus.font.font',
+				'preset'   => [ 'style' ],
+				'subName'  => 'color',
+			],
+			'field.advanced.focus.font.font__textColor'    => [
+				'attrName' => 'field.advanced.focus.font.font',
+				'preset'   => [ 'style' ],
+				'subName'  => 'textColor',
+			],
+			'field.decoration.background__color'           => [
+				'attrName' => 'field.decoration.background',
+				'preset'   => [ 'style' ],
+				'subName'  => 'color',
+			],
+			'field.decoration.background__backgroundColor' => [
+				'attrName' => 'field.decoration.background',
+				'preset'   => [ 'style' ],
+				'subName'  => 'backgroundColor',
+			],
+		];
+	}
+
+	/**
+	 * Get focusFieldLegacyBorder deprecated attribute definition.
+	 *
+	 * Used by modules with form fields for legacy focus border keys and
+	 * use-focus-border toggle that are migrated to decoration focus states.
+	 *
+	 * @since ??
+	 *
+	 * @return array Array of focusFieldLegacyBorder deprecated attribute mappings.
+	 */
+	private static function _get_focus_field_legacy_border_definition() {
+		return [
+			'field.advanced.focusUseBorder'       => [
+				'attrName' => 'field.advanced.focusUseBorder',
+				'preset'   => [ 'style' ],
+			],
+			'field.advanced.focus.border__radius' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'radius',
+			],
+			'field.advanced.focus.border__styles' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles',
+			],
+			'field.advanced.focus.border__styles.all.width' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.all.width',
+			],
+			'field.advanced.focus.border__styles.top.width' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.top.width',
+			],
+			'field.advanced.focus.border__styles.right.width' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.right.width',
+			],
+			'field.advanced.focus.border__styles.bottom.width' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.bottom.width',
+			],
+			'field.advanced.focus.border__styles.left.width' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.left.width',
+			],
+			'field.advanced.focus.border__styles.all.color' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.all.color',
+			],
+			'field.advanced.focus.border__styles.top.color' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.top.color',
+			],
+			'field.advanced.focus.border__styles.right.color' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.right.color',
+			],
+			'field.advanced.focus.border__styles.bottom.color' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.bottom.color',
+			],
+			'field.advanced.focus.border__styles.left.color' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.left.color',
+			],
+			'field.advanced.focus.border__styles.all.style' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.all.style',
+			],
+			'field.advanced.focus.border__styles.top.style' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.top.style',
+			],
+			'field.advanced.focus.border__styles.right.style' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.right.style',
+			],
+			'field.advanced.focus.border__styles.bottom.style' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.bottom.style',
+			],
+			'field.advanced.focus.border__styles.left.style' => [
+				'attrName' => 'field.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.left.style',
+			],
+		];
+	}
+
+	/**
+	 * Get fieldLegacyPlaceholderFont deprecated attribute definition.
+	 *
+	 * Used by modules with form fields for legacy placeholder font keys that are
+	 * migrated to decoration placeholder-font state.
+	 *
+	 * @since ??
+	 *
+	 * @return array Array of fieldLegacyPlaceholderFont deprecated attribute mappings.
+	 */
+	private static function _get_field_legacy_placeholder_font_definition() {
+		return [
+			'field.advanced.placeholder.font.font__color' => [
+				'attrName' => 'field.advanced.placeholder.font.font',
+				'preset'   => [ 'style' ],
+				'subName'  => 'color',
+			],
+			'field.advanced.placeholder.font.font__textColor' => [
+				'attrName' => 'field.advanced.placeholder.font.font',
+				'preset'   => [ 'style' ],
+				'subName'  => 'textColor',
+			],
+			'field.advanced.placeholder.font.font__size'  => [
+				'attrName' => 'field.advanced.placeholder.font.font',
+				'preset'   => [ 'style' ],
+				'subName'  => 'size',
+			],
+			'field.advanced.placeholder.font.font__letterSpacing' => [
+				'attrName' => 'field.advanced.placeholder.font.font',
+				'preset'   => [ 'style' ],
+				'subName'  => 'letterSpacing',
+			],
+			'field.advanced.placeholder.font.font__lineHeight' => [
+				'attrName' => 'field.advanced.placeholder.font.font',
+				'preset'   => [ 'style' ],
+				'subName'  => 'lineHeight',
+			],
+		];
+	}
+
+	/**
+	 * Get fieldLegacyFieldLabelsFont deprecated attribute definition.
+	 *
+	 * Used by modules with legacy fieldLabels font attrs that are migrated to
+	 * field.decoration.labelFont.
+	 *
+	 * @since ??
+	 *
+	 * @return array Array of fieldLegacyFieldLabelsFont deprecated attribute mappings.
+	 */
+	private static function _get_field_legacy_field_labels_font_definition() {
+		return [
+			'fieldLabels.decoration.font' => [
+				'attrName' => 'fieldLabels.decoration.font',
+				'preset'   => [ 'style' ],
+			],
+		];
+	}
+
+	/**
+	 * Get fieldLegacyRequiredFieldIndicatorColor deprecated attribute definition.
+	 *
+	 * Used by Woo modules where required indicator color moved from fieldLabels to
+	 * field.advanced.requiredFieldIndicatorColor.
+	 *
+	 * @since ??
+	 *
+	 * @return array Array of fieldLegacyRequiredFieldIndicatorColor deprecated attribute mappings.
+	 */
+	private static function _get_field_legacy_required_field_indicator_color_definition() {
+		return [
+			'fieldLabels.advanced.requiredFieldIndicatorColor' => [
+				'attrName' => 'fieldLabels.advanced.requiredFieldIndicatorColor',
+				'preset'   => [ 'style' ],
+			],
+		];
+	}
+
+	/**
+	 * Get focusDropdownMenusLegacyBorder deprecated attribute definition.
+	 *
+	 * Used by modules with dropdown menus for legacy focus border keys and
+	 * use-focus-border toggle that are migrated to decoration focus states.
+	 *
+	 * @since ??
+	 *
+	 * @return array Array of focusDropdownMenusLegacyBorder deprecated attribute mappings.
+	 */
+	private static function _get_focus_dropdown_menus_legacy_border_definition() {
+		return [
+			'dropdownMenus.advanced.focusUseBorder'       => [
+				'attrName' => 'dropdownMenus.advanced.focusUseBorder',
+				'preset'   => [ 'style' ],
+			],
+			'dropdownMenus.advanced.focus.border__radius' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'radius',
+			],
+			'dropdownMenus.advanced.focus.border__styles' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles',
+			],
+			'dropdownMenus.advanced.focus.border__styles.all.width' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.all.width',
+			],
+			'dropdownMenus.advanced.focus.border__styles.top.width' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.top.width',
+			],
+			'dropdownMenus.advanced.focus.border__styles.right.width' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.right.width',
+			],
+			'dropdownMenus.advanced.focus.border__styles.bottom.width' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.bottom.width',
+			],
+			'dropdownMenus.advanced.focus.border__styles.left.width' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.left.width',
+			],
+			'dropdownMenus.advanced.focus.border__styles.all.color' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.all.color',
+			],
+			'dropdownMenus.advanced.focus.border__styles.top.color' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.top.color',
+			],
+			'dropdownMenus.advanced.focus.border__styles.right.color' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.right.color',
+			],
+			'dropdownMenus.advanced.focus.border__styles.bottom.color' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.bottom.color',
+			],
+			'dropdownMenus.advanced.focus.border__styles.left.color' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.left.color',
+			],
+			'dropdownMenus.advanced.focus.border__styles.all.style' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.all.style',
+			],
+			'dropdownMenus.advanced.focus.border__styles.top.style' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.top.style',
+			],
+			'dropdownMenus.advanced.focus.border__styles.right.style' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.right.style',
+			],
+			'dropdownMenus.advanced.focus.border__styles.bottom.style' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.bottom.style',
+			],
+			'dropdownMenus.advanced.focus.border__styles.left.style' => [
+				'attrName' => 'dropdownMenus.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.left.style',
+			],
+		];
+	}
+
+	/**
+	 * Get focusTooltipLegacyBorder deprecated attribute definition.
+	 *
+	 * Used by modules with tooltip fields for legacy focus border keys and
+	 * use-focus-border toggle that are migrated to decoration focus states.
+	 *
+	 * @since ??
+	 *
+	 * @return array Array of focusTooltipLegacyBorder deprecated attribute mappings.
+	 */
+	private static function _get_focus_tooltip_legacy_border_definition() {
+		return [
+			'tooltip.advanced.focusUseBorder'       => [
+				'attrName' => 'tooltip.advanced.focusUseBorder',
+				'preset'   => [ 'style' ],
+			],
+			'tooltip.advanced.focus.border__radius' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'radius',
+			],
+			'tooltip.advanced.focus.border__styles' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles',
+			],
+			'tooltip.advanced.focus.border__styles.all.width' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.all.width',
+			],
+			'tooltip.advanced.focus.border__styles.top.width' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.top.width',
+			],
+			'tooltip.advanced.focus.border__styles.right.width' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.right.width',
+			],
+			'tooltip.advanced.focus.border__styles.bottom.width' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.bottom.width',
+			],
+			'tooltip.advanced.focus.border__styles.left.width' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.left.width',
+			],
+			'tooltip.advanced.focus.border__styles.all.color' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.all.color',
+			],
+			'tooltip.advanced.focus.border__styles.top.color' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.top.color',
+			],
+			'tooltip.advanced.focus.border__styles.right.color' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.right.color',
+			],
+			'tooltip.advanced.focus.border__styles.bottom.color' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.bottom.color',
+			],
+			'tooltip.advanced.focus.border__styles.left.color' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.left.color',
+			],
+			'tooltip.advanced.focus.border__styles.all.style' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.all.style',
+			],
+			'tooltip.advanced.focus.border__styles.top.style' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.top.style',
+			],
+			'tooltip.advanced.focus.border__styles.right.style' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.right.style',
+			],
+			'tooltip.advanced.focus.border__styles.bottom.style' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.bottom.style',
+			],
+			'tooltip.advanced.focus.border__styles.left.style' => [
+				'attrName' => 'tooltip.advanced.focus.border',
+				'preset'   => [ 'style' ],
+				'subName'  => 'styles.left.style',
+			],
+		];
+	}
+
+	/**
+	 * Get focusDropdownMenusLegacyColors deprecated attribute definition.
+	 *
+	 * Used by modules with dropdown menus for legacy focus color keys that are
+	 * migrated to decoration focus states.
+	 *
+	 * @since ??
+	 *
+	 * @return array Array of focusDropdownMenusLegacyColors deprecated attribute mappings.
+	 */
+	private static function _get_focus_dropdown_menus_legacy_colors_definition() {
+		return [
+			'dropdownMenus.advanced.focus.background__color' => [
+				'attrName' => 'dropdownMenus.advanced.focus.background',
+				'preset'   => [ 'style' ],
+				'subName'  => 'color',
+			],
+			'dropdownMenus.advanced.focus.background__backgroundColor' => [
+				'attrName' => 'dropdownMenus.advanced.focus.background',
+				'preset'   => [ 'style' ],
+				'subName'  => 'backgroundColor',
+			],
+			'dropdownMenus.advanced.focus.font.font__color' => [
+				'attrName' => 'dropdownMenus.advanced.focus.font.font',
+				'preset'   => [ 'style' ],
+				'subName'  => 'color',
+			],
+			'dropdownMenus.advanced.focus.font.font__textColor' => [
+				'attrName' => 'dropdownMenus.advanced.focus.font.font',
+				'preset'   => [ 'style' ],
+				'subName'  => 'textColor',
 			],
 		];
 	}

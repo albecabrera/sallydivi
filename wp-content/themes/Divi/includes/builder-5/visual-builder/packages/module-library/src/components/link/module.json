@@ -111,7 +111,10 @@
           "selectors": {
             "desktop": {
               "value": "{{selector}} .et_pb_link_inner",
-              "hover": "{{selector}}{{:hover}} .et_pb_link_inner"
+              "hover": "{{selector}}{{:hover}} .et_pb_link_inner",
+              "focus": "{{selector}}:focus .et_pb_link_inner",
+              "active": "{{selector}}:active .et_pb_link_inner",
+              "checked": "{{selector}}:checked .et_pb_link_inner"
             }
           }
         }

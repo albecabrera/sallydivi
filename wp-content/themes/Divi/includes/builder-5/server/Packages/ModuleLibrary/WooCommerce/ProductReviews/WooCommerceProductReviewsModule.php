@@ -892,9 +892,7 @@ class WooCommerceProductReviewsModule implements DependencyInterface {
 						%4$s
 					</nav>
 				</div>
-				<div id="review_form_wrapper">
-					%5$s
-				</div>
+				%5$s
 				<div class="clear"></div>
 			</div>
 			',

@@ -31,6 +31,7 @@ use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
 use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
 use ET\Builder\Packages\WooCommerce\WooCommerceUtils;
+use ET\Builder\Packages\WooCommerce\WooCommerceHooks;
 use WP_Block_Type_Registry;
 use WP_Block;
 
@@ -761,7 +762,7 @@ class WooCommerceProductTabsModule implements DependencyInterface {
 					 * which might cause infinite loop; get Divi's long description from
 					 * post meta instead.
 					 */
-					$tab_content = get_post_meta( $product_id, ET_BUILDER_WC_PRODUCT_LONG_DESC_META_KEY, true );
+					$tab_content = get_post_meta( $product_id, WooCommerceHooks::get_long_desc_meta_key(), true );
 
 					/**
 					 * This filter parses the tab content and processes any shortcodes in the content.
@@ -844,7 +845,8 @@ class WooCommerceProductTabsModule implements DependencyInterface {
 
 							// Call comments_template() directly with correct parameters instead of via call_user_func.
 							ob_start();
-							comments_template( '', false );
+							// TODO fix(D5, WooCommerce): Revert to comments_template after WordPress core resolves Trac #61468. [https://github.com/elegantthemes/Divi/issues/28338].
+							et_comments_template_safe( '', false );
 							$tab_content = ob_get_clean();
 							// Ensure $tab_content is a string (ob_get_clean() can return false).
 							$tab_content = is_string( $tab_content ) ? $tab_content : '';

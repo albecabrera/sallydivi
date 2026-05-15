@@ -839,7 +839,7 @@ class LegacyAttributeNames {
 		}
 
 		// 2. Strip responsive/state suffixes and check base name match.
-		$base_name = preg_replace( '/(_tablet|_phone|_last_edited|__hover|__sticky|__hover_enabled|__sticky_enabled)$/', '', $attribute_name );
+		$base_name = preg_replace( '/(_tablet|_phone|_last_edited|__hover|__focus|__checked|__active|__sticky|__hover_enabled|__focus_enabled|__checked_enabled|__active_enabled|__sticky_enabled)$/', '', $attribute_name );
 		if ( $base_name !== $attribute_name ) {
 			// Check if base name matches exactly.
 			if ( in_array( $base_name, $legacy_names, true ) ) {
@@ -850,7 +850,7 @@ class LegacyAttributeNames {
 			// Example: attribute_name="image_title_background" should match legacy="dvmd_image_box_image_title_background".
 			foreach ( $legacy_names as $legacy_name ) {
 				// Strip suffix from legacy name too.
-				$legacy_base = preg_replace( '/(_tablet|_phone|_last_edited|__hover|__sticky|__hover_enabled|__sticky_enabled)$/', '', $legacy_name );
+				$legacy_base = preg_replace( '/(_tablet|_phone|_last_edited|__hover|__focus|__checked|__active|__sticky|__hover_enabled|__focus_enabled|__checked_enabled|__active_enabled|__sticky_enabled)$/', '', $legacy_name );
 
 				// Check if legacy name ends with base_name (handles module prefixes).
 				// Must match exactly or end with underscore + base_name to avoid substring matches.
@@ -864,7 +864,7 @@ class LegacyAttributeNames {
 		// Example: attribute_name="image_title_background" should match legacy="dvmd_image_box_image_title_background".
 		foreach ( $legacy_names as $legacy_name ) {
 			// Strip suffix from legacy name.
-			$legacy_base = preg_replace( '/(_tablet|_phone|_last_edited|__hover|__sticky|__hover_enabled|__sticky_enabled)$/', '', $legacy_name );
+			$legacy_base = preg_replace( '/(_tablet|_phone|_last_edited|__hover|__focus|__checked|__active|__sticky|__hover_enabled|__focus_enabled|__checked_enabled|__active_enabled|__sticky_enabled)$/', '', $legacy_name );
 
 			// Check if legacy name ends with attribute_name (handles module prefixes).
 			// Must match exactly or end with underscore + attribute_name to avoid substring matches.

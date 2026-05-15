@@ -19,6 +19,9 @@ if ( ! function_exists( '_et_core_find_latest' ) ) :
  * Find the latest version of Core currently available.
  *
  * @since 3.0.60
+ * @since 5.3.0 Added `version` check to Core path condition.
+ *
+ * @param string $return 'path' or 'version'.
  *
  * @return string $core_path Absolute path to the latest version of core.
  */
@@ -37,9 +40,13 @@ function _et_core_find_latest( $return = 'path' ) {
 	$this_core_path = _et_core_normalize_path( dirname( __FILE__ ) );
 	$content_dir    = _et_core_normalize_path( WP_CONTENT_DIR );
 
-	// If this constant is enabled, the core path from this product will be used instead of the latest core from all installed products.
+	// If this constant is enabled and `version` is not passed, the core path from this product
+	// will be used instead of the latest core from all installed products.
 	if ( defined( 'ET_USE_PRODUCT_CORE_PATHS' ) && ET_USE_PRODUCT_CORE_PATHS ) {
-		return $this_core_path;
+		// Don't return the core path if we're looking for the version and it just hasn't been loaded yet.
+		if ( 'version' !== $return ) {
+			return $this_core_path;
+		}
 	}
 
 	include $this_core_path . '/_et_core_version.php';

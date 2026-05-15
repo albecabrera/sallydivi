@@ -27,8 +27,10 @@ use ET\Builder\Packages\Module\Options\Element\ElementStyle;
 use ET\Builder\Packages\Module\Options\FormField\FormFieldStyle;
 use ET\Builder\Packages\Module\Options\Text\TextClassnames;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
+use ET\Builder\Packages\ModuleLibrary\RadioFieldAndIconAttrs;
 use ET\Builder\Packages\Module\Options\Css\CssStyle;
 use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
+use ET\Builder\Packages\Module\Options\Animation\AnimationUtils;
 use WP_Block_Type_Registry;
 use WP_Block;
 
@@ -81,11 +83,8 @@ class ContactFieldModule implements DependencyInterface {
 	 * }
 	 */
 	public static function module_classnames( $args ) {
-		global $half_width_counter;
-
 		$classnames_instance = $args['classnamesInstance'];
 		$attrs               = $args['attrs'];
-		$parent_attrs        = $args['parentAttrs'] ?? [];
 
 		// Add background specific class.
 		$background = $attrs['module']['decoration']['background']['desktop']['value'] ?? [];
@@ -201,13 +200,99 @@ class ContactFieldModule implements DependencyInterface {
 	 * }
 	 */
 	public static function module_styles( array $args ): void {
-		$attrs                       = $args['attrs'] ?? [];
-		$elements                    = $args['elements'];
-		$settings                    = $args['settings'] ?? [];
-		$order_class                 = $args['orderClass'] ?? '';
-		$default_printed_style_attrs = $args['defaultPrintedStyleAttrs'] ?? [];
-		$is_inside_sticky_module     = $elements->get_is_inside_sticky_module();
-		$sticky_parent_order_class   = $elements->get_sticky_parent_order_class();
+		$attrs                                     = $args['attrs'] ?? [];
+		$elements                                  = $args['elements'];
+		$settings                                  = $args['settings'] ?? [];
+		$order_class                               = $args['orderClass'] ?? '';
+		$default_printed_style_attrs               = $args['defaultPrintedStyleAttrs'] ?? [];
+		$is_inside_sticky_module                   = $elements->get_is_inside_sticky_module();
+		$sticky_parent_order_class                 = $elements->get_sticky_parent_order_class();
+		$input_indicator_targets                   = [
+			"{$order_class}.et_pb_contact_field .input:not([type=\"checkbox\"]):not([type=\"radio\"])",
+		];
+		$input_indicator_targets_hover             = [
+			"{$order_class}.et_pb_contact_field .input:not([type=\"checkbox\"]):not([type=\"radio\"]):hover",
+		];
+		$input_indicator_targets_focus             = [
+			"{$order_class}.et_pb_contact_field .input:not([type=\"checkbox\"]):not([type=\"radio\"]):focus",
+		];
+		$text_group_targets                        = [
+			"{$order_class}.et_pb_contact_field .input:not([type=\"checkbox\"]):not([type=\"radio\"])",
+		];
+		$text_group_targets_hover                  = [
+			"{$order_class}.et_pb_contact_field .input:not([type=\"checkbox\"]):not([type=\"radio\"]):hover",
+		];
+		$field_label_targets                       = [
+			"{$order_class}.et_pb_contact_field .et_pb_contact_field_options_title",
+		];
+		$field_label_targets_hover                 = [
+			"{$order_class}.et_pb_contact_field .et_pb_contact_field_options_title:hover",
+		];
+		$checkbox_targets                          = [
+			"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"] + label i",
+		];
+		$checkbox_targets_hover                    = [
+			"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:hover + label i",
+		];
+		$checkbox_targets_focus                    = [
+			"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:focus + label i",
+		];
+		$checkbox_targets_checked                  = [
+			"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:checked + label i",
+		];
+		$checkbox_text_targets                     = [
+			"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"] + label",
+		];
+		$checkbox_text_targets_hover               = [
+			"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:hover + label",
+		];
+		$checkbox_text_targets_checked             = [
+			"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:checked + label",
+		];
+		$radio_targets                             = [
+			"{$order_class}.et_pb_contact_field .input[type=\"radio\"] + label i",
+		];
+		$radio_targets_hover                       = [
+			"{$order_class}.et_pb_contact_field .input[type=\"radio\"]:hover + label i",
+		];
+		$radio_targets_focus                       = [
+			"{$order_class}.et_pb_contact_field .input[type=\"radio\"]:focus + label i",
+		];
+		$radio_targets_checked                     = [
+			"{$order_class}.et_pb_contact_field .input[type=\"radio\"]:checked + label i",
+		];
+		$radio_text_targets                        = [
+			"{$order_class}.et_pb_contact_field .input[type=\"radio\"] + label",
+		];
+		$radio_text_targets_hover                  = [
+			"{$order_class}.et_pb_contact_field .input[type=\"radio\"]:hover + label",
+		];
+		$radio_text_targets_checked                = [
+			"{$order_class}.et_pb_contact_field .input[type=\"radio\"]:checked + label",
+		];
+		$font_group_properties                     = [
+			'color',
+			'font-family',
+			'font-size',
+			'font-style',
+			'font-weight',
+			'letter-spacing',
+			'line-height',
+			'text-align',
+			'text-decoration',
+			'text-transform',
+		];
+		$font_property_selectors                   = array_fill_keys( $font_group_properties, implode( ', ', $text_group_targets ) );
+		$font_property_selectors_hover             = array_fill_keys( $font_group_properties, implode( ', ', $text_group_targets_hover ) );
+		$checkbox_font_property_selectors          = array_fill_keys( $font_group_properties, implode( ', ', $checkbox_text_targets ) );
+		$checkbox_font_property_selectors_hover    = array_fill_keys( $font_group_properties, implode( ', ', $checkbox_text_targets_hover ) );
+		$radio_font_property_selectors             = array_fill_keys( $font_group_properties, implode( ', ', $radio_text_targets ) );
+		$radio_font_property_selectors_hover       = array_fill_keys( $font_group_properties, implode( ', ', $radio_text_targets_hover ) );
+		$field_label_font_property_selectors       = array_fill_keys( $font_group_properties, implode( ', ', $field_label_targets ) );
+		$field_label_font_property_selectors_hover = array_fill_keys( $font_group_properties, implode( ', ', $field_label_targets_hover ) );
+		$radio_attrs                               = RadioFieldAndIconAttrs::get( $attrs['radio'] ?? [] );
+		$radio_attr                                = $radio_attrs['fieldAttr'];
+		$radio_icon_attr                           = $radio_attrs['iconAttr'];
 
 		Style::add(
 			[
@@ -261,15 +346,23 @@ class ContactFieldModule implements DependencyInterface {
 					FormFieldStyle::style(
 						[
 							'attr'                   => $attrs['field'] ?? [],
-							'selector'               => implode(
-								', ',
-								[
-									"{$order_class}.et_pb_contact_field .et_pb_contact_field_options_title",
-									"{$order_class}.et_pb_contact_field .input[type=checkbox] + label",
-									"{$order_class}.et_pb_contact_field .input[type=radio] + label",
-									"{$order_class}.et_pb_contact_field .input",
-								]
-							),
+							'selector'               => "{$order_class}.et_pb_contact_field .input:not([type=\"checkbox\"]):not([type=\"radio\"])",
+							'selectors'              => [
+								'desktop' => [
+									'value' => implode(
+										', ',
+										$input_indicator_targets
+									),
+									'hover' => implode(
+										', ',
+										$input_indicator_targets_hover
+									),
+									'focus' => implode(
+										', ',
+										$input_indicator_targets_focus
+									),
+								],
+							],
 							'important'              => [
 								'font' => [
 									'font' => [
@@ -282,88 +375,47 @@ class ContactFieldModule implements DependencyInterface {
 								],
 							],
 							'propertySelectors'      => [
-								'background'  => [
+								'spacing' => [
 									'desktop' => [
 										'value' => [
-											'background-color' => implode(
-												', ',
-												[
-													"{$order_class}.et_pb_contact_field .input",
-													"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"] + label i",
-													"{$order_class}.et_pb_contact_field .input[type=\"radio\"] + label i",
-												]
-											),
-										],
-										'hover' => [
-											'background-color' => implode(
-												', ',
-												[
-													"{$order_class}.et_pb_contact_field .input:hover",
-													"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"] + label:hover i",
-													"{$order_class}.et_pb_contact_field .input[type=\"radio\"] + label:hover i",
-												]
-											),
+											'margin'  => "{$order_class}.et_pb_contact_field",
+											'padding' => "{$order_class}.et_pb_contact_field .input:not([type=\"checkbox\"]):not([type=\"radio\"])",
 										],
 									],
 								],
-								'font'        => [
-									'font' => [
-										'desktop' => [
-											'value' => [
-												'color' => implode(
-													', ',
-													[
-														"{$order_class}.et_pb_contact_field .input",
-														"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"] + label",
-														"{$order_class}.et_pb_contact_field .input[type=\"radio\"] + label",
-														"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:checked + label i:before",
-													]
-												),
-											],
-											'hover' => [
-												'color' => implode(
-													', ',
-													[
-														"{$order_class}.et_pb_contact_field .input:hover",
-														"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:hover + label",
-														"{$order_class}.et_pb_contact_field .input[type=\"radio\"]:hover + label",
-														"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:checked:hover + label i:before",
-													]
-												),
-											],
-										],
-									],
-								],
-								'placeholder' => [
-									'font' => [
-										'font' => [
-											'desktop' => [
-												'value' => [
-													'color' => "{$order_class}.et_pb_contact_field .input",
-												],
-											],
-										],
-									],
-								],
-								'focus'       => [
-									'background' => [
-										'desktop' => [
-											'value' => [
-												'background-color' => "{$order_class}.et_pb_contact_field .input",
-											],
-											'hover' => [
-												'background-color' => "{$order_class}.et_pb_contact_field .input",
-											],
-										],
-									],
+								'font'    => [
 									'font'       => [
-										'font' => [
+										'desktop' => [
+											'value' => $font_property_selectors,
+											'hover' => $font_property_selectors_hover,
+										],
+									],
+									'textShadow' => [
+										'desktop' => [
+											'value' => [
+												'text-shadow' => implode( ', ', $text_group_targets ),
+											],
+											'hover' => [
+												'text-shadow' => implode( ', ', $text_group_targets_hover ),
+											],
+										],
+									],
+								],
+								'label'   => [
+									'font' => [
+										'font'       => [
+											'desktop' => [
+												'value' => $field_label_font_property_selectors,
+												'hover' => $field_label_font_property_selectors_hover,
+											],
+										],
+										'textShadow' => [
 											'desktop' => [
 												'value' => [
-													'color' => "{$order_class}.et_pb_contact_field .input",
+													'text-shadow' => implode( ', ', $field_label_targets ),
 												],
 												'hover' => [
-													'color' => "{$order_class}.et_pb_contact_field .input",
+													'text-shadow' => implode( ', ', $field_label_targets_hover ),
 												],
 											],
 										],
@@ -375,124 +427,142 @@ class ContactFieldModule implements DependencyInterface {
 							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
-					// Focus Element Selector is different for the checkbox and radio input.
-					ElementStyle::style(
+					FormFieldStyle::style(
 						[
-							'selector'               => implode(
-								', ',
-								[
-									"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:active + label i",
-									"{$order_class}.et_pb_contact_field .input[type=\"radio\"]:active + label i",
-								]
-							),
-							'background'             => [
-								'selectors' => [
-									'desktop' => [
-										'value' => implode(
-											', ',
-											[
-												"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:active + label i",
-												"{$order_class}.et_pb_contact_field .input[type=\"radio\"]:active + label i",
-											]
-										),
-										'hover' => implode(
-											', ',
-											[
-												"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:active:hover + label i",
-												"{$order_class}.et_pb_contact_field .input[type=\"radio\"]:active:hover + label i",
-											]
-										),
+							'attr'                   => $attrs['checkbox'] ?? [],
+							'selector'               => "{$order_class}.et_pb_contact_field .input[type=\"checkbox\"] + label i",
+							'selectors'              => [
+								'desktop' => [
+									'value'   => implode(
+										', ',
+										$checkbox_targets
+									),
+									'hover'   => implode(
+										', ',
+										$checkbox_targets_hover
+									),
+									'focus'   => implode(
+										', ',
+										$checkbox_targets_focus
+									),
+									'checked' => implode(
+										', ',
+										$checkbox_targets_checked
+									),
+								],
+							],
+							'propertySelectors'      => [
+								'font' => [
+									'font'       => [
+										'desktop' => [
+											'value'   => $checkbox_font_property_selectors,
+											'hover'   => $checkbox_font_property_selectors_hover,
+											'checked' => array_fill_keys( $font_group_properties, implode( ', ', $checkbox_text_targets_checked ) ),
+										],
+									],
+									'textShadow' => [
+										'desktop' => [
+											'value'   => [
+												'text-shadow' => implode( ', ', $checkbox_text_targets ),
+											],
+											'hover'   => [
+												'text-shadow' => implode( ', ', $checkbox_text_targets_hover ),
+											],
+											'checked' => [
+												'text-shadow' => implode( ', ', $checkbox_text_targets_checked ),
+											],
+										],
 									],
 								],
 							],
-							'attrs'                  => [
-								'font' => $attrs['field']['advanced']['focus']['background'] ?? [],
-							],
 							'orderClass'             => $order_class,
+							'disableLabelStyle'      => true,
 							'isInsideStickyModule'   => $is_inside_sticky_module,
 							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					ElementStyle::style(
 						[
-							'selector'               => implode(
-								', ',
-								[
-									"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:active + label",
-									"{$order_class}.et_pb_contact_field .input[type=\"radio\"]:active + label",
-									"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:checked:active + label i:before",
-								]
-							),
-							'font'                   => [
-								'selectors' => [
-									'desktop' => [
-										'value' => implode(
-											', ',
-											[
-												"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:active + label",
-												"{$order_class}.et_pb_contact_field .input[type=\"radio\"]:active + label",
-												"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:checked:active + label i:before",
-											]
-										),
-										'hover' => implode(
-											', ',
-											[
-												"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:active:hover + label",
-												"{$order_class}.et_pb_contact_field .input[type=\"radio\"]:active:hover + label",
-												"{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:checked:active:hover + label i:before",
-											]
-										),
-									],
-								],
-							],
+							'selector'               => "{$order_class}.et_pb_contact_field .input[type=\"checkbox\"]:checked + label i:before",
 							'attrs'                  => [
-								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
+								'icon' => $attrs['checkbox']['decoration']['icon'] ?? [],
 							],
 							'orderClass'             => $order_class,
 							'isInsideStickyModule'   => $is_inside_sticky_module,
 							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
-
+					FormFieldStyle::style(
+						[
+							'attr'                   => $radio_attr,
+							'selector'               => "{$order_class}.et_pb_contact_field .input[type=\"radio\"] + label i",
+							'selectors'              => [
+								'desktop' => [
+									'value'   => implode(
+										', ',
+										$radio_targets
+									),
+									'hover'   => implode(
+										', ',
+										$radio_targets_hover
+									),
+									'focus'   => implode(
+										', ',
+										$radio_targets_focus
+									),
+									'checked' => implode(
+										', ',
+										$radio_targets_checked
+									),
+								],
+							],
+							'propertySelectors'      => [
+								'font' => [
+									'font'       => [
+										'desktop' => [
+											'value'   => $radio_font_property_selectors,
+											'hover'   => $radio_font_property_selectors_hover,
+											'checked' => array_fill_keys( $font_group_properties, implode( ', ', $radio_text_targets_checked ) ),
+										],
+									],
+									'textShadow' => [
+										'desktop' => [
+											'value'   => [
+												'text-shadow' => implode( ', ', $radio_text_targets ),
+											],
+											'hover'   => [
+												'text-shadow' => implode( ', ', $radio_text_targets_hover ),
+											],
+											'checked' => [
+												'text-shadow' => implode( ', ', $radio_text_targets_checked ),
+											],
+										],
+									],
+								],
+							],
+							'orderClass'             => $order_class,
+							'disableLabelStyle'      => true,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+						]
+					),
+					ElementStyle::style(
+						[
+							'selector'               => "{$order_class}.et_pb_contact_field .input[type=\"radio\"]:checked + label i:before",
+							'attrs'                  => [
+								'icon' => $radio_icon_attr,
+							],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+						]
+					),
 					// ::*placeholder style can't handle multiple selectors used the same statements.
 					ElementStyle::style(
 						[
-							'selector'               => "{$order_class}.et_pb_contact_field .input::placeholder",
+							'selector'               => "{$order_class}.et_pb_contact_field .input:not([type=\"checkbox\"]):not([type=\"radio\"])::placeholder",
 							'attrs'                  => [
-								'font' => $attrs['field']['decoration']['font'] ?? [],
-							],
-							'orderClass'             => $order_class,
-							'isInsideStickyModule'   => $is_inside_sticky_module,
-							'stickyParentOrderClass' => $sticky_parent_order_class,
-						]
-					),
-					ElementStyle::style(
-						[
-							'selector'               => "{$order_class}.et_pb_contact_field .input::-webkit-input-placeholder",
-							'attrs'                  => [
-								'font' => $attrs['field']['decoration']['font'] ?? [],
-							],
-							'orderClass'             => $order_class,
-							'isInsideStickyModule'   => $is_inside_sticky_module,
-							'stickyParentOrderClass' => $sticky_parent_order_class,
-						]
-					),
-					ElementStyle::style(
-						[
-							'selector'               => "{$order_class}.et_pb_contact_field .input::-moz-placeholder",
-							'attrs'                  => [
-								'font' => $attrs['field']['decoration']['font'] ?? [],
-							],
-							'orderClass'             => $order_class,
-							'isInsideStickyModule'   => $is_inside_sticky_module,
-							'stickyParentOrderClass' => $sticky_parent_order_class,
-						]
-					),
-					ElementStyle::style(
-						[
-							'selector'               => "{$order_class}.et_pb_contact_field .input::-ms-input-placeholder",
-							'attrs'                  => [
-								'font' => $attrs['field']['decoration']['font'] ?? [],
+								'font' => $attrs['field']['decoration']['placeholderFont'] ?? [],
 							],
 							'orderClass'             => $order_class,
 							'isInsideStickyModule'   => $is_inside_sticky_module,
@@ -534,6 +604,7 @@ class ContactFieldModule implements DependencyInterface {
 		$parent               = BlockParserStore::get_parent( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
 		$default_parent_attrs = ModuleRegistration::get_default_attrs( 'divi/contact-form' );
 		$parent_attrs         = array_replace_recursive( $default_parent_attrs, $parent->attrs ?? [] );
+		$input_animation      = AnimationUtils::classnames( $parent_attrs['field']['decoration']['animation'] ?? [] );
 
 		// Field attrs.
 		$field_title                = $attrs['fieldItem']['innerContent']['desktop']['value'] ?? '';
@@ -635,7 +706,7 @@ class ContactFieldModule implements DependencyInterface {
 						'attributes' => [
 							'name'               => $field_unique_id,
 							'id'                 => $field_unique_id,
-							'class'              => 'et_pb_contact_message input',
+							'class'              => trim( "et_pb_contact_message input {$input_animation}" ),
 							'data-required_mark' => $required,
 							'data-field_type'    => $field_type,
 							'data-original_id'   => $field_id,
@@ -658,7 +729,7 @@ class ContactFieldModule implements DependencyInterface {
 							'type'               => 'text',
 							'name'               => $field_unique_id,
 							'id'                 => $field_unique_id,
-							'class'              => 'input',
+							'class'              => trim( "input {$input_animation}" ),
 							'data-required_mark' => $required,
 							'data-field_type'    => $field_type,
 							'data-original_id'   => $field_id,
@@ -709,7 +780,7 @@ class ContactFieldModule implements DependencyInterface {
 								'attributes' => [
 									'type'               => 'checkbox',
 									'id'                 => $field_unique_id . '_' . $index,
-									'class'              => 'input',
+									'class'              => trim( "input {$input_animation}" ),
 									'value'              => $option_value,
 									'data-required_mark' => $required,
 									'data-field_type'    => $field_type,
@@ -781,7 +852,7 @@ class ContactFieldModule implements DependencyInterface {
 						'tagEscaped'        => true,
 						'childrenSanitizer' => 'et_core_esc_previously',
 						'attributes'        => [
-							'class' => 'et_pb_contact_field_options_wrapper',
+							'class' => 'et_pb_contact_field_options_wrapper et_pb_field_module_checkbox',
 						],
 						'children'          => [
 							HTMLUtility::render(
@@ -845,7 +916,7 @@ class ContactFieldModule implements DependencyInterface {
 									'type'               => 'radio',
 									'name'               => $field_unique_id,
 									'id'                 => $field_unique_id . '_' . $index,
-									'class'              => 'input',
+									'class'              => trim( "input {$input_animation}" ),
 									'value'              => $option_value,
 									'data-required_mark' => $required,
 									'data-field_type'    => $field_type,
@@ -903,7 +974,7 @@ class ContactFieldModule implements DependencyInterface {
 						'tagEscaped'        => true,
 						'childrenSanitizer' => 'et_core_esc_previously',
 						'attributes'        => [
-							'class' => 'et_pb_contact_field_options_wrapper',
+							'class' => 'et_pb_contact_field_options_wrapper et_pb_field_module_radio',
 						],
 						'children'          => [
 							HTMLUtility::render(
@@ -966,7 +1037,7 @@ class ContactFieldModule implements DependencyInterface {
 						'attributes'        => [
 							'name'               => $field_unique_id,
 							'id'                 => $field_unique_id,
-							'class'              => 'et_pb_contact_select input',
+							'class'              => trim( "et_pb_contact_select input {$input_animation}" ),
 							'data-required_mark' => $required,
 							'data-field_type'    => $field_type,
 							'data-original_id'   => $field_id,

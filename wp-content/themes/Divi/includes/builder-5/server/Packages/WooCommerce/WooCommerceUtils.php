@@ -1010,7 +1010,7 @@ class WooCommerceUtils {
 			return false;
 		}
 
-		return get_post_meta( $post_id, ET_BUILDER_WC_PRODUCT_PAGE_LAYOUT_META_KEY, true );
+		return get_post_meta( $post_id, WooCommerceHooks::get_product_page_layout_meta_key(), true );
 	}
 
 	/**
@@ -2398,16 +2398,18 @@ class WooCommerceUtils {
 		$has_wc_components     = Conditions::is_woocommerce_enabled() && $cpt_has_wc_components;
 
 		if ( $has_wc_components && $is_tb ) {
+			// Remove product class filters before querying upsells to avoid recursion.
+			remove_filter( 'woocommerce_product_class', 'et_theme_builder_wc_product_class' );
+			remove_filter( 'woocommerce_product_class', [ self::class, 'divi_theme_builder_wc_product_class' ] );
+
 			// Set upsells ID for upsell module in TB.
 			WooCommerceProductVariablePlaceholder::set_tb_upsells_ids();
-
-			// Remove the legacy hook.
-			remove_filter( 'woocommerce_product_class', 'et_theme_builder_wc_product_class' );
 
 			// Force set product's class to WooCommerceProductVariablePlaceholder in TB.
 			add_filter( 'woocommerce_product_class', [ self::class, 'divi_theme_builder_wc_product_class' ] );
 
 			// Set product categories and tags in TB.
+			remove_filter( 'get_the_terms', [ self::class, 'theme_builder_wc_terms' ], 10 );
 			add_filter( 'get_the_terms', [ self::class, 'theme_builder_wc_terms' ], 10, 3 );
 
 			// Remove the legacy hook before adding the new one to avoid duplicate functionality.
@@ -2415,6 +2417,7 @@ class WooCommerceUtils {
 
 			// Provides placeholder image HTML for WooCommerce product images.
 			// Used when product images are missing or when in the builder.
+			remove_filter( 'woocommerce_single_product_image_thumbnail_html', [ self::class, 'placeholder_img' ] );
 			add_filter( 'woocommerce_single_product_image_thumbnail_html', [ self::class, 'placeholder_img' ] );
 		}
 

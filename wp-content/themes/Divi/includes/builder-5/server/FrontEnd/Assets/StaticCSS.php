@@ -82,6 +82,19 @@ class StaticCSS implements DependencyInterface {
 	public static $forced_inline_styles = false;
 
 	/**
+	 * Reset all static properties.
+	 *
+	 * @since ??
+	 */
+	public static function reset(): void {
+		self::$styles_manager          = null;
+		self::$deferred_styles_manager = null;
+		self::$wp_editor_template      = [];
+		self::$_elements               = [];
+		self::$forced_inline_styles    = false;
+	}
+
+	/**
 	 * Setup page resource.
 	 *
 	 * @since ??

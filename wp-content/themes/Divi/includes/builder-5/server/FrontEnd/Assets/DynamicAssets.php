@@ -132,6 +132,16 @@ class DynamicAssets implements DependencyInterface {
 	protected static $_instance = null;
 
 	/**
+	 * Reset class instance and cachable request flag.
+	 *
+	 * @since ??
+	 */
+	public static function reset(): void {
+		self::$_instance            = null;
+		self::$_is_cachable_request = null;
+	}
+
+	/**
 	 * Constructor - Initialize state objects and handlers.
 	 *
 	 * @since ??

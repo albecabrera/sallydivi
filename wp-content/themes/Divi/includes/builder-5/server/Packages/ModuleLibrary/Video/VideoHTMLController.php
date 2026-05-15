@@ -92,9 +92,17 @@ class VideoHTMLController extends RESTController {
 
 		if ( false !== et_pb_check_oembed_provider( esc_url( $args['src'] ) ) ) {
 			$video_src = et_builder_get_oembed( esc_url( $args['src'] ) );
+
+			if ( empty( $video_src ) && false !== self::validate_youtube_url( esc_url( $args['src'] ) ) ) {
+				$video_src = self::get_youtube_fallback_embed_html( $args['src'] );
+			}
 		} elseif ( false !== self::validate_youtube_url( esc_url( $args['src'] ) ) ) {
 			$args['src'] = self::normalize_youtube_url( esc_url( $args['src'] ) );
 			$video_src   = et_builder_get_oembed( esc_url( $args['src'] ) );
+
+			if ( empty( $video_src ) ) {
+				$video_src = self::get_youtube_fallback_embed_html( $args['src'] );
+			}
 		} else {
 			$video_src = sprintf(
 				'
@@ -108,6 +116,36 @@ class VideoHTMLController extends RESTController {
 		}
 
 		return $video_src;
+	}
+
+	/**
+	 * Build a fallback YouTube iframe when oEmbed is unavailable.
+	 *
+	 * @since ??
+	 *
+	 * @param string $url YouTube video URL.
+	 *
+	 * @return string
+	 */
+	public static function get_youtube_fallback_embed_html( string $url ): string {
+		$video_id = '';
+		$matches  = [];
+
+		if ( preg_match( self::get_youtube_url_regex(), esc_url( $url ), $matches ) ) {
+			$video_id = (string) $matches[1];
+		}
+
+		if ( '' === $video_id ) {
+			return '';
+		}
+
+		$embed_url = sprintf( 'https://www.youtube.com/embed/%s?feature=oembed', $video_id );
+
+		return sprintf(
+			'<iframe title="%1$s" width="1080" height="608" src="%2$s" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+			esc_attr__( 'YouTube video', 'et_builder_5' ),
+			esc_url( $embed_url )
+		);
 	}
 
 	/**

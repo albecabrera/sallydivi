@@ -82,7 +82,7 @@ $is_page_builder_used = et_pb_is_pagebuilder_used( get_the_ID() );
 										</div>',
 									et_core_esc_previously( $first_video )
 								);
-							} elseif ( ! in_array( $post_format, array( 'gallery', 'link', 'quote' ), true ) && 'on' === et_get_option( 'divi_thumbnails', 'on' ) && '' !== $thumb ) {
+							} elseif ( ! in_array( $post_format, [ 'gallery', 'link', 'quote' ], true ) && 'on' === et_get_option( 'divi_thumbnails', 'on' ) && '' !== $thumb ) {
 								print_thumbnail( $thumb, $thumbnail['use_timthumb'], $alttext, $width, $height );
 							} elseif ( 'gallery' === $post_format ) {
 								et_pb_gallery_images();
@@ -147,10 +147,10 @@ $is_page_builder_used = et_pb_is_pagebuilder_used( get_the_ID() );
 						the_content();
 
 						wp_link_pages(
-							array(
+							[
 								'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'Divi' ),
 								'after'  => '</div>',
-							)
+							]
 						);
 					?>
 					</div>
@@ -176,7 +176,8 @@ $is_page_builder_used = et_pb_is_pagebuilder_used( get_the_ID() );
 					do_action( 'et_after_post' );
 
 					if ( ( comments_open() || get_comments_number() ) && 'on' === et_get_option( 'divi_show_postcomments', 'on' ) ) {
-						comments_template( '', true );
+						// TODO fix(D4, Comments): Revert to comments_template after WordPress core resolves Trac #61468. [https://github.com/elegantthemes/Divi/issues/28338].
+						et_comments_template_safe( '', true );
 					}
 					?>
 					</div>

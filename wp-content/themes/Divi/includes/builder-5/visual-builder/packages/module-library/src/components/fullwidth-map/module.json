@@ -10,6 +10,7 @@
   "moduleOrderClassName": "et_pb_fullwidth_map",
   "childModuleName": "divi/map-pin",
   "childModuleTitle": "Pin",
+  "childModuleTitleAttribute": "title",
   "childrenName": [
     "divi/map-pin"
   ],

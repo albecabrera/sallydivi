@@ -26,6 +26,7 @@ use ET\Builder\Packages\ModuleUtils\ModuleUtils;
 use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
 use ET\Builder\Packages\Module\Options\Text\TextClassnames;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
+use ET\Builder\Packages\ModuleLibrary\Video\VideoHTMLController;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
 use ET\Builder\Packages\Module\Options\Css\CssStyle;
 use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
@@ -140,6 +141,10 @@ class SlideModule implements DependencyInterface {
 					$video_embed = wp_video_shortcode( [ 'src' => $video_url ] );
 				} else {
 					$video_embed = et_builder_get_oembed( $video_url );
+
+					if ( empty( $video_embed ) && false !== VideoHTMLController::validate_youtube_url( $video_url ) ) {
+						$video_embed = VideoHTMLController::get_youtube_fallback_embed_html( $video_url );
+					}
 
 					$video_embed = preg_replace( '/<embed /', '<embed wmode="transparent" ', $video_embed );
 

@@ -941,8 +941,12 @@ class WooCommerceRelatedProductsModule implements DependencyInterface {
 
 		// Force set product's class to WooCommerceProductVariablePlaceholder
 		// in TB, so related product can output visible content based on pre-filled value in TB.
+		$added_product_class_filter = false;
 		if ( 'true' === ArrayUtility::get_value( $conditional_tags, 'is_tb', false ) || is_et_pb_preview() ) {
+			remove_filter( 'woocommerce_product_class', 'et_theme_builder_wc_product_class' );
+			remove_filter( 'woocommerce_product_class', [ WooCommerceUtils::class, 'divi_theme_builder_wc_product_class' ] );
 			add_filter( 'woocommerce_product_class', [ WooCommerceUtils::class, 'divi_theme_builder_wc_product_class' ] );
+			$added_product_class_filter = true;
 		}
 
 		$is_offset_valid = absint( $offset_number ) > 0;
@@ -1041,6 +1045,10 @@ class WooCommerceRelatedProductsModule implements DependencyInterface {
 			);
 
 			self::$offset = 0;
+		}
+
+		if ( $added_product_class_filter ) {
+			remove_filter( 'woocommerce_product_class', [ WooCommerceUtils::class, 'divi_theme_builder_wc_product_class' ] );
 		}
 
 		if ( 'off' === $show_price ) {

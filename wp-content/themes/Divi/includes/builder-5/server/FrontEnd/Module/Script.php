@@ -129,4 +129,15 @@ class Script {
 	public static function get_all(): array {
 		return self::$_scripts;
 	}
+
+	/**
+	 * Reset all registered scripts.
+	 *
+	 * @since ??
+	 *
+	 * @return void
+	 */
+	public static function reset(): void {
+		self::$_scripts = [];
+	}
 }

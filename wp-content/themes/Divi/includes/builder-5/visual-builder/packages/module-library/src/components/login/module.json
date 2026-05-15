@@ -279,35 +279,8 @@
       },
       "supportsCustomAttributes": true,
       "settings": {
-        "decoration": {
-          "background": {},
-          "border": {},
-          "boxShadow": {},
-          "spacing": {},
-          "font": {}
-        },
-        "advanced": {
-          "focusUseBorder": {
-            "groupType": "group-item",
-            "item": {
-              "priority": 100,
-              "render": true,
-              "groupSlug": "designFieldField",
-              "label": "Use Focus Borders",
-              "description": "",
-              "defaultAttr": {
-                "desktop": {
-                  "value": "off"
-                }
-              },
-              "component": {
-                "type": "field",
-                "name": "divi/toggle"
-              }
-            }
-          },
-          "focus": {}
-        }
+        "decoration": {},
+        "advanced": {}
       }
     },
     "button": {
@@ -390,6 +363,9 @@
           }
         },
         "decoration": {
+          "background": {},
+          "border": {},
+          "boxShadow": {},
           "button": {
             "component": {
               "props": {
@@ -404,9 +380,6 @@
                         "fields": {
                           "lineHeight": {
                             "render": true
-                          },
-                          "textAlign": {
-                            "render": false
                           }
                         }
                       }
@@ -415,7 +388,10 @@
                 }
               }
             }
-          }
+          },
+          "font": {},
+          "sizing": {},
+          "spacing": {}
         }
       }
     }
@@ -481,10 +457,11 @@
         "groupName": "field",
         "multiElements": true,
         "component": {
-          "name": "divi/composite",
+          "name": "divi/form-field",
           "props": {
             "groupLabel": "Fields",
             "clipboardCategory": "style",
+            "attrName": "field",
             "dynamicSubgroupHost": true
           }
         }

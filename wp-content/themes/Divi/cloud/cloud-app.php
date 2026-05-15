@@ -327,15 +327,15 @@ class ET_Cloud_App {
 		$DEBUG    = $ET_DEBUG;
 
 		$common_scripts = ET_COMMON_URL . 'scripts';
-		$asset_path     = ET_CLOUD_PLUGIN_DIR . '/build/et-cloud-app.bundle.js';
+		$has_asset      = self::has_bundle_asset();
 
-		if ( file_exists( $asset_path ) ) {
+		if ( $has_asset ) {
 			self::enqueue_style();
 		}
 
 		wp_enqueue_script( 'es6-promise', "{$common_scripts}/es6-promise.auto.min.js", [], '4.2.2', true );
 
-		if ( $DEBUG || $enqueue_prod_scripts || file_exists( $asset_path ) ) {
+		if ( $DEBUG || $enqueue_prod_scripts || $has_asset ) {
 			// Skip the React loading if we already have React ( Gutenberg editor for example ) to avoid conflicts.
 			if ( ! $skip_react_loading ) {
 				if ( function_exists( 'et_fb_enqueue_react' ) ) {
@@ -348,17 +348,58 @@ class ET_Cloud_App {
 	}
 
 	/**
+	 * Determine whether Cloud App bundle asset exists.
+	 *
+	 * @since ??
+	 *
+	 * @return bool
+	 */
+	public static function has_bundle_asset() {
+		return file_exists( ET_CLOUD_PLUGIN_DIR . '/build/et-cloud-app.bundle.js' );
+	}
+
+	/**
+	 * Get Cloud App bundle script URI for prod/dev.
+	 *
+	 * @since ??
+	 *
+	 * @return string
+	 */
+	public static function get_bundle_uri() {
+		if ( self::has_bundle_asset() ) {
+			return ET_CLOUD_PLUGIN_URI . '/build/et-cloud-app.bundle.js';
+		}
+
+		$home_url = wp_parse_url( get_site_url() );
+		$scheme   = $home_url['scheme'] ?? 'https';
+		$host     = $home_url['host'] ?? '';
+
+		return sprintf( '%1$s://%2$s:31495/et-cloud-app.bundle.js', $scheme, $host );
+	}
+
+	/**
+	 * Get Cloud App stylesheet URI.
+	 *
+	 * @since ??
+	 *
+	 * @return string
+	 */
+	public static function get_style_uri() {
+		if ( ! self::has_bundle_asset() ) {
+			return '';
+		}
+
+		return ET_CLOUD_PLUGIN_URI . '/build/et-cloud-app.bundle.modals.css';
+	}
+
+	/**
 	 * Enqueue the Cloud App script.
 	 */
 	public static function enqueue_script() {
 		$core_version  = defined( 'ET_CORE_VERSION' ) ? ET_CORE_VERSION : '';
 		$et_debug      = defined( 'ET_DEBUG' ) && ET_DEBUG;
 		$debug         = $et_debug;
-		$home_url      = wp_parse_url( get_site_url() );
-		$build_dir_uri = ET_CLOUD_PLUGIN_URI . '/build';
 		$cache_buster  = $debug ? mt_rand() / mt_getrandmax() : $core_version;
-
-		$asset_path = ET_CLOUD_PLUGIN_DIR . '/build/et-cloud-app.bundle.js';
 
 		$bundle_deps = [
 			'jquery',
@@ -367,9 +408,7 @@ class ET_Cloud_App {
 			'es6-promise',
 		];
 
-		$bundle_uri = ! file_exists( $asset_path ) ? "{$home_url['scheme']}://{$home_url['host']}:31495/et-cloud-app.bundle.js" : "{$build_dir_uri}/et-cloud-app.bundle.js";
-
-		wp_enqueue_script( 'et-cloud-app', $bundle_uri, $bundle_deps, (string) $cache_buster, true );
+		wp_enqueue_script( 'et-cloud-app', self::get_bundle_uri(), $bundle_deps, (string) $cache_buster, true );
 		wp_localize_script( 'et-cloud-app', 'et_cloud_data', self::get_cloud_helpers() );
 	}
 
@@ -381,17 +420,22 @@ class ET_Cloud_App {
 		$et_debug      = defined( 'ET_DEBUG' ) && ET_DEBUG;
 		$debug         = $et_debug;
 		$cache_buster  = $debug ? mt_rand() / mt_getrandmax() : $core_version;
-		$build_dir_uri = ET_CLOUD_PLUGIN_URI . '/build';
 
 		// Check if JS bundle path exist or not. If the JS bundle doesn't exist, this means development environment
 		// where style is being served from style-in-JS is used; In a nutshell, `yarn start` instead of `yarn build` is
 		// currently used. There's no generated style bundle at this moment thus enqueue JS instead.
-		if ( ! file_exists( ET_CLOUD_PLUGIN_DIR . '/build/et-cloud-app.bundle.js' ) ) {
+		if ( ! self::has_bundle_asset() ) {
 			self::enqueue_script();
 			return;
 		}
 
-		wp_enqueue_style( 'et-cloud-styles', "{$build_dir_uri}/et-cloud-app.bundle.modals.css", [], (string) $cache_buster );
+		$style_uri = self::get_style_uri();
+
+		if ( '' === $style_uri ) {
+			return;
+		}
+
+		wp_enqueue_style( 'et-cloud-styles', $style_uri, [], (string) $cache_buster );
 	}
 }
 

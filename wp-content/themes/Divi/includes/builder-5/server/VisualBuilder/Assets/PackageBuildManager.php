@@ -91,6 +91,7 @@ class PackageBuildManager implements DependencyInterface {
 				'name'   => 'divi-ai-agent',
 				'script' => [
 					'enqueue_top_window' => false,
+					'enqueue_app_window' => false,
 				],
 			]
 		);
@@ -143,9 +144,11 @@ class PackageBuildManager implements DependencyInterface {
 				'name'   => 'divi-cloud-app',
 				'script' => [
 					'enqueue_top_window' => false,
+					'enqueue_app_window' => true,
 				],
 				'style'  => [
 					'enqueue_top_window' => true,
+					'enqueue_app_window' => false,
 					'defer'              => true,
 				],
 			]
@@ -413,9 +416,25 @@ class PackageBuildManager implements DependencyInterface {
 
 		self::register_divi_package_build(
 			[
+				'name'   => 'divi-script-library-lazy-asset-loader',
+				'script' => [
+					'enqueue_top_window' => false,
+					'enqueue_app_window' => false,
+				],
+				'style'  => [
+					'enqueue_top_window' => false,
+					'enqueue_app_window' => false,
+				],
+			]
+		);
+
+		self::register_divi_package_build(
+			[
 				'name'   => 'divi-mask-and-pattern-library',
 				'script' => [
 					'enqueue_top_window' => false,
+					// Defer this bundle so mask/pattern declarations can load after first render.
+					'enqueue_app_window' => false,
 				],
 				'style'  => [
 					'enqueue_top_window' => false,
@@ -856,6 +875,19 @@ class PackageBuildManager implements DependencyInterface {
 				'defer'   => $properties['style']['defer'],
 			];
 		}
+	}
+
+	/**
+	 * Get registered package build by name.
+	 *
+	 * @since ??
+	 *
+	 * @param string $name Package build name.
+	 *
+	 * @return array
+	 */
+	public static function get_package_build( $name ) {
+		return self::$_package_builds[ $name ] ?? [];
 	}
 
 	/**

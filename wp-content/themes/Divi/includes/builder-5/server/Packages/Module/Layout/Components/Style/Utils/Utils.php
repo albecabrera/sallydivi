@@ -91,24 +91,87 @@ class Utils {
 		string $breakpoint_base_selector,
 		?string $order_class = null
 	): string {
+		// The process is different from VB, because in VB we always need to add hover class to the
+		// module selector. However, in FE, we should always add the `:hover` at the end of the selector.
+		// This is the default behaviour on D4.
+		return self::_generate_pseudo_state_selector( $breakpoint_base_selector, 'hover' );
+	}
+
+	/**
+	 * Generates a focus state selector by adding the `:focus` pseudo-class to the specified selectors.
+	 *
+	 * @since ??
+	 *
+	 * @param string $breakpoint_base_selector The base selector for the breakpoint.
+	 *
+	 * @return string The generated selector string.
+	 */
+	public static function generate_focus_state_selector( string $breakpoint_base_selector ): string {
+		return self::_generate_pseudo_state_selector( $breakpoint_base_selector, 'focus' );
+	}
+
+	/**
+	 * Generates a checked state selector by adding the `:checked` pseudo-class to the specified selectors.
+	 *
+	 * @since ??
+	 *
+	 * @param string $breakpoint_base_selector The base selector for the breakpoint.
+	 *
+	 * @return string The generated selector string.
+	 */
+	public static function generate_checked_state_selector( string $breakpoint_base_selector ): string {
+		return self::_generate_pseudo_state_selector( $breakpoint_base_selector, 'checked' );
+	}
+
+	/**
+	 * Generates an active state selector by adding the `:active` pseudo-class to the specified selectors.
+	 *
+	 * @since ??
+	 *
+	 * @param string $breakpoint_base_selector The base selector for the breakpoint.
+	 *
+	 * @return string The generated selector string.
+	 */
+	public static function generate_active_state_selector( string $breakpoint_base_selector ): string {
+		return self::_generate_pseudo_state_selector( $breakpoint_base_selector, 'active' );
+	}
+
+	/**
+	 * Generates a selector by adding a given pseudo-state to all selectors in a selector list.
+	 *
+	 * @since ??
+	 *
+	 * @param string $breakpoint_base_selector The base selector list.
+	 * @param string $pseudo_state             The pseudo-state name without colon.
+	 *
+	 * @return string The generated selector list.
+	 */
+	private static function _generate_pseudo_state_selector( string $breakpoint_base_selector, string $pseudo_state ): string {
+		static $selector_cache = [];
+		$cache_key             = $pseudo_state . '::' . $breakpoint_base_selector;
+
+		if ( isset( $selector_cache[ $cache_key ] ) ) {
+			return $selector_cache[ $cache_key ];
+		}
+
 		$maybe_has_multiple_selectors = array_map( 'trim', preg_split( '/,\s?/', $breakpoint_base_selector ) );
 		$breakpoint_base_selectors    = [];
+		$pseudo_selector              = ':' . $pseudo_state;
 
 		foreach ( $maybe_has_multiple_selectors as $selector ) {
-			// The process is different from VB, because in VB we always need to add hover class to the
-			// Module selector. However, in FE, we should always add the `:hover` at the end of the selector.
-			// This is the default behaviour on D4.
-			if ( false !== strpos( $selector, ':hover' ) ) {
+			if ( str_contains( $selector, $pseudo_selector ) ) {
 				$breakpoint_base_selectors[] = $selector;
-			} elseif ( false !== strpos( $selector, ':' ) ) {
-				// If the selector has pseudo selector, then we need to add the `:hover` before the pseudo selector.
-				$breakpoint_base_selectors[] = implode( ':hover:', explode( ':', $selector, 2 ) );
+			} elseif ( str_contains( $selector, ':' ) ) {
+				// If the selector has pseudo selector, add the given pseudo-state before the pseudo selector.
+				$breakpoint_base_selectors[] = implode( $pseudo_selector . ':', explode( ':', $selector, 2 ) );
 			} else {
-				$breakpoint_base_selectors[] = $selector . ':hover';
+				$breakpoint_base_selectors[] = $selector . $pseudo_selector;
 			}
 		}
 
-		return implode( ', ', $breakpoint_base_selectors );
+		$selector_cache[ $cache_key ] = implode( ', ', $breakpoint_base_selectors );
+
+		return $selector_cache[ $cache_key ];
 	}
 
 	/**
@@ -135,7 +198,7 @@ class Utils {
 		?string $sticky_parent_order_class = null
 	): string {
 		$theme_builder_layout_marker_length = strlen( self::THEME_BUILDER_LAYOUT_MARKER );
-		$maybe_has_multiple_selectors       = false === strpos( $breakpoint_base_selector, ',' )
+		$maybe_has_multiple_selectors       = ! str_contains( $breakpoint_base_selector, ',' )
 			? [ trim( $breakpoint_base_selector ) ]
 			: array_map( 'trim', preg_split( '/,\s?/', $breakpoint_base_selector ) );
 		$breakpoint_base_selectors          = [];
@@ -678,13 +741,35 @@ class Utils {
 			? $selectors[ $breakpoint ]['value'][ $property_name ]
 			: $base_selector;
 
-		$current_state_selector = $selectors[ $breakpoint ][ $state ][ $property_name ] ?? '';
+		$current_state_selector   = $selectors[ $breakpoint ][ $state ][ $property_name ] ?? '';
+		$effective_state_selector = ! $current_state_selector ? $breakpoint_base_selector : $current_state_selector;
 
 		if ( 'hover' === $state ) {
 			// We'll need to always add `:hover` to the selector.
 			return self::generate_hover_state_selector(
-				! $current_state_selector ? $breakpoint_base_selector : $current_state_selector,
+				$effective_state_selector,
 				$order_class
+			);
+		}
+
+		if ( 'focus' === $state ) {
+			// We'll need to always add `:focus` to the selector.
+			return self::generate_focus_state_selector(
+				$effective_state_selector
+			);
+		}
+
+		if ( 'checked' === $state ) {
+			// We'll need to always add `:checked` to the selector.
+			return self::generate_checked_state_selector(
+				$effective_state_selector
+			);
+		}
+
+		if ( 'active' === $state ) {
+			// We'll need to always add `:active` to the selector.
+			return self::generate_active_state_selector(
+				$effective_state_selector
 			);
 		}
 
@@ -692,7 +777,7 @@ class Utils {
 			// We'll need to always add `.et_pb_sticky` to the selector.
 			// When module is inside a sticky parent, check if the sticky selector already contains
 			// .et_pb_sticky to avoid double sticky classes.
-			$sticky_base_selector = ! $current_state_selector ? $breakpoint_base_selector : $current_state_selector;
+			$sticky_base_selector = $effective_state_selector;
 
 			if ( $is_inside_sticky_module && $current_state_selector && str_contains( $current_state_selector, '.et_pb_sticky' ) ) {
 				// If sticky selector already contains .et_pb_sticky, use base selector to avoid double classes.
@@ -759,13 +844,35 @@ class Utils {
 		? $selectors[ $breakpoint ]['value']
 		: $base_selector;
 
-		$current_state_selector = $selectors[ $breakpoint ][ $state ] ?? '';
+		$current_state_selector   = $selectors[ $breakpoint ][ $state ] ?? '';
+		$effective_state_selector = ! $current_state_selector ? $breakpoint_base_selector : $current_state_selector;
 
 		if ( 'hover' === $state ) {
 			// We'll need to always add `:hover` to the selector.
 			return self::generate_hover_state_selector(
-				! $current_state_selector ? $breakpoint_base_selector : $current_state_selector,
+				$effective_state_selector,
 				$order_class
+			);
+		}
+
+		if ( 'focus' === $state ) {
+			// We'll need to always add `:focus` to the selector.
+			return self::generate_focus_state_selector(
+				$effective_state_selector
+			);
+		}
+
+		if ( 'checked' === $state ) {
+			// We'll need to always add `:checked` to the selector.
+			return self::generate_checked_state_selector(
+				$effective_state_selector
+			);
+		}
+
+		if ( 'active' === $state ) {
+			// We'll need to always add `:active` to the selector.
+			return self::generate_active_state_selector(
+				$effective_state_selector
 			);
 		}
 
@@ -773,7 +880,7 @@ class Utils {
 			// We'll need to always add `.et_pb_sticky` to the selector.
 			// When module is inside a sticky parent, check if the sticky selector already contains
 			// .et_pb_sticky to avoid double sticky classes.
-			$sticky_base_selector = ! $current_state_selector ? $breakpoint_base_selector : $current_state_selector;
+			$sticky_base_selector = $effective_state_selector;
 
 			if ( $is_inside_sticky_module && $current_state_selector && str_contains( $current_state_selector, '.et_pb_sticky' ) ) {
 				// If sticky selector already contains .et_pb_sticky, use base selector to avoid double classes.

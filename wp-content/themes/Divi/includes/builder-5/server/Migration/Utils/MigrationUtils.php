@@ -56,8 +56,8 @@ class MigrationUtils {
 	 */
 	public static function ensure_placeholder_wrapper( string $content ): string {
 		$is_wrapped = '' !== $content &&
-		strpos( $content, '<!-- wp:divi/placeholder -->' ) === 0 &&
-		strpos( $content, '<!-- /wp:divi/placeholder -->' ) !== false;
+		(bool) preg_match( '/^<!--\s+wp:divi\/placeholder(?:\s+\{[^}]*\})?\s+-->/', $content ) &&
+		str_contains( $content, '<!-- /wp:divi/placeholder -->' );
 
 		if ( ! $is_wrapped ) {
 			$content = "<!-- wp:divi/placeholder -->\n" . $content . "\n<!-- /wp:divi/placeholder -->";
@@ -760,7 +760,7 @@ class MigrationUtils {
 
 		// Stage 1: Version-based bailout.
 		// If content doesn't contain builderVersion at all, it needs migration.
-		if ( strpos( $content, '"builderVersion":"' ) !== false ) {
+		if ( str_contains( $content, '"builderVersion":"' ) ) {
 			// Extract all builderVersion values from content.
 			if ( preg_match_all( '/"builderVersion":"([^"]+)"/', $content, $matches ) ) {
 				// Check if ANY version is >= release_version.
@@ -781,7 +781,7 @@ class MigrationUtils {
 
 			// Check for block modules.
 			foreach ( $block_modules as $module_name ) {
-				if ( strpos( $content, $module_name ) !== false ) {
+				if ( str_contains( $content, $module_name ) ) {
 					$has_target_module = true;
 					break;
 				}
@@ -790,7 +790,7 @@ class MigrationUtils {
 			// If no block modules found, check for shortcode modules.
 			if ( ! $has_target_module ) {
 				foreach ( $shortcode_modules as $module_name ) {
-					if ( strpos( $content, '[' . $module_name ) !== false ) {
+					if ( str_contains( $content, '[' . $module_name ) ) {
 						$has_target_module = true;
 						break;
 					}
@@ -805,5 +805,99 @@ class MigrationUtils {
 
 		// Content has old versions and (if specified) contains target modules.
 		return true;
+	}
+
+	/**
+	 * Check whether module has legacy Woo field label attrs.
+	 *
+	 * @since ??
+	 *
+	 * @param string $module_name Module name.
+	 *
+	 * @return bool True when module should run Woo field-label migrations.
+	 */
+	public static function is_woocommerce_field_labels_legacy_module( string $module_name ): bool {
+		return in_array(
+			$module_name,
+			[
+				'divi/woocommerce-product-add-to-cart',
+				'divi/woocommerce-checkout-shipping',
+				'divi/woocommerce-checkout-additional-info',
+				'divi/woocommerce-checkout-information',
+				'divi/woocommerce-checkout-billing',
+				'divi/woocommerce-cart-notice',
+			],
+			true
+		);
+	}
+
+	/**
+	 * Check whether module has legacy Woo required indicator color attr.
+	 *
+	 * @since ??
+	 *
+	 * @param string $module_name Module name.
+	 *
+	 * @return bool True when module should run required indicator color migration checks.
+	 */
+	public static function is_woocommerce_required_field_indicator_color_legacy_module( string $module_name ): bool {
+		return in_array(
+			$module_name,
+			[
+				'divi/woocommerce-checkout-shipping',
+				'divi/woocommerce-checkout-billing',
+				'divi/woocommerce-cart-notice',
+			],
+			true
+		);
+	}
+
+	/**
+	 * Get legacy Woo field-label group preset keys to be remapped.
+	 *
+	 * @since ??
+	 *
+	 * @return array<int, string> Legacy group preset keys.
+	 */
+	public static function get_woocommerce_legacy_field_labels_group_preset_keys(): array {
+		return [
+			'fieldLabels.decoration.font',
+			'designFieldLabel',
+			'designFieldLabels',
+		];
+	}
+
+	/**
+	 * Normalize preset stack value into an array.
+	 *
+	 * @since ??
+	 *
+	 * @param mixed $preset_value Preset stack value.
+	 *
+	 * @return array<int, string> Normalized preset IDs.
+	 */
+	public static function normalize_preset_stack_value( $preset_value ): array {
+		if ( is_string( $preset_value ) ) {
+			$trimmed_value = trim( $preset_value );
+			return '' === $trimmed_value ? [] : [ $trimmed_value ];
+		}
+
+		if ( ! is_array( $preset_value ) ) {
+			return [];
+		}
+
+		return array_values(
+			array_filter(
+				array_map(
+					static function ( $preset_id ) {
+						return is_string( $preset_id ) ? trim( $preset_id ) : '';
+					},
+					$preset_value
+				),
+				static function ( string $preset_id ): bool {
+					return '' !== $preset_id;
+				}
+			)
+		);
 	}
 }

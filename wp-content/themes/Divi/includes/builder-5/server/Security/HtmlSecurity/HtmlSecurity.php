@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use ET\Builder\FrontEnd\BlockParser\BlockParserUtils;
+use ET\Builder\Packages\ModuleUtils\ModuleUtils;
 
 /**
  * HTML Security class.
@@ -77,15 +78,15 @@ class HtmlSecurity {
 			return $data;
 		}
 
-		if ( strpos( $data['post_content'], 'wp:divi/' ) === false ) {
+		if ( ! str_contains( $data['post_content'], 'wp:divi/' ) ) {
 			return $data;
 		}
 
 		// Check if content contains HTML fields - account for WordPress slashing.
 		$content          = wp_unslash( $data['post_content'] );
-		$has_html_before  = strpos( $content, '"htmlBefore"' ) !== false;
-		$has_html_after   = strpos( $content, '"htmlAfter"' ) !== false;
-		$has_element_type = strpos( $content, '"elementType"' ) !== false;
+		$has_html_before  = str_contains( $content, '"htmlBefore"' );
+		$has_html_after   = str_contains( $content, '"htmlAfter"' );
+		$has_element_type = str_contains( $content, '"elementType"' );
 
 		if ( ! $has_html_before && ! $has_html_after && ! $has_element_type ) {
 			return $data;
@@ -95,6 +96,7 @@ class HtmlSecurity {
 		$blocks = BlockParserUtils::parse_blocks_with_layout_context( $content, 'saving_content', 'sanitize_html_fields' );
 		// Note $blocks is being passed and modified by reference.
 		self::_sanitize_blocks( $blocks );
+		ModuleUtils::clean_blocks_empty_array_attributes( $blocks );
 		$data['post_content'] = wp_slash( serialize_blocks( $blocks ) );
 
 		return $data;

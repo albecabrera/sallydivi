@@ -645,7 +645,7 @@ class LoginModule implements DependencyInterface {
 								],
 							],
 							'propertySelectors'      => [
-								'font'        => [
+								'font'      => [
 									'font' => [
 										'desktop' => [
 											'value' => [
@@ -656,39 +656,27 @@ class LoginModule implements DependencyInterface {
 														"{$args['orderClass']} input[type='text']",
 														"{$args['orderClass']} textarea",
 														"{$args['orderClass']} input",
-														"{$args['orderClass']} input::placeholder",
 													]
 												),
 											],
 										],
 									],
 								],
-								'placeholder' => [
-									'font' => [
-										'font' => [
-											'desktop' => [
-												'value' => [
-													'color' => "{$args['orderClass']} .et_pb_newsletter_form p input",
-												],
-											],
-										],
-									],
-								],
-								'boxShadow'   => [
+								'boxShadow' => [
 									'desktop' => [
 										'value' => [
 											'box-shadow' => "{$args['orderClass']} .et_pb_newsletter_form input",
 										],
 									],
 								],
-								'border'      => [
+								'border'    => [
 									'desktop' => [
 										'value' => [
 											'border' => "{$args['orderClass']} .et_pb_newsletter_form p input",
 										],
 									],
 								],
-								'focus'       => [
+								'focus'     => [
 									'background' => [
 										'desktop' => [
 											'value' => [
@@ -714,6 +702,23 @@ class LoginModule implements DependencyInterface {
 									],
 								],
 							],
+						]
+					),
+					ElementStyle::style(
+						[
+							'selector'               => implode(
+								', ',
+								[
+									"{$args['orderClass']} .et_pb_newsletter_form p input::placeholder",
+									"{$args['orderClass']} .et_pb_newsletter_form p input:focus::placeholder",
+								]
+							),
+							'attrs'                  => [
+								'font' => $attrs['field']['decoration']['placeholderFont'] ?? [],
+							],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
 						]
 					),
 					// Title.

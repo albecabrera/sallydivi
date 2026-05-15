@@ -924,7 +924,7 @@ class Conversion {
 	public static function getAttrMap($attrs, $attrName, $moduleName) {
 		$value = $attrs[$attrName] ?? '';
 		$generated = [];
-		$desktopName = preg_replace('/(_tablet|_phone|__hover|__sticky)$/', '', $attrName);
+		$desktopName = preg_replace('/(_tablet|_phone|__hover|__focus|__checked|__active|__sticky)$/', '', $attrName);
 		$viewport = 'desktop';
 		$state = 'value';
 
@@ -1018,6 +1018,21 @@ class Conversion {
 				}
 			}
 			$state = 'hover';
+		} elseif (preg_match('/__focus$/', $attrName)) {
+			if (!self::enabled('focus', $desktopName, $attrs, ( $moduleConversionMap['optionEnableMap'] ?? [] ))) {
+				return [];
+			}
+			$state = 'focus';
+		} elseif (preg_match('/__checked$/', $attrName)) {
+			if (!self::enabled('checked', $desktopName, $attrs, ( $moduleConversionMap['optionEnableMap'] ?? [] ))) {
+				return [];
+			}
+			$state = 'checked';
+		} elseif (preg_match('/__active$/', $attrName)) {
+			if (!self::enabled('active', $desktopName, $attrs, ( $moduleConversionMap['optionEnableMap'] ?? [] ))) {
+				return [];
+			}
+			$state = 'active';
 		} elseif (preg_match('/__sticky$/', $attrName)) {
 			$status = self::stickyStatus($attrs);
 
@@ -1040,6 +1055,9 @@ class Conversion {
 			'fb_built',
 			'sticky_enabled',
 			'hover_enabled',
+			'focus_enabled',
+			'checked_enabled',
+			'active_enabled',
 			'_dynamic_attributes',
 			'_address',
 			'_i',
@@ -1050,7 +1068,7 @@ class Conversion {
 		// Discard attributes whose base name is a known invalid JavaScript stringify value.
 		// These are produced by a null-safety bug in the D4 Visual Builder's background.jsx
 		// where _getFieldByTemplate() returned undefined, which was then appended with
-		// state suffixes (e.g. '__hover', '__sticky') via template literals, resulting in
+		// state suffixes (e.g. '__hover', '__focus', '__checked', '__active', '__sticky') via template literals, resulting in
 		// corrupted attribute names like 'null__hover' or 'undefined__hover' being saved to
 		// the database. If allowed through, these attributes end up in unknownAttributes and
 		// incorrectly trigger backward-compatibility mode for the entire module.
@@ -1670,7 +1688,12 @@ class Conversion {
 			}
 		}
 
-		$content_migrated = $content_raw;
+		// Normalize leading/trailing whitespace before processing.
+		// D4 content saved by some environments (e.g. older Divi versions, certain editors)
+		// may have leading CRLF/LF characters before the first [et_pb_section shortcode.
+		// The conversion regex '@^\[...@' requires '[' at position 0 — any leading whitespace
+		// causes a silent failure that produces an empty placeholder instead of converting.
+		$content_migrated = trim( $content_raw );
 
 		if ( $run_migration ) {
 			$content_migrated = ShortcodeMigration::maybe_migrate_legacy_shortcode( $content_migrated );
@@ -2772,7 +2795,14 @@ class Conversion {
 		foreach ($attrs as $name => $value) {
 			// error_log('name: ' . $name);
 
-			if (str_ends_with($name, '_last_edited') || str_ends_with($name, '__hover_enabled') || str_ends_with($name, '__sticky_enabled')) {
+			if (
+				str_ends_with($name, '_last_edited')
+				|| str_ends_with($name, '__hover_enabled')
+				|| str_ends_with($name, '__focus_enabled')
+				|| str_ends_with($name, '__checked_enabled')
+				|| str_ends_with($name, '__active_enabled')
+				|| str_ends_with($name, '__sticky_enabled')
+			) {
 				continue;
 			}
 
@@ -2861,8 +2891,11 @@ class Conversion {
 		// This ensures migrated modules maintain visual parity with their D4 counterparts.
 		if ( in_array( $moduleName, [ 'divi/menu', 'divi/fullwidth-menu' ], true ) ) {
 			$mobile_menu_bg_color     = $attrs['mobile_menu_bg_color'] ?? '';
+			$dropdown_menu_bg_color   = $attrs['dropdown_menu_bg_color'] ?? '';
 			$background_color         = $attrs['background_color'] ?? '';
+			$module_bg_converted      = $convertedAttrs['module']['decoration']['background']['desktop']['value']['color'] ?? null;
 			$mobile_menu_bg_converted = $convertedAttrs['menuMobile']['decoration']['background']['desktop']['value']['color'] ?? null;
+			$dropdown_menu_converted  = $convertedAttrs['menuDropdown']['decoration']['background']['desktop']['value']['color'] ?? null;
 
 			// Apply fallback only if mobile_menu_bg_color was empty in D4, background_color has a value,
 			// and mobile menu bg hasn't been converted yet (to avoid overriding explicit values).
@@ -2884,6 +2917,33 @@ class Conversion {
 				}
 
 				$convertedAttrs['menuMobile']['decoration']['background']['desktop']['value']['color'] = $background_color;
+			}
+
+			// In D4, when dropdown_menu_bg_color is empty, it falls back to background_color.
+			// Apply the same behavior during conversion while preserving explicit dropdown values.
+			// Use converted module background so global color tokens stay converted.
+			if (
+				empty( $dropdown_menu_bg_color ) &&
+				! empty( $module_bg_converted ) &&
+				( is_null( $dropdown_menu_converted ) || '' === $dropdown_menu_converted )
+			) {
+				if ( ! isset( $convertedAttrs['menuDropdown'] ) ) {
+					$convertedAttrs['menuDropdown'] = [];
+				}
+				if ( ! isset( $convertedAttrs['menuDropdown']['decoration'] ) ) {
+					$convertedAttrs['menuDropdown']['decoration'] = [];
+				}
+				if ( ! isset( $convertedAttrs['menuDropdown']['decoration']['background'] ) ) {
+					$convertedAttrs['menuDropdown']['decoration']['background'] = [];
+				}
+				if ( ! isset( $convertedAttrs['menuDropdown']['decoration']['background']['desktop'] ) ) {
+					$convertedAttrs['menuDropdown']['decoration']['background']['desktop'] = [];
+				}
+				if ( ! isset( $convertedAttrs['menuDropdown']['decoration']['background']['desktop']['value'] ) ) {
+					$convertedAttrs['menuDropdown']['decoration']['background']['desktop']['value'] = [];
+				}
+
+				$convertedAttrs['menuDropdown']['decoration']['background']['desktop']['value']['color'] = $module_bg_converted;
 			}
 		}
 
@@ -3139,7 +3199,7 @@ class Conversion {
 	 *
 	 * This method reorders module attributes so that certain attributes
 	 * (e.g., 'use_background_color') and their responsive/state variants
-	 * (_tablet, _phone, __hover, __sticky) appear at the end of the array.
+	 * (_tablet, _phone, __hover, __focus, __checked, __active, __sticky) appear at the end of the array.
 	 * This ensures proper processing order during module conversion.
 	 *
 	 * @since ??
@@ -3155,7 +3215,7 @@ class Conversion {
 		$attrs_last           = [];
 
 		foreach ( $attrs as $name => $value ) {
-			$desktop_name = preg_replace( '/(_tablet|_phone|__hover|__sticky)$/', '', $name );
+			$desktop_name = preg_replace( '/(_tablet|_phone|__hover|__focus|__checked|__active|__sticky)$/', '', $name );
 
 			if ( in_array( $desktop_name, $names_last_processed, true ) ) {
 				$attrs_last[ $name ] = $value;

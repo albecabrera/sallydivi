@@ -49,6 +49,13 @@
             }
           }
         }
+      },
+      "sizing": {
+        "desktop": {
+          "value": {
+            "alignment": "right"
+          }
+        }
       }
     }
   },

@@ -24,6 +24,7 @@ use ET\Builder\Packages\Module\Options\Css\CssStyle;
 use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
 use ET\Builder\Packages\IconLibrary\IconFont\Utils;
+use ET\Builder\Packages\ModuleLibrary\IconList\Styles\FontStyle;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
 use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
 use ET\Builder\Packages\ModuleUtils\ModuleUtils;
@@ -272,6 +273,14 @@ class LinkModule implements DependencyInterface {
 								'selector'            => $args['orderClass'] . ' .et_pb_link_inner',
 								'attr'                => $attrs['module']['decoration']['layout'] ?? null,
 								'declarationFunction' => [ self::class, 'display_from_layout_style_declaration' ],
+							],
+						],
+						[
+							'componentName' => 'divi/common',
+							'props'         => [
+								'selector'            => $args['orderClass'] . ' .et_pb_link_inner',
+								'attr'                => $attrs['content']['decoration']['font']['font'] ?? null,
+								'declarationFunction' => [ FontStyle::class, 'text_alignment_declaration' ],
 							],
 						],
 					],

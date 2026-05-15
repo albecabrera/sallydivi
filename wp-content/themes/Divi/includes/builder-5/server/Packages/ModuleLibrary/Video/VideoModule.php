@@ -192,8 +192,16 @@ class VideoModule implements DependencyInterface {
 				// Generate Video HTML.
 				if ( false !== et_pb_check_oembed_provider( $video_params['src'] ) ) {
 					$video = et_builder_get_oembed( $video_params['src'] );
+
+					if ( empty( $video ) && false !== VideoHTMLController::validate_youtube_url( $video_params['src'] ) ) {
+						$video = VideoHTMLController::get_youtube_fallback_embed_html( $video_params['src'] );
+					}
 				} elseif ( false !== VideoHTMLController::validate_youtube_url( $video_params['src'] ) ) {
 					$video = et_builder_get_oembed( VideoHTMLController::normalize_youtube_url( $video_params['src'] ) );
+
+					if ( empty( $video ) ) {
+						$video = VideoHTMLController::get_youtube_fallback_embed_html( $video_params['src'] );
+					}
 				} else {
 					$video = HTMLUtility::render(
 						[

@@ -431,6 +431,60 @@ class PostNavigationModule implements DependencyInterface {
 	}
 
 	/**
+	 * Canonical absolute URL for the current frontend HTTP request.
+	 *
+	 * `REQUEST_URI` is rooted at the web server and repeats the WordPress home path on
+	 * subdirectory installs; passing it to `home_url()` duplicates that segment. This builds
+	 * `home_url`-relative path and query instead.
+	 *
+	 * @since ??
+	 *
+	 * @return string Absolute URL for the active request.
+	 */
+	private static function _get_canonical_current_request_url(): string {
+		$request_uri = esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) );
+
+		if ( '' === $request_uri ) {
+			return home_url( '/' );
+		}
+
+		$parsed = wp_parse_url( $request_uri );
+		$path   = isset( $parsed['path'] ) ? $parsed['path'] : '/';
+		$query  = isset( $parsed['query'] ) ? $parsed['query'] : '';
+
+		$home_path = wp_parse_url( home_url( '/' ), PHP_URL_PATH );
+
+		if ( is_string( $home_path ) && '' !== $home_path && '/' !== $home_path ) {
+			$normalized_base = untrailingslashit( $home_path );
+
+			if ( str_starts_with( $path, $normalized_base . '/' ) ) {
+				$path = substr( $path, strlen( $normalized_base ) );
+			} elseif ( $normalized_base === $path || $normalized_base . '/' === $path ) {
+				$path = '/';
+			}
+
+			if ( '' === $path ) {
+				$path = '/';
+			}
+		}
+
+		if ( '/' === $path || '' === $path ) {
+			$url = home_url( '/' );
+		} else {
+			$url = home_url( '/' . ltrim( $path, '/' ) );
+		}
+
+		if ( '' !== $query ) {
+			parse_str( $query, $query_params );
+			if ( ! empty( $query_params ) ) {
+				$url = add_query_arg( $query_params, $url );
+			}
+		}
+
+		return $url;
+	}
+
+	/**
 	 * Get the Post Navigation data.
 	 *
 	 * @since ??
@@ -675,7 +729,7 @@ class PostNavigationModule implements DependencyInterface {
 		$prev_page    = max( 1, $current_page - 1 );
 
 		// Get the current URL for building pagination URLs.
-		$current_url = home_url( add_query_arg( null, null ) );
+		$current_url = self::_get_canonical_current_request_url();
 
 		// Show next button only if current page is less than total pages.
 		if ( $current_page < $total_pages ) {
@@ -709,31 +763,15 @@ class PostNavigationModule implements DependencyInterface {
 				// Set the current page for the query to ensure proper pagination context.
 				$loop_query->set( 'paged', $current_page );
 
-				// Get clean base URL without any pagination parameters.
-				// Start with the original request URI and remove all pagination params.
-				$request_uri = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) );
-				$parsed_url  = wp_parse_url( home_url( $request_uri ) );
-				$base_url    = $parsed_url['scheme'] . '://' . $parsed_url['host'];
-
-				// Add port if it exists (important for localhost development URLs).
-				if ( ! empty( $parsed_url['port'] ) ) {
-					$base_url .= ':' . $parsed_url['port'];
-				}
-
-				$base_url .= $parsed_url['path'];
-
-				// Add back non-pagination query parameters.
-				if ( ! empty( $parsed_url['query'] ) ) {
-					parse_str( $parsed_url['query'], $query_params );
-					// Remove all possible pagination parameters.
-					unset( $query_params[ $loop_page_param ] );
-					unset( $query_params['paged'] );
-					unset( $query_params['page'] );
-
-					if ( ! empty( $query_params ) ) {
-						$base_url .= '?' . http_build_query( $query_params );
-					}
-				}
+				// Clean base URL without pagination parameters (canonical request URL).
+				$base_url = remove_query_arg(
+					[
+						$loop_page_param,
+						'paged',
+						'page',
+					],
+					self::_get_canonical_current_request_url()
+				);
 
 				// Add filter to intercept WP Page Navi's URL generation at the source.
 				add_filter(
@@ -761,12 +799,7 @@ class PostNavigationModule implements DependencyInterface {
 							'/href="([^"]*\/page\/(\d+)\/[^"]*)"/',
 							function ( $matches ) use ( $loop_page_param ) {
 								$page_number = $matches[2];
-								$current_url = home_url(
-									add_query_arg(
-										null,
-										null
-									)
-								);
+								$current_url = self::_get_canonical_current_request_url();
 								$loop_url    = add_query_arg(
 									$loop_page_param,
 									$page_number,

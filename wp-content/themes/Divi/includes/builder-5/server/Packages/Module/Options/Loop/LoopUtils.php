@@ -1500,7 +1500,7 @@ class LoopUtils {
 					$excerpt_length = $words;
 				}
 
-				if ( $excerpt_length > 0 ) {
+				if ( ! $has_manual_excerpt && $excerpt_length > 0 ) {
 					// Explicitly use WordPress excerpt_more filter to ensure consistent ellipsis format.
 					$excerpt_more = apply_filters( 'excerpt_more', ' [&hellip;]' );
 					$value        = wp_trim_words( $value, $excerpt_length, $excerpt_more );

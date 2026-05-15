@@ -314,6 +314,34 @@ class AssetsUtility {
 	}
 
 	/**
+	 * Force HTTPS for Google Fonts stylesheet URLs.
+	 *
+	 * @since ??
+	 *
+	 * @param string $src    Enqueued stylesheet source URL.
+	 * @param string $handle Enqueued stylesheet handle.
+	 *
+	 * @return string
+	 */
+	public static function force_https_google_fonts_src( string $src, string $handle ): string {
+		unset( $handle );
+
+		if ( ! str_contains( $src, 'fonts.googleapis.com' ) ) {
+			return $src;
+		}
+
+		if ( str_starts_with( $src, '//' ) ) {
+			return 'https:' . $src;
+		}
+
+		if ( str_starts_with( $src, 'http://' ) ) {
+			return 'https://' . substr( $src, 7 );
+		}
+
+		return $src;
+	}
+
+	/**
 	 * Retrieves the settings data for the Visual Builder.
 	 *
 	 * The settings data includes various information required for the visual builder to function properly,
@@ -477,6 +505,7 @@ class AssetsUtility {
 				'wp-block-library',
 				'wp-block-library-theme',
 				'global-styles',
+				'et-builder-googlefonts-cached',
 				'et-divi-open-sans',
 				'divi-style',
 				'woocommerce-layout',
@@ -550,6 +579,7 @@ class AssetsUtility {
 				'wp-block-library',
 				'wp-block-library-theme',
 				'global-styles',
+				'et-builder-googlefonts-cached',
 				'et-divi-open-sans',
 				'divi-style',
 				'core-block-supports',

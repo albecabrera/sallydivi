@@ -812,6 +812,98 @@ class CriticalCSS implements DependencyInterface {
 	}
 
 	/**
+	 * Sum heights for stacked row-inner nodes under a specialty column.
+	 *
+	 * Row-inner layout nodes from `populate_layout_data()` store either integer module heights or
+	 * nested column-inner arrays under `children`. They must not be passed to `get_section_children_height()`
+	 * directly, which expects each child to be a regular row whose `children` values are columns.
+	 *
+	 * @since ??
+	 *
+	 * @param array $row_inner_nodes Map of row-inner id => row-inner layout node.
+	 *
+	 * @return int
+	 */
+	private static function _get_specialty_column_row_inner_stack_height( array $row_inner_nodes ): int {
+		$total_height = 0;
+
+		foreach ( $row_inner_nodes as $row_inner_data ) {
+			if ( ! is_array( $row_inner_data ) ) {
+				continue;
+			}
+
+			$total_height += self::_get_height_for_specialty_row_inner_node( $row_inner_data );
+		}
+
+		return $total_height;
+	}
+
+	/**
+	 * Height for one row-inner node under a specialty column.
+	 *
+	 * @since ??
+	 *
+	 * @param array $row_inner_data Layout node with `spacing_height` and `children`.
+	 *
+	 * @return int
+	 */
+	private static function _get_height_for_specialty_row_inner_node( array $row_inner_data ): int {
+		$children = $row_inner_data['children'] ?? [];
+
+		if ( empty( $children ) ) {
+			return (int) ( $row_inner_data['spacing_height'] ?? 0 );
+		}
+
+		$has_array_child  = false;
+		$has_scalar_child = false;
+
+		foreach ( $children as $child_value ) {
+			if ( is_array( $child_value ) ) {
+				$has_array_child = true;
+			} else {
+				$has_scalar_child = true;
+			}
+		}
+
+		if ( $has_array_child && ! $has_scalar_child ) {
+			return self::get_section_children_height( [ $row_inner_data ] );
+		}
+
+		if ( $has_scalar_child && ! $has_array_child ) {
+			return self::get_column_height( $row_inner_data );
+		}
+
+		// Mixed scalar and array children: avoid fatals; approximate height for uncommon shapes (#49309).
+		$int_sum        = 0;
+		$array_children = [];
+
+		foreach ( $children as $child_id => $child_value ) {
+			if ( is_array( $child_value ) ) {
+				$array_children[ $child_id ] = $child_value;
+			} else {
+				$int_sum += (int) $child_value;
+			}
+		}
+
+		$row_spacing = (int) ( $row_inner_data['spacing_height'] ?? 0 );
+
+		if ( empty( $array_children ) ) {
+			return $row_spacing + $int_sum;
+		}
+
+		$columns_row_height = self::get_section_children_height(
+			[
+				[
+					'spacing_height' => 0,
+					'children'       => $array_children,
+				],
+			]
+		);
+
+		return $row_spacing + max( $int_sum, $columns_row_height );
+	}
+
+	/**
 	 * Filter callback for masuring section height.
 	 * This needs to be done separately than `populate_layout_data` because the height measurement is done after
 	 * section's children layout data has been populated. Structure module's inner height is basically accumulation
@@ -847,8 +939,8 @@ class CriticalCSS implements DependencyInterface {
 
 					$first_column_children_name = $column_children_names[0] ?? '';
 
-					if ( false !== strpos( $first_column_children_name, 'divi/row-inner' ) ) {
-						$column_height = self::get_section_children_height( $column_data['children'] );
+					if ( str_contains( $first_column_children_name, 'divi/row-inner' ) ) {
+						$column_height = self::_get_specialty_column_row_inner_stack_height( $column_data['children'] );
 
 						$specialty_section_data[ $column_id ] = $column_height;
 					} else {
@@ -923,7 +1015,7 @@ class CriticalCSS implements DependencyInterface {
 		$unit = et_pb_get_value_unit( $value );
 
 		// Remove the unit, if present.
-		if ( false !== strpos( $value, $unit ) ) {
+		if ( str_contains( $value, $unit ) ) {
 			$value = substr( $value, 0, -strlen( $unit ) );
 		}
 
@@ -1319,7 +1411,7 @@ class CriticalCSS implements DependencyInterface {
 	public static function parse_shortcode( string $content ) {
 		static $regex;
 
-		if ( false === strpos( $content, '[' ) ) {
+		if ( ! str_contains( $content, '[' ) ) {
 			return false;
 		}
 
@@ -1554,7 +1646,7 @@ class CriticalCSS implements DependencyInterface {
 			$unit = et_pb_get_value_unit( $value );
 
 			// Remove the unit, if present.
-			if ( false !== strpos( $value, $unit ) ) {
+			if ( str_contains( $value, $unit ) ) {
 				$value = substr( $value, 0, -strlen( $unit ) );
 			}
 

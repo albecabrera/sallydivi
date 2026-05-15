@@ -221,6 +221,38 @@ class Module implements DependencyInterface {
 	 * @return mixed The processed module output.
 	 */
 	public static function process_shortcode_module_output( $output, $module_slug, $module ) {
+		$processed_output = is_string( $output ) ? $output : ( ( is_array( $output ) && isset( $output['content'] ) && is_string( $output['content'] ) ) ? $output['content'] : '' );
+
+		// D4 CTA: override bundled `.et_pb_promo` fill when the user has explicitly disabled the background (#48753).
+		if ( 'et_pb_cta' === $module_slug && ! empty( $processed_output ) && isset( $module->props ) && function_exists( 'sanitize_html_class' ) ) {
+			$props            = $module->props;
+			$enable_color     = $props['background_enable_color'] ?? 'on';
+			$use_background   = $props['use_background_color'] ?? 'on';
+			$background_color = isset( $props['background_color'] ) ? trim( (string) $props['background_color'] ) : null;
+
+			$should_neutralize =
+				// D5: cleared background serialises as background_enable_color="off".
+				'off' === $enable_color
+				// Legacy D4: toggle explicitly off.
+				|| 'off' === $use_background
+				// Legacy D4: toggle on (or unset) but color explicitly cleared to "".
+				|| ( null !== $background_color && '' === $background_color && ( 'on' === $use_background || '' === $use_background ) );
+
+			if ( $should_neutralize && preg_match( '/et_pb_cta_\d+/', $processed_output, $class_match ) ) {
+				$cls = sanitize_html_class( $class_match[0] );
+
+				if ( '' !== $cls ) {
+					$rule = "<style type=\"text/css\">.{$cls}.et_pb_promo{background-color:transparent !important;}</style>";
+
+					if ( is_string( $output ) ) {
+						$output .= $rule;
+					} elseif ( is_array( $output ) && isset( $output['content'] ) ) {
+						$output['content'] .= $rule;
+					}
+				}
+			}
+		}
+
 		// Handle string output (frontend rendering).
 		if ( is_string( $output ) ) {
 			return self::_process_shortcode_module_output_content( $output );
@@ -386,6 +418,50 @@ class Module implements DependencyInterface {
 		$rendered_styles = trim( \ET_Builder_Element::get_style() );
 		if ( ! empty( $rendered_styles ) ) {
 			$rendered_content .= '<style type="text/css">' . et_core_esc_previously( $rendered_styles ) . '</style>';
+		}
+
+		// D4 CTA: override bundled `.et_pb_promo` fill when the user has explicitly disabled the background (#48753).
+		if ( 'et_pb_cta' === $shortcode_name && is_string( $content ) ) {
+			preg_match_all( '/\[et_pb_cta\b([^\]]*)\]/', $content, $cta_matches );
+			preg_match_all( '/et_pb_cta_\d+/', $rendered_content, $class_matches );
+
+			$attrs_raw   = isset( $cta_matches[1] ) ? $cta_matches[1] : [];
+			$class_names = isset( $class_matches[0] ) ? $class_matches[0] : [];
+			// Dedupe: $rendered_content includes the appended <style> block, so class tokens repeat across HTML and CSS.
+			$class_names = array_values( array_unique( $class_names ) );
+			$inline_css  = '';
+			$pair_count  = count( $attrs_raw );
+			$class_count = count( $class_names );
+
+			for ( $i = 0; $i < $class_count; $i++ ) {
+				$cls = sanitize_html_class( $class_names[ $i ] );
+
+				if ( '' === $cls || $i >= $pair_count ) {
+					continue;
+				}
+
+				$atts             = shortcode_parse_atts( trim( (string) $attrs_raw[ $i ] ) );
+				$enable_color     = $atts['background_enable_color'] ?? 'on';
+				$use_background   = $atts['use_background_color'] ?? 'on';
+				$bg_attr_present  = array_key_exists( 'background_color', $atts );
+				$background_color = $bg_attr_present ? trim( (string) $atts['background_color'] ) : null;
+
+				$should_neutralize =
+					// D5: cleared background serialises as background_enable_color="off".
+					'off' === $enable_color
+					// Legacy D4: toggle explicitly off.
+					|| 'off' === $use_background
+					// Legacy D4: toggle on (or unset) but color explicitly cleared to "".
+					|| ( null !== $background_color && '' === $background_color && ( 'on' === $use_background || '' === $use_background ) );
+
+				if ( $should_neutralize ) {
+					$inline_css .= ".{$cls}.et_pb_promo{background-color:transparent !important;}";
+				}
+			}
+
+			if ( ! empty( $inline_css ) ) {
+				$rendered_content .= '<style type="text/css">' . et_core_esc_previously( $inline_css ) . '</style>';
+			}
 		}
 
 		/**

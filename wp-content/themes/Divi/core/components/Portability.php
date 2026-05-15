@@ -70,6 +70,28 @@ class ET_Core_Portability {
 	}
 
 	/**
+	 * Whether options-type portability for this context may read or write WordPress Additional CSS (`wp_custom_css`).
+	 *
+	 * Theme Options and Customizer exports include Additional CSS for Customizer parity (Divi core 6d89d3417e).
+	 * Role Editor (`et_pb_roles`) must not bundle or apply global CSS (#49101). New `options` contexts default
+	 * to excluding Additional CSS unless explicitly allowlisted here.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @return bool
+	 */
+	protected function _options_context_includes_wp_custom_css() {
+		$contexts_with_additional_css = array(
+			'epanel',
+			'epanel_temp',
+			'et_divi_mods',
+			'et_extra_mods',
+		);
+
+		return true === in_array( $this->instance->context, $contexts_with_additional_css, true );
+	}
+
+	/**
 	 * Import a previously exported layout.
 	 *
 	 * @since 3.10    Return the result of the import instead of dieing.
@@ -169,10 +191,14 @@ class ET_Core_Portability {
 		$this->delete_temp_files( 'et_core_import', [ $temp_file_id => $temp_file ] );
 
 		if ( 'options' === $this->instance->type ) {
+			if ( ! $this->_options_context_includes_wp_custom_css() ) {
+				unset( $data['wp_custom_css'] );
+			}
+
 			// Reset all data besides excluded data.
 			$current_data = $this->apply_query( get_option( $this->instance->target, array() ), 'unset' );
 
-			if ( isset( $data['wp_custom_css'] ) && function_exists( 'wp_update_custom_css_post' ) ) {
+			if ( $this->_options_context_includes_wp_custom_css() && isset( $data['wp_custom_css'] ) && function_exists( 'wp_update_custom_css_post' ) ) {
 				wp_update_custom_css_post( $data['wp_custom_css'] );
 
 				if ( 'yes' === get_theme_mod( 'et_pb_css_synced', 'no' ) ) {
@@ -194,7 +220,9 @@ class ET_Core_Portability {
 			// Merge remaining current data with new data and update options.
 			update_option( $this->instance->target, array_merge( $current_data, $data ) );
 
-			set_theme_mod( 'et_pb_css_synced', 'no' );
+			if ( $this->_options_context_includes_wp_custom_css() ) {
+				set_theme_mod( 'et_pb_css_synced', 'no' );
+			}
 		}
 
 		// Pass the post content and let js save the post.
@@ -558,9 +586,9 @@ class ET_Core_Portability {
 			if ( 'options' === $this->instance->type ) {
 				$data = get_option( $this->instance->target, array() );
 
-				// Export the Customizer "Additional CSS" value as well.
-				if ( function_exists( 'wp_get_custom_css' ) ) {
-					$data[ 'wp_custom_css' ] = wp_get_custom_css();
+				// Export the Customizer "Additional CSS" value as well (Theme Options / Customizer contexts only; not Role Editor — #49101).
+				if ( $this->_options_context_includes_wp_custom_css() && function_exists( 'wp_get_custom_css' ) ) {
+					$data['wp_custom_css'] = wp_get_custom_css();
 				}
 			}
 
@@ -2364,8 +2392,30 @@ class ET_Core_Portability {
 				];
 			}
 
+			// Already processed this preset; avoid duplicate work and circular recursion.
+			if ( isset( $used_presets['group'][ $group_name ]['items'][ $preset_id ] ) ) {
+				return;
+			}
+
 			// Add the preset data to the items array.
 			$used_presets['group'][ $group_name ]['items'][ $preset_id ] = $group_data['items'][ $preset_id ];
+
+			// Recursively collect nested group presets referenced by this group preset.
+			$preset_data = $group_data['items'][ $preset_id ];
+			if ( isset( $preset_data['attrs']['groupPreset'] ) && is_array( $preset_data['attrs']['groupPreset'] ) ) {
+				foreach ( $preset_data['attrs']['groupPreset'] as $nested_preset_ref ) {
+					if ( ! is_array( $nested_preset_ref ) || ! isset( $nested_preset_ref['presetId'] ) || empty( $nested_preset_ref['presetId'] ) ) {
+						continue;
+					}
+
+					// Normalize preset ID array to individual IDs (handles stacked presets).
+					$nested_preset_ids = GlobalPreset::normalize_preset_stack( $nested_preset_ref['presetId'] );
+					foreach ( $nested_preset_ids as $nested_preset_id ) {
+						self::_prepare_used_group_presets_data_from_d5_content( $used_presets, $d5_presets, $nested_preset_id );
+					}
+				}
+			}
+
 			return;
 		}
 	}
@@ -3021,11 +3071,175 @@ class ET_Core_Portability {
 			unset( $category_data );
 		}
 
+		$group_rewrite_map = $preset_rewrite_map['group'] ?? array();
+		if ( ! empty( $group_rewrite_map ) ) {
+			$global_presets = $this->_remap_nested_group_preset_references( $global_presets, $group_rewrite_map );
+		}
+
 		return array(
 			'preset_rewrite_map'     => $preset_rewrite_map,
 			'default_module_presets' => $default_module_presets,
 			'default_group_presets'  => $default_group_presets,
 		);
+	}
+
+	/**
+	 * Remaps nested group preset references after group preset IDs are rewritten.
+	 *
+	 * Handles both:
+	 * - module presets: `items[*].groupPresets[*].presetId`
+	 * - group presets: `items[*].attrs.groupPreset[*].presetId`
+	 *
+	 * @since 5.3.0
+	 *
+	 * @param array $global_presets D5 global presets payload.
+	 * @param array $group_rewrite_map Group preset rewrite map keyed by group name.
+	 *
+	 * @return array Updated presets payload.
+	 */
+	protected function _remap_nested_group_preset_references( $global_presets, $group_rewrite_map ) {
+		if ( ! is_array( $global_presets ) || ! is_array( $group_rewrite_map ) || empty( $group_rewrite_map ) ) {
+			return $global_presets;
+		}
+
+		foreach ( $global_presets['module'] ?? array() as $module_name => $module_data ) {
+			$items = $module_data['items'] ?? array();
+
+			if ( ! is_array( $items ) ) {
+				continue;
+			}
+
+			foreach ( $items as $preset_id => $preset_data ) {
+				if ( ! is_array( $preset_data ) ) {
+					continue;
+				}
+
+				$group_refs = $preset_data['groupPresets'] ?? array();
+				if ( ! is_array( $group_refs ) ) {
+					continue;
+				}
+
+				$global_presets['module'][ $module_name ]['items'][ $preset_id ]['groupPresets'] = $this->_remap_group_preset_reference_map(
+					$group_refs,
+					$group_rewrite_map
+				);
+			}
+		}
+
+		foreach ( $global_presets['group'] ?? array() as $group_name => $group_data ) {
+			$items = $group_data['items'] ?? array();
+
+			if ( ! is_array( $items ) ) {
+				continue;
+			}
+
+			foreach ( $items as $preset_id => $preset_data ) {
+				if ( ! is_array( $preset_data ) ) {
+					continue;
+				}
+
+				$group_refs = $preset_data['attrs']['groupPreset'] ?? array();
+				if ( ! is_array( $group_refs ) ) {
+					continue;
+				}
+
+				$global_presets['group'][ $group_name ]['items'][ $preset_id ]['attrs']['groupPreset'] = $this->_remap_group_preset_reference_map(
+					$group_refs,
+					$group_rewrite_map
+				);
+			}
+		}
+
+		return $global_presets;
+	}
+
+	/**
+	 * Remaps a group preset reference map by group name and preset ID.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @param array $group_refs Group references keyed by group id.
+	 * @param array $group_rewrite_map Group rewrite map keyed by group name.
+	 *
+	 * @return array Updated group references.
+	 */
+	protected function _remap_group_preset_reference_map( $group_refs, $group_rewrite_map ) {
+		if ( ! is_array( $group_refs ) || ! is_array( $group_rewrite_map ) ) {
+			return $group_refs;
+		}
+
+		foreach ( $group_refs as $group_id => $group_ref ) {
+			if ( ! is_array( $group_ref ) ) {
+				continue;
+			}
+
+			$group_name = $group_ref['groupName'] ?? '';
+			$preset_id  = $group_ref['presetId'] ?? null;
+
+			if ( empty( $group_name ) || ! isset( $group_rewrite_map[ $group_name ] ) || null === $preset_id ) {
+				continue;
+			}
+
+			$id_map        = $group_rewrite_map[ $group_name ];
+			$preset_id_arr = $this->_normalize_import_preset_ids_for_rewrite( $preset_id );
+
+			if ( empty( $preset_id_arr ) ) {
+				continue;
+			}
+
+			$remapped_ids = array_values(
+				array_unique(
+					array_map(
+						function( $id ) use ( $id_map ) {
+							return $id_map[ $id ] ?? $id;
+						},
+						$preset_id_arr
+					)
+				)
+			);
+
+			$group_refs[ $group_id ]['presetId'] = is_array( $preset_id ) ? $remapped_ids : ( $remapped_ids[0] ?? $preset_id );
+		}
+
+		return $group_refs;
+	}
+
+	/**
+	 * Normalize imported preset IDs for rewrite mapping lookup.
+	 *
+	 * Keeps reserved IDs (like `_initial`) so they can be remapped.
+	 *
+	 * @since 5.3.0
+	 *
+	 * @param mixed $preset_id_value Preset ID value (string or stacked array).
+	 *
+	 * @return array
+	 */
+	protected function _normalize_import_preset_ids_for_rewrite( $preset_id_value ) {
+		if ( is_string( $preset_id_value ) ) {
+			$preset_id_value = trim( $preset_id_value );
+			return '' === $preset_id_value ? array() : array( $preset_id_value );
+		}
+
+		if ( ! is_array( $preset_id_value ) ) {
+			return array();
+		}
+
+		$preset_ids = array();
+		foreach ( $preset_id_value as $preset_id ) {
+			if ( ! is_scalar( $preset_id ) ) {
+				continue;
+			}
+
+			$preset_id = trim( (string) $preset_id );
+			if ( '' === $preset_id ) {
+				continue;
+			}
+
+			$preset_ids[] = $preset_id;
+		}
+
+		return $preset_ids;
 	}
 
 	/**

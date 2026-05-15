@@ -15,6 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use ET\Builder\Framework\Controllers\RESTController;
 use ET\Builder\Framework\UserRole\UserRole;
+use ET\Builder\Framework\Utility\MediaUtility;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -48,7 +49,7 @@ class VideoCoverController extends RESTController {
 		$image_output = '';
 
 		if ( '' !== $args['image_src'] ) {
-			$image_output = \et_pb_set_video_oembed_thumbnail_resolution( $args['image_src'], 'high' );
+			$image_output = MediaUtility::set_video_oembed_thumbnail_resolution( $args['image_src'], 'high' );
 		}
 
 		return self::response_success( $image_output );

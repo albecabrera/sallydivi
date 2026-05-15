@@ -587,6 +587,22 @@ return [
             ]
         ]
     ],
+    'contact-form-7' => [
+        'module' => [
+            'decoration' => [
+                'layout' => [
+                    'desktop' => [
+                        'value' => [
+                            'columnGap' => '15px',
+                            'flexDirection' => 'column',
+                            'flexWrap' => 'wrap',
+                            'rowGap' => '15px'
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ],
     'countdown-timer' => [
         'module' => [
             'decoration' => [
@@ -2185,6 +2201,40 @@ return [
                     ]
                 ]
             ]
+        ],
+        'field' => [
+            'advanced' => [
+                'focus' => [
+                    'border' => [
+                        'desktop' => [
+                            'value' => [
+                                'radius' => [
+                                    'sync' => 'on',
+                                    'topLeft' => '3px',
+                                    'topRight' => '3px',
+                                    'bottomLeft' => '3px',
+                                    'bottomRight' => '3px'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'decoration' => [
+                'border' => [
+                    'desktop' => [
+                        'value' => [
+                            'radius' => [
+                                'sync' => 'on',
+                                'topLeft' => '3px',
+                                'topRight' => '3px',
+                                'bottomLeft' => '3px',
+                                'bottomRight' => '3px'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
         ]
     ],
     'signup-custom-field' => [
@@ -2550,7 +2600,8 @@ return [
                 'layout' => [
                     'desktop' => [
                         'value' => [
-                            'flexDirection' => 'column'
+                            'flexDirection' => 'column',
+                            'rowGap' => '0px'
                         ]
                     ]
                 ]

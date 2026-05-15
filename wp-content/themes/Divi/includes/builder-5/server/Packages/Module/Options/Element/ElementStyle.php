@@ -38,6 +38,7 @@ use ET\Builder\Packages\Module\Options\ZIndex\ZIndexStyle;
 use ET\Builder\Packages\Module\Options\Element\ElementFilterFunctions;
 use ET\Builder\Packages\Module\Options\Element\ElementStyleAdvancedStyles;
 use ET\Builder\Packages\ModuleUtils\ModuleUtils;
+use ET\Builder\Packages\StyleLibrary\Declarations\Transition\TransitionUtils;
 use ET\Builder\Packages\StyleLibrary\Declarations\Transform\Transform as TransformDeclaration;
 
 /**
@@ -824,15 +825,12 @@ class ElementStyle {
 			// conflicts issue in advanced styles. There is a chance we can optimize this check by moving it to the Transition
 			// Style component itself to cover Element Style usage and Transition Style individually.
 			// @see https://github.com/elegantthemes/Divi/issues/39774
-			// JSON encode the attributes array for faster search using strpos and avoid any loops.
+			// JSON encode the attributes to detect exact transition state keys.
 			$transition_attrs_json = ! empty( $transition_data['attrs'] ) ? wp_json_encode( $transition_data['attrs'] ) : '';
 			$advanced_styles_json  = ! empty( $advanced_styles ) ? wp_json_encode( $advanced_styles ) : '';
 
-			// Check if transition module attribute and advanced styles have hover/sticky state.
-			$has_hover  = strpos( $transition_attrs_json, 'hover' ) || strpos( $advanced_styles_json, 'hover' );
-			$has_sticky = strpos( $transition_attrs_json, 'sticky' ) || strpos( $advanced_styles_json, 'sticky' );
-
-			$needs_transition = $has_hover || $has_sticky;
+			$needs_transition = TransitionUtils::has_transition_state_in_json( $transition_attrs_json )
+				|| TransitionUtils::has_transition_state_in_json( $advanced_styles_json );
 
 			// If the element needs transition, we need to generate transition attribute for every element.
 			if ( $needs_transition ) {

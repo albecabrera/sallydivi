@@ -55,6 +55,7 @@ class Icon {
 		$weight      = isset( $attr_value['weight'] ) ? $attr_value['weight'] : null;
 		$size        = isset( $attr_value['size'] ) ? $attr_value['size'] : null;
 		$use_size    = isset( $attr_value['useSize'] ) ? $attr_value['useSize'] : null;
+		$shape       = isset( $attr_value['indicatorShape'] ) ? $attr_value['indicatorShape'] : null;
 		$important   = $args['important'] ?? false;
 
 		$style_declarations = new StyleDeclarations(
@@ -94,15 +95,36 @@ class Icon {
 			}
 		}
 
-		// Icon Color.
-		if ( ! empty( $color ) ) {
-			$style_declarations->add( 'color', $color );
-		}
+		$has_custom_icon = ! empty( $font_icon );
 
-		// Icon Font Size.
-		if ( 'on' === $use_size && ! empty( $size ) ) {
-			$style_declarations->add( 'font-size', $size );
-			$style_declarations->add( 'line-height', $size );
+		// Default radio indicator is circle-based (not icon-glyph based), so use shape styles.
+		if ( 'radio-default' === $shape && ! $has_custom_icon ) {
+			if ( ! empty( $color ) ) {
+				$style_declarations->add( 'background-color', $color );
+			}
+
+			if ( 'on' === $use_size && ! empty( $size ) ) {
+				$style_declarations->add( 'width', $size );
+				$style_declarations->add( 'height', $size );
+			}
+		} else {
+			if ( 'radio-default' === $shape && $has_custom_icon ) {
+				$style_declarations->add( 'background', 'none' );
+				$style_declarations->add( 'border-radius', 'initial' );
+				$style_declarations->add( 'width', 'initial' );
+				$style_declarations->add( 'height', 'initial' );
+			}
+
+			// Icon Color.
+			if ( ! empty( $color ) ) {
+				$style_declarations->add( 'color', $color );
+			}
+
+			// Icon Font Size.
+			if ( 'on' === $use_size && ! empty( $size ) ) {
+				$style_declarations->add( 'font-size', $size );
+				$style_declarations->add( 'line-height', $size );
+			}
 		}
 
 		return $style_declarations->value();

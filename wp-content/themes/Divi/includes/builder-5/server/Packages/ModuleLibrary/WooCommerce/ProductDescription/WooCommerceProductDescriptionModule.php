@@ -31,6 +31,7 @@ use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
 use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
 use ET\Builder\Packages\GlobalData\GlobalData;
 use ET\Builder\Packages\WooCommerce\WooCommerceUtils;
+use ET\Builder\Packages\WooCommerce\WooCommerceHooks;
 use Exception;
 use WP_Block_Type_Registry;
 use WP_Block;
@@ -499,7 +500,7 @@ class WooCommerceProductDescriptionModule implements DependencyInterface {
 			$description = BlockParserStore::render_inner_content( $post->post_content );
 		} else {
 			// Builder used: use the custom long description meta.
-			$description = get_post_meta( $post->ID, ET_BUILDER_WC_PRODUCT_LONG_DESC_META_KEY, true );
+			$description = get_post_meta( $post->ID, WooCommerceHooks::get_long_desc_meta_key(), true );
 			$description = apply_filters( 'et_builder_wc_description', $description );
 		}
 

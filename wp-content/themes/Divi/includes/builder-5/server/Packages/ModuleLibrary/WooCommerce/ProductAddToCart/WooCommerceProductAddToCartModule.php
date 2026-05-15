@@ -894,12 +894,6 @@ class WooCommerceProductAddToCartModule implements DependencyInterface {
 							],
 						]
 					),
-					// Field Labels.
-					$elements->style(
-						[
-							'attrName' => 'fieldLabels',
-						]
-					),
 					// Form Fields.
 					FormFieldStyle::style(
 						[
@@ -920,6 +914,90 @@ class WooCommerceProductAddToCartModule implements DependencyInterface {
 							'orderClass'             => $order_class,
 							'isInsideStickyModule'   => $is_inside_sticky_module,
 							'stickyParentOrderClass' => $sticky_parent_order_class,
+							'propertySelectors'      => [
+								'label' => [
+									'font' => [
+										'font'       => [
+											'desktop' => [
+												'value' => array_merge(
+													array_fill_keys(
+														[
+															'color',
+															'font-family',
+															'font-size',
+															'font-style',
+															'font-weight',
+															'letter-spacing',
+															'line-height',
+															'text-align',
+															'text-decoration',
+															'text-transform',
+														],
+														implode(
+															', ',
+															[
+																"{$order_class}.et_pb_module .et_pb_module_inner form.cart .variations label",
+																"{$order_class} td.woocommerce-grouped-product-list-item__label a",
+															]
+														)
+													),
+													[
+														'text-align' => "{$order_class} th.label",
+													]
+												),
+												'hover' => array_merge(
+													array_fill_keys(
+														[
+															'color',
+															'font-family',
+															'font-size',
+															'font-style',
+															'font-weight',
+															'letter-spacing',
+															'line-height',
+															'text-align',
+															'text-decoration',
+															'text-transform',
+														],
+														implode(
+															', ',
+															[
+																"{$order_class}.et_pb_module .et_pb_module_inner form.cart .variations label:hover",
+																"{$order_class} td.woocommerce-grouped-product-list-item__label a:hover",
+															]
+														)
+													),
+													[
+														'text-align' => "{$order_class} th.label:hover",
+													]
+												),
+											],
+										],
+										'textShadow' => [
+											'desktop' => [
+												'value' => [
+													'text-shadow' => implode(
+														', ',
+														[
+															"{$order_class}.et_pb_module .et_pb_module_inner form.cart .variations label",
+															"{$order_class} td.woocommerce-grouped-product-list-item__label a",
+														]
+													),
+												],
+												'hover' => [
+													'text-shadow' => implode(
+														', ',
+														[
+															"{$order_class}.et_pb_module .et_pb_module_inner form.cart .variations label:hover",
+															"{$order_class} td.woocommerce-grouped-product-list-item__label a:hover",
+														]
+													),
+												],
+											],
+										],
+									],
+								],
+							],
 							'important'              => [
 								'border'  => true,
 								'font'    => true,

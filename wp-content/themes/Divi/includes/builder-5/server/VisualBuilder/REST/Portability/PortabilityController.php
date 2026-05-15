@@ -388,6 +388,24 @@ class PortabilityController extends RESTController {
 		$portability_registered = et_core_cache_get( 'et_builder', 'et_core_portability' );
 
 		if ( ! $portability_registered ) {
+			// Ensure portability is loaded before registering during REST requests.
+			if ( ! function_exists( 'et_core_portability_register' ) && defined( 'ET_CORE_PATH' ) ) {
+				$portability_cache = ET_CORE_PATH . 'components/Cache.php';
+				$portability_file  = ET_CORE_PATH . 'components/Portability.php';
+
+				if ( is_readable( $portability_cache ) ) {
+					require_once $portability_cache;
+				}
+
+				if ( is_readable( $portability_file ) ) {
+					require_once $portability_file;
+				}
+			}
+
+			if ( ! function_exists( 'et_core_portability_register' ) ) {
+				return self::response_error( 'missing_portability', esc_html__( 'Portability is unavailable.', 'et_builder_5' ) );
+			}
+
 			et_core_portability_register(
 				'et_builder',
 				[

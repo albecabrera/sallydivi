@@ -102,4 +102,17 @@ class Memoize {
 
 		return isset( self::$_cached_results[ $key ] );
 	}
+
+	/**
+	 * Resets all cached results.
+	 *
+	 * This method clears the internal cache array, freeing up memory.
+	 *
+	 * @since ??
+	 *
+	 * @return void
+	 */
+	public static function reset() {
+		self::$_cached_results = [];
+	}
 }

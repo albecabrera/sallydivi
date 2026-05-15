@@ -250,8 +250,8 @@
       "styleProps": {
         "selectors": {
           "desktop": {
-            "value": "{{selector}}.et_pb_contact_field .et_pb_contact_field_options_title, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input::-webkit-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input::-moz-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:-ms-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=checkbox] + label, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=radio] + label",
-            "hover": "{{selector}}.et_pb_contact_field .et_pb_contact_field_options_title:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover::-webkit-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover::-moz-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover:-ms-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=checkbox] + label:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=radio] + label:hover"
+            "value": "{{selector}}.et_pb_contact_field .et_pb_contact_field_options_title, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio]), {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio])::-webkit-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio])::-moz-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio]):-ms-input-placeholder",
+            "hover": "{{selector}}.et_pb_contact_field .et_pb_contact_field_options_title:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio]):hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio]):hover::-webkit-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio]):hover::-moz-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio]):hover:-ms-input-placeholder"
           }
         },
         "selector": "{{selector}} .et_pb_newsletter_form p .input"
@@ -350,7 +350,7 @@
     },
     "field": {
       "type": "object",
-      "selector": "{{selector}} .input",
+      "selector": "{{selector}} .input:not([type=checkbox]):not([type=radio])",
       "supportsCustomAttributes": true,
       "elementType": "field",
       "attributes": {
@@ -361,8 +361,8 @@
           "propertySelectors": {
             "desktop": {
               "value": {
-                "border-radius": "{{selector}} .et_pb_newsletter_form p input[type=\"text\"], {{selector}} .et_pb_newsletter_form p textarea, {{selector}} .et_pb_newsletter_form p select, {{selector}} .et_pb_newsletter_form p .input[type=\"radio\"] + label i, {{selector}} .et_pb_newsletter_form p .input[type=\"checkbox\"] + label i",
-                "border-style": "{{selector}} .et_pb_newsletter_form p input[type=\"text\"], {{selector}} .et_pb_newsletter_form p textarea, {{selector}} .et_pb_newsletter_form p select, {{selector}} .et_pb_newsletter_form p .input[type=\"radio\"] + label i, {{selector}} .et_pb_newsletter_form p .input[type=\"checkbox\"] + label i"
+                "border-radius": "{{selector}} .et_pb_newsletter_form p input[type=\"text\"], {{selector}} .et_pb_newsletter_form p textarea, {{selector}} .et_pb_newsletter_form p select",
+                "border-style": "{{selector}} .et_pb_newsletter_form p input[type=\"text\"], {{selector}} .et_pb_newsletter_form p textarea, {{selector}} .et_pb_newsletter_form p select"
               }
             }
           }
@@ -373,50 +373,6 @@
       },
       "settings": {
         "advanced": {
-          "focusUseBorder": {
-            "groupType": "group-item",
-            "item": {
-              "priority": 100,
-              "render": true,
-              "groupSlug": "designFieldField",
-              "attrName": "field.advanced.focusUseBorder",
-              "label": "Use Focus Borders",
-              "description": "Enabling this option will add borders to input fields when focused.",
-              "component": {
-                "type": "field",
-                "name": "divi/toggle"
-              }
-            }
-          },
-          "focus": {
-            "groupType": "group-items",
-            "items": {
-              "focusBorderGroup": {
-                "render": true,
-                "groupSlug": "designFieldField"
-              },
-              "focusFont": {
-                "priority": 40,
-                "render": true,
-                "groupSlug": "designFieldField",
-                "component": {
-                  "props": {
-                    "fields": {
-                      "letterSpacing": {
-                        "render": false
-                      },
-                      "lineHeight": {
-                        "render": false
-                      },
-                      "size": {
-                        "render": false
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
           "nameFieldOnly": {
             "groupType": "group-item",
             "item": {
@@ -622,13 +578,43 @@
             }
           }
         },
-        "decoration": {
-          "background": {},
-          "border": {},
-          "boxShadow": {},
-          "spacing": {},
-          "font": {}
+        "decoration": {}
+      }
+    },
+    "checkbox": {
+      "type": "object",
+      "elementType": "field",
+      "selector": "{{selector}} [type=checkbox]",
+      "styleProps": {
+        "selector": "{{selector}} [type=checkbox]",
+        "selectors": {
+          "desktop": {
+            "value": "{{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=checkbox] + label i",
+            "hover": "{{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=checkbox]:hover + label i"
+          }
         }
+      },
+      "settings": {
+        "decoration": {},
+        "advanced": {}
+      }
+    },
+    "radio": {
+      "type": "object",
+      "elementType": "field",
+      "selector": "{{selector}} [type=radio]",
+      "styleProps": {
+        "selector": "{{selector}} [type=radio]",
+        "selectors": {
+          "desktop": {
+            "value": "{{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=radio] + label i",
+            "hover": "{{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=radio]:hover + label i"
+          }
+        }
+      },
+      "settings": {
+        "decoration": {},
+        "advanced": {}
       }
     },
     "footerContent": {
@@ -999,11 +985,45 @@
         "groupName": "field",
         "multiElements": true,
         "component": {
-          "name": "divi/composite",
+          "name": "divi/form-field",
           "props": {
             "clipboardCategory": "style",
             "groupLabel": "Fields",
-            "dynamicSubgroupHost": true
+            "attrName": "field",
+            "dynamicSubgroupHost": true,
+            "useComponentNameAsPresetGroup": true
+          }
+        }
+      },
+      "designFieldCheckbox": {
+        "panel": "design",
+        "priority": 5,
+        "groupName": "checkbox",
+        "multiElements": true,
+        "component": {
+          "name": "divi/checkbox",
+          "props": {
+            "clipboardCategory": "style",
+            "groupLabel": "Checkbox",
+            "attrName": "checkbox",
+            "dynamicSubgroupHost": true,
+            "useComponentNameAsPresetGroup": true
+          }
+        }
+      },
+      "designFieldRadio": {
+        "panel": "design",
+        "priority": 5,
+        "groupName": "radio",
+        "multiElements": true,
+        "component": {
+          "name": "divi/radio",
+          "props": {
+            "clipboardCategory": "style",
+            "groupLabel": "Radio",
+            "attrName": "radio",
+            "dynamicSubgroupHost": true,
+            "useComponentNameAsPresetGroup": true
           }
         }
       },

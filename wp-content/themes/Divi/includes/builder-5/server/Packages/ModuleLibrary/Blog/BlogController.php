@@ -62,6 +62,8 @@ class BlogController extends RESTController {
 			'offset'           => $request->get_param( 'offset' ),
 			'orderby'          => $request->get_param( 'orderby' ),
 			'is_theme_builder' => $request->get_param( 'isThemeBuilder' ) ?? false,
+			'use_current_loop' => $request->get_param( 'useCurrentLoop' ) ?? 'off',
+			'archive_term_id'  => absint( $request->get_param( 'archiveTermId' ) ?? 0 ),
 		];
 
 		$query_args = [
@@ -99,6 +101,30 @@ class BlogController extends RESTController {
 
 		// Apply category filtering using the consolidated utility method.
 		$query_args = ModuleUtils::add_category_query_args( $query_args, $args['categories'], $args['post_type'], $vb_current_post_id );
+
+		// Apply archive context for "Posts For Current Page" only on taxonomy archive-style VB contexts.
+		// Singular pages may still expose a stale `mainLoopSettingsData.termId` in the settings store; gating on
+		// `mainLoopType` avoids restricting the query to that term on normal pages (#48758 follow-up).
+		$main_loop_type                    = sanitize_key( (string) ( $request->get_param( 'mainLoopType' ) ?? 'singular' ) );
+		$should_apply_archive_term_context = in_array( $main_loop_type, [ 'category', 'tag', 'taxonomy' ], true );
+
+		if ( 'on' === $args['use_current_loop'] && $should_apply_archive_term_context && $args['archive_term_id'] > 0 && empty( $query_args['cat'] ) && empty( $query_args['tax_query'] ) ) {
+			$term = get_term( $args['archive_term_id'] );
+
+			if ( ! is_wp_error( $term ) && $term instanceof \WP_Term ) {
+				if ( 'category' === $term->taxonomy ) {
+					$query_args['cat'] = $term->term_id;
+				} else {
+					$query_args['tax_query'] = [
+						[
+							'taxonomy' => $term->taxonomy,
+							'field'    => 'term_id',
+							'terms'    => $term->term_id,
+						],
+					];
+				}
+			}
+		}
 
 		// Check if "current" category is selected before applying category filtering.
 		$normalized_categories = is_string( $args['categories'] ) ? explode( ',', $args['categories'] ) : $args['categories'];
@@ -353,6 +379,34 @@ class BlogController extends RESTController {
 				},
 				'sanitize_callback' => function ( $value ) {
 					return (int) $value;
+				},
+			],
+			'useCurrentLoop'  => [
+				'type'              => 'string',
+				'default'           => 'off',
+				'validate_callback' => function ( $param ) {
+					return 'on' === $param || 'off' === $param;
+				},
+			],
+			'archiveTermId'   => [
+				'type'              => 'string',
+				'default'           => '0',
+				'validate_callback' => function ( $param ) {
+					return '' === $param || is_numeric( $param );
+				},
+				'sanitize_callback' => function ( $value ) {
+					// Must remain a string: schema type is `string`; returning int fails REST validation and rejects the request.
+					return (string) absint( $value );
+				},
+			],
+			'mainLoopType'    => [
+				'type'              => 'string',
+				'default'           => 'singular',
+				'validate_callback' => function ( $param ) {
+					return is_string( $param );
+				},
+				'sanitize_callback' => function ( $value ) {
+					return sanitize_key( (string) $value );
 				},
 			],
 		];

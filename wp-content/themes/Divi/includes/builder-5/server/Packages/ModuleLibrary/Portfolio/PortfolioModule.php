@@ -675,14 +675,16 @@ class PortfolioModule implements DependencyInterface {
 		/**
 		 * Composes and runs the post query.
 		 */
-		$query_args = [
+		// Static front pages use the `page` query var for pagination; other views use `paged`.
+		$portfolio_paged = self::get_pagination_page_for_query();
+		$query_args      = [
 			'posts_per_page' => (int) $posts_per_page,
-			'paged'          => (int) get_query_var( 'paged', 1 ),
+			'paged'          => $portfolio_paged,
 			'post_type'      => 'project',
 			'post_status'    => [ 'publish', 'private' ],
 			'perm'           => 'readable',
 		];
-		$posts      = [];
+		$posts           = [];
 
 		// Apply category filtering using the consolidated utility method.
 		$query_args = ModuleUtils::add_category_query_args( $query_args, $selected_term_ids, 'project' );
@@ -829,8 +831,36 @@ class PortfolioModule implements DependencyInterface {
 
 		/**
 		 * Composes portfolio pagination with support for both WP Default pagination and WP PageNavi Plugin.
+		 *
+		 * Uses get_pagenum_link() for URLs (same as Divi 4 Portfolio) so "Older" / "Next" links show
+		 * correctly on every page; get_next_posts_link / get_previous_posts_link can omit the previous
+		 * link when is_single() is true or when global $paged does not match the portfolio page.
 		 */
-		$next_posts_link      = get_next_posts_link( esc_html__( '&laquo; Older Entries', 'et_builder_5' ), $query->max_num_pages );
+		$next_page_url     = self::get_portfolio_next_page_url( $portfolio_paged, (int) $query->max_num_pages );
+		$previous_page_url = self::get_portfolio_previous_page_url( $portfolio_paged );
+
+		$older_entries_label = esc_html__( '&laquo; Older Entries', 'et_builder_5' );
+		$next_entries_label  = esc_html__( 'Next Entries &raquo;', 'et_builder_5' );
+
+		$next_posts_link     = null;
+		$previous_posts_link = null;
+
+		if ( $next_page_url ) {
+			$next_posts_link = sprintf(
+				'<a href="%1$s">%2$s</a>',
+				esc_url( $next_page_url ),
+				$older_entries_label
+			);
+		}
+
+		if ( $previous_page_url ) {
+			$previous_posts_link = sprintf(
+				'<a href="%1$s">%2$s</a>',
+				esc_url( $previous_page_url ),
+				$next_entries_label
+			);
+		}
+
 		$next_posts_link_html = $next_posts_link ? sprintf(
 			'<div class="alignleft">
 				%1$s
@@ -838,7 +868,6 @@ class PortfolioModule implements DependencyInterface {
 			$next_posts_link
 		) : null;
 
-		$previous_posts_link  = get_previous_posts_link( esc_html__( 'Next Entries &raquo;', 'et_builder_5' ) );
 		$prev_posts_link_html = $previous_posts_link ? sprintf(
 			'<div class="alignright">
 				%1$s
@@ -1233,6 +1262,70 @@ class PortfolioModule implements DependencyInterface {
 				'render_callback' => [ self::class, 'render_callback' ],
 			]
 		);
+	}
+
+	/**
+	 * Resolves the current pagination index for a secondary portfolio query on the frontend.
+	 *
+	 * WordPress stores pagination for a static front page in the `page` query var; other views use `paged`.
+	 *
+	 * @since ??
+	 *
+	 * @return int Current page number, at least 1.
+	 */
+	public static function get_pagination_page_for_query(): int {
+		$raw = is_front_page()
+			? get_query_var( 'page' )
+			: get_query_var( 'paged' );
+
+		return max( 1, absint( $raw ) );
+	}
+
+	/**
+	 * Get the URL for the next portfolio page (older entries).
+	 *
+	 * Mirrors Divi 4 {@see \ET_Builder_Module_Portfolio::get_next_link()} using get_pagenum_link().
+	 *
+	 * @since ??
+	 *
+	 * @param int $current_page Current page number (1-based).
+	 * @param int $max_pages    Total pages from the portfolio WP_Query.
+	 *
+	 * @return string|null URL string or null when there is no next page.
+	 */
+	public static function get_portfolio_next_page_url( int $current_page, int $max_pages ): ?string {
+		if ( $current_page < 1 ) {
+			$current_page = 1;
+		}
+
+		$next_page = $current_page + 1;
+
+		if ( $next_page <= $max_pages ) {
+			return get_pagenum_link( $next_page );
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the URL for the previous portfolio page (newer entries).
+	 *
+	 * Mirrors Divi 4 {@see \ET_Builder_Module_Portfolio::get_previous_link()} using get_pagenum_link().
+	 *
+	 * @since ??
+	 *
+	 * @param int $current_page Current page number (1-based).
+	 *
+	 * @return string|null URL string or null when already on page 1.
+	 */
+	public static function get_portfolio_previous_page_url( int $current_page ): ?string {
+		$previous_page = $current_page - 1;
+
+		if ( $previous_page >= 1 ) {
+			return get_pagenum_link( $previous_page );
+		}
+
+		return null;
 	}
 
 	/**

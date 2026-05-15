@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use ET\Builder\Packages\Module\Options\Attributes\AttributeUtils;
+use ET\Builder\Packages\ModuleUtils\ModuleUtils;
 use ET\Builder\Framework\Utility\HTMLUtility;
 use ET\Builder\FrontEnd\BlockParser\BlockParserUtils;
 
@@ -45,14 +46,14 @@ class AttributeSecurity {
 			return $data;
 		}
 
-		if ( strpos( $data['post_content'], 'wp:divi/' ) === false ) {
+		if ( ! str_contains( $data['post_content'], 'wp:divi/' ) ) {
 			return $data;
 		}
 
 		// Check if content contains custom attributes - account for WordPress slashing.
 		$content        = wp_unslash( $data['post_content'] );
-		$has_decoration = strpos( $content, '"decoration":{' ) !== false;
-		$has_attributes = strpos( $content, '"attributes":{' ) !== false;
+		$has_decoration = str_contains( $content, '"decoration":{' );
+		$has_attributes = str_contains( $content, '"attributes":{' );
 
 		if ( ! $has_decoration || ! $has_attributes ) {
 			return $data;
@@ -62,6 +63,7 @@ class AttributeSecurity {
 		$blocks = BlockParserUtils::parse_blocks_with_layout_context( $content, 'saving_content', 'sanitize_custom_attributes_fields' );
 		// Note $blocks is being passed and modified by reference.
 		self::_sanitize_blocks( $blocks );
+		ModuleUtils::clean_blocks_empty_array_attributes( $blocks );
 		$data['post_content'] = wp_slash( serialize_blocks( $blocks ) );
 
 		return $data;

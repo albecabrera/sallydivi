@@ -230,182 +230,8 @@
       "elementType": "field",
       "selector": "{{selector}}.et_pb_module .et_pb_module_inner form.cart .variations td select",
       "settings": {
-        "advanced": {
-          "focusUseBorder": {
-            "groupType": "group-item",
-            "item": {
-              "priority": 70,
-              "render": true,
-              "groupSlug": "designDropdownMenus",
-              "attrName": "dropdownMenus.advanced.focusUseBorder",
-              "label": "Use Focus Borders",
-              "description": "Enabling this option will add borders to input fields when focused.",
-              "features": {
-                "preset": [
-                  "html"
-                ]
-              },
-              "component": {
-                "type": "field",
-                "name": "divi/toggle"
-              }
-            }
-          },
-          "focus": {
-            "groupType": "group-items",
-            "items": {
-              "focusBorderGroup": {
-                "render": true,
-                "priority": 75,
-                "groupSlug": "designDropdownMenus",
-                "component": {
-                  "props": {
-                    "grouped": false,
-                    "groupLabel": "Dropdown Menus Focus",
-                    "fieldLabel": "Dropdown Menus Focus"
-                  }
-                }
-              },
-              "focusBackgroundColor": {
-                "priority": 20,
-                "render": true,
-                "groupSlug": "designDropdownMenus",
-                "component": {
-                  "props": {
-                    "grouped": false,
-                    "groupLabel": "Dropdown Menus Focus",
-                    "fieldLabel": "Dropdown Menus Focus"
-                  }
-                }
-              },
-              "focusFont": {
-                "priority": 30,
-                "render": true,
-                "groupSlug": "designDropdownMenus",
-                "component": {
-                  "props": {
-                    "grouped": false,
-                    "groupLabel": "Dropdown Menus Focus",
-                    "fieldLabel": "Dropdown Menus Focus",
-                    "fields": {
-                      "letterSpacing": {
-                        "render": false
-                      },
-                      "lineHeight": {
-                        "render": false
-                      },
-                      "size": {
-                        "render": false
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "decoration": {
-          "background": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designDropdownMenus",
-              "attrName": "dropdownMenus.decoration.background",
-              "subName": "color",
-              "label": "Dropdown Menus Background Color",
-              "description": "Pick a color to fill the module's input fields.",
-              "priority": 10,
-              "render": true,
-              "features": {
-                "dynamicContent": {
-                  "type": "color"
-                }
-              },
-              "component": {
-                "type": "field",
-                "name": "divi/color-picker"
-              }
-            }
-          },
-          "spacing": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designDropdownMenus",
-              "priority": 40,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/spacing",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Dropdown Menus",
-                  "fields": {
-                    "padding": {
-                      "render": false
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "font": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designDropdownMenus",
-              "priority": 50,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/font",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Dropdown Menus",
-                  "fields": {
-                    "textAlign": {
-                      "render": false
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "border": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designDropdownMenus",
-              "priority": 60,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/border",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Dropdown Menus",
-                  "fields": {
-                    "radius": {
-                      "render": false
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "boxShadow": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designDropdownMenus",
-              "priority": 90,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/box-shadow",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Dropdown Menus"
-                }
-              }
-            }
-          }
-        }
+        "advanced": {},
+        "decoration": {}
       },
       "styleProps": {
         "background": {
@@ -527,135 +353,8 @@
       "elementType": "field",
       "selector": "{{selector}} input, {{selector}} .quantity input.qty",
       "settings": {
-        "advanced": {
-          "focus": {
-            "groupType": "group-items",
-            "items": {
-              "focusBorderGroup": {
-                "render": false,
-                "groupSlug": "designFieldField"
-              },
-              "focusBackgroundColor": {
-                "priority": 10,
-                "render": true,
-                "groupSlug": "designFieldField",
-                "component": {
-                  "props": {
-                    "grouped": false
-                  }
-                }
-              },
-              "focusFont": {
-                "priority": 10,
-                "render": true,
-                "groupSlug": "designFieldField",
-                "component": {
-                  "props": {
-                    "grouped": false,
-                    "fields": {
-                      "letterSpacing": {
-                        "render": false
-                      },
-                      "lineHeight": {
-                        "render": false
-                      },
-                      "size": {
-                        "render": false
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "decoration": {
-          "background": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "attrName": "field.decoration.background",
-              "subName": "color",
-              "label": "Fields Background Color",
-              "description": "Pick a color to fill the module's input fields.",
-              "priority": 5,
-              "render": true,
-              "features": {
-                "dynamicContent": {
-                  "type": "color"
-                }
-              },
-              "component": {
-                "type": "field",
-                "name": "divi/color-picker"
-              }
-            }
-          },
-          "spacing": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 10,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/spacing",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          },
-          "font": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 10,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/font",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          },
-          "border": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 10,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/border",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          },
-          "boxShadow": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 200,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/box-shadow",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          }
-        }
+        "advanced": {},
+        "decoration": {}
       },
       "styleProps": {
         "background": {
@@ -733,39 +432,6 @@
               }
             }
           }
-        },
-        "decoration": {
-          "font": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldLabel",
-              "priority": 20,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/font",
-                "props": {
-                  "grouped": false,
-                  "groupLabel": "Field Labels",
-                  "fieldLabel": "Field Labels"
-                }
-              }
-            }
-          }
-        }
-      },
-      "styleProps": {
-        "font": {
-          "selector": "{{selector}}.et_pb_module .et_pb_module_inner form.cart .variations label, {{selector}} td.woocommerce-grouped-product-list-item__label a",
-          "propertySelectors": {
-            "font": {
-              "desktop": {
-                "value": {
-                  "text-align": "{{selector}} th.label"
-                }
-              }
-            }
-          }
         }
       }
     }
@@ -821,9 +487,7 @@
         "component": {
           "name": "divi/composite",
           "props": {
-            "groupLabel": "Field Labels",
-            "presetGroup": "divi/font",
-            "dynamicSubgroupHost": true
+            "groupLabel": "Field Labels"
           }
         }
       },
@@ -845,10 +509,11 @@
         "groupName": "field",
         "multiElements": true,
         "component": {
-          "name": "divi/composite",
+          "name": "divi/form-field",
           "props": {
             "groupLabel": "Fields",
             "clipboardCategory": "style",
+            "attrName": "field",
             "dynamicSubgroupHost": true
           }
         }
@@ -858,9 +523,12 @@
         "priority": 40,
         "groupName": "dropdownMenus",
         "component": {
-          "name": "divi/composite",
+          "name": "divi/form-field",
           "props": {
-            "groupLabel": "Dropdown Menus"
+            "groupLabel": "Dropdown Menus",
+            "attrName": "dropdownMenus",
+            "dynamicSubgroupHost": true,
+            "supportsPresets": false
           }
         }
       },

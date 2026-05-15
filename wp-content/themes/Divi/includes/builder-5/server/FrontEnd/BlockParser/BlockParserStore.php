@@ -505,6 +505,55 @@ class BlockParserStore {
 	}
 
 	/**
+	 * Collapse consecutive duplicate placeholder wrappers into a single wrapper.
+	 *
+	 * Some imported content can contain:
+	 * - `<!-- wp:divi/placeholder --><!-- wp:divi/placeholder -->`
+	 * - `<!-- /wp:divi/placeholder --><!-- /wp:divi/placeholder -->`
+	 *
+	 * This method reduces these duplicated open/close markers while preserving the
+	 * wrapped module content.
+	 *
+	 * @since ??
+	 *
+	 * @param string $content Serialized block content.
+	 * @return string Content with duplicate placeholder wrappers collapsed.
+	 */
+	private static function _collapse_duplicate_placeholder_wrappers( string $content ): string {
+		$normalized = $content;
+
+		do {
+			$previous            = $normalized;
+			$normalized_openings = preg_replace(
+				'/(<!--\s*wp:divi\/placeholder\b[^>]*-->)(?:\s*<!--\s*wp:divi\/placeholder\b[^>]*-->)+/s',
+				'$1',
+				$normalized
+			);
+			$normalized_closings = null;
+
+			// Keep original content if preg_replace fails to avoid dropping global module content.
+			if ( null === $normalized_openings ) {
+				return $content;
+			}
+
+			$normalized_closings = preg_replace(
+				'/(<!--\s*\/wp:divi\/placeholder\s*-->)(?:\s*<!--\s*\/wp:divi\/placeholder\s*-->)+/s',
+				'$1',
+				$normalized_openings
+			);
+
+			// Keep original content if preg_replace fails to avoid dropping global module content.
+			if ( null === $normalized_closings ) {
+				return $content;
+			}
+
+			$normalized = $normalized_closings;
+		} while ( $previous !== $normalized );
+
+		return $normalized;
+	}
+
+	/**
 	 * Expand placeholder-wrapped global module content for WordPress block parsing compatibility.
 	 *
 	 * Global modules are intentionally stored with placeholder wrappers around content blocks.
@@ -524,8 +573,10 @@ class BlockParserStore {
 	 * @return string The expanded block content with separate blocks.
 	 */
 	public static function _expand_placeholder_wrapped_blocks( string $content ): string {
+		$content = self::_collapse_duplicate_placeholder_wrappers( $content );
+
 		// Pattern to match placeholder wrapper with any inner content.
-		$pattern = '/<!-- wp:divi\/placeholder -->(.+?)<!-- \/wp:divi\/placeholder -->/s';
+		$pattern = '/<!--\s*wp:divi\/placeholder\b[^>]*-->(.+?)<!--\s*\/wp:divi\/placeholder\s*-->/s';
 
 		if ( preg_match( $pattern, $content, $matches ) ) {
 			$inner_content = trim( $matches[1] );
@@ -1190,6 +1241,7 @@ class BlockParserStore {
 			// @see: https://github.com/elegantthemes/submodule-builder-5/pull/6776#discussion_r2434267097.
 			// @see: https://github.com/elegantthemes/Divi/issues/9664.
 			$decoded_content = HTMLUtility::decode_wordpress_block_entities( $post->post_content );
+			$decoded_content = self::_collapse_duplicate_placeholder_wrappers( $decoded_content );
 
 			// CRITICAL: Inject localAttrs into template content BEFORE parsing.
 			//

@@ -88,6 +88,22 @@ class GlobalPresetItemGroupAttrNameResolver {
 			);
 		}
 
+		// When both hosts are explicit dotted paths, remap by host prefix directly.
+		// This keeps group preset portability independent from attr suffix naming differences
+		// (for example, `*.decoration.font` and `*.decoration.labelFont`).
+		if (
+			strpos( $group_id, '.' )
+			&& strpos( $data_group_id, '.' )
+			&& self::is_attr_name_prefix_matched( $attr_name, $group_id )
+		) {
+			return new GlobalPresetItemGroupAttrNameResolved(
+				[
+					'attrName'    => self::replace_attr_name_prefix( $attr_name, $data_group_id ),
+					'attrSubName' => $attr_sub_name,
+				]
+			);
+		}
+
 		$memoize_params = [
 			'attrName'            => $attr_name,
 			'moduleName'          => $module_name,
@@ -335,8 +351,8 @@ class GlobalPresetItemGroupAttrNameResolver {
 		usort(
 			$items,
 			function ( $a, $b ) use ( $primary_prefix ) {
-				$a_is_primary = strpos( $a, "{$primary_prefix}." ) === 0;
-				$b_is_primary = strpos( $b, "{$primary_prefix}." ) === 0;
+				$a_is_primary = str_starts_with( $a, "{$primary_prefix}." );
+				$b_is_primary = str_starts_with( $b, "{$primary_prefix}." );
 
 				if ( $a_is_primary === $b_is_primary ) {
 					return 0;
@@ -374,11 +390,11 @@ class GlobalPresetItemGroupAttrNameResolver {
 			return Memoize::set( [ $group_slug ], __METHOD__, $module_name, $group_slug );
 		}
 
-		$module_config   = ModuleRegistration::get_module_settings( $module_name );
-		$attributes      = $module_config->attributes ?? [];
-		$attr_names_base = array_keys( $attributes );
-
-		$all_attr_names = array_reduce(
+		$module_config       = ModuleRegistration::get_module_settings( $module_name );
+		$attributes          = $module_config->attributes ?? [];
+		$attr_names_base     = array_keys( $attributes );
+		$explicit_attr_names = self::_get_explicit_attr_names_from_module_groups( $module_config, $group_slug );
+		$all_attr_names      = array_reduce(
 			$attr_names_base,
 			function ( $accumulator, $attr_name_base ) use ( $group_slug, $attributes ) {
 				$settings = $attributes[ $attr_name_base ]['settings'] ?? [];
@@ -395,7 +411,9 @@ class GlobalPresetItemGroupAttrNameResolver {
 							);
 
 							if ( $attr_names ) {
-								$accumulator = array_merge( $accumulator, $attr_names );
+								foreach ( $attr_names as $attr_name ) {
+									$accumulator[] = $attr_name;
+								}
 							}
 							break;
 
@@ -407,12 +425,14 @@ class GlobalPresetItemGroupAttrNameResolver {
 
 				return $accumulator;
 			},
-			[]
+			$explicit_attr_names
 		);
 
 		if ( isset( self::$_special_group[ $group_slug ] ) ) {
 			$all_attr_names = array_merge( $all_attr_names, self::$_special_group[ $group_slug ] );
 		}
+
+		$all_attr_names = array_values( array_unique( $all_attr_names ) );
 
 		return Memoize::set( $all_attr_names, __METHOD__, $module_name, $group_slug );
 	}
@@ -432,10 +452,15 @@ class GlobalPresetItemGroupAttrNameResolver {
 		$attr_names = [];
 
 		foreach ( $attr_type_settings as $attr_sub_type => $group ) {
-			$attr_names = array_merge(
-				$attr_names,
-				self::_process_group( $group, $attr_sub_type, $attr_type, $group_slug, $attr_name_base )
-			);
+			$processed_attr_names = self::_process_group( $group, $attr_sub_type, $attr_type, $group_slug, $attr_name_base );
+
+			if ( ! $processed_attr_names ) {
+				continue;
+			}
+
+			foreach ( $processed_attr_names as $processed_attr_name ) {
+				$attr_names[] = $processed_attr_name;
+			}
 		}
 
 		return $attr_names;
@@ -469,7 +494,7 @@ class GlobalPresetItemGroupAttrNameResolver {
 			return (bool) $match;
 		}
 
-		return $attr_name === $attr_name_to_compare || 0 === strpos( $attr_name, $attr_name_to_compare . '.' );
+		return $attr_name === $attr_name_to_compare || str_starts_with( $attr_name, $attr_name_to_compare . '.' );
 	}
 
 	/**
@@ -686,5 +711,61 @@ class GlobalPresetItemGroupAttrNameResolver {
 		} else {
 			return $attr_name_fallback;
 		}
+	}
+
+	/**
+	 * Resolve explicit root-level group mappings from module settings.
+	 *
+	 * This supports explicit group components that intentionally declare the target
+	 * attribute through component props (e.g. `attrName: inputField`) rather than through
+	 * nested advanced/decoration group settings.
+	 *
+	 * @since ??
+	 *
+	 * @param WP_Block_Type $module_config Module configuration.
+	 * @param string        $group_slug Group slug being resolved.
+	 *
+	 * @return array Explicitly mapped attribute names.
+	 */
+	private static function _get_explicit_attr_names_from_module_groups( $module_config, string $group_slug ): array {
+		$attr_names       = [];
+		$composite_groups = $module_config->settings['groups'] ?? [];
+
+		foreach ( $composite_groups as $group ) {
+			$component_name = $group['component']['name'] ?? '';
+			$attr_name      = $group['component']['props']['attrName'] ?? '';
+
+			if ( ! self::_should_use_component_name_as_preset_group( $group ) || ! is_string( $attr_name ) || '' === $attr_name ) {
+				continue;
+			}
+
+			if ( $attr_name === $group_slug ) {
+				$attr_names[] = $attr_name;
+			}
+		}
+
+		return $attr_names;
+	}
+
+	/**
+	 * Check whether a group should expose attrName as explicit preset mapping.
+	 *
+	 * @since ??
+	 *
+	 * @param array $group Module group configuration.
+	 *
+	 * @return bool
+	 */
+	private static function _should_use_component_name_as_preset_group( array $group ): bool {
+		$component_name  = $group['component']['name'] ?? '';
+		$component_props = $group['component']['props'] ?? [];
+		$flag            = $component_props['useComponentNameAsPresetGroup'] ?? false;
+
+		if ( is_bool( $flag ) && $flag ) {
+			return true;
+		}
+
+		// Backward compatibility for existing metadata.
+		return in_array( $component_name, [ 'divi/form-field', 'divi/checkbox', 'divi/checkboxes', 'divi/radio', 'divi/radios' ], true );
 	}
 }

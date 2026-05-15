@@ -435,8 +435,14 @@ class ModuleRegistration {
 
 				$is_disabled_everywhere = ModuleRegistration::_is_disabled_on_all_breakpoints( $module_attrs );
 				$is_interaction_target  = ModuleRegistration::_is_interaction_target( $module_attrs );
+				$is_generating_excerpt  = isset( $GLOBALS['divi_generating_excerpt'] ) && true === $GLOBALS['divi_generating_excerpt'];
 
 				if ( $is_disabled_everywhere && ! $is_interaction_target ) {
+					return '';
+				}
+
+				// Skip selected modules during excerpt generation to prevent UI labels/noise in automatic excerpts.
+				if ( $is_generating_excerpt && ModuleRegistration::_is_excerpt_excluded_module( $block->name ) ) {
 					return '';
 				}
 
@@ -1608,5 +1614,58 @@ class ModuleRegistration {
 		}
 
 		return ! empty( $interaction_target );
+	}
+
+	/**
+	 * Determine if a module should be skipped during excerpt generation.
+	 *
+	 * @since ??
+	 *
+	 * @param string $module_name Module name.
+	 *
+	 * @return bool True when module should be excluded from automatic excerpt rendering.
+	 */
+	private static function _is_excerpt_excluded_module( string $module_name ): bool {
+		/**
+		 * Filter modules excluded from automatic excerpt rendering.
+		 *
+		 * @since ??
+		 *
+		 * @param array $excluded_modules List of module names excluded from excerpt rendering.
+		 */
+		$excluded_modules = apply_filters(
+			'et_builder_excerpt_excluded_modules',
+			[
+				'divi/bar-counter',
+				'divi/bar-counters',
+				'divi/canvas-portal',
+				'divi/circle-counter',
+				'divi/contact-field',
+				'divi/contact-form',
+				'divi/contact-form-field',
+				'divi/counter',
+				'divi/counters',
+				'divi/divider',
+				'divi/fullwidth-map',
+				'divi/global-layout',
+				'divi/icon',
+				'divi/lottie',
+				'divi/map',
+				'divi/number-counter',
+				'divi/pricing-table',
+				'divi/pricing-tables',
+				'divi/signup-custom-field',
+				'divi/video',
+				'divi/video-slider',
+				'divi/video-slider-item',
+				'divi/woocommerce-breadcrumb',
+			]
+		);
+
+		if ( ! is_array( $excluded_modules ) ) {
+			return false;
+		}
+
+		return in_array( $module_name, $excluded_modules, true );
 	}
 }

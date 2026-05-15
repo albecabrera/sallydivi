@@ -30,5 +30,39 @@
         }
       }
     }
+  },
+  "field": {
+    "advanced": {
+      "focus": {
+        "border": {
+          "desktop": {
+            "value": {
+              "radius": {
+                "sync": "on",
+                "topLeft": "3px",
+                "topRight": "3px",
+                "bottomLeft": "3px",
+                "bottomRight": "3px"
+              }
+            }
+          }
+        }
+      }
+    },
+    "decoration": {
+      "border": {
+        "desktop": {
+          "value": {
+            "radius": {
+              "sync": "on",
+              "topLeft": "3px",
+              "topRight": "3px",
+              "bottomLeft": "3px",
+              "bottomRight": "3px"
+            }
+          }
+        }
+      }
+    }
   }
 }

@@ -472,7 +472,7 @@ class ContactFormHandler {
 						// NOTE: We explicitly do NOT update $this->_fields_raw[ $field_id ]['value'] here.
 						// We must keep the raw array in _fields_raw so that conditional logic for subsequent fields
 						// can properly check "is one of" against the array, rather than failing against a string.
-						$field['value'] = implode( ', ', $field_value );
+						$field['value'] = ContactFormUtils::normalize_field_value_for_message( $field_value );
 						break;
 
 					case 'input':
@@ -513,6 +513,11 @@ class ContactFormHandler {
 						// Do nothing.
 						break;
 				}
+			}
+
+			// Normalize checkbox value to string for email and legacy hooks; _fields_raw stays an array for conditionals.
+			if ( 'checkbox' === $field_type && true === is_array( $field['value'] ) ) {
+				$field['value'] = ContactFormUtils::normalize_field_value_for_message( $field['value'] );
 			}
 
 			$this->_fields[ $field_id ] = $field;

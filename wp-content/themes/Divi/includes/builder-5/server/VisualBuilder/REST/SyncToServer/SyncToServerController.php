@@ -382,6 +382,9 @@ class SyncToServerController extends RESTController {
 				update_post_meta( $post_id, '_et_pb_use_divi_5', 'on' );
 				// Also set the legacy meta for backward compatibility with D4 components.
 				update_post_meta( $post_id, '_et_pb_use_builder', 'on' );
+
+				// Clear the page creation flow flag so it doesn't show again on subsequent loads.
+				update_post_meta( $post_id, '_et_pb_show_page_creation', 'off' );
 			}
 
 			$layout_ids_to_mark = [

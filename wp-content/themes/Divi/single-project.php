@@ -18,7 +18,10 @@ $show_navigation = get_post_meta( get_the_ID(), '_et_pb_project_nav', true );
 
 <?php endif; ?>
 
-			<?php while ( have_posts() ) : the_post(); ?>
+			<?php
+			while ( have_posts() ) :
+				the_post();
+				?>
 
 				<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
@@ -29,22 +32,23 @@ $show_navigation = get_post_meta( get_the_ID(), '_et_pb_project_nav', true );
 						<span class="et_project_categories"><?php echo get_the_term_list( get_the_ID(), 'project_category', '', ', ' ); ?></span>
 					</div>
 
-				<?php
+					<?php
 					$thumb = '';
 
-					$width = (int) apply_filters( 'et_pb_portfolio_single_image_width', 1080 );
-					$height = (int) apply_filters( 'et_pb_portfolio_single_image_height', 9999 );
+					$width     = (int) apply_filters( 'et_pb_portfolio_single_image_width', 1080 );
+					$height    = (int) apply_filters( 'et_pb_portfolio_single_image_height', 9999 );
 					$classtext = 'et_featured_image';
 					$titletext = get_the_title();
-					$alttext = get_post_meta( get_post_thumbnail_id(), '_wp_attachment_image_alt', true );
+					$alttext   = get_post_meta( get_post_thumbnail_id(), '_wp_attachment_image_alt', true );
 					$thumbnail = get_thumbnail( $width, $height, $classtext, $alttext, $titletext, false, 'Projectimage' );
-					$thumb = $thumbnail["thumb"];
+					$thumb     = $thumbnail['thumb'];
 
 					$page_layout = get_post_meta( get_the_ID(), '_et_pb_page_layout', true );
 
-					if ( '' !== $thumb )
-						print_thumbnail( $thumb, $thumbnail["use_timthumb"], $alttext, $width, $height );
-				?>
+					if ( '' !== $thumb ) {
+						print_thumbnail( $thumb, $thumbnail['use_timthumb'], $alttext, $width, $height );
+					}
+					?>
 
 				<?php endif; ?>
 
@@ -52,17 +56,23 @@ $show_navigation = get_post_meta( get_the_ID(), '_et_pb_project_nav', true );
 					<?php
 						the_content();
 
-						if ( ! $is_page_builder_used )
-							wp_link_pages( array( 'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'Divi' ), 'after' => '</div>' ) );
+					if ( ! $is_page_builder_used ) {
+						wp_link_pages(
+							[
+								'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'Divi' ),
+								'after'  => '</div>',
+							]
+						);
+					}
 					?>
 					</div>
 
 				<?php if ( ! $is_page_builder_used ) : ?>
 
 					<?php
-						if ( ! in_array( $page_layout, array( 'et_full_width_page', 'et_no_sidebar' ) ) ) {
-							et_pb_portfolio_meta_box();
-						}
+					if ( ! in_array( $page_layout, [ 'et_full_width_page', 'et_no_sidebar' ] ) ) {
+						et_pb_portfolio_meta_box();
+					}
 					?>
 
 				<?php endif; ?>
@@ -78,10 +88,12 @@ $show_navigation = get_post_meta( get_the_ID(), '_et_pb_project_nav', true );
 
 				</article>
 
-			<?php
-				if ( ! $is_page_builder_used && comments_open() && 'on' === et_get_option( 'divi_show_postcomments', 'on' ) )
-					comments_template( '', true );
-			?>
+				<?php
+				// TODO fix(D4, Comments): Revert to comments_template after WordPress core resolves Trac #61468. [https://github.com/elegantthemes/Divi/issues/28338].
+				if ( ! $is_page_builder_used && comments_open() && 'on' === et_get_option( 'divi_show_postcomments', 'on' ) ) {
+					et_comments_template_safe( '', true );
+				}
+				?>
 			<?php endwhile; ?>
 
 <?php if ( ! $is_page_builder_used ) : ?>
@@ -89,9 +101,9 @@ $show_navigation = get_post_meta( get_the_ID(), '_et_pb_project_nav', true );
 			</div>
 
 			<?php
-				if ( in_array( $page_layout, array( 'et_full_width_page', 'et_no_sidebar' ) ) ) {
-					et_pb_portfolio_meta_box();
-				}
+			if ( in_array( $page_layout, [ 'et_full_width_page', 'et_no_sidebar' ] ) ) {
+				et_pb_portfolio_meta_box();
+			}
 			?>
 
 			<?php get_sidebar(); ?>

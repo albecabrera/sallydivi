@@ -585,7 +585,8 @@ class CommentsModule implements DependencyInterface {
 		}
 
 		ob_start();
-		comments_template( '', true );
+		// TODO fix(D5, Comments): Revert to comments_template after WordPress core resolves Trac #61468. [https://github.com/elegantthemes/Divi/issues/28338].
+		et_comments_template_safe( '', true );
 		$comments_content = ob_get_clean();
 
 		// Restore original post data if we changed it.

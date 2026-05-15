@@ -36,6 +36,7 @@ use ET\Builder\Packages\ModuleLibrary\Column\ColumnModule;
 use ET\Builder\Packages\ModuleLibrary\Comments\CommentsModule;
 use ET\Builder\Packages\ModuleLibrary\ContactField\ContactFieldModule;
 use ET\Builder\Packages\ModuleLibrary\ContactForm\ContactFormModule;
+use ET\Builder\Packages\ModuleLibrary\ContactForm7\ContactForm7Module;
 use ET\Builder\Packages\ModuleLibrary\CountdownTimer\CountdownTimerModule;
 use ET\Builder\Packages\ModuleLibrary\Divider\DividerModule;
 use ET\Builder\Packages\ModuleLibrary\Dropdown\DropdownModule;
@@ -369,7 +370,7 @@ class Modules {
 
 		// Check if the current request is a block renderer request in an edit context.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
-		$is_block_renderer_request = isset( $_SERVER['REQUEST_URI'] ) && strpos( esc_url_raw( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ), '/block-renderer/' ) !== false;
+		$is_block_renderer_request = isset( $_SERVER['REQUEST_URI'] ) && str_contains( esc_url_raw( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ), '/block-renderer/' );
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verification is not needed here.
 		$is_edit_context = isset( $_REQUEST['context'] ) && 'edit' === $_REQUEST['context'];
 
@@ -454,6 +455,7 @@ if ( ConditionsUtility::should_register_all_d5_modules() ) {
 	$dependency_tree->add_dependency( new CommentsModule() );
 	$dependency_tree->add_dependency( new ContactFieldModule() );
 	$dependency_tree->add_dependency( new ContactFormModule() );
+	$dependency_tree->add_dependency( new ContactForm7Module() );
 	$dependency_tree->add_dependency( new CountdownTimerModule() );
 	$dependency_tree->add_dependency( new DividerModule() );
 	$dependency_tree->add_dependency( new DropdownModule() );

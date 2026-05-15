@@ -188,39 +188,9 @@
           "value": "on"
         }
       },
-      "focus": {
-        "border": {
-          "desktop": {
-            "value": {
-              "radius": {
-                "sync": "on",
-                "topLeft": "3px",
-                "topRight": "3px",
-                "bottomLeft": "3px",
-                "bottomRight": "3px"
-              }
-            }
-          }
-        }
-      },
       "focusUseBorder": {
         "desktop": {
           "value": "off"
-        }
-      }
-    },
-    "decoration": {
-      "border": {
-        "desktop": {
-          "value": {
-            "radius": {
-              "sync": "on",
-              "topLeft": "3px",
-              "topRight": "3px",
-              "bottomLeft": "3px",
-              "bottomRight": "3px"
-            }
-          }
         }
       }
     }

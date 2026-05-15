@@ -231,9 +231,7 @@ class DynamicContentOptionProductReviews extends DynamicContentOptionBase implem
 								</nav>
 								%4$s
 							</div>
-							<div id="review_form_wrapper">
-								%3$s
-							</div>
+							%3$s
 						</div>
 						',
 					/* 1$s */ et_core_esc_previously( $title ),

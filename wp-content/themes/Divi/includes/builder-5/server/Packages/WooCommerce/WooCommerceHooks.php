@@ -33,30 +33,6 @@ use WC_Frontend_Scripts;
 use WC_Shortcodes;
 use WP_Post;
 
-/*
- * Define required constants.
- *
- * The constants are copied from legacy (D4) code in `includes/builder/feature/woocommerce-modules.php` which would
- * define these constant if D5 page has woo modules shortcodes, however these constant won't be fined otherwise. This
- * is why it's being copied here for a page which has only D5 WC modules.
- *
- * If needed these constants would be modified for D5 purposes in a future iteration.
- */
-if ( ! defined( 'ET_BUILDER_WC_PRODUCT_LONG_DESC_META_KEY' ) ) {
-	// Post meta key to retrieve/save Long description metabox content.
-	define( 'ET_BUILDER_WC_PRODUCT_LONG_DESC_META_KEY', '_et_pb_old_content' );
-}
-
-if ( ! defined( 'ET_BUILDER_WC_PRODUCT_PAGE_LAYOUT_META_KEY' ) ) {
-	// Post meta key to retrieve/save Long description metabox content.
-	define( 'ET_BUILDER_WC_PRODUCT_PAGE_LAYOUT_META_KEY', '_et_pb_product_page_layout' );
-}
-
-if ( ! defined( 'ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY' ) ) {
-	// Post meta key to track Product page content status changes.
-	define( 'ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY', '_et_pb_woo_page_content_status' );
-}
-
 /**
  * Manages WooCommerce-related hooks and functionalities.
  *
@@ -66,6 +42,26 @@ if ( ! defined( 'ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY' ) ) {
  * @since ??
  */
 class WooCommerceHooks implements DependencyInterface {
+	/**
+	 * Post meta-key for product's long-description.
+	 *
+	 * @since ??
+	 */
+	const PRODUCT_LONG_DESC_META_KEY = '_et_pb_old_content';
+
+	/**
+	 * Post meta-key for product page layout.
+	 *
+	 * @since ??
+	 */
+	const PRODUCT_PAGE_LAYOUT_META_KEY = '_et_pb_product_page_layout';
+
+	/**
+	 * Post meta-key for product page content status.
+	 *
+	 * @since ??
+	 */
+	const PRODUCT_PAGE_CONTENT_STATUS_META_KEY = '_et_pb_woo_page_content_status';
 
 	/**
 	 * Flag to track if hook relocation has been executed.
@@ -232,6 +228,30 @@ class WooCommerceHooks implements DependencyInterface {
 		// Static $_relocation_done guard prevents duplicate execution when both hooks fire.
 		add_action( 'wp', [ self::class, 'relocate_woocommerce_single_product_summary' ] );
 		add_action( 'et_builder_ready', [ self::class, 'relocate_woocommerce_single_product_summary' ] );
+
+		/**
+		 * Wrap WooCommerce reviews tab callback with safe wrapper to prevent DivisionByZeroError
+		 * when comments_per_page is 0 with pagination enabled (WordPress Trac #61468).
+		 *
+		 * This filter ensures the reviews tab on single product pages uses et_comments_template_safe()
+		 * instead of calling comments_template() directly.
+		 *
+		 * TODO fix( D4, Comments ): Remove this require and the shim file after WordPress core resolves Trac // 61468. [https://github.com/elegantthemes/Divi/issues/28338]
+		 *
+		 * @see https://github.com/elegantthemes/Divi/issues/28338
+		 */
+		add_filter(
+			'woocommerce_product_tabs',
+			static function ( $tabs ) {
+				if ( isset( $tabs['reviews'] ) && 'comments_template' === $tabs['reviews']['callback'] ) {
+					$tabs['reviews']['callback'] = static function () {
+						et_comments_template_safe();
+					};
+				}
+				return $tabs;
+			},
+			PHP_INT_MAX
+		);
 
 		// Ensure WooCommerce Blocks checkout settings are registered for REST API.
 		add_action( 'rest_api_init', [ self::class, 'ensure_woocommerce_checkout_settings_registration' ], 5 );
@@ -875,7 +895,7 @@ class WooCommerceHooks implements DependencyInterface {
 			return;
 		}
 
-		delete_post_meta( $post->ID, ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY );
+			delete_post_meta( $post->ID, self::get_product_page_content_status_meta_key() );
 	}
 
 	/**
@@ -1072,7 +1092,7 @@ class WooCommerceHooks implements DependencyInterface {
 			return false;
 		}
 
-		return get_post_meta( $post_id, ET_BUILDER_WC_PRODUCT_PAGE_LAYOUT_META_KEY, true );
+		return get_post_meta( $post_id, self::get_product_page_layout_meta_key(), true );
 	}
 
 	/**
@@ -1102,9 +1122,9 @@ class WooCommerceHooks implements DependencyInterface {
 		}
 
 		// Get the product page layout setting for this page and the content's modification status.
-		$product_page_layout         = WooCommerceUtils::get_product_layout( $post->ID );
-		$is_product_content_modified = 'modified' === get_post_meta( $post->ID, ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY, true );
-		$is_preview_loading          = is_preview();
+		$product_page_layout                 = WooCommerceUtils::get_product_layout( $post->ID );
+		$is_product_content_modified         = 'modified' === get_post_meta( $post->ID, self::get_product_page_content_status_meta_key(), true );
+		$is_preview_loading                  = is_preview();
 
 		/*
 		 * Bail if the layout is set to "build from scratch" (`et_build_from_scratch`),
@@ -1979,13 +1999,13 @@ class WooCommerceHooks implements DependencyInterface {
 		}
 
 		$modified_status            = 'modified';
-		$is_content_status_modified = get_post_meta( $post_id, ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY, true ) === $modified_status;
+		$is_content_status_modified = get_post_meta( $post_id, self::get_product_page_content_status_meta_key(), true ) === $modified_status;
 
 		if ( $is_content_status_modified ) {
 			return;
 		}
 
-		update_post_meta( $post_id, ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY, $modified_status );
+		update_post_meta( $post_id, self::get_product_page_content_status_meta_key(), $modified_status );
 	}
 
 	/**
@@ -2012,7 +2032,7 @@ class WooCommerceHooks implements DependencyInterface {
 		 * Hence the meta key/value is removed, when the Builder is turned off.
 		 */
 		if ( ! et_pb_is_pagebuilder_used( $post_id ) ) {
-			delete_post_meta( $post_id, ET_BUILDER_WC_PRODUCT_PAGE_LAYOUT_META_KEY );
+			delete_post_meta( $post_id, self::get_product_page_layout_meta_key() );
 			return;
 		}
 
@@ -2021,7 +2041,7 @@ class WooCommerceHooks implements DependencyInterface {
 		$is_non_product_post_type = 'product' !== $post->post_type;
 		if ( $is_non_product_post_type ) {
 			// Returns FALSE when no meta key is found.
-			delete_post_meta( $post_id, ET_BUILDER_WC_PRODUCT_PAGE_LAYOUT_META_KEY );
+			delete_post_meta( $post_id, self::get_product_page_layout_meta_key() );
 
 			return;
 		}
@@ -2029,7 +2049,7 @@ class WooCommerceHooks implements DependencyInterface {
 		// Do not update the Product page layout post meta when it contains a value.
 		$product_page_layout = get_post_meta(
 			$post_id,
-			ET_BUILDER_WC_PRODUCT_PAGE_LAYOUT_META_KEY,
+			self::get_product_page_layout_meta_key(),
 			true
 		);
 		if ( $product_page_layout ) {
@@ -2043,7 +2063,7 @@ class WooCommerceHooks implements DependencyInterface {
 
 		update_post_meta(
 			$post_id,
-			ET_BUILDER_WC_PRODUCT_PAGE_LAYOUT_META_KEY,
+			self::get_product_page_layout_meta_key(),
 			sanitize_text_field( $product_page_layout )
 		);
 	}
@@ -2094,7 +2114,7 @@ class WooCommerceHooks implements DependencyInterface {
 		}
 
 		// Bail early if the Page already has an initial content set.
-		$is_content_status_modified = 'modified' === get_post_meta( $post_id, ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY, true );
+		$is_content_status_modified = 'modified' === get_post_meta( $post_id, self::get_product_page_content_status_meta_key(), true );
 
 		if ( $is_content_status_modified ) {
 			return $maybe_builder_content;
@@ -2392,7 +2412,7 @@ class WooCommerceHooks implements DependencyInterface {
 	/**
 	 * Saves the WooCommerce long description metabox content.
 	 *
-	 * The content is stored as post-meta w/ the key `ET_BUILDER_WC_PRODUCT_LONG_DESC_META_KEY`.
+	 * The content is stored as post-meta w/ the key returned by `self::get_long_desc_meta_key()`.
 	 *
 	 * Legacy function: et_builder_wc_long_description_metabox_save()
 	 *
@@ -2433,7 +2453,7 @@ class WooCommerceHooks implements DependencyInterface {
 		$long_desc_content = $request['et_builder_wc_product_long_description'];
 		$sanitized_content = wp_kses_post( $long_desc_content );
 
-		update_post_meta( $post_id, ET_BUILDER_WC_PRODUCT_LONG_DESC_META_KEY, $sanitized_content );
+		update_post_meta( $post_id, self::get_long_desc_meta_key(), $sanitized_content );
 	}
 
 	/**
@@ -2463,7 +2483,7 @@ class WooCommerceHooks implements DependencyInterface {
 		$post_id = $post->ID;
 
 		// Long description metabox content. Default Empty.
-		$long_desc_content = get_post_meta( $post_id, ET_BUILDER_WC_PRODUCT_LONG_DESC_META_KEY, true );
+		$long_desc_content = get_post_meta( $post_id, self::get_long_desc_meta_key(), true );
 		$long_desc_content = ! empty( $long_desc_content ) ? $long_desc_content : '';
 
 		/**
@@ -2612,7 +2632,7 @@ class WooCommerceHooks implements DependencyInterface {
 	public static function register_page_settings_items(): void {
 		PageSettings::register_item(
 			[
-				'get_name'               => ET_BUILDER_WC_PRODUCT_LONG_DESC_META_KEY,
+				'get_name'               => self::get_long_desc_meta_key(),
 				'name'                   => 'wooCommerceProductLongDescription',
 				'default_value'          => '',
 				'save_sanitize_function' => 'wp_kses_post',
@@ -2624,7 +2644,7 @@ class WooCommerceHooks implements DependencyInterface {
 						return '';
 					}
 
-					$saved_value  = get_post_meta( $post_id, ET_BUILDER_WC_PRODUCT_LONG_DESC_META_KEY, true );
+					$saved_value  = get_post_meta( $post_id, self::get_long_desc_meta_key(), true );
 					$return_value = '' !== $saved_value ? $saved_value : $default_value;
 
 					return $return_value;
@@ -3221,4 +3241,61 @@ class WooCommerceHooks implements DependencyInterface {
 			remove_theme_support( 'wc-product-gallery-lightbox' );
 		}
 	}
+
+	/**
+	 * Gets the Long Description Meta Key safely.
+	 *
+	 * @since ??
+	 *
+	 * @return string
+	 */
+	public static function get_long_desc_meta_key(): string {
+		return defined( 'ET_BUILDER_WC_PRODUCT_LONG_DESC_META_KEY' ) ? constant( 'ET_BUILDER_WC_PRODUCT_LONG_DESC_META_KEY' ) : self::PRODUCT_LONG_DESC_META_KEY;
+	}
+
+	/**
+	 * Gets the Product Page Layout Meta Key safely.
+	 *
+	 * @since ??
+	 *
+	 * @return string
+	 */
+	public static function get_product_page_layout_meta_key(): string {
+		return defined( 'ET_BUILDER_WC_PRODUCT_PAGE_LAYOUT_META_KEY' ) ? constant( 'ET_BUILDER_WC_PRODUCT_PAGE_LAYOUT_META_KEY' ) : self::PRODUCT_PAGE_LAYOUT_META_KEY;
+	}
+
+	/**
+	 * Gets the Product Page Content Status Meta Key safely.
+	 *
+	 * @since ??
+	 *
+	 * @return string
+	 */
+	public static function get_product_page_content_status_meta_key(): string {
+		return defined( 'ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY' ) ? constant( 'ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY' ) : self::PRODUCT_PAGE_CONTENT_STATUS_META_KEY;
+	}
+}
+
+/*
+ * Define required constants.
+ *
+ * The constants are copied from legacy (D4) code in `includes/builder/feature/woocommerce-modules.php` which would
+ * define these constants if D5 page has woo modules shortcodes, however, these constants won't be fined otherwise.
+ * This is why it's being copied here for a page which has only D5 WC modules.
+ *
+ * If needed, these constants would be modified for D5 purposes in a future iteration.
+ */
+if ( ! defined( 'ET_BUILDER_WC_PRODUCT_LONG_DESC_META_KEY' ) ) {
+	// Post meta key to retrieve/save Long description metabox content.
+	define( 'ET_BUILDER_WC_PRODUCT_LONG_DESC_META_KEY', WooCommerceHooks::PRODUCT_LONG_DESC_META_KEY );
+}
+
+if ( ! defined( 'ET_BUILDER_WC_PRODUCT_PAGE_LAYOUT_META_KEY' ) ) {
+	// Post meta key to retrieve/save Long description metabox content.
+	define( 'ET_BUILDER_WC_PRODUCT_PAGE_LAYOUT_META_KEY', WooCommerceHooks::PRODUCT_PAGE_LAYOUT_META_KEY );
+}
+
+if ( ! defined( 'ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY' ) ) {
+	// Post meta key to track Product page content status changes.
+	define( 'ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY', WooCommerceHooks::PRODUCT_PAGE_CONTENT_STATUS_META_KEY );
 }

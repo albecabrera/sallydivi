@@ -41,7 +41,13 @@ class SettingsDataController extends RESTController {
 			'footer' => 0,
 		];
 
-		$post_type              = get_post_type( $post_id );
+		$post_type = get_post_type( $post_id );
+
+		// Divi Library layouts must not receive site Theme Builder header/footer/body; post content only.
+		if ( 'et_pb_layout' === $post_type ) {
+			return $resolved;
+		}
+
 		$is_tb_layout_post_type = is_string( $post_type ) && et_theme_builder_is_layout_post_type( $post_type );
 
 		// When template areas are hidden in UI, skip resolving template IDs unless editing a TB layout directly.
@@ -191,8 +197,10 @@ class SettingsDataController extends RESTController {
 		add_filter( 'et_builder_should_load_all_module_data', '__return_true' );
 
 		// Create instance of shortcode manager class then register all shortcode modules.
+		do_action( 'divi_visual_builder_settings_data_before_register_all_shortcodes' );
 		$manager = new \ET_Builder_Module_Shortcode_Manager();
 		$manager->register_all_shortcodes();
+		do_action( 'divi_visual_builder_settings_data_after_register_all_shortcodes' );
 
 		return self::response_success(
 			SettingsData::get_settings_data( [ 'usage' => 'after_app_load' ] )

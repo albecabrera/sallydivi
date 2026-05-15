@@ -340,19 +340,6 @@ class GlobalPresetItemGroup extends GlobalPresetItem {
 					$normalized_data_group_id,
 					$data_primary_attr_name
 				) {
-					$direct_property_path = explode( '.', $attr_name );
-					if ( ArrayUtility::has( $attrs, $direct_property_path ) ) {
-						$direct_attr = ArrayUtility::get_value_by_array_path( $attrs, $direct_property_path );
-
-						return GlobalPresetItemGroupUtils::maybe_set_attrs(
-							[
-								'attr'         => $direct_attr,
-								'propertyPath' => $direct_property_path,
-								'accumulator'  => $accumulator,
-							]
-						);
-					}
-
 					$attr_name_resolved = GlobalPresetItemGroupAttrNameResolver::get_attr_name(
 						$attr_name,
 						$module_name,
@@ -468,6 +455,7 @@ class GlobalPresetItemGroup extends GlobalPresetItem {
 				'presetType'       => $this->get_data_type(),
 				'presetModuleName' => $this->get_module_name(),
 				'presetGroupName'  => $this->get_data_group_name(),
+				'presetGroupId'    => $this->get_group_id(),
 				'presetId'         => $this->as_default() ? 'default' : $this->get_data_id(),
 				'isNested'         => $this->_is_nested,
 			]

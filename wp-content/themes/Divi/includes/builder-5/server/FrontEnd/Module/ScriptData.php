@@ -429,6 +429,12 @@ class ScriptData {
 	 * ```
 	 */
 	public static function reset(): void {
-		self::$_script_data = [];
+		self::$_script_data = [
+			'scroll'       => [],
+			'sticky'       => [],
+			'animation'    => [],
+			'interactions' => [],
+			'link'         => [],
+		];
 	}
 }

@@ -12,6 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
+use ET\Builder\Packages\ModuleLibrary\FormFieldVariantPresetMapTrait;
+use ET\Builder\Packages\Module\Options\FormField\FieldDecorationPresetAttrsMap;
+use ET\Builder\Packages\Module\Options\Icon\IconPresetAttrsMap;
+
 
 /**
  * Class ContactFormPresetAttrsMap
@@ -21,6 +25,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package ET\Builder\Packages\ModuleLibrary\ContactForm
  */
 class ContactFormPresetAttrsMap {
+	use FormFieldVariantPresetMapTrait;
+
 	/**
 	 * Get the preset attributes map for the ContactForm module.
 	 *
@@ -40,55 +46,6 @@ class ContactFormPresetAttrsMap {
 			'module.advanced.text.text__color',
 			'button.decoration.font.font__lineHeight',
 			'captcha.decoration.font.font__textAlign',
-			'field.decoration.background__gradient.stops',
-			'field.decoration.background__gradient.enabled',
-			'field.decoration.background__gradient.type',
-			'field.decoration.background__gradient.direction',
-			'field.decoration.background__gradient.directionRadial',
-			'field.decoration.background__gradient.repeat',
-			'field.decoration.background__gradient.length',
-			'field.decoration.background__gradient.overlaysImage',
-			'field.decoration.background__image.url',
-			'field.decoration.background__image.parallax.enabled',
-			'field.decoration.background__image.parallax.method',
-			'field.decoration.background__image.size',
-			'field.decoration.background__image.width',
-			'field.decoration.background__image.height',
-			'field.decoration.background__image.position',
-			'field.decoration.background__image.horizontalOffset',
-			'field.decoration.background__image.verticalOffset',
-			'field.decoration.background__image.repeat',
-			'field.decoration.background__image.blend',
-			'field.decoration.background__video.mp4',
-			'field.decoration.background__video.webm',
-			'field.decoration.background__video.width',
-			'field.decoration.background__video.height',
-			'field.decoration.background__video.allowPlayerPause',
-			'field.decoration.background__video.pauseOutsideViewport',
-			'field.decoration.background__pattern.style',
-			'field.decoration.background__pattern.enabled',
-			'field.decoration.background__pattern.color',
-			'field.decoration.background__pattern.transform',
-			'field.decoration.background__pattern.size',
-			'field.decoration.background__pattern.width',
-			'field.decoration.background__pattern.height',
-			'field.decoration.background__pattern.repeatOrigin',
-			'field.decoration.background__pattern.horizontalOffset',
-			'field.decoration.background__pattern.verticalOffset',
-			'field.decoration.background__pattern.repeat',
-			'field.decoration.background__pattern.blend',
-			'field.decoration.background__mask.style',
-			'field.decoration.background__mask.enabled',
-			'field.decoration.background__mask.color',
-			'field.decoration.background__mask.transform',
-			'field.decoration.background__mask.aspectRatio',
-			'field.decoration.background__mask.size',
-			'field.decoration.background__mask.width',
-			'field.decoration.background__mask.height',
-			'field.decoration.background__mask.position',
-			'field.decoration.background__mask.horizontalOffset',
-			'field.decoration.background__mask.verticalOffset',
-			'field.decoration.background__mask.blend',
 			'button.decoration.button.innerContent__text',
 			'button.decoration.button.innerContent__linkUrl',
 			'button.decoration.button.innerContent__linkTarget',
@@ -214,9 +171,11 @@ class ContactFormPresetAttrsMap {
 		foreach ( $keys_to_remove as $key ) {
 			unset( $map[ $key ] );
 		}
+		$field_decoration_map = FieldDecorationPresetAttrsMap::get_map();
 
-		return array_merge(
+		$merged_map = array_merge(
 			$map,
+			$field_decoration_map,
 			[
 				'module.advanced.spamProtection__enabled'  => [
 					'attrName' => 'module.advanced.spamProtection',
@@ -849,6 +808,50 @@ class ContactFormPresetAttrsMap {
 					'subName'  => 'htmlBefore',
 				],
 			]
+		);
+
+		$checkbox_map = self::_duplicate_map_entries_by_prefix(
+			$merged_map,
+			'field.',
+			'checkbox.'
+		);
+		$checkbox_map = self::_filter_form_field_variant_map(
+			$checkbox_map,
+			'checkbox.'
+		);
+		$radio_map    = self::_duplicate_map_entries_by_prefix(
+			$merged_map,
+			'field.',
+			'radio.'
+		);
+		$radio_map    = self::_filter_form_field_variant_map(
+			$radio_map,
+			'radio.'
+		);
+
+		$checkbox_icon_map      = IconPresetAttrsMap::get_map( 'checkbox.decoration.icon' );
+		$radio_icon_map         = IconPresetAttrsMap::get_map( 'radio.decoration.icon' );
+		$checkbox_icon_root_map = [
+			'checkbox.decoration.icon' => [
+				'attrName' => 'checkbox.decoration.icon',
+				'preset'   => [ 'style', 'html' ],
+			],
+		];
+		$radio_icon_root_map    = [
+			'radio.decoration.icon' => [
+				'attrName' => 'radio.decoration.icon',
+				'preset'   => [ 'style', 'html' ],
+			],
+		];
+
+		return array_merge(
+			$merged_map,
+			$checkbox_map,
+			$checkbox_icon_root_map,
+			$checkbox_icon_map,
+			$radio_map,
+			$radio_icon_root_map,
+			$radio_icon_map
 		);
 	}
 }

@@ -98,6 +98,14 @@ class SettingsData implements DependencyInterface {
 			[
 				'name'               => 'dynamicContent',
 				'usage'              => 'app_load',
+				'get_value_function' => [ SettingsDataCallbacks::class, 'dynamic_content_app_load' ],
+			]
+		);
+
+		self::register_item(
+			[
+				'name'               => 'dynamicContent',
+				'usage'              => 'after_app_load',
 				'get_value_function' => [ SettingsDataCallbacks::class, 'dynamic_content' ],
 			]
 		);
@@ -105,7 +113,7 @@ class SettingsData implements DependencyInterface {
 		self::register_item(
 			[
 				'name'               => 'fonts',
-				'usage'              => 'app_load',
+				'usage'              => 'after_app_load',
 				'get_value_function' => [ SettingsDataCallbacks::class, 'fonts' ],
 			]
 		);
@@ -138,6 +146,14 @@ class SettingsData implements DependencyInterface {
 			[
 				'name'               => 'markups',
 				'usage'              => 'app_load',
+				'get_value_function' => [ SettingsDataCallbacks::class, 'markups_app_load' ],
+			]
+		);
+
+		self::register_item(
+			[
+				'name'               => 'markups',
+				'usage'              => 'after_app_load',
 				'get_value_function' => [ SettingsDataCallbacks::class, 'markups' ],
 			]
 		);
@@ -149,6 +165,16 @@ class SettingsData implements DependencyInterface {
 				'get_value_function' => [ SettingsDataCallbacks::class, 'nav_menus' ],
 			]
 		);
+
+		if ( class_exists( '\WPCF7_ContactForm' ) ) {
+			self::register_item(
+				[
+					'name'               => 'contactForm7',
+					'usage'              => 'app_load',
+					'get_value_function' => [ SettingsDataCallbacks::class, 'contact_form_7' ],
+				]
+			);
+		}
 
 		self::register_item(
 			[
@@ -185,7 +211,7 @@ class SettingsData implements DependencyInterface {
 		self::register_item(
 			[
 				'name'               => 'services',
-				'usage'              => 'app_load',
+				'usage'              => 'after_app_load',
 				'get_value_function' => [ SettingsDataCallbacks::class, 'services' ],
 			]
 		);
@@ -234,6 +260,14 @@ class SettingsData implements DependencyInterface {
 			[
 				'name'               => 'taxonomy',
 				'usage'              => 'app_load',
+				'get_value_function' => [ SettingsDataCallbacks::class, 'taxonomy_app_load' ],
+			]
+		);
+
+		self::register_item(
+			[
+				'name'               => 'taxonomy',
+				'usage'              => 'after_app_load',
 				'get_value_function' => [ SettingsDataCallbacks::class, 'taxonomy' ],
 			]
 		);
@@ -356,6 +390,33 @@ class SettingsData implements DependencyInterface {
 		if ( $after_app_load || $both ) {
 			self::$_settings_data_functions_after_app_load[ $name ] = $get_value_function;
 		}
+
+		/**
+		 * Fires after a settings data item is registered.
+		 *
+		 * @since ??
+		 *
+		 * @param string $name  Settings data item name.
+		 * @param string $usage Usage of the item. 'app_load', 'after_app_load', or 'both'.
+		 */
+		do_action( 'divi_visual_builder_settings_data_register_item', $name, $usage );
+	}
+
+	/**
+	 * Get registered settings data item names by usage.
+	 *
+	 * @since ??
+	 *
+	 * @param string $usage Usage of the settings data. 'app_load' or 'after_app_load'.
+	 *
+	 * @return array<string> List of registered item names.
+	 */
+	public static function get_registered_item_names( string $usage ): array {
+		if ( 'after_app_load' === $usage ) {
+			return array_keys( self::$_settings_data_functions_after_app_load );
+		}
+
+		return array_keys( self::$_settings_data_functions_on_app_load );
 	}
 
 	/**
@@ -393,7 +454,31 @@ class SettingsData implements DependencyInterface {
 			// Populate the returned values.
 			foreach ( $registered_settings_data as $item_name => $get_value_function ) {
 				if ( is_callable( $get_value_function ) ) {
+					/**
+					 * Fires before retrieving a settings data item.
+					 *
+					 * The dynamic portion of the hook name, `$item_name`, refers to the
+					 * settings data key being retrieved.
+					 *
+					 * @since ??
+					 *
+					 * @param string $usage Usage of the settings data. 'app_load' or 'after_app_load'.
+					 */
+					do_action( "divi_visual_builder_settings_data_before_get_{$item_name}", $usage );
+
 					$values[ $item_name ] = $get_value_function();
+
+					/**
+					 * Fires after retrieving a settings data item.
+					 *
+					 * The dynamic portion of the hook name, `$item_name`, refers to the
+					 * settings data key being retrieved.
+					 *
+					 * @since ??
+					 *
+					 * @param string $usage Usage of the settings data. 'app_load' or 'after_app_load'.
+					 */
+					do_action( "divi_visual_builder_settings_data_after_get_{$item_name}", $usage );
 				}
 			}
 

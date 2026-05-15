@@ -18,6 +18,7 @@ use ET\Builder\Framework\Settings\PageSettings;
 use ET\Builder\Framework\Utility\Conditions;
 use ET\Builder\FrontEnd\Module\ScriptData;
 use ET\Builder\VisualBuilder\Assets\AssetsUtility;
+use ET\Builder\VisualBuilder\Assets\LazyAssetLoader;
 use ET\Builder\VisualBuilder\Assets\PackageBuildManager;
 use ET\Builder\VisualBuilder\Assets\SpeculationRules;
 use ET\Builder\VisualBuilder\ClassicEditor\ClassicEditor;
@@ -38,6 +39,13 @@ use ET\Builder\VisualBuilder\TopWindow;
  * @since ??
  */
 class VisualBuilder {
+	/**
+	 * App-window first-render signal used for lazy asset loading coordination.
+	 *
+	 * @var string
+	 */
+	private const APP_WINDOW_FIRST_RENDER_SIGNAL = 'divi:app-window:first-render';
+	private const APP_WINDOW_FIRST_RENDER_FLAG   = '__diviAppWindowFirstRenderDone';
 
 	/**
 	 * Stores dependencies that were passed to constructor.
@@ -343,6 +351,9 @@ class VisualBuilder {
 		// Injected style that is required early (loading external .css will be too late).
 		add_action( 'wp_head', [ AssetsUtility::class, 'inject_preboot_style' ], 0 );
 
+		// Always enforce HTTPS for Google Fonts URLs in Visual Builder contexts.
+		add_filter( 'style_loader_src', [ AssetsUtility::class, 'force_https_google_fonts_src' ], PHP_INT_MAX, 2 );
+
 		wp_register_script(
 			'react-tiny-mce',
 			ET_BUILDER_5_URI . '/visual-builder/assets/tinymce/tinymce.min.js',
@@ -360,6 +371,16 @@ class VisualBuilder {
 
 		// Dequeue D4 assets (styles & scripts).
 		remove_action( 'wp_enqueue_scripts', 'et_builder_enqueue_assets_main', 99999999 );
+
+		// The front-end theme bootstrap is expensive and not required for the VB top window.
+		// Keep it for app window because module edit views still rely on legacy globals it registers.
+		if ( Conditions::is_vb_top_window() ) {
+			remove_action( 'wp_enqueue_scripts', 'et_divi_load_scripts_styles', 10 );
+			remove_action( 'wp_enqueue_scripts', 'et_builder_preprint_font', 10 );
+			// Prevent legacy Divi font queue printers from enqueuing heading/body fonts in top window.
+			remove_action( 'wp_head', 'et_builder_preprint_font', 0 );
+			remove_action( 'wp_footer', 'et_builder_print_font', 10 );
+		}
 
 		wp_enqueue_style( 'wp-color-picker' );
 
@@ -384,17 +405,14 @@ class VisualBuilder {
 		 */
 		if ( Conditions::is_vb_app_window() ) {
 			add_filter( 'show_admin_bar', '__return_false' );
+			add_action( 'wp_footer', [ $this, 'enqueue_cloud_app_after_first_render' ], 1 );
 			add_action( 'wp_footer', [ $this, 'enqueue_breakpoint_script_data' ], 11 );
 
-			// Enqueue Divi Cloud App bundle script file an its script data.
-			\ET_Cloud_App::load_js( false, true );
+			// Load Divi Cloud app after initial app window render to avoid blocking first paint.
 		} else {
 			// Ensure admin bar is always loaded in VB top window context for CSS visibility control.
 			add_filter( 'show_admin_bar', '__return_true' );
-
-			// Enqueue Divi Cloud app bundle style on top window because cloud app is being rendered on top window
-			// thus Cloud app's style should exist on top window.
-			\ET_Cloud_App::enqueue_style();
+			add_action( 'wp_footer', [ $this, 'enqueue_top_window_cloud_assets_after_app_ready' ], 1 );
 		}
 	}
 
@@ -416,6 +434,215 @@ class VisualBuilder {
 
 		Breakpoint::set_script_data();
 		ScriptData::enqueue_data( 'breakpoint' );
+	}
+
+	/**
+	 * Get cache-buster value for lazy-loaded bundle URLs.
+	 *
+	 * @since ??
+	 *
+	 * @return string
+	 */
+	private function _get_lazy_assets_cache_buster(): string {
+		$et_debug     = defined( 'ET_DEBUG' ) && ET_DEBUG;
+		$core_version = defined( 'ET_CORE_VERSION' ) ? (string) ET_CORE_VERSION : '';
+
+		return (string) ( $et_debug ? wp_rand() / mt_getrandmax() : $core_version );
+	}
+
+	/**
+	 * Get AI app script source and localized data for a specific window context.
+	 *
+	 * @since ??
+	 *
+	 * @param string $data_key Script data key (`data_app_window` or `data_top_window`).
+	 *
+	 * @return array
+	 */
+	private function _get_ai_lazy_asset_payload( string $data_key ): array {
+		$ai_package = PackageBuildManager::get_package_build( 'et-ai-app' );
+		$ai_script  = is_array( $ai_package['script'] ?? null ) ? $ai_package['script'] : [];
+		$ai_src     = is_string( $ai_script['src'] ?? null ) ? $ai_script['src'] : '';
+		$ai_data    = is_array( $ai_script[ $data_key ] ?? null ) ? $ai_script[ $data_key ] : [];
+
+		return [
+			'src'  => $ai_src,
+			'data' => $ai_data,
+		];
+	}
+
+	/**
+	 * Get package script source.
+	 *
+	 * @since ??
+	 *
+	 * @param string $package_name Divi package name.
+	 *
+	 * @return string
+	 */
+	private function _get_package_script_src( string $package_name ): string {
+		$package = PackageBuildManager::get_package_build( $package_name );
+		$script  = is_array( $package['script'] ?? null ) ? $package['script'] : [];
+
+		return is_string( $script['src'] ?? null ) ? $script['src'] : '';
+	}
+
+	/**
+	 * Get package style source.
+	 *
+	 * @since ??
+	 *
+	 * @param string $package_name Divi package name.
+	 *
+	 * @return string
+	 */
+	private function _get_package_style_src( string $package_name ): string {
+		$package = PackageBuildManager::get_package_build( $package_name );
+		$style   = is_array( $package['style'] ?? null ) ? $package['style'] : [];
+
+		return is_string( $style['src'] ?? null ) ? $style['src'] : '';
+	}
+
+	/**
+	 * Get Divi Cloud app stylesheet source URL.
+	 *
+	 * @since ??
+	 *
+	 * @return string
+	 */
+	private function _get_cloud_style_src(): string {
+		$style_uri = \ET_Cloud_App::get_style_uri();
+		return is_string( $style_uri ) ? $style_uri : '';
+	}
+
+	/**
+	 * Build lazy-loader assets payload for cloud and AI bundles.
+	 *
+	 * @since ??
+	 *
+	 * @param string $cloud_script_id  Script element id used for cloud app bundle.
+	 * @param string $cloud_script_src Cloud app bundle source URL.
+	 * @param string $ai_script_id     Script element id used for AI app bundle.
+	 * @param string $ai_script_src    AI app bundle source URL.
+	 * @param array  $ai_data          AI app localized data.
+	 *
+	 * @return array
+	 */
+	private function _build_cloud_and_ai_lazy_assets_payload(
+		string $cloud_script_id,
+		string $cloud_script_src,
+		string $ai_script_id,
+		string $ai_script_src,
+		array $ai_data
+	): array {
+		$lazy_assets = [
+			'scripts' => [
+				$cloud_script_id => $cloud_script_src,
+			],
+			'styles'  => [],
+			'globals' => [
+				'et_cloud_data' => \ET_Cloud_App::get_cloud_helpers(),
+			],
+		];
+
+		if ( '' !== $ai_script_src ) {
+			$lazy_assets['scripts'][ $ai_script_id ] = $ai_script_src;
+		}
+
+		if ( ! empty( $ai_data ) ) {
+			$lazy_assets['globals']['EtAiAppData'] = $ai_data;
+		}
+
+		return $lazy_assets;
+	}
+
+	/**
+	 * Enqueue a lazy loader that inserts Divi Cloud assets after the app window's first render.
+	 *
+	 * @since ??
+	 *
+	 * @return void
+	 */
+	public function enqueue_cloud_app_after_first_render(): void {
+		if ( ! Conditions::is_vb_app_window() ) {
+			return;
+		}
+
+		$cache_buster = $this->_get_lazy_assets_cache_buster();
+		$ai_payload   = $this->_get_ai_lazy_asset_payload( 'data_app_window' );
+		$ai_agent_src = $this->_get_package_script_src( 'divi-ai-agent' );
+		$mask_lib_src = $this->_get_package_script_src( 'divi-mask-and-pattern-library' );
+		$cloud_css    = $this->_get_package_style_src( 'divi-cloud-app' );
+		$lazy_assets  = $this->_build_cloud_and_ai_lazy_assets_payload(
+			'et-cloud-app-lazy-script',
+			add_query_arg( 'ver', $cache_buster, \ET_Cloud_App::get_bundle_uri() ),
+			'et-ai-app-lazy-script',
+			$ai_payload['src'],
+			$ai_payload['data']
+		);
+
+		if ( '' !== $ai_agent_src ) {
+			$lazy_assets['scripts']['divi-ai-agent-lazy-script'] = $ai_agent_src;
+		}
+
+		if ( '' !== $mask_lib_src ) {
+			// Lazy-load mask/pattern runtime and let VB refresh CSS declarations after runtime is ready.
+			$lazy_assets['scripts']['divi-mask-and-pattern-library-lazy-script'] = $mask_lib_src;
+		}
+
+		if ( '' !== $cloud_css ) {
+			$lazy_assets['styles']['et-cloud-app-lazy-style'] = add_query_arg( 'ver', $cache_buster, $cloud_css );
+		}
+
+		LazyAssetLoader::enqueue_loader(
+			'divi-cloud-app-lazy-loader',
+			$lazy_assets,
+			[
+				// Wait for the app-render signal and preloader removal before loading cloud and AI bundles.
+				'trigger_event'      => self::APP_WINDOW_FIRST_RENDER_SIGNAL,
+				'wait_for_preloader' => true,
+				'auto_attempt'       => true,
+			]
+		);
+	}
+
+	/**
+	 * Enqueue top-window cloud assets after app-window render completes.
+	 *
+	 * @since ??
+	 *
+	 * @return void
+	 */
+	public function enqueue_top_window_cloud_assets_after_app_ready(): void {
+		if ( ! Conditions::is_vb_top_window() ) {
+			return;
+		}
+
+		$cache_buster = $this->_get_lazy_assets_cache_buster();
+		$ai_payload   = $this->_get_ai_lazy_asset_payload( 'data_top_window' );
+		$cloud_css    = $this->_get_cloud_style_src();
+		$lazy_assets  = $this->_build_cloud_and_ai_lazy_assets_payload(
+			'et-cloud-app-top-window-script',
+			add_query_arg( 'ver', $cache_buster, \ET_Cloud_App::get_bundle_uri() ),
+			'et-ai-app-top-window-lazy-script',
+			$ai_payload['src'],
+			$ai_payload['data']
+		);
+
+		if ( '' !== $cloud_css ) {
+			$lazy_assets['styles']['et-cloud-app-top-window-lazy-style'] = add_query_arg( 'ver', $cache_buster, $cloud_css );
+		}
+
+		LazyAssetLoader::enqueue_loader(
+			'divi-cloud-app-top-window-lazy-loader',
+			$lazy_assets,
+			[
+				// Top window listens for the app-window postMessage signal before loading secondary bundles.
+				'trigger_message_type' => self::APP_WINDOW_FIRST_RENDER_SIGNAL,
+				'trigger_window_flag'  => self::APP_WINDOW_FIRST_RENDER_FLAG,
+				'auto_attempt'         => false,
+			]
+		);
 	}
 
 	/**

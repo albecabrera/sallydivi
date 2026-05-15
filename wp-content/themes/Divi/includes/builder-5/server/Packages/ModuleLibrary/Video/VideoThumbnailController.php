@@ -15,6 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use ET\Builder\Framework\Controllers\RESTController;
 use ET\Builder\Framework\UserRole\UserRole;
+use ET\Builder\Framework\Utility\MediaUtility;
 use ET_Builder_Post_Features;
 use WP_REST_Request;
 use WP_Error;
@@ -66,14 +67,14 @@ class VideoThumbnailController extends RESTController {
 			function () use ( $args ) {
 				if ( ! empty( $args['image_src'] ) ) {
 					$thumbnail_output = $args['image_src'];
-					$cover_output     = et_pb_set_video_oembed_thumbnail_resolution( $args['image_src'], 'high' );
+					$cover_output     = MediaUtility::set_video_oembed_thumbnail_resolution( $args['image_src'], 'high' );
 				} elseif ( false !== et_pb_check_oembed_provider( esc_url( $args['src'] ) ) ) {
 						add_filter( 'oembed_dataparse', 'et_pb_video_oembed_data_parse', 10, 3 );
 						// Get Video thumbnail.
 						$thumbnail_output = et_builder_get_oembed( esc_url( $args['src'] ), 'image', true );
 						// Get Video Cover Image.
 					if ( ! empty( $thumbnail_output ) ) {
-						$cover_output = et_pb_set_video_oembed_thumbnail_resolution( $thumbnail_output, 'high' );
+						$cover_output = MediaUtility::set_video_oembed_thumbnail_resolution( $thumbnail_output, 'high' );
 					}
 						remove_filter( 'oembed_dataparse', 'et_pb_video_oembed_data_parse', 10, 3 );
 				} elseif ( false !== VideoHTMLController::validate_youtube_url( esc_url( $args['src'] ) ) ) {
@@ -83,7 +84,7 @@ class VideoThumbnailController extends RESTController {
 					$thumbnail_output = et_builder_get_oembed( esc_url( $args['src'] ), 'image', true );
 					// Get Video Cover Image.
 					if ( ! empty( $thumbnail_output ) ) {
-						$cover_output = et_pb_set_video_oembed_thumbnail_resolution( $thumbnail_output, 'high' );
+						$cover_output = MediaUtility::set_video_oembed_thumbnail_resolution( $thumbnail_output, 'high' );
 					}
 					remove_filter( 'oembed_dataparse', 'et_pb_video_oembed_data_parse', 10, 3 );
 				}

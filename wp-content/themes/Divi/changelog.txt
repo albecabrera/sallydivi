@@ -1,3 +1,128 @@
+version 5.3.3 ( updated 04-23-2026 )
+- Fixed an issue where changing column background images from the Inspector in Divi 5 could fail to update correctly.
+- Fixed extending Design sizing so section Section Alignment updates when the source module stored alignment under the flex sizing control instead of the block alignment field.
+- Fixed the Text module (and other richtext fields) TinyMCE fullscreen toolbar being hidden behind the WordPress admin bar in the Divi 5 builder.
+- Fixed manual blog excerpts breaking HTML when truncated by length.
+- Fixed backwards compatibility so legacy Call to Action modules no longer show the default promo background when the background was removed or disabled in Divi 4.
+- Fixed Social Media Follow custom icon size not applying when using CSS math functions, variables, or global keywords in the icon size field.
+
+version 5.3.2 ( updated 04-22-2026 )
+- Fixed frontend rendering to honor preset values stored outside render-only buckets.
+- Fixed an issue where Save to Divi Cloud could repeatedly prompt for login after refresh.
+- Fixed deleted modules still appearing in the Interaction Target module list in Theme Builder until garbage collection ran.
+- Fixed Map Pin labels in the Map module Elements list to reflect custom titles or admin labels.
+- Fixed a PHP 8+ fatal when comment pagination was enabled with an invalid “comments per page” value of zero, including when loading the builder.
+- Improved Divi 5 CI reliability by making PHPUnit, Jest, and E2E performance tests more consistent and easier to diagnose.
+- Updated the Dynamic Assets tutorial to document selective third-party module asset loading based on module presence.
+- Added Modal Field Showcase example to the D5 Extension Example Modals plugin with tabs, search, field-library samples, custom tri-toggle, and per-post meta save, plus README and build updates for all examples.
+- Fixed an issue where migrating D4 posts containing leading whitespace resulted in an empty D5 layout in the Visual Builder.
+- Fixed a migration issue where mixed shortcode and HTML/text content in text modules could be truncated during Divi 4 to Divi 5 conversion.
+
+version 5.3.1 ( updated 04-21-2026 )
+- Fixed an issue where migrated global sections could fail to render on the front end when duplicate placeholder wrappers were present in converted content.
+- Fixed an issue where global library sections containing image modules would get double-wrapped during D4 to D5 migration, causing them to not render on the frontend.
+- Fixed Page Custom CSS removing percent-encoded characters in SVG data URLs after save in the Visual Builder.
+- Fixed AI Agent UI tool descriptions and removed preview tools that could hide the chat panel.
+- Fixed auth modal behavior so invalid credentials no longer show a stale error after retry.
+- Fixed keyboard selection in searchable dropdowns so that pressing Enter after filtering (for example in the font picker) selects the highlighted option instead of a different one.
+- Fixed an issue where the gradient background overlay would hide the background image on mobile when Option Group Presets with phone-specific gradient stops were applied. Both frontend and Visual Builder now correctly show the image and gradient together.
+- Fixed migrated Menu and Fullwidth Menu dropdown backgrounds so they inherit the module background color when no explicit dropdown background color is set.
+- Fixed linked SVG sizing in Divi 5 migration when custom widths were incorrectly nested, while preserving flex-container visibility.
+- Fixed nested module entrance animations not replaying when reopening Dropdown panels on the frontend.
+- Fixed nested module entrance animations inside the Dropdown module on the frontend, including when reopening the panel, with Visual Builder preview guarded to avoid nested-hover flicker.
+- Fixed PHP notices when submitting a Divi 5 contact form with an optional checkbox left unchecked.
+- Fixed Portfolio module pagination on static homepages and improved previous/next pagination links so they stay correct for the module’s query across page contexts.
+- Fixed an issue where responsive preset spacing edits could create stale values that overrode newer settings, by aligning save behavior and safely cleaning stale values when affected fields are edited.
+- Fixed Divi Layout block content being lost after reloading the block editor on WordPress 7.0 when opening Visual Builder from the layout.
+- Fixed the Layout Block losing saved content in the editor after a page reload.
+- Fixed Divi Layout block losing its saved layout in the block editor on WordPress 7.0 after reloading the edit screen.
+- Fixed preset button padding being overridden by hard-coded values on hover in WooCommerce Cart modules by implementing complete attrsFilter and affectingAttrs pattern from Button module fix.
+- Fixed background image custom size not respecting hover transitions because background-size was missing from the transition property list.
+- Fixed incorrect Post Navigation URLs on WordPress sites installed in a subdirectory.
+- Fixed Contact Form submit row appearing left-aligned when saved content had button options but no iterable sizing decoration, by merging a default sizing shell before the bottom-container alignment style runs.
+- Fixed the Contact Form module’s submit button defaulting to left alignment by restoring a right-aligned default on the sizing alignment used by the module’s custom submit-area styles.
+- Fixed an issue where interaction target module values were lost after saving pages that contained modules with custom HTML attributes or HTML before/after fields.
+- Fixed the Blog module dropping one post on category pages when using Current Category in a Theme Builder layout, by no longer treating the main-query archive post as the article to exclude on non-singular views.
+- Fixed Visual Builder styling for loop-enabled Group Carousel slides so custom slide styles now render correctly in Builder.
+- Fixed Number Counter hover updates so custom suffix values (such as +) remain visible during animation.
+- Fixed Blog automatic excerpts to exclude noisy text from selected non-content modules during excerpt generation.
+- Updated developer documentation for custom Admin Label text fields to explain enabling grey placeholder text with defaultAttr and showPlaceholderOnEmpty.
+- Fixed an issue where Blog module "Show Content" on archive pages displayed unstyled post content after editing a post, because Divi's CSS cache for archive pages was not invalidated when individual post content changed.
+- Fixed nested option-group preset editing so parent preset overrides now apply as hard values while nested preset defaults continue to appear as placeholders in the settings panel.
+
+version 5.3.0 ( updated 04-20-2026 )
+- Harmonized field option across all form-based modules.
+- Added new field customization options to all form-based modules.
+- Added new checkbox and radio field groups to form-based modules for customizing these input types.
+- Added preset support for input, checkbox, and radio groups.
+- Added new focus, checked, and active pseudo-class editing modes.
+- Deprecated legacy focus-related form settings and migrated them to the new pseudo-class state.
+- Added Contact Form 7 Styler module.
+- Enabled preset support for subgroups, which, in tandem with composable settings, allows you to use presets to customize any module sub-element.
+- Extended nested preset system to support group presets within group presets.
+- Fixed the inability to reset attributes when in preset editing mode and right-clicking on a nested group.
+- Improved module rendering time by optimizing sticky and locked module checks.
+- Fixed custom field input text alignment not overriding the parent field alignment set in the email opt-in module.
+- Added a blue dot at the option group and field level to signify when attributes are modified.
+- Fixed reset attributes not working for certain nested groups, such as the Icon group.
+- Fixed gradient color stops not changing when assigning new color variables if the background group was a nested subgroup.
+- Improved visual builder loading speeds by deferring several assets, lazy-loading, and hydrating script data not needed at boot time.
+- Added divi.editPost.store.content.update hook that fires when modules are edited, added, removed, or content is imported in the Visual Builder, enabling third-party plugins to react to content changes before save.
+- Added developer tutorial documentation for adding custom buttons to the Divi 5 save dropdown menu.
+- Added documentation explaining how to access Divi 5 app color scheme values and how this differs from accent and global color APIs.
+- Fixed duplicate review_form_wrapper id in the Woo Product Reviews module so custom CSS and styling targeting that element apply once as intended.
+- Fixed Icon Font Size and other number global variables not updating on the Visual Builder canvas until modules were hovered.
+- Fixed an issue where saving the builder with Preset Preview open could persist preview-only modules and show ghost content on the frontend.
+- Fixed the Woo Cart Totals module Body Text Alignment setting not applying to Tax and Discount rows.
+- Fixed field background color and text color hover preview not updating in the Visual Builder for Contact Form and Contact Field modules.
+- Fixed the Background Gradient settings showing a Toggle Gradient control that did not match the gradient preview by hiding that control while keeping gradient enable state driven by the gradient field for compatibility.
+- Fixed a fatal error when Critical CSS measured specialty sections that included row-inner layouts.
+- Fixed an issue where switching between global colors in the new color picker would show the previous color's opacity instead of the newly selected one.
+- Fixed missing Theme Customizer styles on Loop Builder paginated pages (loop-* > 1).
+- Fixed Form Notice Text Color not being applied to linked error messages in the Woo Checkout Billing module on the frontend.
+- Fixed Pagination’s Target Loop incorrectly switching to Main Query after copying a section that included a loop and Pagination to another page (or duplicating the subtree).
+- Fixed Blurb Module text overflow issue when using left or right icon placement with long unbreakable strings like email addresses, while ensuring normal text remains readable without mid-word breaks.
+- Fixed Blurb Module text overflow issue when using left or right icon placement with long unbreakable strings like email addresses.
+- Fixed Contact Form Module Field ID input to properly sanitize special characters that were breaking form submissions.
+
+version 5.2.1 ( updated 04-09-2026 )
+- Fixed Global Variable placeholder chips displaying in the wrong color.
+- Fixed Page Creation Flow not appearing when using Classic Editor.
+- Unified builder 5 migration/version checks with ET shared prerelease-aware version comparison.
+- Updated builder warning version comparison to use ET prerelease-aware shared comparator.
+- Fixed ET prerelease version ordering for updates/rollback and fixed helper availability in mixed core loader paths.
+- Fixed blank preview when toggling Wireframe View on layouts with off-canvas popups and interactions.
+- Fixed Number Counter hover state not displaying hover values on the frontend, and disabled sticky state support for the number value field to match Divi 4 behavior.
+- Fixed an issue where buttons with icon disabled could show extra hover spacing when only top or bottom padding was set.
+- Fixed an issue where special characters in global text variables were being removed or converted to HTML entities after saving and reopening the Visual Builder.
+- Fixed a canvas switching crash by sanitizing circular portal references before runtime loading and hardening content traversal against malformed recursive structures.
+- Fixed Visual Builder text rendering that could insert an incorrect line break before literal square-bracketed text.
+- Fixed transparent primary menu top padding applying to a Hero module when the Hero was not the first row’s lead module, so section padding now targets the correct element in that layout.
+- Fixed WP Optimize’s full page cache not always clearing after Divi static CSS was cleared, which could leave logged-out visitors with broken styles until cache expired.
+- Fixed the AI Agent New chat (+) button so its hover label uses the Visual Builder tooltip component instead of the browser default.
+- Fixed Role Editor portability so exporting or importing role settings no longer includes or overwrites WordPress Additional CSS (global Custom CSS).
+- Fixed an issue where the Custom CSS code editor only showed one class of lint problem at a time for module element CSS, so syntax issues and invalid property names can appear together when applicable.
+- Fixed an issue where the Date & Time condition popup could hide the Apply button on smaller screen heights.
+- Fixed unnecessary delay when clearing WP Compress cache after Divi updates by using the plugin’s newer purge API on supported versions.
+- Fixed speculative “Edit With Divi” prerendering so it only runs for posts that already have Divi enabled.
+- Fixed Theme Options Custom CSS not loading on paginated Loop Builder pages.
+- Fixed an issue where extending Image module sizing styles to or from other modules did not apply the selected sizing values.
+- Fixed duplicated post title and meta appearing in Blog Module excerpts when Post Title module is used on the post.
+- Fixed the double-click issue when loading the Visual Builder from new auto-draft posts in Classic Editor mode.
+- Fixed the Link module’s text alignment so it applies correctly in the builder and on the frontend.
+- Fixed preset styles being reset when creating a new preset from current styles while using a default preset.
+- Fixed incorrect button size on hover in Visual Builder when using presets with explicit padding and disabled icons.
+- Fixed global elements not syncing on every page when Theme Builder templates were assigned.
+- Added Human-in-the-Loop approval flow for destructive AI Agent actions and multi-turn conversation memory using LangGraph StateGraph architecture.
+- Fixed inconsistent paragraph spacing in the Tabs module between the Divi Builder and the live frontend.
+- Fixed hover border color and nested field reset on layouts where responsive state containers were stored as empty arrays instead of objects, which could drop saved hover values and trigger console errors when clearing nested attributes.
+- Fixed "Save Roles" button appearing oversized in WordPress 7.0.
+- Fixed "Use Divi Builder" button appearing oversized in WordPress 7.0.
+- Harmonized the primary buttons appearing oversized in WordPress 7.0.
+- Fixed an issue where Text module content wrapped in angle brackets could be treated as HTML and removed from visible output in Visual Builder and the front end.
+- Fixed Divi AI “Build with AI” not applying the generated layout when editing a Theme Builder custom header (and similar layout-only areas), by matching canvas content scope to the active template area and ensuring AI prompt listeners stay registered at the app root.
+- Fixed global Theme Builder header and footer appearing when editing Divi Library items in the Visual Builder.
+
 version 5.2.0 ( updated 04-01-2026 )
 - Fixed a fatal error that occurred when a third-party module with a non-string content value was saved and rendered as a Global Module.
 - Fixed an issue where the Responsive Editor displayed incorrect default values for Section and Row gap field.
@@ -21,7 +146,7 @@ version 5.2.0 ( updated 04-01-2026 )
 - Fixed missing composables settings CSS selectors for various style-only module elements that resulted in composable setting CSS not targeting the desired module element.
 - Fixed broken CSS on pages with loops if a paginated page was visited prior to the main loop page.
 
-version 5.1.1 ( updated 04-01-2026 )
+version 5.1.1 ( updated 03-30-2026 )
 - Fixed Divi 4 -> Divi 5 selective-sync conversion for global modules by restoring migrator post-context and correctly mapping wildcard style paths to localAttrsMap (attrName + subName), preserving unsynced fields after migration.
 - Fixed an issue where custom CSS containing inline comments in Module Elements fields was removed during migration from Divi 4 to Divi 5.
 - Fixed an issue where Conditional Display based on Custom Field values would not work correctly on Category and Archive pages.

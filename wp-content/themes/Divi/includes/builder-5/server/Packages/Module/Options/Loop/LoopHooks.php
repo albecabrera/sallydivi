@@ -34,7 +34,7 @@ class LoopHooks {
 	public static function register(): void {
 		// Post hooks - invalidate when posts are created/published or change status.
 		add_action( 'wp_insert_post', [ __CLASS__, 'invalidate_cache_on_post_insert' ], 10, 3 );
-		add_action( 'post_updated', [ __CLASS__, 'invalidate_cache_on_post_date_change' ], 10, 3 );
+		add_action( 'post_updated', [ __CLASS__, 'invalidate_cache_on_post_update' ], 10, 3 );
 		add_action( 'transition_post_status', [ __CLASS__, 'invalidate_cache_on_post_change' ], 10, 3 );
 		add_action( 'delete_post', [ __CLASS__, 'invalidate_cache_on_post_change' ], 10, 1 );
 		add_action( 'wp_trash_post', [ __CLASS__, 'invalidate_cache_on_post_change' ], 10, 1 );
@@ -131,12 +131,14 @@ class LoopHooks {
 	}
 
 	/**
-	 * Invalidate cache when post date changes (affects loop ordering).
+	 * Invalidate cache when post date or content changes.
 	 *
 	 * This callback fires when posts are updated via the `post_updated` hook.
-	 * It compares the old and new post dates and invalidates cache only if the date changed.
-	 * This ensures CSS variables for loop background images are regenerated when posts
-	 * are reordered by changing publish dates.
+	 * It compares old and new post dates and content, invalidating cache when either changes.
+	 * Date changes affect loop ordering (CSS variables for post-to-image mappings),
+	 * while content changes affect archive pages that render full post content
+	 * (e.g. Blog module with "Show Content"), whose dynamic CSS and detection
+	 * metadata are cached independently from individual post caches.
 	 *
 	 * @since ??
 	 *
@@ -146,7 +148,7 @@ class LoopHooks {
 	 *
 	 * @return void
 	 */
-	public static function invalidate_cache_on_post_date_change( $post_id, $post_after, $post_before ): void {
+	public static function invalidate_cache_on_post_update( $post_id, $post_after, $post_before ): void {
 		// Skip if this is an autosave or revision.
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
@@ -168,9 +170,14 @@ class LoopHooks {
 			return;
 		}
 
-		// Compare dates directly (WordPress stores in 'Y-m-d H:i:s' format).
 		if ( $post_before->post_date !== $post_after->post_date ) {
-			// Date changed - invalidate cache to regenerate CSS variables with correct post-to-image mappings.
+			self::_invalidate_cache();
+			return;
+		}
+
+		// Compare post content — archive pages (e.g. Blog module "Show Content") cache
+		// dynamic CSS independently; content changes must invalidate those caches.
+		if ( $post_before->post_content !== $post_after->post_content ) {
 			self::_invalidate_cache();
 		}
 	}

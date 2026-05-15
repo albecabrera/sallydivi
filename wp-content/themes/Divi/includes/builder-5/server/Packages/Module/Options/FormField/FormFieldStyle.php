@@ -8,6 +8,7 @@
 
 namespace ET\Builder\Packages\Module\Options\FormField;
 
+use ET\Builder\Packages\Module\Layout\Components\StyleCommon\CommonStyle;
 use ET\Builder\Packages\Module\Layout\Components\Style\Utils\Utils;
 use ET\Builder\Packages\Module\Options\Element\ElementStyle;
 
@@ -49,6 +50,7 @@ class FormFieldStyle {
 	 *     @type string|null   $orderClass               Optional. The selector class name.
 	 *     @type bool          $isInsideStickyModule     Optional. Whether the module is inside a sticky module or not. Default `false`.
 	 *     @type string|null   $stickyParentOrderClass   Optional. The sticky parent order class name. Default `null`.
+	 *     @type bool          $disableLabelStyle        Optional. Whether to disable label style output. Default `false`.
 	 *     @type string        $returnType               Optional. This is the type of value that the function will return.
 	 *                                                   Can be either `string` or `array`. Default `array`.
 	 * }
@@ -88,22 +90,26 @@ class FormFieldStyle {
 				'returnType'             => 'array',
 				'isInsideStickyModule'   => false,
 				'stickyParentOrderClass' => null,
+				'disableLabelStyle'      => false,
 			]
 		);
 
-		$selector                  = $args['selector'];
-		$selectors                 = $args['selectors'];
-		$selector_function         = $args['selectorFunction'];
-		$property_selectors        = $args['propertySelectors'];
-		$attr                      = $args['attr'];
-		$important                 = $args['important'];
-		$as_style                  = $args['asStyle'];
-		$use_focus_border          = $attr['advanced']['focusUseBorder']['desktop']['value'] ?? 'off';
-		$order_class               = $args['orderClass'];
-		$return_as_array           = 'array' === $args['returnType'];
-		$is_inside_sticky_module   = $args['isInsideStickyModule'];
-		$sticky_parent_order_class = $args['stickyParentOrderClass'];
-		$children                  = $return_as_array ? [] : '';
+		$selector                     = $args['selector'];
+		$selectors                    = $args['selectors'];
+		$selector_function            = $args['selectorFunction'];
+		$property_selectors           = $args['propertySelectors'];
+		$attr                         = $args['attr'];
+		$important                    = $args['important'];
+		$as_style                     = $args['asStyle'];
+		$order_class                  = $args['orderClass'];
+		$return_as_array              = 'array' === $args['returnType'];
+		$is_inside_sticky_module      = $args['isInsideStickyModule'];
+		$sticky_parent_order_class    = $args['stickyParentOrderClass'];
+		$children                     = $return_as_array ? [] : '';
+		$has_explicit_label_selectors = ! empty( $property_selectors['label']['font'] ?? [] );
+		$disable_label_style          = $args['disableLabelStyle'];
+		$focus_placeholder_font_attr  = self::_get_focus_font_attr_from_decoration_font( $attr['decoration']['font'] ?? [] );
+		$placeholder_font_attr        = $attr['decoration']['placeholderFont'] ?? [];
 
 		// Bail, if noting is there to process.
 		if ( empty( $attr ) ) {
@@ -157,77 +163,71 @@ class FormFieldStyle {
 			$children .= $element_style;
 		}
 
-		// Focus Style.
-		$element_focus_style = ElementStyle::style(
+		if ( ! $disable_label_style ) {
+			$element_label_style = ElementStyle::style(
+				[
+					'selector'               => $selector,
+					'orderClass'             => $order_class,
+					'returnType'             => $args['returnType'],
+					'isInsideStickyModule'   => $is_inside_sticky_module,
+					'stickyParentOrderClass' => $sticky_parent_order_class,
+					'attrs'                  => [
+						'font' => $attr['decoration']['labelFont'] ?? [],
+					],
+					'font'                   => [
+						'selectorFunction'  => function ( $params ) use ( $selector_function, $has_explicit_label_selectors ) {
+							$maybe_multiple_selectors = is_callable( $selector_function ) ? call_user_func( $selector_function, $params ) : ( $params['selector'] ?? '' );
+
+							if ( $has_explicit_label_selectors ) {
+								return $maybe_multiple_selectors;
+							}
+
+							$splitted_selectors = explode( ',', $maybe_multiple_selectors );
+
+							$modified_selectors = array_map(
+								function ( $splitted_selector ) {
+									$trimmed_selector = rtrim( $splitted_selector );
+
+									if ( str_contains( $trimmed_selector, 'label' ) ) {
+										return $trimmed_selector;
+									}
+
+									return $trimmed_selector . ' label';
+								},
+								$splitted_selectors
+							);
+
+							return implode( ',', $modified_selectors );
+						},
+						'propertySelectors' => $property_selectors['label']['font'] ?? [],
+						'important'         => is_bool( $important ) ? $important : ( $important['label']['font'] ?? false ),
+					],
+				]
+			);
+
+			if ( $element_label_style && $return_as_array ) {
+				array_push( $children, ...$element_label_style );
+			} elseif ( $element_label_style ) {
+				$children .= $element_label_style;
+			}
+		}
+
+		$accent_color_style = CommonStyle::style(
 			[
 				'selector'               => $selector,
+				'attr'                   => $attr['decoration']['accentColor'] ?? '',
+				'property'               => 'accent-color',
 				'orderClass'             => $order_class,
 				'returnType'             => $args['returnType'],
 				'isInsideStickyModule'   => $is_inside_sticky_module,
 				'stickyParentOrderClass' => $sticky_parent_order_class,
-				'attrs'                  => [
-					'background' => $attr['advanced']['focus']['background'] ?? [],
-					'border'     => 'on' === $use_focus_border ? $attr['advanced']['focus']['border'] ?? [] : [],
-					'font'       => $attr['advanced']['focus']['font'] ?? [],
-				],
-				'background'             => [
-					'selectorFunction'  => function ( $params ) use ( $selector_function ) {
-						$maybe_multiple_selectors = is_callable( $selector_function ) ? call_user_func( $selector_function, $params ) : ( $params['selector'] ?? '' );
-						$splitted_selectors       = explode( ',', $maybe_multiple_selectors );
-
-						$modified_selectors = array_map(
-							function ( $splitted_selector ) {
-								return rtrim( $splitted_selector ) . ':focus';
-							},
-							$splitted_selectors
-						);
-
-						return implode( ',', $modified_selectors );
-					},
-					'propertySelectors' => $property_selectors['focus']['background'] ?? [],
-					'important'         => is_bool( $important ) ? $important : ( $important['focus']['background'] ?? false ),
-				],
-				'border'                 => [
-					'selectorFunction'  => function ( $params ) use ( $selector_function ) {
-						$maybe_multiple_selectors = is_callable( $selector_function ) ? call_user_func( $selector_function, $params ) : ( $params['selector'] ?? '' );
-						$splitted_selectors       = explode( ',', $maybe_multiple_selectors );
-
-						$modified_selectors = array_map(
-							function ( $splitted_selector ) {
-								return rtrim( $splitted_selector ) . ':focus';
-							},
-							$splitted_selectors
-						);
-
-						return implode( ',', $modified_selectors );
-					},
-					'propertySelectors' => $property_selectors['focus']['border'] ?? [],
-					'important'         => is_bool( $important ) ? $important : ( $important['focus']['border'] ?? false ),
-				],
-				'font'                   => [
-					'selectorFunction'  => function ( $params ) use ( $selector_function ) {
-						$maybe_multiple_selectors = is_callable( $selector_function ) ? call_user_func( $selector_function, $params ) : ( $params['selector'] ?? '' );
-						$splitted_selectors       = explode( ',', $maybe_multiple_selectors );
-
-						$modified_selectors = array_map(
-							function ( $splitted_selector ) {
-								return rtrim( $splitted_selector ) . ':focus';
-							},
-							$splitted_selectors
-						);
-
-						return implode( ',', $modified_selectors );
-					},
-					'propertySelectors' => $property_selectors['focus']['font'] ?? [],
-					'important'         => is_bool( $important ) ? $important : ( $important['focus']['font'] ?? false ),
-				],
 			]
 		);
 
-		if ( $element_focus_style && $return_as_array ) {
-			array_push( $children, ...$element_focus_style );
-		} elseif ( $element_focus_style ) {
-			$children .= $element_focus_style;
+		if ( $accent_color_style && $return_as_array ) {
+			array_push( $children, ...$accent_color_style );
+		} elseif ( $accent_color_style ) {
+			$children .= $accent_color_style;
 		}
 
 		// ::*placeholder style can't handle multiple selectors used the same statements.
@@ -239,7 +239,7 @@ class FormFieldStyle {
 				'isInsideStickyModule'   => $is_inside_sticky_module,
 				'stickyParentOrderClass' => $sticky_parent_order_class,
 				'attrs'                  => [
-					'font' => $attr['advanced']['placeholder']['font'] ?? [],
+					'font' => $placeholder_font_attr,
 				],
 				'font'                   => [
 					'selectorFunction'  => function ( $params ) use ( $selector_function ) {
@@ -249,114 +249,6 @@ class FormFieldStyle {
 						$modified_selectors = array_map(
 							function ( $splitted_selector ) {
 								return rtrim( $splitted_selector ) . '::placeholder';
-							},
-							$splitted_selectors
-						);
-
-						return implode( ',', $modified_selectors );
-					},
-					'propertySelectors' => $property_selectors['placeholder']['font'] ?? [],
-					'important'         => is_bool( $important ) ? $important : ( $important['placeholder']['font'] ?? false ),
-				],
-			]
-		);
-
-		if ( $element_placeholder_style && $return_as_array ) {
-			array_push( $children, ...$element_placeholder_style );
-		} elseif ( $element_placeholder_style ) {
-			$children .= $element_placeholder_style;
-		}
-
-		$element_placeholder_style = ElementStyle::style(
-			[
-				'selector'               => $selector,
-				'orderClass'             => $order_class,
-				'returnType'             => $args['returnType'],
-				'isInsideStickyModule'   => $is_inside_sticky_module,
-				'stickyParentOrderClass' => $sticky_parent_order_class,
-				'attrs'                  => [
-					'font' => $attr['advanced']['placeholder']['font'] ?? [],
-				],
-				'font'                   => [
-					'selectorFunction'  => function ( $params ) use ( $selector_function ) {
-						$maybe_multiple_selectors = is_callable( $selector_function ) ? call_user_func( $selector_function, $params ) : ( $params['selector'] ?? '' );
-						$splitted_selectors       = explode( ',', $maybe_multiple_selectors );
-
-						$modified_selectors = array_map(
-							function ( $splitted_selector ) {
-								return rtrim( $splitted_selector ) . '::-webkit-input-placeholder';
-							},
-							$splitted_selectors
-						);
-
-						return implode( ',', $modified_selectors );
-					},
-					'propertySelectors' => $property_selectors['placeholder']['font'] ?? [],
-					'important'         => is_bool( $important ) ? $important : ( $important['placeholder']['font'] ?? false ),
-				],
-			]
-		);
-
-		if ( $element_placeholder_style && $return_as_array ) {
-			array_push( $children, ...$element_placeholder_style );
-		} elseif ( $element_placeholder_style ) {
-			$children .= $element_placeholder_style;
-		}
-
-		$element_placeholder_style = ElementStyle::style(
-			[
-				'selector'               => $selector,
-				'orderClass'             => $order_class,
-				'returnType'             => $args['returnType'],
-				'isInsideStickyModule'   => $is_inside_sticky_module,
-				'stickyParentOrderClass' => $sticky_parent_order_class,
-				'attrs'                  => [
-					'font' => $attr['advanced']['placeholder']['font'] ?? [],
-				],
-				'font'                   => [
-					'selectorFunction'  => function ( $params ) use ( $selector_function ) {
-						$maybe_multiple_selectors = is_callable( $selector_function ) ? call_user_func( $selector_function, $params ) : ( $params['selector'] ?? '' );
-						$splitted_selectors       = explode( ',', $maybe_multiple_selectors );
-
-						$modified_selectors = array_map(
-							function ( $splitted_selector ) {
-								return rtrim( $splitted_selector ) . '::-moz-placeholder';
-							},
-							$splitted_selectors
-						);
-
-						return implode( ',', $modified_selectors );
-					},
-					'propertySelectors' => $property_selectors['placeholder']['font'] ?? [],
-					'important'         => is_bool( $important ) ? $important : ( $important['placeholder']['font'] ?? false ),
-				],
-			]
-		);
-
-		if ( $element_placeholder_style && $return_as_array ) {
-			array_push( $children, ...$element_placeholder_style );
-		} elseif ( $element_placeholder_style ) {
-			$children .= $element_placeholder_style;
-		}
-
-		$element_placeholder_style = ElementStyle::style(
-			[
-				'selector'               => $selector,
-				'orderClass'             => $order_class,
-				'returnType'             => $args['returnType'],
-				'isInsideStickyModule'   => $is_inside_sticky_module,
-				'stickyParentOrderClass' => $sticky_parent_order_class,
-				'attrs'                  => [
-					'font' => $attr['advanced']['placeholder']['font'] ?? [],
-				],
-				'font'                   => [
-					'selectorFunction'  => function ( $params ) use ( $selector_function ) {
-						$maybe_multiple_selectors = is_callable( $selector_function ) ? call_user_func( $selector_function, $params ) : ( $params['selector'] ?? '' );
-						$splitted_selectors       = explode( ',', $maybe_multiple_selectors );
-
-						$modified_selectors = array_map(
-							function ( $splitted_selector ) {
-								return rtrim( $splitted_selector ) . '::-ms-input-placeholder';
 							},
 							$splitted_selectors
 						);
@@ -385,7 +277,7 @@ class FormFieldStyle {
 				'isInsideStickyModule'   => $is_inside_sticky_module,
 				'stickyParentOrderClass' => $sticky_parent_order_class,
 				'attrs'                  => [
-					'font' => $attr['advanced']['focus']['font'] ?? [],
+					'font' => $focus_placeholder_font_attr,
 				],
 				'font'                   => [
 					'selectorFunction'  => function ( $params ) use ( $selector_function ) {
@@ -413,114 +305,6 @@ class FormFieldStyle {
 			$children .= $element_placeholder_style;
 		}
 
-		$element_placeholder_style = ElementStyle::style(
-			[
-				'selector'               => $selector,
-				'orderClass'             => $order_class,
-				'returnType'             => $args['returnType'],
-				'isInsideStickyModule'   => $is_inside_sticky_module,
-				'stickyParentOrderClass' => $sticky_parent_order_class,
-				'attrs'                  => [
-					'font' => $attr['advanced']['focus']['font'] ?? [],
-				],
-				'font'                   => [
-					'selectorFunction'  => function ( $params ) use ( $selector_function ) {
-						$maybe_multiple_selectors = is_callable( $selector_function ) ? call_user_func( $selector_function, $params ) : ( $params['selector'] ?? '' );
-						$splitted_selectors       = explode( ',', $maybe_multiple_selectors );
-
-						$modified_selectors = array_map(
-							function ( $splitted_selector ) {
-								return rtrim( $splitted_selector ) . ':focus::-webkit-input-placeholder';
-							},
-							$splitted_selectors
-						);
-
-						return implode( ',', $modified_selectors );
-					},
-					'propertySelectors' => $property_selectors['placeholder']['font'] ?? [],
-					'important'         => is_bool( $important ) ? $important : ( $important['placeholder']['font'] ?? false ),
-				],
-			]
-		);
-
-		if ( $element_placeholder_style && $return_as_array ) {
-			array_push( $children, ...$element_placeholder_style );
-		} elseif ( $element_placeholder_style ) {
-			$children .= $element_placeholder_style;
-		}
-
-		$element_placeholder_style = ElementStyle::style(
-			[
-				'selector'               => $selector,
-				'orderClass'             => $order_class,
-				'returnType'             => $args['returnType'],
-				'isInsideStickyModule'   => $is_inside_sticky_module,
-				'stickyParentOrderClass' => $sticky_parent_order_class,
-				'attrs'                  => [
-					'font' => $attr['advanced']['focus']['font'] ?? [],
-				],
-				'font'                   => [
-					'selectorFunction'  => function ( $params ) use ( $selector_function ) {
-						$maybe_multiple_selectors = is_callable( $selector_function ) ? call_user_func( $selector_function, $params ) : ( $params['selector'] ?? '' );
-						$splitted_selectors       = explode( ',', $maybe_multiple_selectors );
-
-						$modified_selectors = array_map(
-							function ( $splitted_selector ) {
-								return rtrim( $splitted_selector ) . ':focus::-moz-placeholder';
-							},
-							$splitted_selectors
-						);
-
-						return implode( ',', $modified_selectors );
-					},
-					'propertySelectors' => $property_selectors['placeholder']['font'] ?? [],
-					'important'         => is_bool( $important ) ? $important : ( $important['placeholder']['font'] ?? false ),
-				],
-			]
-		);
-
-		if ( $element_placeholder_style && $return_as_array ) {
-			array_push( $children, ...$element_placeholder_style );
-		} elseif ( $element_placeholder_style ) {
-			$children .= $element_placeholder_style;
-		}
-
-		$element_placeholder_style = ElementStyle::style(
-			[
-				'selector'               => $selector,
-				'orderClass'             => $order_class,
-				'returnType'             => $args['returnType'],
-				'isInsideStickyModule'   => $is_inside_sticky_module,
-				'stickyParentOrderClass' => $sticky_parent_order_class,
-				'attrs'                  => [
-					'font' => $attr['advanced']['focus']['font'] ?? [],
-				],
-				'font'                   => [
-					'selectorFunction'  => function ( $params ) use ( $selector_function ) {
-						$maybe_multiple_selectors = is_callable( $selector_function ) ? call_user_func( $selector_function, $params ) : ( $params['selector'] ?? '' );
-						$splitted_selectors       = explode( ',', $maybe_multiple_selectors );
-
-						$modified_selectors = array_map(
-							function ( $splitted_selector ) {
-								return rtrim( $splitted_selector ) . ':focus::-ms-input-placeholder';
-							},
-							$splitted_selectors
-						);
-
-						return implode( ',', $modified_selectors );
-					},
-					'propertySelectors' => $property_selectors['placeholder']['font'] ?? [],
-					'important'         => is_bool( $important ) ? $important : ( $important['placeholder']['font'] ?? false ),
-				],
-			]
-		);
-
-		if ( $element_placeholder_style && $return_as_array ) {
-			array_push( $children, ...$element_placeholder_style );
-		} elseif ( $element_placeholder_style ) {
-			$children .= $element_placeholder_style;
-		}
-
 		return Utils::style_wrapper(
 			[
 				'attr'     => $attr,
@@ -528,5 +312,35 @@ class FormFieldStyle {
 				'children' => $children,
 			]
 		);
+	}
+
+	/**
+	 * Extract focus font values from decoration font into value state shape.
+	 *
+	 * @since ??
+	 *
+	 * @param array $decoration_font_attr Decoration font group attr.
+	 *
+	 * @return array
+	 */
+	private static function _get_focus_font_attr_from_decoration_font( array $decoration_font_attr ): array {
+		$font_breakpoint_states = $decoration_font_attr['font'] ?? null;
+		if ( ! is_array( $font_breakpoint_states ) ) {
+			return [];
+		}
+
+		$focus_font_attr = [ 'font' => [] ];
+
+		foreach ( $font_breakpoint_states as $breakpoint => $states ) {
+			if ( ! is_array( $states ) || ! is_array( $states['focus'] ?? null ) ) {
+				continue;
+			}
+
+			$focus_font_attr['font'][ $breakpoint ] = [
+				'value' => $states['focus'],
+			];
+		}
+
+		return $focus_font_attr['font'] ? $focus_font_attr : [];
 	}
 }

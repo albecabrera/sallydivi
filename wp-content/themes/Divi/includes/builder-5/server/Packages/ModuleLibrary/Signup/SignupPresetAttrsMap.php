@@ -3,7 +3,7 @@
  * Module Library: Signup Module Preset Attributes Map
  *
  * @package Divi
- * @since ??
+ * @since   ??
  */
 
 namespace ET\Builder\Packages\ModuleLibrary\Signup;
@@ -11,6 +11,10 @@ namespace ET\Builder\Packages\ModuleLibrary\Signup;
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
+
+use ET\Builder\Packages\ModuleLibrary\FormFieldVariantPresetMapTrait;
+use ET\Builder\Packages\Module\Options\FormField\FieldDecorationPresetAttrsMap;
+use ET\Builder\Packages\Module\Options\Icon\IconPresetAttrsMap;
 
 
 /**
@@ -21,6 +25,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package ET\Builder\Packages\ModuleLibrary\Signup
  */
 class SignupPresetAttrsMap {
+	use FormFieldVariantPresetMapTrait;
+
+
 	/**
 	 * Get the preset attributes map for the Signup module.
 	 *
@@ -157,63 +164,16 @@ class SignupPresetAttrsMap {
 		unset( $map['button.decoration.button.decoration.sizing__maxHeight'] );
 		unset( $map['button.decoration.button.decoration.sizing__flexType'] );
 		unset( $map['button.decoration.font.font__lineHeight'] );
-		unset( $map['field.decoration.background__gradient.stops'] );
-		unset( $map['field.decoration.background__gradient.enabled'] );
-		unset( $map['field.decoration.background__gradient.type'] );
-		unset( $map['field.decoration.background__gradient.direction'] );
-		unset( $map['field.decoration.background__gradient.directionRadial'] );
-		unset( $map['field.decoration.background__gradient.repeat'] );
-		unset( $map['field.decoration.background__gradient.length'] );
-		unset( $map['field.decoration.background__gradient.overlaysImage'] );
-		unset( $map['field.decoration.background__image.url'] );
-		unset( $map['field.decoration.background__image.parallax.enabled'] );
-		unset( $map['field.decoration.background__image.parallax.method'] );
-		unset( $map['field.decoration.background__image.size'] );
-		unset( $map['field.decoration.background__image.width'] );
-		unset( $map['field.decoration.background__image.height'] );
-		unset( $map['field.decoration.background__image.position'] );
-		unset( $map['field.decoration.background__image.horizontalOffset'] );
-		unset( $map['field.decoration.background__image.verticalOffset'] );
-		unset( $map['field.decoration.background__image.repeat'] );
-		unset( $map['field.decoration.background__image.blend'] );
-		unset( $map['field.decoration.background__video.mp4'] );
-		unset( $map['field.decoration.background__video.webm'] );
-		unset( $map['field.decoration.background__video.width'] );
-		unset( $map['field.decoration.background__video.height'] );
-		unset( $map['field.decoration.background__video.allowPlayerPause'] );
-		unset( $map['field.decoration.background__video.pauseOutsideViewport'] );
-		unset( $map['field.decoration.background__pattern.style'] );
-		unset( $map['field.decoration.background__pattern.enabled'] );
-		unset( $map['field.decoration.background__pattern.color'] );
-		unset( $map['field.decoration.background__pattern.transform'] );
-		unset( $map['field.decoration.background__pattern.size'] );
-		unset( $map['field.decoration.background__pattern.width'] );
-		unset( $map['field.decoration.background__pattern.height'] );
-		unset( $map['field.decoration.background__pattern.repeatOrigin'] );
-		unset( $map['field.decoration.background__pattern.horizontalOffset'] );
-		unset( $map['field.decoration.background__pattern.verticalOffset'] );
-		unset( $map['field.decoration.background__pattern.repeat'] );
-		unset( $map['field.decoration.background__pattern.blend'] );
-		unset( $map['field.decoration.background__mask.style'] );
-		unset( $map['field.decoration.background__mask.enabled'] );
-		unset( $map['field.decoration.background__mask.color'] );
-		unset( $map['field.decoration.background__mask.transform'] );
-		unset( $map['field.decoration.background__mask.aspectRatio'] );
-		unset( $map['field.decoration.background__mask.size'] );
-		unset( $map['field.decoration.background__mask.width'] );
-		unset( $map['field.decoration.background__mask.height'] );
-		unset( $map['field.decoration.background__mask.position'] );
-		unset( $map['field.decoration.background__mask.horizontalOffset'] );
-		unset( $map['field.decoration.background__mask.verticalOffset'] );
-		unset( $map['field.decoration.background__mask.blend'] );
 		unset( $map['customFields.advanced.fields'] );
 		unset( $map['customFields.advanced.notice'] );
 		unset( $map['field.advanced.focus.font.font__size'] );
 		unset( $map['field.advanced.focus.font.font__letterSpacing'] );
 		unset( $map['field.advanced.focus.font.font__lineHeight'] );
+		$field_decoration_map = FieldDecorationPresetAttrsMap::get_map();
 
-		return array_merge(
+		$merged_map = array_merge(
 			$map,
+			$field_decoration_map,
 			[
 				'title.innerContent'                       => [
 					'attrName' => 'title.innerContent',
@@ -263,11 +223,6 @@ class SignupPresetAttrsMap {
 					'attrName' => 'field.advanced.focus.font.font',
 					'preset'   => [ 'style' ],
 					'subName'  => 'color',
-				],
-				'field.decoration.font.font__headingLevel' => [
-					'attrName' => 'field.decoration.font.font',
-					'preset'   => [ 'html' ],
-					'subName'  => 'headingLevel',
 				],
 				'button.decoration.button__icon.enable'    => [
 					'attrName' => 'button.decoration.button',
@@ -495,6 +450,36 @@ class SignupPresetAttrsMap {
 					'subName'  => 'htmlBefore',
 				],
 			]
+		);
+
+		$checkbox_map = self::_duplicate_map_entries_by_prefix( $merged_map, 'field.', 'checkbox.' );
+		$checkbox_map = self::_filter_form_field_variant_map( $checkbox_map, 'checkbox.' );
+		$radio_map    = self::_duplicate_map_entries_by_prefix( $merged_map, 'field.', 'radio.' );
+		$radio_map    = self::_filter_form_field_variant_map( $radio_map, 'radio.' );
+
+		$checkbox_icon_map      = IconPresetAttrsMap::get_map( 'checkbox.decoration.icon' );
+		$radio_icon_map         = IconPresetAttrsMap::get_map( 'radio.decoration.icon' );
+		$checkbox_icon_root_map = [
+			'checkbox.decoration.icon' => [
+				'attrName' => 'checkbox.decoration.icon',
+				'preset'   => [ 'style', 'html' ],
+			],
+		];
+		$radio_icon_root_map    = [
+			'radio.decoration.icon' => [
+				'attrName' => 'radio.decoration.icon',
+				'preset'   => [ 'style', 'html' ],
+			],
+		];
+
+		return array_merge(
+			$merged_map,
+			$checkbox_map,
+			$checkbox_icon_root_map,
+			$radio_map,
+			$radio_icon_root_map,
+			$checkbox_icon_map,
+			$radio_icon_map
 		);
 	}
 }

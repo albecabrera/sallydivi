@@ -24,7 +24,7 @@ class ET_Core_API_Email_ProviderName extends ET_Core_API_Email_Provider {
 	 *
 	 * @var string
 	 */
-	public static $name_field_only = false;
+	public $name_field_only = false;
 
 	/**
 	 * @inheritDoc

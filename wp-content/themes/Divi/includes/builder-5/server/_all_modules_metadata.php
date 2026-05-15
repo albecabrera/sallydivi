@@ -5657,87 +5657,8 @@ return [
                     '{{selector}} #commentform textarea, {{selector}} #commentform input[type=\'text\'], {{selector}} #commentform input[type=\'email\'], {{selector}} #commentform input[type=\'url\']',
                 'elementType' => 'field',
                 'settings' => [
-                    'decoration' => [
-                        'background' => [],
-                        'border' => [],
-                        'boxShadow' => [],
-                        'spacing' => [],
-                        'font' => []
-                    ],
-                    'advanced' => [
-                        'focusUseBorder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'priority' => 100,
-                                'render' => true,
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.advanced.focusUseBorder',
-                                'label' => 'Use Focus Borders',
-                                'description' =>
-                                    'Enabling this option will add borders to input fields when focused.',
-                                'features' => [
-                                    'preset' => ['html']
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/toggle'
-                                ]
-                            ]
-                        ],
-                        'focus' => [
-                            'groupType' => 'group-items',
-                            'items' => [
-                                'focusBorderGroup' => [
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField'
-                                ],
-                                'focusFont' => [
-                                    'priority' => 40,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'fields' => [
-                                                'headingLevel' => [
-                                                    'render' => false
-                                                ],
-                                                'family' => [
-                                                    'render' => false
-                                                ],
-                                                'weight' => [
-                                                    'render' => false
-                                                ],
-                                                'style' => [
-                                                    'render' => false
-                                                ],
-                                                'letterSpacing' => [
-                                                    'render' => false
-                                                ],
-                                                'lineHeight' => [
-                                                    'render' => false
-                                                ],
-                                                'lineColor' => [
-                                                    'render' => false
-                                                ],
-                                                'lineStyle' => [
-                                                    'render' => false
-                                                ],
-                                                'textShadowGroup' => [
-                                                    'render' => false
-                                                ],
-                                                'textAlign' => [
-                                                    'render' => false
-                                                ],
-                                                'size' => [
-                                                    'render' => false
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                    'decoration' => [],
+                    'advanced' => []
                 ],
                 'styleProps' => [
                     'font' => [
@@ -6056,10 +5977,11 @@ return [
                     'groupName' => 'field',
                     'multiElements' => true,
                     'component' => [
-                        'name' => 'divi/composite',
+                        'name' => 'divi/form-field',
                         'props' => [
                             'groupLabel' => 'Fields',
                             'clipboardCategory' => 'style',
+                            'attrName' => 'field',
                             'dynamicSubgroupHost' => true
                         ]
                     ]
@@ -6272,15 +6194,51 @@ return [
             'field' => [
                 'type' => 'object',
                 'elementType' => 'field',
-                'selector' => '{{selector}}.et_pb_contact_field .input',
+                'selector' =>
+                    '{{selector}}.et_pb_contact_field .input:not([type=checkbox]):not([type=radio])',
                 'settings' => [
-                    'decoration' => [
-                        'background' => [],
-                        'font' => []
-                    ],
-                    'advanced' => [
-                        'focus' => []
+                    'decoration' => [],
+                    'advanced' => []
+                ]
+            ],
+            'checkbox' => [
+                'type' => 'object',
+                'elementType' => 'field',
+                'selector' => '{{selector}} [type=checkbox]',
+                'styleProps' => [
+                    'selector' => '{{selector}} [type=checkbox]',
+                    'selectors' => [
+                        'desktop' => [
+                            'value' =>
+                                '{{selector}}.et_pb_contact_field .input[type=checkbox] + label i',
+                            'hover' =>
+                                '{{selector}}.et_pb_contact_field .input[type=checkbox]:hover + label i'
+                        ]
                     ]
+                ],
+                'settings' => [
+                    'decoration' => [],
+                    'advanced' => []
+                ]
+            ],
+            'radio' => [
+                'type' => 'object',
+                'elementType' => 'field',
+                'selector' => '{{selector}} [type=radio]',
+                'styleProps' => [
+                    'selector' => '{{selector}} [type=radio]',
+                    'selectors' => [
+                        'desktop' => [
+                            'value' =>
+                                '{{selector}}.et_pb_contact_field .input[type=radio] + label i',
+                            'hover' =>
+                                '{{selector}}.et_pb_contact_field .input[type=radio]:hover + label i'
+                        ]
+                    ]
+                ],
+                'settings' => [
+                    'decoration' => [],
+                    'advanced' => []
                 ]
             ],
             'fieldTitle' => [
@@ -6761,6 +6719,54 @@ return [
                             'groupLabel' => 'Conditional Logic'
                         ]
                     ]
+                ],
+                'designFieldField' => [
+                    'panel' => 'design',
+                    'priority' => 10,
+                    'groupName' => 'field',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/form-field',
+                        'props' => [
+                            'groupLabel' => 'Fields',
+                            'clipboardCategory' => 'style',
+                            'attrName' => 'field',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
+                        ]
+                    ]
+                ],
+                'designFieldCheckbox' => [
+                    'panel' => 'design',
+                    'priority' => 10,
+                    'groupName' => 'checkbox',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/checkbox',
+                        'props' => [
+                            'groupLabel' => 'Checkbox',
+                            'clipboardCategory' => 'style',
+                            'attrName' => 'checkbox',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
+                        ]
+                    ]
+                ],
+                'designFieldRadio' => [
+                    'panel' => 'design',
+                    'priority' => 10,
+                    'groupName' => 'radio',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/radio',
+                        'props' => [
+                            'groupLabel' => 'Radio',
+                            'clipboardCategory' => 'style',
+                            'attrName' => 'radio',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
+                        ]
+                    ]
                 ]
             ]
         ]
@@ -6820,22 +6826,8 @@ return [
                             ]
                         ]
                     ],
-                    'border' => [
-                        'propertySelectors' => [
-                            'desktop' => [
-                                'value' => [
-                                    'border-radius' =>
-                                        '{{selector}}.et_pb_contact_form_container .input, {{selector}}.et_pb_contact_form_container .input[type="checkbox"] + label i, {{selector}}.et_pb_contact_form_container .input[type="radio"] + label i',
-                                    'border-style' =>
-                                        '{{selector}}.et_pb_contact_form_container .input, {{selector}}.et_pb_contact_form_container .input[type="checkbox"] + label i, {{selector}}.et_pb_contact_form_container .input[type="radio"] + label i'
-                                ]
-                            ]
-                        ]
-                    ],
-                    'boxShadow' => [
-                        'selector' =>
-                            '{{selector}} .et_pb_contact_field input, {{selector}} .et_pb_contact_field select, {{selector}} .et_pb_contact_field textarea, {{selector}} .et_pb_contact_field .et_pb_contact_field_options_list label > i, {{selector}} input.et_pb_contact_captcha'
-                    ],
+                    'border' => [],
+                    'boxShadow' => [],
                     'layout' => [
                         'selector' => '{{selector}} .et_pb_contact_form'
                     ]
@@ -6906,13 +6898,7 @@ return [
                         'animation' => [],
                         'attributes' => [],
                         'background' => [],
-                        'border' => [
-                            'component' => [
-                                'props' => [
-                                    'fieldLabel' => 'Inputs'
-                                ]
-                            ]
-                        ],
+                        'border' => [],
                         'boxShadow' => [],
                         'conditions' => [],
                         'disabledOn' => [],
@@ -7029,27 +7015,63 @@ return [
             'field' => [
                 'type' => 'object',
                 'elementType' => 'field',
-                'selector' => '{{selector}} .input',
+                'selector' =>
+                    '{{selector}} .input:not([type=checkbox]):not([type=radio])',
                 'styleProps' => [
-                    'selector' => '{{selector}} .input',
+                    'selector' =>
+                        '{{selector}} .input:not([type=checkbox]):not([type=radio])',
                     'selectors' => [
                         'desktop' => [
                             'value' =>
-                                '{{selector}}.et_pb_contact_form_container .input, {{selector}}.et_pb_contact_form_container .input::placeholder, {{selector}}.et_pb_contact_form_container .input::-webkit-input-placeholder, {{selector}}.et_pb_contact_form_container .input::-moz-placeholder, {{selector}}.et_pb_contact_form_container .input:-ms-input-placeholder, {{selector}}.et_pb_contact_form_container .input[type=checkbox] + label, {{selector}}.et_pb_contact_form_container .input[type=radio] + label',
+                                '{{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]), {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio])::placeholder, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio])::-webkit-input-placeholder, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio])::-moz-placeholder, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]):-ms-input-placeholder',
                             'hover' =>
-                                '{{selector}}.et_pb_contact_form_container .input:hover, {{selector}}.et_pb_contact_form_container .input:hover::placeholder, {{selector}}.et_pb_contact_form_container .input:hover::-webkit-input-placeholder, {{selector}}.et_pb_contact_form_container .input:hover::-moz-placeholder, {{selector}}.et_pb_contact_form_container .input:hover:-ms-input-placeholder, {{selector}}.et_pb_contact_form_container .input[type=checkbox]:hover + label, {{selector}}.et_pb_contact_form_container .input[type=radio]:hover + label'
+                                '{{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]):hover, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]):hover::placeholder, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]):hover::-webkit-input-placeholder, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]):hover::-moz-placeholder, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]):hover:-ms-input-placeholder'
                         ]
                     ]
                 ],
                 'settings' => [
-                    'decoration' => [
-                        'background' => [],
-                        'font' => [],
-                        'spacing' => []
-                    ],
-                    'advanced' => [
-                        'focus' => []
+                    'decoration' => [],
+                    'advanced' => []
+                ]
+            ],
+            'checkbox' => [
+                'type' => 'object',
+                'elementType' => 'field',
+                'selector' => '{{selector}} [type=checkbox]',
+                'styleProps' => [
+                    'selector' => '{{selector}} [type=checkbox]',
+                    'selectors' => [
+                        'desktop' => [
+                            'value' =>
+                                '{{selector}}.et_pb_contact_form_container .input[type=checkbox] + label i',
+                            'hover' =>
+                                '{{selector}}.et_pb_contact_form_container .input[type=checkbox]:hover + label i'
+                        ]
                     ]
+                ],
+                'settings' => [
+                    'decoration' => [],
+                    'advanced' => []
+                ]
+            ],
+            'radio' => [
+                'type' => 'object',
+                'elementType' => 'field',
+                'selector' => '{{selector}} [type=radio]',
+                'styleProps' => [
+                    'selector' => '{{selector}} [type=radio]',
+                    'selectors' => [
+                        'desktop' => [
+                            'value' =>
+                                '{{selector}}.et_pb_contact_form_container .input[type=radio] + label i',
+                            'hover' =>
+                                '{{selector}}.et_pb_contact_form_container .input[type=radio]:hover + label i'
+                        ]
+                    ]
+                ],
+                'settings' => [
+                    'decoration' => [],
+                    'advanced' => []
                 ]
             ],
             'button' => [
@@ -7353,11 +7375,45 @@ return [
                     'groupName' => 'field',
                     'multiElements' => true,
                     'component' => [
-                        'name' => 'divi/composite',
+                        'name' => 'divi/form-field',
                         'props' => [
                             'groupLabel' => 'Fields',
                             'clipboardCategory' => 'style',
-                            'dynamicSubgroupHost' => true
+                            'attrName' => 'field',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
+                        ]
+                    ]
+                ],
+                'designFieldCheckbox' => [
+                    'panel' => 'design',
+                    'priority' => 10,
+                    'groupName' => 'checkbox',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/checkbox',
+                        'props' => [
+                            'groupLabel' => 'Checkbox',
+                            'clipboardCategory' => 'style',
+                            'attrName' => 'checkbox',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
+                        ]
+                    ]
+                ],
+                'designFieldRadio' => [
+                    'panel' => 'design',
+                    'priority' => 10,
+                    'groupName' => 'radio',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/radio',
+                        'props' => [
+                            'groupLabel' => 'Radio',
+                            'clipboardCategory' => 'style',
+                            'attrName' => 'radio',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
                         ]
                     ]
                 ]
@@ -7366,6 +7422,729 @@ return [
         'mousetrap' => [
             'inner' => [
                 'edited' => true
+            ]
+        ]
+    ],
+    'contact-form-7' => [
+        'name' => 'divi/contact-form-7',
+        'd4Shortcode' => 'et_pb_contact_form_7',
+        'moduleClassName' => 'et_pb_contact_form_7',
+        'moduleOrderClassName' => 'et_pb_contact_form_7',
+        'title' => 'Contact Form 7 Styler',
+        'titles' => 'Contact Form 7 Stylers',
+        'moduleIcon' => 'divi/module-contact-form-7',
+        'category' => 'module',
+        'attributes' => [
+            'module' => [
+                'type' => 'object',
+                'selector' => '{{selector}}',
+                'styleProps' => [
+                    'layout' => [
+                        'selector' => '{{selector}} form'
+                    ]
+                ],
+                'settings' => [
+                    'meta' => [
+                        'meta' => []
+                    ],
+                    'advanced' => [
+                        'elements' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'contentElements',
+                                'priority' => 5,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/elements',
+                                    'props' => [
+                                        'grouped' => false
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'html' => [],
+                        'loop' => []
+                    ],
+                    'decoration' => [
+                        'animation' => [],
+                        'attributes' => [],
+                        'background' => [],
+                        'border' => [],
+                        'boxShadow' => [],
+                        'conditions' => [],
+                        'disabledOn' => [],
+                        'filters' => [],
+                        'interactions' => [],
+                        'layout' => [],
+                        'order' => [],
+                        'overflow' => [],
+                        'position' => [],
+                        'scroll' => [],
+                        'sizing' => [],
+                        'spacing' => [],
+                        'sticky' => [],
+                        'transform' => [],
+                        'transition' => [],
+                        'zIndex' => []
+                    ]
+                ]
+            ],
+            'form' => [
+                'type' => 'object',
+                'selector' => '{{selector}} form',
+                'settings' => [
+                    'advanced' => [
+                        'formId' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'contentForm',
+                                'attrName' => 'form.advanced.formId',
+                                'label' => 'Form',
+                                'description' =>
+                                    'Select a Contact Form 7 form.',
+                                'priority' => 5,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'field',
+                                    'name' => 'divi/select-contact-form-7',
+                                    'props' => [
+                                        'options' => []
+                                    ]
+                                ],
+                                'features' => [
+                                    'responsive' => false,
+                                    'psuedo' => false,
+                                    'sticky' => false,
+                                    'preset' => 'content'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'field' => [
+                'type' => 'object',
+                'selector' =>
+                    '{{selector}} input:not([type="radio"]):not([type="checkbox"]):not([type="submit"]), {{selector}} textarea, {{selector}} select',
+                'elementType' => 'field',
+                'settings' => [
+                    'decoration' => [],
+                    'advanced' => []
+                ]
+            ],
+            'radioButton' => [
+                'type' => 'object',
+                'selector' =>
+                    '{{selector}} input[type="radio"], {{selector}} .wpcf7-radio .wpcf7-list-item-label',
+                'elementType' => 'field',
+                'settings' => [
+                    'decoration' => [],
+                    'advanced' => []
+                ]
+            ],
+            'checkbox' => [
+                'type' => 'object',
+                'selector' =>
+                    '{{selector}} input[type="checkbox"], {{selector}} .wpcf7-checkbox .wpcf7-list-item-label',
+                'elementType' => 'field',
+                'settings' => [
+                    'decoration' => [],
+                    'advanced' => []
+                ]
+            ],
+            'button' => [
+                'type' => 'object',
+                'selector' => '{{selector}} .et_pb_button.wpcf7-submit',
+                'elementType' => 'button',
+                'settings' => [
+                    'advanced' => [],
+                    'decoration' => [
+                        'background' => [],
+                        'border' => [],
+                        'boxShadow' => [],
+                        'button' => [
+                            'component' => [
+                                'props' => [
+                                    'dynamicSubgroupHost' => true,
+                                    'fields' => [
+                                        'alignment' => [
+                                            'render' => false
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'font' => [],
+                        'sizing' => [],
+                        'spacing' => []
+                    ]
+                ]
+            ],
+            'messageValidation' => [
+                'type' => 'object',
+                'selector' => '{{selector}} .wpcf7-not-valid-tip',
+                'settings' => [
+                    'decoration' => [
+                        'background' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageValidation',
+                                'priority' => 20,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/background',
+                                    'props' => [
+                                        'grouped' => true
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'border' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageValidation',
+                                'priority' => 20,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/border',
+                                    'props' => [
+                                        'grouped' => true
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'bodyFont' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageValidation',
+                                'priority' => 10,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/font-body',
+                                    'props' => [
+                                        'grouped' => false
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'messageSuccess' => [
+                'type' => 'object',
+                'selector' =>
+                    '{{selector}} .wpcf7 form.sent .wpcf7-response-output',
+                'settings' => [
+                    'decoration' => [
+                        'background' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageSuccess',
+                                'priority' => 20,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/background',
+                                    'props' => [
+                                        'grouped' => true
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'border' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageSuccess',
+                                'priority' => 20,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/border',
+                                    'props' => [
+                                        'grouped' => true
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'bodyFont' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageSuccess',
+                                'priority' => 10,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/font-body',
+                                    'props' => [
+                                        'grouped' => false
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'messageInvalid' => [
+                'type' => 'object',
+                'selector' =>
+                    '{{selector}} .wpcf7 form.invalid .wpcf7-response-output',
+                'settings' => [
+                    'decoration' => [
+                        'background' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageInvalid',
+                                'priority' => 20,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/background',
+                                    'props' => [
+                                        'grouped' => true
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'border' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageInvalid',
+                                'priority' => 20,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/border',
+                                    'props' => [
+                                        'grouped' => true
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'bodyFont' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageInvalid',
+                                'priority' => 10,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/font-body',
+                                    'props' => [
+                                        'grouped' => false
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'messageAcceptance' => [
+                'type' => 'object',
+                'selector' =>
+                    '{{selector}} .wpcf7 form.unaccepted .wpcf7-response-output',
+                'settings' => [
+                    'decoration' => [
+                        'background' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageAcceptance',
+                                'priority' => 20,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/background',
+                                    'props' => [
+                                        'grouped' => true
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'border' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageAcceptance',
+                                'priority' => 20,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/border',
+                                    'props' => [
+                                        'grouped' => true
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'bodyFont' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageAcceptance',
+                                'priority' => 10,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/font-body',
+                                    'props' => [
+                                        'grouped' => false
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'messageSpam' => [
+                'type' => 'object',
+                'selector' =>
+                    '{{selector}} .wpcf7 form.spam .wpcf7-response-output',
+                'settings' => [
+                    'decoration' => [
+                        'background' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageSpam',
+                                'priority' => 20,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/background',
+                                    'props' => [
+                                        'grouped' => true
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'border' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageSpam',
+                                'priority' => 20,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/border',
+                                    'props' => [
+                                        'grouped' => true
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'bodyFont' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageSpam',
+                                'priority' => 10,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/font-body',
+                                    'props' => [
+                                        'grouped' => false
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'messageFailure' => [
+                'type' => 'object',
+                'selector' =>
+                    '{{selector}} .wpcf7 form.failed .wpcf7-response-output, {{selector}} .wpcf7 form.aborted .wpcf7-response-output',
+                'settings' => [
+                    'decoration' => [
+                        'background' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageFailure',
+                                'priority' => 20,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/background',
+                                    'props' => [
+                                        'grouped' => true
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'border' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageFailure',
+                                'priority' => 20,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/border',
+                                    'props' => [
+                                        'grouped' => true
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'bodyFont' => [
+                            'groupType' => 'group-item',
+                            'item' => [
+                                'groupSlug' => 'designMessageFailure',
+                                'priority' => 10,
+                                'render' => true,
+                                'component' => [
+                                    'type' => 'group',
+                                    'name' => 'divi/font-body',
+                                    'props' => [
+                                        'grouped' => false
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ],
+        'customCssFields' => [
+            'inputField' => [
+                'label' => 'Input Fields',
+                'subName' => 'inputField',
+                'selectorSuffix' =>
+                    ' input:not([type="radio"]):not([type="checkbox"]):not([type="submit"]), textarea, select'
+            ],
+            'radioButton' => [
+                'label' => 'Radio Buttons',
+                'subName' => 'radioButton',
+                'selectorSuffix' =>
+                    ' input[type="radio"], .wpcf7-radio .wpcf7-list-item-label'
+            ],
+            'checkbox' => [
+                'label' => 'Checkboxes',
+                'subName' => 'checkbox',
+                'selectorSuffix' =>
+                    ' input[type="checkbox"], .wpcf7-checkbox .wpcf7-list-item-label'
+            ],
+            'button' => [
+                'label' => 'Submit Button',
+                'subName' => 'button',
+                'selectorSuffix' => ' .et_pb_button.wpcf7-submit'
+            ],
+            'messageValidation' => [
+                'label' => 'Validation Message',
+                'subName' => 'messageValidation',
+                'selectorSuffix' => ' .wpcf7-not-valid-tip'
+            ],
+            'messageSuccess' => [
+                'label' => 'Success Message',
+                'subName' => 'messageSuccess',
+                'selectorSuffix' => ' .wpcf7 form.sent .wpcf7-response-output'
+            ],
+            'messageInvalid' => [
+                'label' => 'Invalid Message',
+                'subName' => 'messageInvalid',
+                'selectorSuffix' =>
+                    ' .wpcf7 form.invalid .wpcf7-response-output'
+            ],
+            'messageAcceptance' => [
+                'label' => 'Acceptance Message',
+                'subName' => 'messageAcceptance',
+                'selectorSuffix' =>
+                    ' .wpcf7 form.unaccepted .wpcf7-response-output'
+            ],
+            'messageSpam' => [
+                'label' => 'Spam Message',
+                'subName' => 'messageSpam',
+                'selectorSuffix' => ' .wpcf7 form.spam .wpcf7-response-output'
+            ],
+            'messageFailure' => [
+                'label' => 'Failure Message',
+                'subName' => 'messageFailure',
+                'selectorSuffix' =>
+                    ' .wpcf7 form.failed .wpcf7-response-output, .wpcf7 form.aborted .wpcf7-response-output'
+            ]
+        ],
+        'settings' => [
+            'content' => 'auto',
+            'design' => 'auto',
+            'advanced' => 'auto',
+            'groups' => [
+                'contentElements' => [
+                    'panel' => 'content',
+                    'priority' => 10,
+                    'groupName' => 'contentElements',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/composite',
+                        'props' => [
+                            'groupLabel' => 'Elements',
+                            'preset' => 'content'
+                        ]
+                    ]
+                ],
+                'contentForm' => [
+                    'panel' => 'content',
+                    'priority' => 5,
+                    'groupName' => 'contentForm',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/composite',
+                        'props' => [
+                            'groupLabel' => 'Form'
+                        ]
+                    ]
+                ],
+                'designFieldField' => [
+                    'panel' => 'design',
+                    'priority' => 30,
+                    'groupName' => 'field',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/form-field',
+                        'props' => [
+                            'groupLabel' => 'Input',
+                            'clipboardCategory' => 'style',
+                            'attrName' => 'field',
+                            'dynamicSubgroupHost' => true
+                        ]
+                    ]
+                ],
+                'designCheckbox' => [
+                    'panel' => 'design',
+                    'priority' => 40,
+                    'groupName' => 'checkbox',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/checkbox',
+                        'props' => [
+                            'groupLabel' => 'Checkbox',
+                            'clipboardCategory' => 'style',
+                            'attrName' => 'checkbox',
+                            'mode' => 'native',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
+                        ]
+                    ]
+                ],
+                'designRadioButton' => [
+                    'panel' => 'design',
+                    'priority' => 50,
+                    'groupName' => 'radioButton',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/radio',
+                        'props' => [
+                            'groupLabel' => 'Radio',
+                            'clipboardCategory' => 'style',
+                            'attrName' => 'radioButton',
+                            'mode' => 'native',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
+                        ]
+                    ]
+                ],
+                'designButton' => [
+                    'panel' => 'design',
+                    'priority' => 60,
+                    'groupName' => 'button',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/composite',
+                        'props' => [
+                            'groupLabel' => 'Button',
+                            'clipboardCategory' => 'style'
+                        ]
+                    ]
+                ],
+                'designMessageValidation' => [
+                    'panel' => 'design',
+                    'priority' => 52,
+                    'groupName' => 'messageValidation',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/composite',
+                        'props' => [
+                            'groupLabel' => 'Validation Messages',
+                            'clipboardCategory' => 'style',
+                            'presetGroup' => 'divi/font-body',
+                            'dynamicSubgroupHost' => true
+                        ]
+                    ]
+                ],
+                'designMessageSuccess' => [
+                    'panel' => 'design',
+                    'priority' => 51,
+                    'groupName' => 'messageSuccess',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/composite',
+                        'props' => [
+                            'groupLabel' => 'Success Message',
+                            'clipboardCategory' => 'style',
+                            'presetGroup' => 'divi/font-body',
+                            'dynamicSubgroupHost' => true
+                        ]
+                    ]
+                ],
+                'designMessageInvalid' => [
+                    'panel' => 'design',
+                    'priority' => 54,
+                    'groupName' => 'messageInvalid',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/composite',
+                        'props' => [
+                            'groupLabel' => 'Invalid Form Message',
+                            'clipboardCategory' => 'style',
+                            'presetGroup' => 'divi/font-body',
+                            'dynamicSubgroupHost' => true
+                        ]
+                    ]
+                ],
+                'designMessageAcceptance' => [
+                    'panel' => 'design',
+                    'priority' => 53,
+                    'groupName' => 'messageAcceptance',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/composite',
+                        'props' => [
+                            'groupLabel' => 'Acceptance Message',
+                            'clipboardCategory' => 'style',
+                            'presetGroup' => 'divi/font-body',
+                            'dynamicSubgroupHost' => true
+                        ]
+                    ]
+                ],
+                'designMessageSpam' => [
+                    'panel' => 'design',
+                    'priority' => 56,
+                    'groupName' => 'messageSpam',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/composite',
+                        'props' => [
+                            'groupLabel' => 'Spam Message',
+                            'clipboardCategory' => 'style',
+                            'presetGroup' => 'divi/font-body',
+                            'dynamicSubgroupHost' => true
+                        ]
+                    ]
+                ],
+                'designMessageFailure' => [
+                    'panel' => 'design',
+                    'priority' => 55,
+                    'groupName' => 'messageFailure',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/composite',
+                        'props' => [
+                            'groupLabel' => 'Failure Message',
+                            'clipboardCategory' => 'style',
+                            'presetGroup' => 'divi/font-body',
+                            'dynamicSubgroupHost' => true
+                        ]
+                    ]
+                ]
             ]
         ]
     ],
@@ -11908,6 +12687,7 @@ return [
         'moduleOrderClassName' => 'et_pb_fullwidth_map',
         'childModuleName' => 'divi/map-pin',
         'childModuleTitle' => 'Pin',
+        'childModuleTitleAttribute' => 'title',
         'childrenName' => ['divi/map-pin'],
         'videos' => [
             [
@@ -21499,7 +22279,13 @@ return [
                             'desktop' => [
                                 'value' => '{{selector}} .et_pb_link_inner',
                                 'hover' =>
-                                    '{{selector}}{{:hover}} .et_pb_link_inner'
+                                    '{{selector}}{{:hover}} .et_pb_link_inner',
+                                'focus' =>
+                                    '{{selector}}:focus .et_pb_link_inner',
+                                'active' =>
+                                    '{{selector}}:active .et_pb_link_inner',
+                                'checked' =>
+                                    '{{selector}}:checked .et_pb_link_inner'
                             ]
                         ]
                     ]
@@ -22102,35 +22888,8 @@ return [
                 ],
                 'supportsCustomAttributes' => true,
                 'settings' => [
-                    'decoration' => [
-                        'background' => [],
-                        'border' => [],
-                        'boxShadow' => [],
-                        'spacing' => [],
-                        'font' => []
-                    ],
-                    'advanced' => [
-                        'focusUseBorder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'priority' => 100,
-                                'render' => true,
-                                'groupSlug' => 'designFieldField',
-                                'label' => 'Use Focus Borders',
-                                'description' => '',
-                                'defaultAttr' => [
-                                    'desktop' => [
-                                        'value' => 'off'
-                                    ]
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/toggle'
-                                ]
-                            ]
-                        ],
-                        'focus' => []
-                    ]
+                    'decoration' => [],
+                    'advanced' => []
                 ]
             ],
             'button' => [
@@ -22215,6 +22974,9 @@ return [
                         ]
                     ],
                     'decoration' => [
+                        'background' => [],
+                        'border' => [],
+                        'boxShadow' => [],
                         'button' => [
                             'component' => [
                                 'props' => [
@@ -22229,9 +22991,6 @@ return [
                                                     'fields' => [
                                                         'lineHeight' => [
                                                             'render' => true
-                                                        ],
-                                                        'textAlign' => [
-                                                            'render' => false
                                                         ]
                                                     ]
                                                 ]
@@ -22240,7 +22999,10 @@ return [
                                     ]
                                 ]
                             ]
-                        ]
+                        ],
+                        'font' => [],
+                        'sizing' => [],
+                        'spacing' => []
                     ]
                 ]
             ]
@@ -22307,10 +23069,11 @@ return [
                     'groupName' => 'field',
                     'multiElements' => true,
                     'component' => [
-                        'name' => 'divi/composite',
+                        'name' => 'divi/form-field',
                         'props' => [
                             'groupLabel' => 'Fields',
                             'clipboardCategory' => 'style',
+                            'attrName' => 'field',
                             'dynamicSubgroupHost' => true
                         ]
                     ]
@@ -22603,6 +23366,7 @@ return [
         'moduleIcon' => 'divi/module-map',
         'childModuleName' => 'divi/map-pin',
         'childModuleTitle' => 'Pin',
+        'childModuleTitleAttribute' => 'title',
         'category' => 'module',
         'childrenName' => ['divi/map-pin'],
         'videos' => [
@@ -24705,7 +25469,8 @@ return [
                                 ]
                             ],
                             'features' => [
-                                'preset' => 'content'
+                                'preset' => 'content',
+                                'sticky' => false
                             ],
                             'component' => [
                                 'name' => 'divi/text',
@@ -32327,9 +33092,9 @@ return [
                     'selectors' => [
                         'desktop' => [
                             'value' =>
-                                '{{selector}}.et_pb_contact_field .et_pb_contact_field_options_title, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input::-webkit-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input::-moz-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:-ms-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=checkbox] + label, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=radio] + label',
+                                '{{selector}}.et_pb_contact_field .et_pb_contact_field_options_title, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio]), {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio])::-webkit-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio])::-moz-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio]):-ms-input-placeholder',
                             'hover' =>
-                                '{{selector}}.et_pb_contact_field .et_pb_contact_field_options_title:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover::-webkit-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover::-moz-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:hover:-ms-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=checkbox] + label:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=radio] + label:hover'
+                                '{{selector}}.et_pb_contact_field .et_pb_contact_field_options_title:hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio]):hover, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio]):hover::-webkit-input-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio]):hover::-moz-placeholder, {{selector}}.et_pb_subscribe .et_pb_newsletter_form .input:not([type=checkbox]):not([type=radio]):hover:-ms-input-placeholder'
                         ]
                     ],
                     'selector' => '{{selector}} .et_pb_newsletter_form p .input'
@@ -32433,7 +33198,8 @@ return [
             ],
             'field' => [
                 'type' => 'object',
-                'selector' => '{{selector}} .input',
+                'selector' =>
+                    '{{selector}} .input:not([type=checkbox]):not([type=radio])',
                 'supportsCustomAttributes' => true,
                 'elementType' => 'field',
                 'attributes' => [
@@ -32445,9 +33211,9 @@ return [
                             'desktop' => [
                                 'value' => [
                                     'border-radius' =>
-                                        '{{selector}} .et_pb_newsletter_form p input[type="text"], {{selector}} .et_pb_newsletter_form p textarea, {{selector}} .et_pb_newsletter_form p select, {{selector}} .et_pb_newsletter_form p .input[type="radio"] + label i, {{selector}} .et_pb_newsletter_form p .input[type="checkbox"] + label i',
+                                        '{{selector}} .et_pb_newsletter_form p input[type="text"], {{selector}} .et_pb_newsletter_form p textarea, {{selector}} .et_pb_newsletter_form p select',
                                     'border-style' =>
-                                        '{{selector}} .et_pb_newsletter_form p input[type="text"], {{selector}} .et_pb_newsletter_form p textarea, {{selector}} .et_pb_newsletter_form p select, {{selector}} .et_pb_newsletter_form p .input[type="radio"] + label i, {{selector}} .et_pb_newsletter_form p .input[type="checkbox"] + label i'
+                                        '{{selector}} .et_pb_newsletter_form p input[type="text"], {{selector}} .et_pb_newsletter_form p textarea, {{selector}} .et_pb_newsletter_form p select'
                                 ]
                             ]
                         ]
@@ -32459,51 +33225,6 @@ return [
                 ],
                 'settings' => [
                     'advanced' => [
-                        'focusUseBorder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'priority' => 100,
-                                'render' => true,
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.advanced.focusUseBorder',
-                                'label' => 'Use Focus Borders',
-                                'description' =>
-                                    'Enabling this option will add borders to input fields when focused.',
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/toggle'
-                                ]
-                            ]
-                        ],
-                        'focus' => [
-                            'groupType' => 'group-items',
-                            'items' => [
-                                'focusBorderGroup' => [
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField'
-                                ],
-                                'focusFont' => [
-                                    'priority' => 40,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'fields' => [
-                                                'letterSpacing' => [
-                                                    'render' => false
-                                                ],
-                                                'lineHeight' => [
-                                                    'render' => false
-                                                ],
-                                                'size' => [
-                                                    'render' => false
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
                         'nameFieldOnly' => [
                             'groupType' => 'group-item',
                             'item' => [
@@ -32710,13 +33431,47 @@ return [
                             ]
                         ]
                     ],
-                    'decoration' => [
-                        'background' => [],
-                        'border' => [],
-                        'boxShadow' => [],
-                        'spacing' => [],
-                        'font' => []
+                    'decoration' => []
+                ]
+            ],
+            'checkbox' => [
+                'type' => 'object',
+                'elementType' => 'field',
+                'selector' => '{{selector}} [type=checkbox]',
+                'styleProps' => [
+                    'selector' => '{{selector}} [type=checkbox]',
+                    'selectors' => [
+                        'desktop' => [
+                            'value' =>
+                                '{{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=checkbox] + label i',
+                            'hover' =>
+                                '{{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=checkbox]:hover + label i'
+                        ]
                     ]
+                ],
+                'settings' => [
+                    'decoration' => [],
+                    'advanced' => []
+                ]
+            ],
+            'radio' => [
+                'type' => 'object',
+                'elementType' => 'field',
+                'selector' => '{{selector}} [type=radio]',
+                'styleProps' => [
+                    'selector' => '{{selector}} [type=radio]',
+                    'selectors' => [
+                        'desktop' => [
+                            'value' =>
+                                '{{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=radio] + label i',
+                            'hover' =>
+                                '{{selector}}.et_pb_subscribe .et_pb_newsletter_form .input[type=radio]:hover + label i'
+                        ]
+                    ]
+                ],
+                'settings' => [
+                    'decoration' => [],
+                    'advanced' => []
                 ]
             ],
             'footerContent' => [
@@ -33096,11 +33851,45 @@ return [
                     'groupName' => 'field',
                     'multiElements' => true,
                     'component' => [
-                        'name' => 'divi/composite',
+                        'name' => 'divi/form-field',
                         'props' => [
                             'clipboardCategory' => 'style',
                             'groupLabel' => 'Fields',
-                            'dynamicSubgroupHost' => true
+                            'attrName' => 'field',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
+                        ]
+                    ]
+                ],
+                'designFieldCheckbox' => [
+                    'panel' => 'design',
+                    'priority' => 5,
+                    'groupName' => 'checkbox',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/checkbox',
+                        'props' => [
+                            'clipboardCategory' => 'style',
+                            'groupLabel' => 'Checkbox',
+                            'attrName' => 'checkbox',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
+                        ]
+                    ]
+                ],
+                'designFieldRadio' => [
+                    'panel' => 'design',
+                    'priority' => 5,
+                    'groupName' => 'radio',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/radio',
+                        'props' => [
+                            'clipboardCategory' => 'style',
+                            'groupLabel' => 'Radio',
+                            'attrName' => 'radio',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
                         ]
                     ]
                 ],
@@ -33307,9 +34096,9 @@ return [
                             'desktop' => [
                                 'value' => [
                                     'border-radius' =>
-                                        '{{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input, {{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type="checkbox"] + label i, {{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type="radio"] + label i',
+                                        '{{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input:not([type=checkbox]):not([type=radio])',
                                     'border-style' =>
-                                        '{{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input, {{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type="checkbox"] + label i, {{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type="radio"] + label i'
+                                        '{{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input:not([type=checkbox]):not([type=radio])'
                                 ]
                             ]
                         ]
@@ -33332,52 +34121,54 @@ return [
             'field' => [
                 'type' => 'object',
                 'elementType' => 'field',
-                'selector' => '{{selector}}.et_pb_contact_field .input',
+                'selector' =>
+                    '{{selector}}.et_pb_contact_field .input:not([type=checkbox]):not([type=radio])',
                 'settings' => [
                     'decoration' => [
                         'background' => [],
                         'font' => []
                     ],
-                    'advanced' => [
-                        'focus' => [
-                            'groupType' => 'group-items',
-                            'items' => [
-                                'focusBorderGroup' => [
-                                    'render' => true,
-                                    'groupSlug' => 'designBorder',
-                                    'priority' => 15,
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false,
-                                            'attrName' =>
-                                                'field.advanced.focus.focusBorderGroup',
-                                            'fieldLabel' => 'Input Focus'
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'focusUseBorder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designBorder',
-                                'label' => 'Use Focus Borders',
-                                'description' =>
-                                    'Enabling this option will add borders to input fields when focused.',
-                                'features' => [
-                                    'responsive' => false,
-                                    'hover' => false,
-                                    'sticky' => false
-                                ],
-                                'render' => true,
-                                'priority' => 10,
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/toggle'
-                                ]
-                            ]
+                    'advanced' => []
+                ]
+            ],
+            'checkbox' => [
+                'type' => 'object',
+                'elementType' => 'field',
+                'selector' => '{{selector}} [type=checkbox]',
+                'styleProps' => [
+                    'selector' => '{{selector}} [type=checkbox]',
+                    'selectors' => [
+                        'desktop' => [
+                            'value' =>
+                                '{{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type=checkbox] + label i',
+                            'hover' =>
+                                '{{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type=checkbox]:hover + label i'
                         ]
                     ]
+                ],
+                'settings' => [
+                    'decoration' => [],
+                    'advanced' => []
+                ]
+            ],
+            'radio' => [
+                'type' => 'object',
+                'elementType' => 'field',
+                'selector' => '{{selector}} [type=radio]',
+                'styleProps' => [
+                    'selector' => '{{selector}} [type=radio]',
+                    'selectors' => [
+                        'desktop' => [
+                            'value' =>
+                                '{{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type=radio] + label i',
+                            'hover' =>
+                                '{{selectorPrefix}}.et_pb_newsletter_form .et_pb_newsletter_fields p{{baseSelector}} .input[type=radio]:hover + label i'
+                        ]
+                    ]
+                ],
+                'settings' => [
+                    'decoration' => [],
+                    'advanced' => []
                 ]
             ],
             'fieldItem' => [
@@ -33894,6 +34685,54 @@ return [
                         'props' => [
                             'clipboardCategory' => 'style',
                             'groupLabel' => 'Layout'
+                        ]
+                    ]
+                ],
+                'designFieldField' => [
+                    'panel' => 'design',
+                    'groupName' => 'field',
+                    'priority' => 10,
+                    'multiElements' => false,
+                    'component' => [
+                        'name' => 'divi/form-field',
+                        'props' => [
+                            'clipboardCategory' => 'style',
+                            'groupLabel' => 'Fields',
+                            'attrName' => 'field',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
+                        ]
+                    ]
+                ],
+                'designFieldCheckbox' => [
+                    'panel' => 'design',
+                    'groupName' => 'checkbox',
+                    'priority' => 10,
+                    'multiElements' => false,
+                    'component' => [
+                        'name' => 'divi/checkbox',
+                        'props' => [
+                            'clipboardCategory' => 'style',
+                            'groupLabel' => 'Checkbox',
+                            'attrName' => 'checkbox',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
+                        ]
+                    ]
+                ],
+                'designFieldRadio' => [
+                    'panel' => 'design',
+                    'groupName' => 'radio',
+                    'priority' => 10,
+                    'multiElements' => false,
+                    'component' => [
+                        'name' => 'divi/radio',
+                        'props' => [
+                            'clipboardCategory' => 'style',
+                            'groupLabel' => 'Radio',
+                            'attrName' => 'radio',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
                         ]
                     ]
                 ],
@@ -41456,171 +42295,9 @@ return [
                                     ]
                                 ]
                             ]
-                        ],
-                        'placeholder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 5,
-                                'render' => true,
-                                'component' => [
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fields' => [
-                                            'color' => [
-                                                'render' => true
-                                            ],
-                                            'lineHeight' => [
-                                                'render' => false
-                                            ],
-                                            'letterSpacing' => [
-                                                'render' => false
-                                            ],
-                                            'size' => [
-                                                'render' => false
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'focus' => [
-                            'groupType' => 'group-items',
-                            'items' => [
-                                'focusBackgroundColor' => [
-                                    'priority' => 3,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => true
-                                        ]
-                                    ]
-                                ],
-                                'focusFont' => [
-                                    'priority' => 15,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => true,
-                                            'fields' => [
-                                                'letterSpacing' => [
-                                                    'render' => false
-                                                ],
-                                                'lineHeight' => [
-                                                    'render' => false
-                                                ],
-                                                'size' => [
-                                                    'render' => false
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ],
-                                'focusBorderGroup' => [
-                                    'render' => true,
-                                    'priority' => 35,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => true,
-                                            'groupLabel' => 'Fields Focus',
-                                            'fieldLabel' => 'Fields Focus'
-                                        ]
-                                    ]
-                                ]
-                            ]
                         ]
                     ],
-                    'decoration' => [
-                        'background' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.decoration.background',
-                                'subName' => 'color',
-                                'label' => 'Fields Background Color',
-                                'description' =>
-                                    'Pick a color to fill the module\'s input fields.',
-                                'priority' => 2,
-                                'render' => true,
-                                'features' => [
-                                    'dynamicContent' => [
-                                        'type' => 'color'
-                                    ]
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/color-picker'
-                                ]
-                            ]
-                        ],
-                        'spacing' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 20,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/spacing',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 25,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'border' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 30,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/border',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'boxShadow' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 40,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/box-shadow',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                    'decoration' => []
                 ],
                 'styleProps' => [
                     'border' => [
@@ -41638,64 +42315,6 @@ return [
                     'placeholder' => [
                         'selector' =>
                             '{{selector}} form .form-row input.input-text::placeholder, {{selector}} form .form-row input.input-text::-webkit-input-placeholder, {{selector}} form .form-row input.input-text::-moz-placeholder, {{selector}} form .form-row input.input-text:-ms-input-placeholder'
-                    ]
-                ]
-            ],
-            'fieldLabels' => [
-                'type' => 'object',
-                'selector' => '{{selector}} .woocommerce-message',
-                'settings' => [
-                    'advanced' => [
-                        'requiredFieldIndicatorColor' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldLabel',
-                                'attrName' =>
-                                    'fieldLabels.advanced.requiredFieldIndicatorColor',
-                                'label' => 'Required Field Indicator Color',
-                                'description' =>
-                                    'Pick a color to be used for the required field indicator.',
-                                'category' => 'button',
-                                'priority' => 10,
-                                'render' => true,
-                                'features' => [
-                                    'dynamicContent' => [
-                                        'type' => 'color'
-                                    ]
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/color-picker'
-                                ]
-                            ]
-                        ]
-                    ],
-                    'decoration' => [
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldLabel',
-                                'priority' => 10,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => false,
-                                        'fieldLabel' => 'Field Label',
-                                        'dynamicSubgroupHost' => true
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ],
-                'styleProps' => [
-                    'font' => [
-                        'selector' => '{{selector}} form .form-row label'
-                    ],
-                    'requiredFieldIndicatorColor' => [
-                        'selector' => '{{selector}} form .form-row .required'
                     ]
                 ]
             ],
@@ -41946,28 +42565,50 @@ return [
                         ]
                     ]
                 ],
-                'designFieldLabel' => [
-                    'panel' => 'design',
-                    'priority' => 25,
-                    'groupName' => 'designFieldLabel',
-                    'component' => [
-                        'name' => 'divi/composite',
-                        'props' => [
-                            'groupLabel' => 'Field Labels',
-                            'presetGroup' => 'divi/font'
-                        ]
-                    ]
-                ],
                 'designFieldField' => [
                     'panel' => 'design',
-                    'priority' => 30,
+                    'priority' => 25,
                     'groupName' => 'field',
                     'multiElements' => true,
                     'component' => [
-                        'name' => 'divi/composite',
+                        'name' => 'divi/form-field',
                         'props' => [
                             'groupLabel' => 'Fields',
-                            'dynamicSubgroupHost' => true
+                            'attrName' => 'field',
+                            'dynamicSubgroupHost' => true,
+                            'fields' => [
+                                'labelFontGroup' => [
+                                    'component' => [
+                                        'type' => 'group',
+                                        'name' => 'divi/font',
+                                        'props' => [
+                                            'fields' => [
+                                                'requiredFieldIndicatorColor' => [
+                                                    'attrName' =>
+                                                        'field.advanced.requiredFieldIndicatorColor',
+                                                    'label' =>
+                                                        'Required Field Indicator Color',
+                                                    'description' =>
+                                                        'Pick a color to be used for the required field indicator.',
+                                                    'category' => 'button',
+                                                    'priority' => 95,
+                                                    'render' => true,
+                                                    'features' => [
+                                                        'dynamicContent' => [
+                                                            'type' => 'color'
+                                                        ]
+                                                    ],
+                                                    'component' => [
+                                                        'type' => 'field',
+                                                        'name' =>
+                                                            'divi/color-picker'
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
                         ]
                     ]
                 ],
@@ -43030,190 +43671,8 @@ return [
                 'type' => 'object',
                 'elementType' => 'field',
                 'settings' => [
-                    'advanced' => [
-                        'placeholder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFields',
-                                'priority' => 5,
-                                'render' => true,
-                                'component' => [
-                                    'props' => [
-                                        'grouped' => false,
-                                        'fields' => [
-                                            'color' => [
-                                                'render' => true
-                                            ],
-                                            'lineHeight' => [
-                                                'render' => false
-                                            ],
-                                            'letterSpacing' => [
-                                                'render' => false
-                                            ],
-                                            'size' => [
-                                                'render' => false
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'focusUseBorder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'priority' => 80,
-                                'render' => true,
-                                'groupSlug' => 'designFields',
-                                'attrName' => 'field.advanced.focusUseBorder',
-                                'label' => 'Use Focus Borders',
-                                'description' =>
-                                    'Enabling this option will add borders to input fields when focused.',
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/toggle'
-                                ]
-                            ]
-                        ],
-                        'focus' => [
-                            'groupType' => 'group-items',
-                            'items' => [
-                                'focusBackgroundColor' => [
-                                    'priority' => 15,
-                                    'render' => true,
-                                    'groupSlug' => 'designFields',
-                                    'label' => 'Field Focus Background Color',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false
-                                        ]
-                                    ]
-                                ],
-                                'focusFont' => [
-                                    'priority' => 15,
-                                    'render' => true,
-                                    'groupSlug' => 'designFields',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false,
-                                            'fieldLabel' => 'Field Focus',
-                                            'fields' => [
-                                                'letterSpacing' => [
-                                                    'render' => false
-                                                ],
-                                                'lineHeight' => [
-                                                    'render' => false
-                                                ],
-                                                'size' => [
-                                                    'render' => false
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ],
-                                'focusBorderGroup' => [
-                                    'render' => true,
-                                    'priority' => 90,
-                                    'groupSlug' => 'designFields',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => true,
-                                            'groupLabel' =>
-                                                'Field Focus Borders',
-                                            'fieldLabel' => 'Field Focus'
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ],
-                    'decoration' => [
-                        'background' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFields',
-                                'attrName' => 'field.decoration.background',
-                                'subName' => 'color',
-                                'label' => 'Field Background Color',
-                                'description' =>
-                                    'Pick a color to fill the module\'s input fields.',
-                                'priority' => 10,
-                                'render' => true,
-                                'features' => [
-                                    'dynamicContent' => [
-                                        'type' => 'color'
-                                    ]
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/color-picker'
-                                ]
-                            ]
-                        ],
-                        'spacing' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFields',
-                                'priority' => 20,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/spacing',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Field'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFields',
-                                'priority' => 25,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Field'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'border' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFields',
-                                'priority' => 30,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/border',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Field'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'boxShadow' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFields',
-                                'priority' => 40,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/box-shadow',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Field'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                    'advanced' => [],
+                    'decoration' => []
                 ],
                 'styleProps' => [
                     'background' => [
@@ -43704,9 +44163,10 @@ return [
                     'groupName' => 'form_field',
                     'multiElements' => true,
                     'component' => [
-                        'name' => 'divi/composite',
+                        'name' => 'divi/form-field',
                         'props' => [
                             'groupLabel' => 'Fields',
+                            'attrName' => 'field',
                             'dynamicSubgroupHost' => true
                         ]
                     ]
@@ -43919,7 +44379,7 @@ return [
                 'styleProps' => [
                     'bodyFont' => [
                         'selector' =>
-                            '{{selector}} .woocommerce-Price-amount,{{selector}} .woocommerce-shipping-totals label,{{selector}} .woocommerce-shipping-totals .woocommerce-shipping-destination,{{selector}} table.shop_table a,{{selector}} table.shop_table tr.shipping td,{{selector}} table.shop_table tr.cart-subtotal td,{{selector}} table.shop_table tr.order-total td',
+                            '{{selector}} .woocommerce-Price-amount,{{selector}} .woocommerce-shipping-totals label,{{selector}} .woocommerce-shipping-totals .woocommerce-shipping-destination,{{selector}} table.shop_table a,{{selector}} table.shop_table tr.shipping td,{{selector}} table.shop_table tr.cart-subtotal td,{{selector}} table.shop_table tr.order-total td,{{selector}} table.shop_table tr.cart-discount td,{{selector}} table.shop_table tr.tax-rate td,{{selector}} table.shop_table tr.tax-total td',
                         'propertySelectors' => [
                             'body' => [
                                 'desktop' => [
@@ -43935,6 +44395,27 @@ return [
                                     'value' => [
                                         'line-height' =>
                                             '{{selector}} table.shop_table td'
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'important' => [
+                            'body' => [
+                                'font' => [
+                                    'desktop' => [
+                                        'value' => [
+                                            'text-align' => true
+                                        ]
+                                    ],
+                                    'tablet' => [
+                                        'value' => [
+                                            'text-align' => true
+                                        ]
+                                    ],
+                                    'phone' => [
+                                        'value' => [
+                                            'text-align' => true
+                                        ]
                                     ]
                                 ]
                             ]
@@ -44112,192 +44593,16 @@ return [
                 'type' => 'object',
                 'elementType' => 'field',
                 'settings' => [
-                    'advanced' => [
-                        'placeholder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 5,
-                                'render' => true,
-                                'component' => [
-                                    'props' => [
-                                        'grouped' => false,
-                                        'fields' => [
-                                            'color' => [
-                                                'render' => true
-                                            ],
-                                            'lineHeight' => [
-                                                'render' => false
-                                            ],
-                                            'letterSpacing' => [
-                                                'render' => false
-                                            ],
-                                            'size' => [
-                                                'render' => false
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'focusUseBorder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'priority' => 80,
-                                'render' => true,
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.advanced.focusUseBorder',
-                                'label' => 'Use Focus Borders',
-                                'description' =>
-                                    'Enabling this option will add borders to input fields when focused.',
-                                'features' => [
-                                    'responsive' => false,
-                                    'sticky' => false,
-                                    'preset' => ['html']
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/toggle'
-                                ]
-                            ]
-                        ],
-                        'focus' => [
-                            'groupType' => 'group-items',
-                            'items' => [
-                                'focusBackgroundColor' => [
-                                    'priority' => 15,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false
-                                        ]
-                                    ]
-                                ],
-                                'focusFont' => [
-                                    'priority' => 15,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false,
-                                            'fields' => [
-                                                'letterSpacing' => [
-                                                    'render' => false
-                                                ],
-                                                'lineHeight' => [
-                                                    'render' => false
-                                                ],
-                                                'size' => [
-                                                    'render' => false
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ],
-                                'focusBorderGroup' => [
-                                    'render' => true,
-                                    'priority' => 90,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => true,
-                                            'groupLabel' =>
-                                                'Fields Focus Borders',
-                                            'fieldLabel' => 'Fields Focus'
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ],
-                    'decoration' => [
-                        'background' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.decoration.background',
-                                'subName' => 'color',
-                                'label' => 'Fields Background Color',
-                                'description' =>
-                                    'Pick a color to fill the module\'s input fields.',
-                                'priority' => 10,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/color-picker'
-                                ]
-                            ]
-                        ],
-                        'spacing' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 20,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/spacing',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 25,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'border' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 30,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/border',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'boxShadow' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 40,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/box-shadow',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                    'advanced' => [],
+                    'decoration' => []
                 ],
                 'styleProps' => [
                     'selector' =>
-                        '{{selector}} .select2-container--default.select2-container--open .select2-selection--single,{{selector}} form .form-row input.input-text,{{selector}} form .form-row textarea',
+                        '{{selector}} .select2-container--default .select2-selection--single, {{selector}} form .form-row input.input-text, {{selector}} form .form-row textarea',
+                    'background' => [
+                        'selector' =>
+                            '{{selector}} .select2-container--default .select2-selection--single, {{selector}} form .form-row input.input-text, {{selector}} form .form-row textarea'
+                    ],
                     'border' => [
                         'propertySelectors' => [
                             'desktop' => [
@@ -44843,9 +45148,10 @@ return [
                     'groupName' => 'designFieldField',
                     'multiElements' => true,
                     'component' => [
-                        'name' => 'divi/composite',
+                        'name' => 'divi/form-field',
                         'props' => [
                             'groupLabel' => 'Fields',
+                            'attrName' => 'field',
                             'dynamicSubgroupHost' => true
                         ]
                     ]
@@ -45017,183 +45323,8 @@ return [
                 'type' => 'object',
                 'elementType' => 'field',
                 'settings' => [
-                    'advanced' => [
-                        'placeholder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 5,
-                                'render' => true,
-                                'component' => [
-                                    'props' => [
-                                        'grouped' => false,
-                                        'fields' => [
-                                            'color' => [
-                                                'render' => true
-                                            ],
-                                            'lineHeight' => [
-                                                'render' => false
-                                            ],
-                                            'letterSpacing' => [
-                                                'render' => false
-                                            ],
-                                            'size' => [
-                                                'render' => false
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'focusUseBorder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'priority' => 80,
-                                'render' => true,
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.advanced.focusUseBorder',
-                                'label' => 'Use Focus Borders',
-                                'description' =>
-                                    'Enabling this option will add borders to input fields when focused.',
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/toggle'
-                                ]
-                            ]
-                        ],
-                        'focus' => [
-                            'groupType' => 'group-items',
-                            'items' => [
-                                'focusBackgroundColor' => [
-                                    'priority' => 15,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false
-                                        ]
-                                    ]
-                                ],
-                                'focusFont' => [
-                                    'priority' => 15,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false,
-                                            'fields' => [
-                                                'letterSpacing' => [
-                                                    'render' => false
-                                                ],
-                                                'lineHeight' => [
-                                                    'render' => false
-                                                ],
-                                                'size' => [
-                                                    'render' => false
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ],
-                                'focusBorderGroup' => [
-                                    'render' => true,
-                                    'priority' => 90,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => true,
-                                            'groupLabel' =>
-                                                'Fields Focus Borders',
-                                            'fieldLabel' => 'Fields Focus'
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ],
-                    'decoration' => [
-                        'background' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.decoration.background',
-                                'subName' => 'color',
-                                'label' => 'Fields Background Color',
-                                'description' =>
-                                    'Pick a color to fill the module\'s input fields.',
-                                'priority' => 10,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/color-picker'
-                                ]
-                            ]
-                        ],
-                        'spacing' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 20,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/spacing',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 25,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'border' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 30,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/border',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'boxShadow' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 40,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/box-shadow',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                    'advanced' => [],
+                    'decoration' => []
                 ],
                 'styleProps' => [
                     'selector' =>
@@ -45254,57 +45385,6 @@ return [
                                 ]
                             ]
                         ]
-                    ]
-                ]
-            ],
-            'fieldLabels' => [
-                'type' => 'object',
-                'settings' => [
-                    'advanced' => [
-                        'requiredFieldIndicatorColor' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldLabel',
-                                'label' => 'Required Field Indicator Color',
-                                'description' =>
-                                    'Pick a color to be used for the required field indicator.',
-                                'category' => 'button',
-                                'priority' => 10,
-                                'render' => true,
-                                'features' => [
-                                    'preset' => 'content',
-                                    'responsive' => true,
-                                    'hover' => true
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/color-picker'
-                                ]
-                            ]
-                        ]
-                    ],
-                    'decoration' => [
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldLabel',
-                                'priority' => 20,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => false,
-                                        'fieldLabel' => 'Field Label'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ],
-                'styleProps' => [
-                    'font' => [
-                        'selector' => '{{selector}} form .form-row label'
                     ]
                 ]
             ],
@@ -45446,7 +45526,7 @@ return [
                     ],
                     'font' => [
                         'selector' =>
-                            '{{selector}} .woocommerce-NoticeGroup .woocommerce-error',
+                            '{{selector}} .woocommerce-NoticeGroup .woocommerce-error, {{selector}} .woocommerce-error a',
                         'important' => [
                             'font' => [
                                 'desktop' => [
@@ -45585,30 +45665,50 @@ return [
                         ]
                     ]
                 ],
-                'designFieldLabel' => [
-                    'panel' => 'design',
-                    'priority' => 40,
-                    'groupName' => 'designFieldLabel',
-                    'multiElements' => true,
-                    'component' => [
-                        'name' => 'divi/composite',
-                        'props' => [
-                            'groupLabel' => 'Field Labels',
-                            'presetGroup' => 'divi/font',
-                            'dynamicSubgroupHost' => true
-                        ]
-                    ]
-                ],
                 'designFieldField' => [
                     'panel' => 'design',
-                    'priority' => 50,
+                    'priority' => 40,
                     'groupName' => 'designFieldField',
                     'multiElements' => true,
                     'component' => [
-                        'name' => 'divi/composite',
+                        'name' => 'divi/form-field',
                         'props' => [
                             'groupLabel' => 'Fields',
-                            'dynamicSubgroupHost' => true
+                            'attrName' => 'field',
+                            'dynamicSubgroupHost' => true,
+                            'fields' => [
+                                'labelFontGroup' => [
+                                    'component' => [
+                                        'type' => 'group',
+                                        'name' => 'divi/font',
+                                        'props' => [
+                                            'fields' => [
+                                                'requiredFieldIndicatorColor' => [
+                                                    'attrName' =>
+                                                        'field.advanced.requiredFieldIndicatorColor',
+                                                    'label' =>
+                                                        'Required Field Indicator Color',
+                                                    'description' =>
+                                                        'Pick a color to be used for the required field indicator.',
+                                                    'category' => 'button',
+                                                    'priority' => 95,
+                                                    'render' => true,
+                                                    'features' => [
+                                                        'preset' => 'content',
+                                                        'responsive' => true,
+                                                        'hover' => true
+                                                    ],
+                                                    'component' => [
+                                                        'type' => 'field',
+                                                        'name' =>
+                                                            'divi/color-picker'
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
                         ]
                     ]
                 ],
@@ -45778,172 +45878,8 @@ return [
                 'type' => 'object',
                 'elementType' => 'field',
                 'settings' => [
-                    'advanced' => [
-                        'placeholder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 5,
-                                'render' => true,
-                                'component' => [
-                                    'props' => [
-                                        'grouped' => false,
-                                        'fields' => [
-                                            'color' => [
-                                                'render' => true
-                                            ],
-                                            'lineHeight' => [
-                                                'render' => false
-                                            ],
-                                            'letterSpacing' => [
-                                                'render' => false
-                                            ],
-                                            'size' => [
-                                                'render' => false
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'focusUseBorder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'priority' => 80,
-                                'render' => true,
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.advanced.focusUseBorder',
-                                'label' => 'Use Focus Borders',
-                                'description' =>
-                                    'Enabling this option will add borders to input fields when focused.',
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/toggle'
-                                ]
-                            ]
-                        ],
-                        'focus' => [
-                            'groupType' => 'group-items',
-                            'items' => [
-                                'focusBackgroundColor' => [
-                                    'priority' => 15,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false
-                                        ]
-                                    ]
-                                ],
-                                'focusFont' => [
-                                    'priority' => 15,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false,
-                                            'fields' => [
-                                                'letterSpacing' => [
-                                                    'render' => false
-                                                ],
-                                                'lineHeight' => [
-                                                    'render' => false
-                                                ],
-                                                'size' => [
-                                                    'render' => false
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ],
-                                'focusBorderGroup' => [
-                                    'render' => true,
-                                    'priority' => 90,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => true,
-                                            'groupLabel' =>
-                                                'Fields Focus Borders',
-                                            'fieldLabel' => 'Fields Focus'
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ],
-                    'decoration' => [
-                        'background' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.decoration.background',
-                                'subName' => 'color',
-                                'label' => 'Fields Background Color',
-                                'description' =>
-                                    'Pick a color to fill the module\'s input fields.',
-                                'priority' => 10,
-                                'render' => true,
-                                'features' => [
-                                    'dynamicContent' => [
-                                        'type' => 'color'
-                                    ]
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/color-picker'
-                                ]
-                            ]
-                        ],
-                        'spacing' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 20,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/spacing',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 25,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'border' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 30,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/border',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                    'advanced' => [],
+                    'decoration' => []
                 ],
                 'styleProps' => [
                     'border' => [
@@ -45976,35 +45912,6 @@ return [
                                     '{{selector}} form .input-text, {{selector}} form .input-text:hover::placeholder, {{selector}} form .input-text:hover::-webkit-input-placeholder, {{selector}} form .input-text:hover::-moz-placeholder, {{selector}} form .input-text:hover:-ms-input-placeholder'
                             ]
                         ]
-                    ]
-                ]
-            ],
-            'fieldLabels' => [
-                'type' => 'object',
-                'settings' => [
-                    'decoration' => [
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldLabels',
-                                'priority' => 10,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => false,
-                                        'groupLabel' => 'Field Label',
-                                        'fieldLabel' => 'Field Label'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ],
-                'styleProps' => [
-                    'font' => [
-                        'selector' => '{{selector}} form .form-row label'
                     ]
                 ]
             ]
@@ -46063,29 +45970,16 @@ return [
                         ]
                     ]
                 ],
-                'designFieldLabels' => [
-                    'panel' => 'design',
-                    'priority' => 30,
-                    'groupName' => 'designFieldLabels',
-                    'multiElements' => true,
-                    'component' => [
-                        'name' => 'divi/composite',
-                        'props' => [
-                            'groupLabel' => 'Field Labels',
-                            'presetGroup' => 'divi/font',
-                            'dynamicSubgroupHost' => true
-                        ]
-                    ]
-                ],
                 'designFieldField' => [
                     'panel' => 'design',
-                    'priority' => 40,
+                    'priority' => 30,
                     'groupName' => 'designFieldField',
                     'multiElements' => true,
                     'component' => [
-                        'name' => 'divi/composite',
+                        'name' => 'divi/form-field',
                         'props' => [
                             'groupLabel' => 'Fields',
+                            'attrName' => 'field',
                             'dynamicSubgroupHost' => true
                         ]
                     ]
@@ -47561,50 +47455,7 @@ return [
                 'type' => 'object',
                 'elementType' => 'field',
                 'settings' => [
-                    'advanced' => [
-                        'focusUseBorder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'priority' => 80,
-                                'render' => true,
-                                'groupSlug' => 'designTooltip',
-                                'attrName' => 'tooltip.advanced.focusUseBorder',
-                                'label' => 'Use Focus Borders',
-                                'description' =>
-                                    'Enabling this option will add borders to tooltips when focused.',
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/toggle'
-                                ]
-                            ]
-                        ],
-                        'focus' => [
-                            'groupType' => 'group-items',
-                            'items' => [
-                                'focusBorderGroup' => [
-                                    'render' => true,
-                                    'priority' => 90,
-                                    'groupSlug' => 'designTooltip',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => true,
-                                            'groupLabel' =>
-                                                'Tooltip Focus Borders',
-                                            'fieldLabel' => 'Tooltip Focus'
-                                        ]
-                                    ]
-                                ],
-                                'focusFont' => [
-                                    'render' => false,
-                                    'groupSlug' => 'designTooltip'
-                                ],
-                                'focusBackgroundColor' => [
-                                    'render' => false,
-                                    'groupSlug' => 'designTooltip'
-                                ]
-                            ]
-                        ]
-                    ],
+                    'advanced' => [],
                     'decoration' => [
                         'background' => [
                             'groupType' => 'group-item',
@@ -48020,183 +47871,8 @@ return [
                 'type' => 'object',
                 'elementType' => 'field',
                 'settings' => [
-                    'advanced' => [
-                        'placeholder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 5,
-                                'render' => true,
-                                'component' => [
-                                    'props' => [
-                                        'grouped' => false,
-                                        'fields' => [
-                                            'color' => [
-                                                'render' => true
-                                            ],
-                                            'lineHeight' => [
-                                                'render' => false
-                                            ],
-                                            'letterSpacing' => [
-                                                'render' => false
-                                            ],
-                                            'size' => [
-                                                'render' => false
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'focusUseBorder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'priority' => 80,
-                                'render' => true,
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.advanced.focusUseBorder',
-                                'label' => 'Use Focus Borders',
-                                'description' =>
-                                    'Enabling this option will add borders to input fields when focused.',
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/toggle'
-                                ]
-                            ]
-                        ],
-                        'focus' => [
-                            'groupType' => 'group-items',
-                            'items' => [
-                                'focusBackgroundColor' => [
-                                    'priority' => 15,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false
-                                        ]
-                                    ]
-                                ],
-                                'focusFont' => [
-                                    'priority' => 15,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false,
-                                            'fields' => [
-                                                'letterSpacing' => [
-                                                    'render' => false
-                                                ],
-                                                'lineHeight' => [
-                                                    'render' => false
-                                                ],
-                                                'size' => [
-                                                    'render' => false
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ],
-                                'focusBorderGroup' => [
-                                    'render' => true,
-                                    'priority' => 90,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => true,
-                                            'groupLabel' =>
-                                                'Fields Focus Borders',
-                                            'fieldLabel' => 'Fields Focus'
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ],
-                    'decoration' => [
-                        'background' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.decoration.background',
-                                'subName' => 'color',
-                                'label' => 'Fields Background Color',
-                                'description' =>
-                                    'Pick a color to fill the module\'s input fields.',
-                                'priority' => 10,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/color-picker'
-                                ]
-                            ]
-                        ],
-                        'spacing' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 20,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/spacing',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 25,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'border' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 30,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/border',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'boxShadow' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 40,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/box-shadow',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                    'advanced' => [],
+                    'decoration' => []
                 ],
                 'styleProps' => [
                     'selector' =>
@@ -48250,59 +47926,22 @@ return [
                     ]
                 ]
             ],
-            'fieldLabels' => [
+            'checkbox' => [
                 'type' => 'object',
+                'elementType' => 'field',
+                'selector' => '{{selector}} input[type="checkbox"]',
                 'settings' => [
-                    'advanced' => [
-                        'requiredFieldIndicatorColor' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldLabel',
-                                'label' => 'Required Field Indicator Color',
-                                'description' =>
-                                    'Pick a color to be used for the required field indicator.',
-                                'category' => 'button',
-                                'priority' => 10,
-                                'render' => true,
-                                'features' => [
-                                    'preset' => 'content',
-                                    'responsive' => true,
-                                    'hover' => false
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/color-picker'
-                                ]
-                            ]
-                        ]
-                    ],
-                    'decoration' => [
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldLabel',
-                                'priority' => 20,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => false,
-                                        'fieldLabel' => 'Field Label'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ],
-                'styleProps' => [
-                    'font' => [
-                        'selector' => '{{selector}} form .form-row label'
-                    ],
-                    'requiredFieldIndicatorColor' => [
-                        'selector' => '{{selector}} form .form-row .required',
-                        'important' => true
-                    ]
+                    'advanced' => [],
+                    'decoration' => []
+                ]
+            ],
+            'radio' => [
+                'type' => 'object',
+                'elementType' => 'field',
+                'selector' => '{{selector}} input[type="radio"]',
+                'settings' => [
+                    'advanced' => [],
+                    'decoration' => []
                 ]
             ],
             'layout' => [
@@ -48418,30 +48057,82 @@ return [
                         ]
                     ]
                 ],
-                'designFieldLabel' => [
-                    'panel' => 'design',
-                    'priority' => 40,
-                    'groupName' => 'designFieldLabel',
-                    'multiElements' => true,
-                    'component' => [
-                        'name' => 'divi/composite',
-                        'props' => [
-                            'groupLabel' => 'Field Labels',
-                            'presetGroup' => 'divi/font',
-                            'dynamicSubgroupHost' => true
-                        ]
-                    ]
-                ],
                 'designFieldField' => [
                     'panel' => 'design',
-                    'priority' => 50,
+                    'priority' => 40,
                     'groupName' => 'designFieldField',
                     'multiElements' => true,
                     'component' => [
-                        'name' => 'divi/composite',
+                        'name' => 'divi/form-field',
                         'props' => [
                             'groupLabel' => 'Fields',
-                            'dynamicSubgroupHost' => true
+                            'attrName' => 'field',
+                            'dynamicSubgroupHost' => true,
+                            'fields' => [
+                                'labelFontGroup' => [
+                                    'component' => [
+                                        'type' => 'group',
+                                        'name' => 'divi/font',
+                                        'props' => [
+                                            'fields' => [
+                                                'requiredFieldIndicatorColor' => [
+                                                    'attrName' =>
+                                                        'field.advanced.requiredFieldIndicatorColor',
+                                                    'label' =>
+                                                        'Required Field Indicator Color',
+                                                    'description' =>
+                                                        'Pick a color to be used for the required field indicator.',
+                                                    'category' => 'button',
+                                                    'priority' => 95,
+                                                    'render' => true,
+                                                    'features' => [
+                                                        'preset' => 'content',
+                                                        'responsive' => true,
+                                                        'hover' => false
+                                                    ],
+                                                    'component' => [
+                                                        'type' => 'field',
+                                                        'name' =>
+                                                            'divi/color-picker'
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'designFieldCheckbox' => [
+                    'panel' => 'design',
+                    'priority' => 50,
+                    'groupName' => 'designFieldCheckbox',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/checkbox',
+                        'props' => [
+                            'groupLabel' => 'Checkbox',
+                            'attrName' => 'checkbox',
+                            'mode' => 'native',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
+                        ]
+                    ]
+                ],
+                'designFieldRadio' => [
+                    'panel' => 'design',
+                    'priority' => 60,
+                    'groupName' => 'designFieldRadio',
+                    'multiElements' => true,
+                    'component' => [
+                        'name' => 'divi/radio',
+                        'props' => [
+                            'groupLabel' => 'Radio',
+                            'attrName' => 'radio',
+                            'mode' => 'native',
+                            'dynamicSubgroupHost' => true,
+                            'useComponentNameAsPresetGroup' => true
                         ]
                     ]
                 ]
@@ -48851,190 +48542,8 @@ return [
                 'selector' =>
                     '{{selector}}.et_pb_module .et_pb_module_inner form.cart .variations td select',
                 'settings' => [
-                    'advanced' => [
-                        'focusUseBorder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'priority' => 70,
-                                'render' => true,
-                                'groupSlug' => 'designDropdownMenus',
-                                'attrName' =>
-                                    'dropdownMenus.advanced.focusUseBorder',
-                                'label' => 'Use Focus Borders',
-                                'description' =>
-                                    'Enabling this option will add borders to input fields when focused.',
-                                'features' => [
-                                    'preset' => ['html']
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/toggle'
-                                ]
-                            ]
-                        ],
-                        'focus' => [
-                            'groupType' => 'group-items',
-                            'items' => [
-                                'focusBorderGroup' => [
-                                    'render' => true,
-                                    'priority' => 75,
-                                    'groupSlug' => 'designDropdownMenus',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false,
-                                            'groupLabel' =>
-                                                'Dropdown Menus Focus',
-                                            'fieldLabel' =>
-                                                'Dropdown Menus Focus'
-                                        ]
-                                    ]
-                                ],
-                                'focusBackgroundColor' => [
-                                    'priority' => 20,
-                                    'render' => true,
-                                    'groupSlug' => 'designDropdownMenus',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false,
-                                            'groupLabel' =>
-                                                'Dropdown Menus Focus',
-                                            'fieldLabel' =>
-                                                'Dropdown Menus Focus'
-                                        ]
-                                    ]
-                                ],
-                                'focusFont' => [
-                                    'priority' => 30,
-                                    'render' => true,
-                                    'groupSlug' => 'designDropdownMenus',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false,
-                                            'groupLabel' =>
-                                                'Dropdown Menus Focus',
-                                            'fieldLabel' =>
-                                                'Dropdown Menus Focus',
-                                            'fields' => [
-                                                'letterSpacing' => [
-                                                    'render' => false
-                                                ],
-                                                'lineHeight' => [
-                                                    'render' => false
-                                                ],
-                                                'size' => [
-                                                    'render' => false
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ],
-                    'decoration' => [
-                        'background' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designDropdownMenus',
-                                'attrName' =>
-                                    'dropdownMenus.decoration.background',
-                                'subName' => 'color',
-                                'label' => 'Dropdown Menus Background Color',
-                                'description' =>
-                                    'Pick a color to fill the module\'s input fields.',
-                                'priority' => 10,
-                                'render' => true,
-                                'features' => [
-                                    'dynamicContent' => [
-                                        'type' => 'color'
-                                    ]
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/color-picker'
-                                ]
-                            ]
-                        ],
-                        'spacing' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designDropdownMenus',
-                                'priority' => 40,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/spacing',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Dropdown Menus',
-                                        'fields' => [
-                                            'padding' => [
-                                                'render' => false
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designDropdownMenus',
-                                'priority' => 50,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Dropdown Menus',
-                                        'fields' => [
-                                            'textAlign' => [
-                                                'render' => false
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'border' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designDropdownMenus',
-                                'priority' => 60,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/border',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Dropdown Menus',
-                                        'fields' => [
-                                            'radius' => [
-                                                'render' => false
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'boxShadow' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designDropdownMenus',
-                                'priority' => 90,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/box-shadow',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Dropdown Menus'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                    'advanced' => [],
+                    'decoration' => []
                 ],
                 'styleProps' => [
                     'background' => [
@@ -49177,136 +48686,8 @@ return [
                 'selector' =>
                     '{{selector}} input, {{selector}} .quantity input.qty',
                 'settings' => [
-                    'advanced' => [
-                        'focus' => [
-                            'groupType' => 'group-items',
-                            'items' => [
-                                'focusBorderGroup' => [
-                                    'render' => false,
-                                    'groupSlug' => 'designFieldField'
-                                ],
-                                'focusBackgroundColor' => [
-                                    'priority' => 10,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false
-                                        ]
-                                    ]
-                                ],
-                                'focusFont' => [
-                                    'priority' => 10,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => false,
-                                            'fields' => [
-                                                'letterSpacing' => [
-                                                    'render' => false
-                                                ],
-                                                'lineHeight' => [
-                                                    'render' => false
-                                                ],
-                                                'size' => [
-                                                    'render' => false
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ],
-                    'decoration' => [
-                        'background' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.decoration.background',
-                                'subName' => 'color',
-                                'label' => 'Fields Background Color',
-                                'description' =>
-                                    'Pick a color to fill the module\'s input fields.',
-                                'priority' => 5,
-                                'render' => true,
-                                'features' => [
-                                    'dynamicContent' => [
-                                        'type' => 'color'
-                                    ]
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/color-picker'
-                                ]
-                            ]
-                        ],
-                        'spacing' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 10,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/spacing',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 10,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'border' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 10,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/border',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'boxShadow' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 200,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/box-shadow',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                    'advanced' => [],
+                    'decoration' => []
                 ],
                 'styleProps' => [
                     'background' => [
@@ -49394,40 +48775,6 @@ return [
                                 ]
                             ]
                         ]
-                    ],
-                    'decoration' => [
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldLabel',
-                                'priority' => 20,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => false,
-                                        'groupLabel' => 'Field Labels',
-                                        'fieldLabel' => 'Field Labels'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ],
-                'styleProps' => [
-                    'font' => [
-                        'selector' =>
-                            '{{selector}}.et_pb_module .et_pb_module_inner form.cart .variations label, {{selector}} td.woocommerce-grouped-product-list-item__label a',
-                        'propertySelectors' => [
-                            'font' => [
-                                'desktop' => [
-                                    'value' => [
-                                        'text-align' => '{{selector}} th.label'
-                                    ]
-                                ]
-                            ]
-                        ]
                     ]
                 ]
             ]
@@ -49483,9 +48830,7 @@ return [
                     'component' => [
                         'name' => 'divi/composite',
                         'props' => [
-                            'groupLabel' => 'Field Labels',
-                            'presetGroup' => 'divi/font',
-                            'dynamicSubgroupHost' => true
+                            'groupLabel' => 'Field Labels'
                         ]
                     ]
                 ],
@@ -49507,10 +48852,11 @@ return [
                     'groupName' => 'field',
                     'multiElements' => true,
                     'component' => [
-                        'name' => 'divi/composite',
+                        'name' => 'divi/form-field',
                         'props' => [
                             'groupLabel' => 'Fields',
                             'clipboardCategory' => 'style',
+                            'attrName' => 'field',
                             'dynamicSubgroupHost' => true
                         ]
                     ]
@@ -49520,9 +48866,12 @@ return [
                     'priority' => 40,
                     'groupName' => 'dropdownMenus',
                     'component' => [
-                        'name' => 'divi/composite',
+                        'name' => 'divi/form-field',
                         'props' => [
-                            'groupLabel' => 'Dropdown Menus'
+                            'groupLabel' => 'Dropdown Menus',
+                            'attrName' => 'dropdownMenus',
+                            'dynamicSubgroupHost' => true,
+                            'supportsPresets' => false
                         ]
                     ]
                 ],
@@ -53303,156 +52652,8 @@ return [
                 'type' => 'object',
                 'elementType' => 'field',
                 'settings' => [
-                    'advanced' => [
-                        'focusUseBorder' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'priority' => 100,
-                                'render' => true,
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.advanced.focusUseBorder',
-                                'label' => 'Use Focus Borders',
-                                'description' =>
-                                    'Enabling this option will add borders to input fields when focused.',
-                                'features' => [
-                                    'preset' => ['html']
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/toggle'
-                                ]
-                            ]
-                        ],
-                        'focus' => [
-                            'groupType' => 'group-items',
-                            'items' => [
-                                'focusBorderGroup' => [
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => true
-                                        ]
-                                    ]
-                                ],
-                                'focusBackgroundColor' => [
-                                    'priority' => 5,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField'
-                                ],
-                                'focusFont' => [
-                                    'priority' => 10,
-                                    'render' => true,
-                                    'groupSlug' => 'designFieldField',
-                                    'component' => [
-                                        'props' => [
-                                            'grouped' => true,
-                                            'fields' => [
-                                                'letterSpacing' => [
-                                                    'render' => false
-                                                ],
-                                                'lineHeight' => [
-                                                    'render' => false
-                                                ],
-                                                'size' => [
-                                                    'render' => false
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ],
-                    'decoration' => [
-                        'background' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'attrName' => 'field.decoration.background',
-                                'subName' => 'color',
-                                'label' => 'Fields Background Color',
-                                'description' =>
-                                    'Pick a color to fill the module\'s input fields.',
-                                'priority' => 5,
-                                'render' => true,
-                                'features' => [
-                                    'dynamicContent' => [
-                                        'type' => 'color'
-                                    ]
-                                ],
-                                'component' => [
-                                    'type' => 'field',
-                                    'name' => 'divi/color-picker'
-                                ]
-                            ]
-                        ],
-                        'spacing' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 10,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/spacing',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'font' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 10,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/font',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields',
-                                        'dynamicSubgroupHost' => true
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'border' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 10,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/border',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'boxShadow' => [
-                            'groupType' => 'group-item',
-                            'item' => [
-                                'groupSlug' => 'designFieldField',
-                                'priority' => 200,
-                                'render' => true,
-                                'component' => [
-                                    'type' => 'group',
-                                    'name' => 'divi/box-shadow',
-                                    'props' => [
-                                        'grouped' => true,
-                                        'fieldLabel' => 'Fields'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                    'advanced' => [],
+                    'decoration' => []
                 ],
                 'styleProps' => [
                     'border' => [
@@ -53749,10 +52950,11 @@ return [
                     'groupName' => 'field',
                     'multiElements' => true,
                     'component' => [
-                        'name' => 'divi/composite',
+                        'name' => 'divi/form-field',
                         'props' => [
                             'clipboardCategory' => 'style',
                             'groupLabel' => 'Fields',
+                            'attrName' => 'field',
                             'dynamicSubgroupHost' => true
                         ]
                     ]

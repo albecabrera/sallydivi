@@ -30,11 +30,9 @@ use ET\Builder\Packages\Module\Options\FormField\FormFieldStyle;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
 use ET\Builder\Packages\ModuleUtils\ModuleUtils;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
-use ET\Builder\Packages\GlobalData\GlobalData;
 use ET\Builder\Framework\Utility\Conditions;
 use ET\Builder\Packages\WooCommerce\WooCommerceUtils;
 use ET\Builder\Packages\IconLibrary\IconFont\Utils;
-use ET\Builder\Framework\Breakpoint\Breakpoint;
 use ET\Builder\Packages\StyleLibrary\Declarations\Declarations;
 use WP_Block_Type_Registry;
 use WP_Block;
@@ -704,9 +702,22 @@ class WooCommerceCartTotalsModule implements DependencyInterface {
 		$elements    = $args['elements'];
 		$settings    = $args['settings'] ?? [];
 		$order_class = $args['orderClass'] ?? '';
+		$style_group = $args['styleGroup'] ?? 'module';
 
 		$is_inside_sticky_module   = $elements->get_is_inside_sticky_module();
 		$sticky_parent_order_class = $elements->get_sticky_parent_order_class();
+
+		// Prepare affecting attributes for button element style.
+		// This ensures spacing values from Button Option Group Presets are available
+		// for the button icon style declaration, preventing fallback to hard-coded padding.
+		$button_affecting_attrs = 'module' === $style_group ? [
+			'spacing' => array_replace_recursive(
+				isset( $elements->preset_printed_style_attrs ) && is_array( $elements->preset_printed_style_attrs ) ? ( $elements->preset_printed_style_attrs['button']['decoration']['spacing'] ?? [] ) : [],
+				$attrs['button']['decoration']['spacing'] ?? []
+			),
+		] : [
+			'spacing' => $attrs['button']['decoration']['spacing'] ?? [],
+		];
 
 		Style::add(
 			[
@@ -765,6 +776,9 @@ class WooCommerceCartTotalsModule implements DependencyInterface {
 						[
 							'attrName'   => 'button',
 							'styleProps' => [
+								'button'         => [
+									'affectingAttrs' => $button_affecting_attrs,
+								],
 								'advancedStyles' => [
 									[
 										'componentName' => 'divi/common',
@@ -776,19 +790,19 @@ class WooCommerceCartTotalsModule implements DependencyInterface {
 												$params = wp_parse_args(
 													$params,
 													[
-														'selector'             => null,
-														'breakpoint'           => null,
-														'state'                => null,
-														'attr'                 => [],
+														'selector' => null,
+														'breakpoint' => null,
+														'state'    => null,
+														'attr'     => [],
 														'defaultPrintedStyleAttr' => [],
 													]
 												);
 
 												$icon_attr = ModuleUtils::use_attr_value(
 													[
-														'attr'       => $params['attr'],
+														'attr'  => $params['attr'],
 														'breakpoint' => $params['breakpoint'],
-														'state'      => $params['state'],
+														'state' => $params['state'],
 													]
 												);
 
@@ -809,6 +823,20 @@ class WooCommerceCartTotalsModule implements DependencyInterface {
 										],
 									],
 								],
+								'attrsFilter'    => function ( $decoration_attrs ) use ( $style_group ): ?array {
+									// Disable the button icon style for group presets as the button icon styles rendering
+									// requires attributes from the spacing group, which is not available at the preset group level.
+									if ( 'presetGroup' === $style_group && isset( $decoration_attrs['button'] ) ) {
+										return array_merge(
+											$decoration_attrs,
+											[
+												'button' => ModuleUtils::remove_button_icon_attr_value( $decoration_attrs['button'] ),
+											]
+										);
+									}
+
+									return $decoration_attrs;
+								},
 							],
 						]
 					),
@@ -874,13 +902,7 @@ class WooCommerceCartTotalsModule implements DependencyInterface {
 														', ',
 														[
 															"{$order_class} form .form-row input.input-text::placeholder",
-															"{$order_class} form .form-row input.input-text::-webkit-input-placeholder",
-															"{$order_class} form .form-row input.input-text::-moz-placeholder",
-															"{$order_class} form .form-row input.input-text:-ms-input-placeholder",
 															"{$order_class} form .form-row textarea::placeholder",
-															"{$order_class} form .form-row textarea::-webkit-input-placeholder",
-															"{$order_class} form .form-row textarea::-moz-placeholder",
-															"{$order_class} form .form-row textarea:-ms-input-placeholder",
 														]
 													),
 												],

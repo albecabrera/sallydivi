@@ -12,6 +12,8 @@
 	<exclude-pattern>*/_all_modules_metadata.php</exclude-pattern>
 	<exclude-pattern>*/_all_modules_default_printed_style_attributes.php</exclude-pattern>
 	<exclude-pattern>*/.cursor/*</exclude-pattern>
+	<!-- Default to D5-only linting; legacy is checked by the security rules below. -->
+	<exclude-pattern>^((?!includes/builder-5/).)*$</exclude-pattern>
 
 	<!-- Arguments. -->
 	<arg value="sp"/>
@@ -45,4 +47,9 @@
 	<!-- ENFORCE short array syntax [] - converts array() to [] automatically. -->
 	<!-- marketplace-phpcs allows [] but doesn't enforce it; this rule enforces it. -->
 	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+	<!-- Legacy files (outside builder-5) run security-only checks. -->
+	<rule ref="WordPress.Security">
+		<include-pattern>^((?!includes/builder-5/).)*$</include-pattern>
+	</rule>
 </ruleset>

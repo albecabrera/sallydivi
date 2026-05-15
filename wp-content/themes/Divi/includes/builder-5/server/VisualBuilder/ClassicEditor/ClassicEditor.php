@@ -13,6 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use WP_Post;
+use ET\Builder\Packages\WooCommerce\WooCommerceHooks;
 
 /**
  * ClassicEditor class.
@@ -243,12 +244,11 @@ class ClassicEditor {
 	}
 
 	/**
-	 * Set Redirect Flag When Use Builder Button Is Clicked
+	 * Prepare Redirect URL When Use Builder Button Is Clicked
 	 *
-	 * When the Use Divi Builder button is clicked, we want the post to save, the VB to be activated and the user to get redirected to the VB.
-	 * We tap into the save_post action, and redirect users the VB if they just activated it.
-	 * Post meta is updated via Ajax prior to saving the post, setting a temporary flag.
-	 * If the flag exists during a post save that isn't an auto-save, we redirect them to the builder and activate the VB.
+	 * For auto-draft posts, we perform a targeted save first so the post can
+	 * transition to draft, then return a Visual Builder URL in the AJAX response.
+	 * The client-side script handles the redirect.
 	 */
 	public static function set_divi_builder_redirect() {
 		// Verify nonce.
@@ -263,12 +263,54 @@ class ClassicEditor {
 			wp_die();
 		}
 
-		// Set a flag (via post meta) to redirect Divi Builder after the post is saved.
-		// We'll remove this after redirecting so it only happens once.
-		update_post_meta( $post_id, '_et_enable_divi_redirect', 'yes' );
+		// Check if this is an auto-draft that needs to be saved first.
+		$post = get_post( $post_id );
+		if ( ! $post instanceof WP_Post ) {
+			wp_send_json_error( [ 'message' => 'Invalid post.' ] );
+			return;
+		}
 
-		// On success, the JS function initiates a normal post save by clicking the save button in the post editor.
-		wp_send_json_success();
+		// If this is an auto-draft, we need to save it first before redirecting.
+		if ( 'auto-draft' === $post->post_status ) {
+			// Save the post to transition it from auto-draft to draft.
+			$post_data = [
+				'ID'          => $post_id,
+				'post_status' => 'draft',
+			];
+
+			// If a title was provided, update it.
+			if ( isset( $_POST['post_title'] ) ) {
+				$post_data['post_title'] = sanitize_text_field( wp_unslash( $_POST['post_title'] ) );
+			}
+
+			// If content was provided, update it.
+			if ( isset( $_POST['post_content'] ) ) {
+				$post_data['post_content'] = wp_kses_post( wp_unslash( $_POST['post_content'] ) );
+			}
+
+			$result = wp_update_post( $post_data, true );
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( [ 'message' => $result->get_error_message() ] );
+				return;
+			}
+		}
+
+		// Generate the redirect URL to the Visual Builder.
+		// We need to activate the builder using the et_fb_activation_nonce.
+		$redirect_url = esc_url_raw(
+			add_query_arg(
+				'et_fb_activation_nonce',
+				wp_create_nonce( 'et_fb_activation_nonce_' . $post_id ),
+				et_fb_prepare_ssl_link( get_permalink( $post_id ) )
+			)
+		);
+
+		// Set flag to explicitly trigger page creation flow when redirecting to VB.
+		// This is needed because Classic Editor saves the post before redirecting, making content "not empty enough".
+		update_post_meta( $post_id, '_et_pb_show_page_creation', 'on' );
+
+		// Return the redirect URL so JavaScript can navigate to the VB.
+		wp_send_json_success( [ 'redirect_url' => $redirect_url ] );
 	}
 
 	/**
@@ -362,9 +404,7 @@ class ClassicEditor {
 		];
 
 		// WooCommerce-specific cleanup.
-		if ( defined( 'ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY' ) ) {
-			$meta_fields_to_remove[] = ET_BUILDER_WC_PRODUCT_PAGE_CONTENT_STATUS_META_KEY;
-		}
+		$meta_fields_to_remove[] = WooCommerceHooks::get_product_page_content_status_meta_key();
 
 		// Remove all the meta fields.
 		foreach ( $meta_fields_to_remove as $meta_key ) {
@@ -375,9 +415,12 @@ class ClassicEditor {
 	/**
 	 * Redirect To Builder After Saving Post
 	 *
-	 * If the user has just activated the Divi Builder on a post, we need to redirect them to the Visual Builder.
-	 * If _et_enable_divi_redirect is set to 'yes' in post meta, we know the user just activated Divi.
-	 * In that case, we activate the builder, redirect them to the VB, and delete the flag.
+	 * This is the non-AJAX fallback path for legacy save flows.
+	 * Auto-draft activation in modern flow is handled by
+	 * `set_divi_builder_redirect()` via AJAX response redirect URL.
+	 *
+	 * If `_et_enable_divi_redirect` is set in post meta during a normal save
+	 * request, redirect to the Visual Builder and delete the flag.
 	 *
 	 * @param string $post_id Post ID of the post being saved.
 	 * @param object $post    Post object contains post data of post being saved.
@@ -390,14 +433,28 @@ class ClassicEditor {
 			return;
 		}
 
-		// If this is a new post being created, we don't need to do anything.
-		if ( ! $update ) {
-			return;
-		}
+		// Intentionally do not bail on `$update === false`.
+		// A brand new post transitions from auto-draft to draft on first save,
+		// and that first save must be able to redirect into the Visual Builder.
 
 		// Check if the current save action is an auto-save or a revision.
 		// We don't want to redirect people unless they initiate a purposeful save.
 		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+
+		$redirect_flag = get_post_meta( $post_id, '_et_enable_divi_redirect', true );
+
+		// If the redirect flag is not set, we don't need to continue.
+		if ( 'yes' !== $redirect_flag ) {
+			return;
+		}
+
+		// Retrieve the current post data.
+		$post_data = get_post( $post_id );
+
+		if ( ! $post_data instanceof WP_Post || ! post_type_exists( $post_data->post_type ) ) {
+			delete_post_meta( $post_id, '_et_enable_divi_redirect' );
 			return;
 		}
 
@@ -406,25 +463,11 @@ class ClassicEditor {
 			return;
 		}
 
-		// Retrieve the current post data.
-		$post = get_post( $post_id );
-
 		// If this post is older than 24 hours, it's not relevant.
 		// Users should only get reirected when they are making a new post.
-		if ( strtotime( $post->post_date ) < time() - DAY_IN_SECONDS ) {
+		if ( strtotime( $post_data->post_date ) < time() - DAY_IN_SECONDS ) {
 			// Delete the redirect flag so it doesn't cause issues in the future.
 			delete_post_meta( $post_id, '_et_enable_divi_redirect' );
-			return;
-		}
-
-		// If the post was just created, it will trigger the save_post action.
-		// We don't want to run this function when a post is first created, so we bail if the post is an auto-draft.
-		if ( 'auto-draft' === $post->post_status ) {
-			return;
-		}
-
-		// If the redirect flag is not set, we don't need to continue.
-		if ( 'yes' !== get_post_meta( $post_id, '_et_enable_divi_redirect', true ) ) {
 			return;
 		}
 

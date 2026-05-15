@@ -12,7 +12,7 @@ use ET\Builder\Packages\GlobalLayout\GlobalLayout;
 
 if ( ! defined( 'ET_BUILDER_PRODUCT_VERSION' ) ) {
 	// Note, this will be updated automatically during grunt release task.
-	define( 'ET_BUILDER_PRODUCT_VERSION', '5.2.0' );
+	define( 'ET_BUILDER_PRODUCT_VERSION', '5.3.3' );
 }
 
 if ( ! defined( 'ET_BUILDER_VERSION' ) ) {

@@ -1605,18 +1605,17 @@ class BlogModule implements DependencyInterface {
 		} elseif ( 'on' === $show_excerpt ) {
 			if ( has_excerpt( $post_id ) && 'off' !== $excerpt_manual ) {
 				$manual_excerpt = get_the_excerpt( $post_id );
-
-				// Apply excerpt length truncation to manual excerpts if excerpt_length is set and greater than 0.
-				// Use character-based truncation instead of word-based truncation.
-				if ( $excerpt_length > 0 && strlen( $manual_excerpt ) > $excerpt_length ) {
-					$excerpt_more    = apply_filters( 'excerpt_more', '&hellip;' );
-					$manual_excerpt  = substr( $manual_excerpt, 0, $excerpt_length );
-					$manual_excerpt .= $excerpt_more;
-				}
-
-				$content = apply_filters( 'the_excerpt', $manual_excerpt );
+				$content        = apply_filters( 'the_excerpt', $manual_excerpt );
 			} elseif ( '' !== $post_content ) {
+				// Set global flag to prevent Post Title module from rendering during excerpt generation.
+				$GLOBALS['divi_generating_excerpt'] = true;
+
+				try {
 					$content = et_core_intentionally_unescaped( wpautop( PostUtility::delete_post_first_video( strip_shortcodes( PostUtility::truncate_post( $excerpt_length, false, get_post( $post_id ), true ) ) ) ), 'html' );
+				} finally {
+					// Always reset flag, even if an exception occurs.
+					$GLOBALS['divi_generating_excerpt'] = false;
+				}
 			}
 		}
 
@@ -1704,8 +1703,10 @@ class BlogModule implements DependencyInterface {
 	/**
 	 * Get the current post ID for exclusion, handling Theme Builder context.
 	 *
-	 * In Theme Builder context, the global $post is the template post, not the displayed post.
-	 * This method gets the actual post being displayed for proper post exclusion.
+	 * On singular views in Theme Builder, the global $post is the template post, not the displayed post.
+	 * This method uses the main post stack ID there so the viewed post is excluded from listings.
+	 * On non-singular Theme Builder routes (e.g. category archives), returns 0 so the main-query loop post
+	 * is not treated as the "current" post and wrongfully excluded.
 	 *
 	 * @since ??
 	 *
@@ -1715,8 +1716,8 @@ class BlogModule implements DependencyInterface {
 		// Check if we're in Theme Builder context.
 		$is_theme_builder = class_exists( '\ET_Theme_Builder_Layout' ) && \ET_Theme_Builder_Layout::is_theme_builder_layout();
 
-		if ( $is_theme_builder ) {
-			// In Theme Builder, get the main post ID (the actual post being displayed).
+		if ( $is_theme_builder && true === is_singular() ) {
+			// In Theme Builder on singular pages, get the main post ID (the actual post being displayed).
 			$main_post_id = class_exists( '\ET_Post_Stack' ) ? \ET_Post_Stack::get_main_post_id() : 0;
 			if ( $main_post_id > 0 ) {
 				return $main_post_id;

@@ -15,7 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 // phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase,WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- WP use snakeCase in \WP_Block_Parser_Block
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
-use ET\Builder\Framework\Utility\SanitizerUtility;
 use ET\Builder\FrontEnd\BlockParser\BlockParserStore;
 use ET\Builder\FrontEnd\Module\Style;
 use ET\Builder\Packages\IconLibrary\IconFont\Utils;
@@ -27,11 +26,11 @@ use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
 use ET\Builder\Packages\Module\Options\Text\TextClassnames;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
 use ET\Builder\Packages\ModuleUtils\ChildrenUtils;
+use ET\Builder\Packages\ModuleUtils\ModuleUtils;
 use ET\Builder\Packages\StyleLibrary\Declarations\Button\Button as ButtonDeclaration;
 use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
 use Exception;
 use WP_Block;
-use ET\Builder\Packages\ModuleUtils\ModuleUtils;
 
 /**
  * ButtonModule class.
@@ -582,67 +581,6 @@ class ButtonModule implements DependencyInterface {
 	}
 
 	/**
-	 * Removes the 'icon' property from button attributes across all breakpoints and attribute states.
-	 *
-	 * This function iterates through all breakpoints and attribute states in the provided button
-	 * attributes and creates a new attributes array with the 'icon' property omitted from each
-	 * attribute state array.
-	 *
-	 * This function is equivalent to the JavaScript function
-	 * {@link /docs/builder-api/js-beta/divi-module-library/functions/removeIconAttrValue removeIconAttrValue}
-	 * located in `@divi/module-library`.
-	 *
-	 * @since ??
-	 *
-	 * @param array $button_attrs The button attributes array containing breakpoint and attribute state data.
-	 *                           Structure: [breakpoint][state][icon|other_properties].
-	 *
-	 * @return array A new button attributes array with the 'icon' property removed from all attribute
-	 *               states across all breakpoints.
-	 *
-	 * @example
-	 * ```php
-	 * $button_attrs = [
-	 *   'desktop' => [
-	 *     'value' => [
-	 *       'icon' => ['settings' => [...]],
-	 *       'enable' => 'on',
-	 *     ],
-	 *   ],
-	 * ];
-	 *
-	 * $removed_icon_attrs = ButtonModule::remove_icon_attr_value( $button_attrs );
-	 * // Result: ['desktop' => ['value' => ['enable' => 'on']]]
-	 * ```
-	 */
-	public static function remove_icon_attr_value( array $button_attrs ): array {
-		$removed_icon_attrs = [];
-
-		foreach ( $button_attrs as $breakpoint_name => $breakpoint_data ) {
-			if ( ! is_array( $breakpoint_data ) ) {
-				continue;
-			}
-
-			$removed_icon_attrs[ $breakpoint_name ] = [];
-
-			foreach ( $breakpoint_data as $attr_state_name => $attr_state_data ) {
-				if ( ! is_array( $attr_state_data ) ) {
-					$removed_icon_attrs[ $breakpoint_name ][ $attr_state_name ] = $attr_state_data;
-					continue;
-				}
-
-				// Remove 'icon' key from attribute state data.
-				$removed_state_data = $attr_state_data;
-				unset( $removed_state_data['icon'] );
-
-				$removed_icon_attrs[ $breakpoint_name ][ $attr_state_name ] = $removed_state_data;
-			}
-		}
-
-		return $removed_icon_attrs;
-	}
-
-	/**
 	 * Button Module's style components.
 	 *
 	 * This function is equivalent to the JavaScript constant
@@ -672,11 +610,12 @@ class ButtonModule implements DependencyInterface {
 	 * @return void
 	 */
 	public static function module_styles( array $args ): void {
-		$default_attributes = ModuleRegistration::get_default_attrs( 'divi/button' );
-		$attrs              = array_replace_recursive( $default_attributes, $args['attrs'] );
-		$elements           = $args['elements'];
-		$style_group        = $args['styleGroup'];
-		$settings           = $args['settings'] ?? [];
+		$default_attributes          = ModuleRegistration::get_default_attrs( 'divi/button' );
+		$attrs                       = array_replace_recursive( $default_attributes, $args['attrs'] );
+		$elements                    = $args['elements'];
+		$style_group                 = $args['styleGroup'];
+		$settings                    = $args['settings'] ?? [];
+		$default_printed_style_attrs = $args['defaultPrintedStyleAttrs'] ?? [];
 
 		$icon_placement_value = $attrs['button']['decoration']['button']['desktop']['value']['icon']['placement'] ?? 'right';
 		$icon_placement       = 'left' === $icon_placement_value ? 'before' : 'after';
@@ -710,11 +649,12 @@ class ButtonModule implements DependencyInterface {
 
 		$button_affecting_attrs = 'module' === $style_group ? [
 			'spacing' => array_replace_recursive(
+				$default_printed_style_attrs['module']['decoration']['spacing'] ?? [],
 				isset( $elements->preset_printed_style_attrs ) && is_array( $elements->preset_printed_style_attrs ) ? ( $elements->preset_printed_style_attrs['module']['decoration']['spacing'] ?? [] ) : [],
 				$attrs['module']['decoration']['spacing'] ?? []
 			),
 		] : [
-			'spacing' => $attrs['module']['decoration']['spacing'] ?? [],
+			'spacing' => $module_element_attrs['spacing'] ?? [],
 		];
 
 		Style::add(
@@ -903,7 +843,7 @@ class ButtonModule implements DependencyInterface {
 										return array_merge(
 											$decoration_attrs,
 											[
-												'button' => self::remove_icon_attr_value( $decoration_attrs['button'] ),
+												'button' => ModuleUtils::remove_button_icon_attr_value( $decoration_attrs['button'] ),
 											]
 										);
 									}
@@ -1013,10 +953,13 @@ class ButtonModule implements DependencyInterface {
 	public static function icon_style_fe_declaration( array $params ): string {
 		$icon_attr = $params['attrValue'];
 
+		// Left placement paints the icon on `:before`; suppress `::after` even when `body.et_button_icon_visible` makes `:after` opaque (#49051).
 		$style_declarations = new StyleDeclarations(
 			[
 				'returnType' => 'string',
-				'important'  => false,
+				'important'  => [
+					'display' => true,
+				],
 			]
 		);
 

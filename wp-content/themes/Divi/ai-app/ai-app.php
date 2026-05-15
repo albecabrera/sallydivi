@@ -492,8 +492,8 @@ class ET_AI_App {
 					'script'  => [
 						'src'                => $BUNDLE_URI,
 						'deps'               => $BUNDLE_DEPS,
-						'enqueue_top_window' => ! file_exists( $asset_path ),
-						'enqueue_app_window' => true,
+						'enqueue_top_window' => false,
+						'enqueue_app_window' => false,
 						'data_top_window'    => self::get_ai_app_helpers(),
 						'data_app_window'    => self::get_ai_app_helpers(),
 					]

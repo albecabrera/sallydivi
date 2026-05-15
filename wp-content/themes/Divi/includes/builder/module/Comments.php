@@ -1,7 +1,24 @@
 <?php
+/**
+ * Comments Module.
+ *
+ * @package Divi\Builder
+ * @since 5.3.3
+ */
 
+/**
+ * Comments Module.
+ *
+ * @package Divi\Builder
+ * @since 5.3.3
+ */
 class ET_Builder_Module_Comments extends ET_Builder_Module {
-	function init() {
+	/**
+	 * Initialize the module.
+	 *
+	 * @since 5.3.3
+	 */
+	public function init() {
 		$this->name       = esc_html__( 'Comments', 'et_builder' );
 		$this->plural     = esc_html__( 'Comments', 'et_builder' );
 		$this->slug       = 'et_pb_comments';
@@ -295,7 +312,14 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 		);
 	}
 
-	function get_fields() {
+	/**
+	 * Get the fields for the module.
+	 *
+	 * @since 5.3.3
+	 *
+	 * @return array
+	 */
+	public function get_fields() {
 
 		$fields = array(
 			'show_avatar' => array(
@@ -364,18 +388,18 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 	 *
 	 * @since 4.0.9 Add custom form title heading level.
 	 *
-	 * @param {string} $header_level
-	 * @param {string} $form_title_level
+	 * @param {string} $header_level The header heading level.
+	 * @param {string} $form_title_level The form title heading level.
 	 *
-	 * @return string of comment section markup
+	 * @return string The comment section markup.
 	 */
-	static function get_comments( $header_level, $form_title_level ) {
+	public static function get_comments( $header_level, $form_title_level ) {
 		global $et_pb_comments_print, $et_comments_header_level, $et_comments_form_title_level;
 
-		// Globally flag that comment module is being printed
+		// Globally flag that comment module is being printed.
 		$et_pb_comments_print = true;
 
-		// set custom header level for comments form
+		// set custom header level for comments form.
 		$et_comments_header_level     = $header_level;
 		$et_comments_form_title_level = $form_title_level;
 
@@ -388,14 +412,15 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 		do_action( 'et_fb_before_comments_template' );
 
 		ob_start();
-		comments_template( '', true );
+		// TODO fix(D4, Comments): Revert to comments_template after WordPress core resolves Trac #61468. [https://github.com/elegantthemes/Divi/issues/28338].
+		et_comments_template_safe( '', true );
 		$comments_content = ob_get_contents();
 		ob_end_clean();
 
 		// Custom action after calling comments_template.
 		do_action( 'et_fb_after_comments_template' );
 
-		// Globally flag that comment module has been printed
+		// Globally flag that comment module has been printed.
 		$et_pb_comments_print     = false;
 		$et_comments_header_level = '';
 
@@ -408,15 +433,15 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 	 *
 	 * @since 3.29
 	 */
-	function before_comments_content() {
+	public function before_comments_content() {
 		// Modify the comments request to make sure it's unique.
-		// Otherwise WP generates SQL error and doesn't allow multiple comments sections on single page
+		// Otherwise WP generates SQL error and doesn't allow multiple comments sections on single page.
 		add_action( 'pre_get_comments', array( $this, 'et_pb_modify_comments_request' ), 1 );
 
-		// include custom comments_template to display the comment section with Divi style
+		// include custom comments_template to display the comment section with Divi style.
 		add_filter( 'comments_template', array( $this, 'et_pb_comments_template' ) );
 
-		// Modify submit button to be advanced button style ready
+		// Modify submit button to be advanced button style ready.
 		add_filter( 'comment_form_submit_button', array( $this, 'et_pb_comments_submit_button' ) );
 	}
 
@@ -427,7 +452,7 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 	 * @since 3.29
 	 * @since 4.0.9 Add form title heading level.
 	 */
-	function get_comments_content() {
+	public function get_comments_content() {
 		$header_level               = et_()->array_get( $this->props, 'header_level' );
 		$form_title_level           = et_()->array_get( $this->props, 'title_level' );
 		$header_level_processed     = et_pb_process_header_level( $header_level, 'h1' );
@@ -440,17 +465,33 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 	 * Action and filter hooks that are called after comment content rendering. These are
 	 * abstracted into method so module which extends comment module can modify these
 	 */
-	function after_comments_content() {
-		// remove all the actions and filters to not break the default comments section from theme
+	public function after_comments_content() {
+		// remove all the actions and filters to not break the default comments section from theme.
 		remove_filter( 'comments_template', array( $this, 'et_pb_comments_template' ) );
 		remove_action( 'pre_get_comments', array( $this, 'et_pb_modify_comments_request' ), 1 );
 	}
 
-	function et_pb_comments_template() {
+	/**
+	 * Get the comments template.
+	 *
+	 * @since 5.3.3
+	 *
+	 * @return string The comments template.
+	 */
+	public function et_pb_comments_template() {
 		return realpath( dirname( __FILE__ ) . '/..' ) . '/comments_template.php';
 	}
 
-	function et_pb_comments_submit_button( $submit_button ) {
+	/**
+	 * Modify the comments submit button.
+	 *
+	 * @since 5.3.3
+	 *
+	 * @param string $submit_button The submit button HTML.
+	 *
+	 * @return string The modified submit button HTML.
+	 */
+	public function et_pb_comments_submit_button( $submit_button ) {
 		return sprintf(
 			'<button name="%1$s" type="submit" id="%2$s" class="%3$s">%4$s</button>',
 			esc_attr( 'submit' ),
@@ -460,8 +501,15 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 		);
 	}
 
-	function et_pb_modify_comments_request( $params ) {
-		// modify the request parameters the way it doesn't change the result just to make request with unique parameters
+	/**
+	 * Modify the comments request.
+	 *
+	 * @since 5.3.3
+	 *
+	 * @param object $params The parameters for the comments request.
+	 */
+	public function et_pb_modify_comments_request( $params ) {
+		// modify the request parameters the way it doesn't change the result just to make request with unique parameters.
 		$params->query_vars['type__not_in'] = 'et_pb_comments_random_type_' . $this->et_pb_unique_comments_module_class;
 	}
 
@@ -491,15 +539,15 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 		$custom_icon_tablet = isset( $custom_icon_values['tablet'] ) ? $custom_icon_values['tablet'] : '';
 		$custom_icon_phone  = isset( $custom_icon_values['phone'] ) ? $custom_icon_values['phone'] : '';
 
-		$this->et_pb_unique_comments_module_class = ET_Builder_Element::get_module_order_class( $render_slug ); // use this variable to make the comments request unique for each module instance
+		$this->et_pb_unique_comments_module_class = ET_Builder_Element::get_module_order_class( $render_slug ); // use this variable to make the comments request unique for each module instance.
 
-		// Action & filter hooks before comment content rendering
+		// Action & filter hooks before comment content rendering.
 		$this->before_comments_content();
 
-		// Comment content rendering
+		// Comment content rendering.
 		$comments_content = $this->get_comments_content();
 
-		// Action & filter hooks after comment content rendering
+		// Action & filter hooks after comment content rendering.
 		$this->after_comments_content();
 
 		// Image - CSS Filters.
@@ -520,7 +568,7 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 		// Background layout data attributes.
 		$data_background_layout = et_pb_background_layout_options()->get_background_layout_attrs( $this->props );
 
-		// Module classname
+		// Module classname.
 		$this->add_classname(
 			array(
 				'et_pb_comments_module',
@@ -555,7 +603,7 @@ class ET_Builder_Module_Comments extends ET_Builder_Module {
 			$this->add_classname( 'et_pb_no_comments_rating' );
 		}
 
-		// Removed automatically added classname
+		// Removed automatically added classname.
 		$this->remove_classname( $render_slug );
 
 		$multi_view_data_attr = $multi_view->render_attrs(

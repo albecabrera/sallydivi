@@ -149,8 +149,25 @@ class StyleDeclarations {
 			$style_declarations->add( 'padding-left', ! $is_button_icon_left ? '0.7em' : '2em' );
 		}
 
-		if ( empty( $padding ) && 'off' === $enable ) {
-			$style_declarations->add( 'padding', '0.3em 1em' );
+		$desktop_padding     = $args['attr']['desktop']['value']['padding'] ?? $args['defaultAttrValue']['padding'] ?? [];
+		$has_desktop_padding = ! empty( $desktop_padding['top'] )
+			|| ! empty( $desktop_padding['right'] )
+			|| ! empty( $desktop_padding['bottom'] )
+			|| ! empty( $desktop_padding['left'] );
+
+		if ( 'off' === $enable && ! $has_desktop_padding ) {
+			if ( empty( $padding ) ) {
+				$style_declarations->add( 'padding', '0.3em 1em' );
+			} else {
+				// Add default padding for right and left if not set.
+				if ( ! $current_right_padding ) {
+					$style_declarations->add( 'padding-right', '1em' );
+				}
+
+				if ( ! $current_left_padding ) {
+					$style_declarations->add( 'padding-left', '1em' );
+				}
+			}
 		}
 
 		return $style_declarations->value();

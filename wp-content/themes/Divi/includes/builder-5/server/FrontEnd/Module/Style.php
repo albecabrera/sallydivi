@@ -715,9 +715,9 @@ class Style {
 					// Only do string searches if selector is not empty.
 					// Combine checks to minimize function calls.
 					$selector_lower      = $selector; // Keep original case for comparison.
-					$is_special_selector = strpos( $selector, ':-' ) !== false
-						|| strpos( $selector, '@keyframes' ) !== false
-						|| strpos( $selector, 'preset--' ) !== false;
+					$is_special_selector = str_contains( $selector, ':-' )
+						|| str_contains( $selector, '@keyframes' )
+						|| str_contains( $selector, 'preset--' );
 				}
 
 				// We want to skip combining anything with psuedo selectors or keyframes or free-form-css (which has
@@ -805,10 +805,14 @@ class Style {
 	 * @return void
 	 */
 	public static function reset() {
-		self::$_styles             = [];
-		self::$_ancestor_ids_cache = [];
-		self::$_style_key_cache    = null;
-		self::$_unique_counter     = 0;
+		self::$_styles                                     = [];
+		self::$_media_queries                              = [];
+		self::$_preset_selector_processed                  = [];
+		self::$_ancestor_ids_cache                         = [];
+		self::$_style_key_cache                            = null;
+		self::$_unique_counter                             = 0;
+		self::$_detected_module_types_for_inner_content    = [];
+		self::$_is_theme_builder_context_for_inner_content = false;
 	}
 
 	/**
@@ -1008,12 +1012,12 @@ class Style {
 					// Check using both $key and $id to handle different data structures.
 					$is_font = isset( $font_global_variables_array[ $key ] )
 						|| isset( $font_global_variables_array[ $id ] )
-						|| ( is_string( $id ) && ( strpos( $id, '_font' ) !== false || strpos( $id, '-font' ) !== false ) );
+						|| ( is_string( $id ) && ( str_contains( $id, '_font' ) || str_contains( $id, '-font' ) ) );
 
 					if ( $is_font ) {
 						$formatted_font_value = FontUtils::format_font_value_with_ms_version( $result );
 						// If MS version was applied, value already includes quotes. Otherwise, add quotes.
-						if ( strpos( $formatted_font_value, " MS', '" ) !== false ) {
+						if ( str_contains( $formatted_font_value, " MS', '" ) ) {
 							$result = $formatted_font_value;
 						} else {
 							$result = "'" . $formatted_font_value . "'";
@@ -1021,7 +1025,7 @@ class Style {
 					} else {
 						$result = esc_html( $result );
 					}
-					$css_property    = 0 === strpos( $id, '--' ) ? esc_html( $id ) : '--' . esc_html( $id );
+					$css_property    = str_starts_with( $id, '--' ) ? esc_html( $id ) : '--' . esc_html( $id );
 					$css_statements .= $css_property . ': ' . $result . ';';
 				}
 			}

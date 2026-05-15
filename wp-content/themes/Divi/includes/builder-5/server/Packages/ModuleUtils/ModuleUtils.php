@@ -328,43 +328,79 @@ class ModuleUtils {
 		// TODO feat(D5, Responsive Views): replace this static array with a dynamic one generated from the Builder's settings [https://github.com/elegantthemes/Divi/issues/41620].
 		return [
 			'phone'   => [
-				'sticky' => [
+				'active'  => [
 					'phone',
 					'value',
 				],
-				'hover'  => [
+				'checked' => [
 					'phone',
 					'value',
 				],
-				'value'  => [
+				'sticky'  => [
+					'phone',
+					'value',
+				],
+				'focus'   => [
+					'phone',
+					'value',
+				],
+				'hover'   => [
+					'phone',
+					'value',
+				],
+				'value'   => [
 					'tablet',
 					'value',
 				],
 			],
 			'tablet'  => [
-				'sticky' => [
+				'active'  => [
 					'tablet',
 					'value',
 				],
-				'hover'  => [
+				'checked' => [
 					'tablet',
 					'value',
 				],
-				'value'  => [
+				'sticky'  => [
+					'tablet',
+					'value',
+				],
+				'focus'   => [
+					'tablet',
+					'value',
+				],
+				'hover'   => [
+					'tablet',
+					'value',
+				],
+				'value'   => [
 					'desktop',
 					'value',
 				],
 			],
 			'desktop' => [
-				'sticky' => [
+				'active'  => [
 					'desktop',
 					'value',
 				],
-				'hover'  => [
+				'checked' => [
 					'desktop',
 					'value',
 				],
-				'value'  => [
+				'sticky'  => [
+					'desktop',
+					'value',
+				],
+				'focus'   => [
+					'desktop',
+					'value',
+				],
+				'hover'   => [
+					'desktop',
+					'value',
+				],
+				'value'   => [
 					'desktop',
 					'value',
 				],
@@ -411,17 +447,23 @@ class ModuleUtils {
 		foreach ( $breakpoint_names as $index => $name ) {
 			if ( $base_breakpoint === $name ) {
 				$inherit_breakpoint_map[ $name ] = [
-					'sticky' => [ $name, 'value' ],
-					'hover'  => [ $name, 'value' ],
-					'value'  => [ $name, 'value' ],
+					'active'  => [ $name, 'value' ],
+					'checked' => [ $name, 'value' ],
+					'sticky'  => [ $name, 'value' ],
+					'focus'   => [ $name, 'value' ],
+					'hover'   => [ $name, 'value' ],
+					'value'   => [ $name, 'value' ],
 				];
 			} else {
 				$inherit_breakpoint_index = $index > $base_breakpoint_index ? $index - 1 : $index + 1;
 
 				$inherit_breakpoint_map[ $name ] = [
-					'sticky' => [ $name, 'value' ],
-					'hover'  => [ $name, 'value' ],
-					'value'  => [ $breakpoint_names[ $inherit_breakpoint_index ], 'value' ],
+					'active'  => [ $name, 'value' ],
+					'checked' => [ $name, 'value' ],
+					'sticky'  => [ $name, 'value' ],
+					'focus'   => [ $name, 'value' ],
+					'hover'   => [ $name, 'value' ],
+					'value'   => [ $breakpoint_names[ $inherit_breakpoint_index ], 'value' ],
 				];
 			}
 		}
@@ -989,6 +1031,84 @@ class ModuleUtils {
 	}
 
 	/**
+	 * Whether a background state that matches or collapses to empty should be kept for a
+	 * smaller breakpoint when its inheritance parent is not the base breakpoint.
+	 *
+	 * Deduplication normally removes child rows that duplicate the immediate parent. When the
+	 * parent is an intermediate responsive breakpoint (e.g. tabletWide), removing the child
+	 * (e.g. tablet) drops markup that frontend parallax CSS expects per viewport band (#48201).
+	 *
+	 * @param string $breakpoint        Current breakpoint name.
+	 * @param string $parent_breakpoint Inheritance parent breakpoint name.
+	 * @param string $base_breakpoint   Base breakpoint name (typically desktop).
+	 *
+	 * @return bool True when the child row should be materialized even if redundant.
+	 */
+	private static function _should_materialize_responsive_background_row( string $breakpoint, string $parent_breakpoint, string $base_breakpoint ): bool {
+		if ( $breakpoint === $parent_breakpoint ) {
+			return false;
+		}
+		if ( $base_breakpoint === $parent_breakpoint ) {
+			return false;
+		}
+
+		// Legacy desktop → tablet → phone chain: phone still dedupes against tablet when identical.
+		// Full breakpoint lists use tabletWide / phoneWide so tablet is not the direct parent of phone.
+		if ( 'phone' === $breakpoint && 'tablet' === $parent_breakpoint ) {
+			return false;
+		}
+
+		// Only materialize the sub-desktop steps that parallax + responsive CSS expect as separate
+		// rows. A broad "any parent !== base" rule also matched ultraWide/widescreen pairs and
+		// duplicated rows in ways that broke other viewport bands (e.g. tabletWide on FE) (#48201).
+		$materialize_pairs = [
+			[ 'tablet', 'tabletWide' ],
+			[ 'phoneWide', 'tablet' ],
+			[ 'phone', 'phoneWide' ],
+		];
+
+		foreach ( $materialize_pairs as $pair ) {
+			if ( $pair[0] === $breakpoint && $pair[1] === $parent_breakpoint ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Whether the original background attr uses nested multi-view keys (e.g. tablet.desktop.value)
+	 * instead of flat breakpoint.state (tablet.value).
+	 *
+	 * @param array  $original_attr Original attr before inheritance.
+	 * @param string $breakpoint      Breakpoint name.
+	 * @param string $state           State name.
+	 *
+	 * @return bool True when layout is nested multi-view.
+	 */
+	private static function _is_nested_multiview_background_attr( array $original_attr, string $breakpoint, string $state ): bool {
+		if ( ! isset( $original_attr[ $breakpoint ] ) || ! is_array( $original_attr[ $breakpoint ] ) ) {
+			return false;
+		}
+
+		$breakpoint_attr = $original_attr[ $breakpoint ];
+
+		if ( array_key_exists( $state, $breakpoint_attr ) ) {
+			return false;
+		}
+
+		$nested_view_keys = [ 'desktop', 'tablet', 'phone' ];
+
+		foreach ( array_keys( $breakpoint_attr ) as $key ) {
+			if ( in_array( $key, $nested_view_keys, true ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get attribute values with inherited values.
 	 *
 	 * This function compares each breakpoint and state using the `inheritBreakpoints` object
@@ -1003,6 +1123,8 @@ class ModuleUtils {
 	 * @param string $breakpoint          The breakpoint to get the inheritance breakpoint for. One of `desktop`, `tablet`, `phone`.
 	 * @param string $state               The state to get the inheritance breakpoint for.
 	 *                                    One of `value`, `hover`, `tablet_value`, `tablet_hover`, `phone_value`, `phone_hover`.
+	 * @param array  $original_attr              Original attributes before inheritance. Used for nested multi-view background detection.
+	 * @param array  $inherited_attr_for_lookup Pre-dedup inherited tree; used to match TS getAndInheritBackgroundAttr lookups (#48201).
 	 *
 	 * @return array Cleaned attribute values.
 	 *
@@ -1061,7 +1183,7 @@ class ModuleUtils {
 	 * // ]
 	 * ```
 	 */
-	private static function _return_background_values( array $attr_to_be_returned, string $breakpoint, string $state ): array {
+	private static function _return_background_values( array $attr_to_be_returned, string $breakpoint, string $state, array $original_attr = [], array $inherited_attr_for_lookup = [] ): array {
 		// TODO feat(D5, Refactor): pass breakpointNames and baseBreakpoint as arguments [https://github.com/elegantthemes/Divi/issues/41620].
 		$base_breakpoint   = Breakpoint::get_base_breakpoint_name();
 		$breakpoint_names  = Breakpoint::get_enabled_breakpoint_names();
@@ -1083,9 +1205,17 @@ class ModuleUtils {
 		);
 		$is_desktop_value  = 'desktop' === $breakpoint && 'value' === $state;
 
-		// Background Color.
-		$parent_color           = $attr_to_be_returned[ $parent_breakpoint ][ $parent_state ]['color'] ?? null;
-		$current_color          = $attr_to_be_returned[ $breakpoint ][ $state ]['color'] ?? null;
+		// Background Color. Match TS getAndInheritBackgroundAttr: parent prefers normalized return row,
+		// then pre-dedup inherited; current color is always read from pre-dedup inherited (#48201 / parity).
+		$parent_row_returned  = $attr_to_be_returned[ $parent_breakpoint ][ $parent_state ] ?? [];
+		$parent_row_inherited = ( $inherited_attr_for_lookup[ $parent_breakpoint ] ?? [] )[ $parent_state ] ?? [];
+		$parent_color         = $parent_row_returned['color'] ?? $parent_row_inherited['color'] ?? null;
+
+		$current_row_inherited  = ( $inherited_attr_for_lookup[ $breakpoint ] ?? [] )[ $state ] ?? [];
+		$use_inherited_lookup   = ! empty( $inherited_attr_for_lookup );
+		$current_color          = $use_inherited_lookup
+			? ( $current_row_inherited['color'] ?? null )
+			: ( $attr_to_be_returned[ $breakpoint ][ $state ]['color'] ?? null );
 		$is_colors_match        = $current_color === $parent_color;
 		$is_current_color_empty = is_null( $current_color );
 
@@ -1102,9 +1232,13 @@ class ModuleUtils {
 			unset( $attr_to_be_returned[ $breakpoint ][ $state ]['color'] );
 		}
 
-		// Background Mask.
-		$parent_mask           = $attr_to_be_returned[ $parent_breakpoint ][ $parent_state ]['mask'] ?? [];
-		$current_mask          = $attr_to_be_returned[ $breakpoint ][ $state ]['mask'] ?? [];
+		// Background Mask. TS returnAttrValues reads mask/pattern/image/gradient from pre-dedup inherited only.
+		$parent_mask           = $use_inherited_lookup
+			? ( $parent_row_inherited['mask'] ?? [] )
+			: ( $attr_to_be_returned[ $parent_breakpoint ][ $parent_state ]['mask'] ?? [] );
+		$current_mask          = $use_inherited_lookup
+			? ( $current_row_inherited['mask'] ?? [] )
+			: ( $attr_to_be_returned[ $breakpoint ][ $state ]['mask'] ?? [] );
 		$is_masks_match        = self::_is_same( $current_mask, $parent_mask );
 		$is_current_mask_empty = empty( self::_array_trim( $current_mask ) );
 
@@ -1116,8 +1250,12 @@ class ModuleUtils {
 		}
 
 		// Background Pattern.
-		$parent_pattern           = $attr_to_be_returned[ $parent_breakpoint ][ $parent_state ]['pattern'] ?? [];
-		$current_pattern          = $attr_to_be_returned[ $breakpoint ][ $state ]['pattern'] ?? [];
+		$parent_pattern           = $use_inherited_lookup
+			? ( $parent_row_inherited['pattern'] ?? [] )
+			: ( $attr_to_be_returned[ $parent_breakpoint ][ $parent_state ]['pattern'] ?? [] );
+		$current_pattern          = $use_inherited_lookup
+			? ( $current_row_inherited['pattern'] ?? [] )
+			: ( $attr_to_be_returned[ $breakpoint ][ $state ]['pattern'] ?? [] );
 		$is_patterns_match        = self::_is_same( $current_pattern, $parent_pattern );
 		$is_current_pattern_empty = empty( self::_array_trim( $current_pattern ) );
 
@@ -1129,13 +1267,21 @@ class ModuleUtils {
 		}
 
 		// Background Image and Gradient.
-		$parent_gradient           = $attr_to_be_returned[ $parent_breakpoint ][ $parent_state ]['gradient'] ?? [];
-		$current_gradient          = $attr_to_be_returned[ $breakpoint ][ $state ]['gradient'] ?? [];
+		$parent_gradient           = $use_inherited_lookup
+			? ( $parent_row_inherited['gradient'] ?? [] )
+			: ( $attr_to_be_returned[ $parent_breakpoint ][ $parent_state ]['gradient'] ?? [] );
+		$current_gradient          = $use_inherited_lookup
+			? ( $current_row_inherited['gradient'] ?? [] )
+			: ( $attr_to_be_returned[ $breakpoint ][ $state ]['gradient'] ?? [] );
 		$is_gradients_match        = self::_is_same( $current_gradient, $parent_gradient );
 		$is_current_gradient_empty = empty( self::_array_trim( $current_gradient ) );
 
-		$parent_image           = $attr_to_be_returned[ $parent_breakpoint ][ $parent_state ]['image'] ?? [];
-		$current_image          = $attr_to_be_returned[ $breakpoint ][ $state ]['image'] ?? [];
+		$parent_image           = $use_inherited_lookup
+			? ( $parent_row_inherited['image'] ?? [] )
+			: ( $attr_to_be_returned[ $parent_breakpoint ][ $parent_state ]['image'] ?? [] );
+		$current_image          = $use_inherited_lookup
+			? ( $current_row_inherited['image'] ?? [] )
+			: ( $attr_to_be_returned[ $breakpoint ][ $state ]['image'] ?? [] );
 		$is_images_match        = self::_is_same( $current_image, $parent_image );
 		$is_current_image_empty = empty( self::_array_trim( $current_image ) );
 
@@ -1160,13 +1306,22 @@ class ModuleUtils {
 		}
 
 		if ( ! $is_desktop_value ) {
+			// When an intermediate breakpoint row was removed (e.g. tablet.value deduped), comparisons must
+			// still use the immediate parent's merged values so children match TS returnAttrValues (#48201).
+			$parent_row_for_dedupe = [];
+			if ( isset( $attr_to_be_returned[ $parent_breakpoint ] ) && array_key_exists( $parent_state, $attr_to_be_returned[ $parent_breakpoint ] ) ) {
+				$parent_row_for_dedupe = $attr_to_be_returned[ $parent_breakpoint ][ $parent_state ];
+			} elseif ( $use_inherited_lookup ) {
+				$parent_row_for_dedupe = $parent_row_inherited;
+			}
+
 			$is_images_match    = false;
 			$is_gradients_match = false;
 
 			if (
 				self::_is_same(
 					$attr_to_be_returned[ $breakpoint ][ $state ]['image'] ?? [],
-					$attr_to_be_returned[ $parent_breakpoint ][ $parent_state ]['image'] ?? []
+					$parent_row_for_dedupe['image'] ?? []
 				)
 			) {
 				$is_images_match = true;
@@ -1175,7 +1330,7 @@ class ModuleUtils {
 			if (
 				self::_is_same(
 					$attr_to_be_returned[ $breakpoint ][ $state ]['gradient'] ?? [],
-					$attr_to_be_returned[ $parent_breakpoint ][ $parent_state ]['gradient'] ?? []
+					$parent_row_for_dedupe['gradient'] ?? []
 				)
 			) {
 				$is_gradients_match = true;
@@ -1187,37 +1342,70 @@ class ModuleUtils {
 			}
 
 			if ( isset( $attr_to_be_returned[ $breakpoint ][ $state ] ) ) {
-				// If the entire background style is empty, remove it.
+				// If the entire background style is empty, remove it (or materialize for parallax).
 				if ( empty( self::_array_trim( $attr_to_be_returned[ $breakpoint ][ $state ] ) ) ) {
-					unset( $attr_to_be_returned[ $breakpoint ][ $state ] );
+					if (
+						self::_should_materialize_responsive_background_row( $breakpoint, $parent_breakpoint, $base_breakpoint )
+						&& ! self::_is_nested_multiview_background_attr( $original_attr, $breakpoint, $state )
+					) {
+						$attr_to_be_returned[ $breakpoint ][ $state ] = $parent_row_for_dedupe;
+					} else {
+						unset( $attr_to_be_returned[ $breakpoint ][ $state ] );
+					}
 				}
 
 				// If the entire breakpoint style matches the parent, remove it.
 				if (
-					self::_is_same(
+					isset( $attr_to_be_returned[ $breakpoint ][ $state ] )
+					&& self::_is_same(
 						$attr_to_be_returned[ $breakpoint ][ $state ] ?? [],
-						$attr_to_be_returned[ $parent_breakpoint ][ $parent_state ] ?? []
+						$parent_row_for_dedupe
 					)
 				) {
-					unset( $attr_to_be_returned[ $breakpoint ][ $state ] );
+					if (
+						! self::_should_materialize_responsive_background_row( $breakpoint, $parent_breakpoint, $base_breakpoint )
+						|| self::_is_nested_multiview_background_attr( $original_attr, $breakpoint, $state )
+					) {
+						unset( $attr_to_be_returned[ $breakpoint ][ $state ] );
+					}
 				}
 			}
 		}
 
 		if ( ! $is_desktop_value && isset( $attr_to_be_returned[ $breakpoint ][ $state ] ) ) {
-			// If the entire background style is empty, remove it.
+			$parent_row_for_dedupe_outer = [];
+			if ( isset( $attr_to_be_returned[ $parent_breakpoint ] ) && array_key_exists( $parent_state, $attr_to_be_returned[ $parent_breakpoint ] ) ) {
+				$parent_row_for_dedupe_outer = $attr_to_be_returned[ $parent_breakpoint ][ $parent_state ];
+			} elseif ( $use_inherited_lookup ) {
+				$parent_row_for_dedupe_outer = $parent_row_inherited;
+			}
+
+			// If the entire background style is empty, remove it (or materialize for parallax).
 			if ( empty( self::_array_trim( $attr_to_be_returned[ $breakpoint ][ $state ] ) ) ) {
-				unset( $attr_to_be_returned[ $breakpoint ][ $state ] );
+				if (
+					self::_should_materialize_responsive_background_row( $breakpoint, $parent_breakpoint, $base_breakpoint )
+					&& ! self::_is_nested_multiview_background_attr( $original_attr, $breakpoint, $state )
+				) {
+					$attr_to_be_returned[ $breakpoint ][ $state ] = $parent_row_for_dedupe_outer;
+				} else {
+					unset( $attr_to_be_returned[ $breakpoint ][ $state ] );
+				}
 			}
 
 			// If the entire breakpoint style matches the parent, remove it.
 			if (
-				self::_is_same(
+				isset( $attr_to_be_returned[ $breakpoint ][ $state ] )
+				&& self::_is_same(
 					$attr_to_be_returned[ $breakpoint ][ $state ] ?? [],
-					$attr_to_be_returned[ $parent_breakpoint ][ $parent_state ] ?? []
+					$parent_row_for_dedupe_outer
 				)
 			) {
-				unset( $attr_to_be_returned[ $breakpoint ][ $state ] );
+				if (
+					! self::_should_materialize_responsive_background_row( $breakpoint, $parent_breakpoint, $base_breakpoint )
+					|| self::_is_nested_multiview_background_attr( $original_attr, $breakpoint, $state )
+				) {
+					unset( $attr_to_be_returned[ $breakpoint ][ $state ] );
+				}
 			}
 		}
 
@@ -1231,7 +1419,7 @@ class ModuleUtils {
 	 * breakpoint and state if they are not set. Also removes values that are the
 	 * same as the inherited value.
 	 *
-	 * @since ???
+	 * @since ??
 	 *
 	 * @param array $args {
 	 *     An array of arguments.
@@ -1333,15 +1521,26 @@ class ModuleUtils {
 			// phpcs:ignore ET.Comments.Todo.TodoFound -- NOTE comment references TODO but is not a TODO itself.
 			// NOTE: This implementation partially fulfills the above TODO by using dynamic breakpoint processing.
 
-			// Process all enabled breakpoints dynamically in reverse order (smallest to largest).
-			$breakpoint_names          = Breakpoint::get_enabled_breakpoint_names();
-			$reversed_breakpoint_names = array_reverse( $breakpoint_names );
-			$reversed_states           = [ 'sticky', 'hover', 'value' ];
+			// Process breakpoints so each breakpoint's parent is normalized before deduplication runs on the child.
+			// Order: base (desktop) → larger viewports (e.g. widescreen, ultraWide), then smaller (tabletWide → tablet → …).
+			// Previously, smallest-first caused cleared colors (e.g. tabletWide '') to match child '' before the parent
+			// was converted to `initial`, dropping smaller breakpoints and breaking FE (#48201).
+			$breakpoint_names = Breakpoint::get_enabled_breakpoint_names();
+			$base_name        = Breakpoint::get_base_breakpoint_name();
+			$base_index_bp    = array_search( $base_name, $breakpoint_names, true );
+			if ( false === $base_index_bp ) {
+				$ordered_breakpoints_for_return = array_reverse( $breakpoint_names );
+			} else {
+				$larger_slice                   = array_slice( $breakpoint_names, 0, $base_index_bp + 1 );
+				$smaller_slice                  = array_slice( $breakpoint_names, $base_index_bp + 1 );
+				$ordered_breakpoints_for_return = array_merge( array_reverse( $larger_slice ), $smaller_slice );
+			}
+			$reversed_states = [ 'sticky', 'hover', 'value' ];
 
-			foreach ( $reversed_breakpoint_names as $breakpoint ) {
+			foreach ( $ordered_breakpoints_for_return as $breakpoint ) {
 				if ( array_key_exists( $breakpoint, $attr_to_be_returned ) ) {
 					foreach ( $reversed_states as $state ) {
-						$attr_to_be_returned = self::_return_background_values( $attr_to_be_returned, $breakpoint, $state );
+						$attr_to_be_returned = self::_return_background_values( $attr_to_be_returned, $breakpoint, $state, $initial_style_attr, $attr_value_with_inherited );
 					}
 
 					// Delete the breakpoint if it is empty.
@@ -1430,13 +1629,14 @@ class ModuleUtils {
 
 		$attr_value_with_inherited[ $breakpoint ][ $state ] = self::_array_trim(
 			[
-				'color'   => $attr_values['color'] ?? $attr_parent_values['color'] ?? null,
-				'useSize' => $attr_values['useSize'] ?? $attr_parent_values['useSize'] ?? '',
-				'size'    => $attr_values['size'] ?? $attr_parent_values['size'] ?? '',
-				'weight'  => $attr_values['weight'] ?? $attr_parent_values['weight'] ?? '',
-				'unicode' => $attr_values['unicode'] ?? $attr_parent_values['unicode'] ?? '',
-				'type'    => $attr_values['type'] ?? $attr_parent_values['type'] ?? '',
-				'show'    => $attr_values['show'] ?? $attr_parent_values['show'] ?? '',
+				'color'          => $attr_values['color'] ?? $attr_parent_values['color'] ?? null,
+				'useSize'        => $attr_values['useSize'] ?? $attr_parent_values['useSize'] ?? '',
+				'size'           => $attr_values['size'] ?? $attr_parent_values['size'] ?? '',
+				'weight'         => $attr_values['weight'] ?? $attr_parent_values['weight'] ?? '',
+				'unicode'        => $attr_values['unicode'] ?? $attr_parent_values['unicode'] ?? '',
+				'type'           => $attr_values['type'] ?? $attr_parent_values['type'] ?? '',
+				'show'           => $attr_values['show'] ?? $attr_parent_values['show'] ?? '',
+				'indicatorShape' => $attr_values['indicatorShape'] ?? $attr_parent_values['indicatorShape'] ?? '',
 			]
 		);
 
@@ -2222,12 +2422,15 @@ class ModuleUtils {
 	 *
 	 * @since ??
 	 *
-	 * @return array An array of module states. The default values are `['value', 'hover', 'sticky']`.
+	 * @return array An array of module states. The default values are `['value', 'hover', 'focus', 'checked', 'active', 'sticky']`.
 	 */
 	public static function states(): array {
 		$states = [
 			'value',
 			'hover',
+			'focus',
+			'checked',
+			'active',
 			'sticky',
 		];
 
@@ -2236,7 +2439,7 @@ class ModuleUtils {
 		 *
 		 * @since ??
 		 *
-		 * @param array $states The module states. Default `['value', 'hover', 'sticky']`.
+		 * @param array $states The module states. Default `['value', 'hover', 'focus', 'checked', 'active', 'sticky']`.
 		 */
 		return apply_filters( 'divi_module_utils_states', $states );
 	}
@@ -2899,6 +3102,30 @@ class ModuleUtils {
 				return is_array( $value ) && empty( $value ) ? false : true;
 			}
 		);
+	}
+
+	/**
+	 * Remove empty array attributes from all parsed blocks recursively.
+	 *
+	 * Prevents PHP json_decode/json_encode round-trip corruption where empty
+	 * JSON objects {} become empty arrays [] during re-serialization.
+	 *
+	 * @since ??
+	 *
+	 * @param array &$blocks Array of parsed blocks to process (passed by reference).
+	 *
+	 * @return void
+	 */
+	public static function clean_blocks_empty_array_attributes( array &$blocks ): void {
+		foreach ( $blocks as &$block ) {
+			if ( ! empty( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+				$block['attrs'] = self::remove_empty_array_attributes( $block['attrs'] );
+			}
+
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				self::clean_blocks_empty_array_attributes( $block['innerBlocks'] );
+			}
+		}
 	}
 
 	/**
@@ -4321,5 +4548,66 @@ class ModuleUtils {
 		$unique_id  = md5( $hash_input );
 
 		return $unique_id;
+	}
+
+	/**
+	 * Removes the 'icon' property from button attributes across all breakpoints and attribute states.
+	 *
+	 * This function iterates through all breakpoints and attribute states in the provided button
+	 * attributes and creates a new attributes array with the 'icon' property omitted from each
+	 * attribute state array.
+	 *
+	 * This function is equivalent to the JavaScript function
+	 * {@link /docs/builder-api/js-beta/divi-module-utils/functions/removeButtonIconAttrValue removeButtonIconAttrValue}
+	 * located in `@divi/module-utils`.
+	 *
+	 * @since ??
+	 *
+	 * @param array $button_attrs The button attributes array containing breakpoint and attribute state data.
+	 *                           Structure: [breakpoint][state][icon|other_properties].
+	 *
+	 * @return array A new button attributes array with the 'icon' property removed from all attribute
+	 *               states across all breakpoints.
+	 *
+	 * @example
+	 * ```php
+	 * $button_attrs = [
+	 *   'desktop' => [
+	 *     'value' => [
+	 *       'icon' => ['settings' => [...]],
+	 *       'enable' => 'on',
+	 *     ],
+	 *   ],
+	 * ];
+	 *
+	 * $removed_icon_attrs = ModuleUtils::remove_button_icon_attr_value( $button_attrs );
+	 * // Result: ['desktop' => ['value' => ['enable' => 'on']]]
+	 * ```
+	 */
+	public static function remove_button_icon_attr_value( array $button_attrs ): array {
+		$removed_icon_attrs = [];
+
+		foreach ( $button_attrs as $breakpoint_name => $breakpoint_data ) {
+			if ( ! is_array( $breakpoint_data ) ) {
+				continue;
+			}
+
+			$removed_icon_attrs[ $breakpoint_name ] = [];
+
+			foreach ( $breakpoint_data as $attr_state_name => $attr_state_data ) {
+				if ( ! is_array( $attr_state_data ) ) {
+					$removed_icon_attrs[ $breakpoint_name ][ $attr_state_name ] = $attr_state_data;
+					continue;
+				}
+
+				// Remove 'icon' key from attribute state data.
+				$removed_state_data = $attr_state_data;
+				unset( $removed_state_data['icon'] );
+
+				$removed_icon_attrs[ $breakpoint_name ][ $attr_state_name ] = $removed_state_data;
+			}
+		}
+
+		return $removed_icon_attrs;
 	}
 }

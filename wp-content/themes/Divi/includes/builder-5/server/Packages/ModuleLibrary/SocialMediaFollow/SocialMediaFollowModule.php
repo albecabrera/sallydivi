@@ -306,8 +306,12 @@ class SocialMediaFollowModule implements DependencyInterface {
 		if ( 'on' === $use_size && ! empty( $size ) && '' !== $size ) {
 			$resolved_size = GlobalData::resolve_global_variable_value( $size );
 			$parsed_size   = SanitizerUtility::numeric_parse_value( $resolved_size );
+			// numeric_parse_value returns null for CSS math functions, variables, and some keywords; still emit layout + font-size using the resolved string (see ToggleModule::icon_style_declaration).
+			$is_pass_through = ModuleUtils::is_css_math_function( $resolved_size )
+				|| ModuleUtils::is_css_variable( $resolved_size )
+				|| ModuleUtils::is_css_keyword( $resolved_size );
 
-			if ( $parsed_size ) {
+			if ( $parsed_size || $is_pass_through ) {
 				$style_declarations->add( 'font-size', $resolved_size );
 				$style_declarations->add( 'position', 'absolute' );
 				$style_declarations->add( 'top', '50%' );
@@ -390,6 +394,7 @@ class SocialMediaFollowModule implements DependencyInterface {
 		if ( 'on' === $use_size && ! empty( $size ) && '' !== $size ) {
 			$resolved_size = GlobalData::resolve_global_variable_value( $size );
 			$parsed_size   = SanitizerUtility::numeric_parse_value( $resolved_size );
+			$trimmed_size  = trim( $resolved_size );
 
 			if ( $parsed_size ) {
 				$container_width  = $parsed_size['valueNumber'] * 2 . $parsed_size['valueUnit'];
@@ -397,6 +402,15 @@ class SocialMediaFollowModule implements DependencyInterface {
 
 				$style_declarations->add( 'width', $container_width );
 				$style_declarations->add( 'height', $container_height );
+				$style_declarations->add( 'position', 'relative' );
+			} elseif ( ModuleUtils::is_css_math_function( $resolved_size ) || ModuleUtils::is_css_variable( $resolved_size ) ) {
+				$doubled = 'calc(2 * (' . $trimmed_size . '))';
+				$style_declarations->add( 'width', $doubled );
+				$style_declarations->add( 'height', $doubled );
+				$style_declarations->add( 'position', 'relative' );
+			} elseif ( ModuleUtils::is_css_keyword( $resolved_size ) ) {
+				$style_declarations->add( 'width', $trimmed_size );
+				$style_declarations->add( 'height', $trimmed_size );
 				$style_declarations->add( 'position', 'relative' );
 			}
 		}

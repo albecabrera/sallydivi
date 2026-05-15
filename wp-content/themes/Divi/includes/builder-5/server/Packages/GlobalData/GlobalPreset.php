@@ -150,10 +150,10 @@ class GlobalPreset {
 		et_delete_option( self::option_name() );
 
 		// Reset the data cache.
-		self::$_data = null;
-
-		// Clear normalized preset stack cache.
-		self::$_normalized_preset_stack_cache = [];
+		self::$_data                             = null;
+		self::$_legacy_data                      = null;
+		self::$_last_legacy_preset_import_result = [];
+		self::$_normalized_preset_stack_cache    = [];
 	}
 
 
@@ -1442,12 +1442,173 @@ class GlobalPreset {
 			}
 		}
 
+		if ( ! empty( $new_ids['group'] ) ) {
+			$processed_presets = self::_apply_group_preset_id_mappings_to_processed_presets(
+				$processed_presets,
+				$new_ids['group']
+			);
+		}
+
 		return [
 			'presets'                        => $processed_presets,
 			'newIds'                         => $new_ids,
 			'defaultImportedModulePresetIds' => $default_imported_module_presets,
 			'defaultImportedGroupPresetIds'  => $default_imported_group_presets,
 		];
+	}
+
+	/**
+	 * Apply remapped group preset IDs to imported preset payloads.
+	 *
+	 * This keeps nested `groupPreset` references inside module/group presets valid
+	 * when imported group preset IDs are rewritten due collisions or reserved IDs.
+	 *
+	 * @since ??
+	 *
+	 * @param array $processed_presets Processed presets to be saved.
+	 * @param array $group_mappings Group preset ID mappings keyed by group name.
+	 *
+	 * @return array Processed presets with nested references remapped.
+	 */
+	private static function _apply_group_preset_id_mappings_to_processed_presets( array $processed_presets, array $group_mappings ): array {
+		// Remap group preset references nested under module presets.
+		foreach ( $processed_presets['module'] ?? [] as $module_name => $module_data ) {
+			$items = $module_data['items'] ?? [];
+			if ( ! is_array( $items ) ) {
+				continue;
+			}
+
+			foreach ( $items as $preset_id => $preset_item ) {
+				if ( ! is_array( $preset_item ) ) {
+					continue;
+				}
+
+				$group_presets = $preset_item['groupPresets'] ?? [];
+				if ( ! is_array( $group_presets ) ) {
+					continue;
+				}
+
+				$processed_presets['module'][ $module_name ]['items'][ $preset_id ]['groupPresets'] = self::_remap_group_preset_references(
+					$group_presets,
+					$group_mappings
+				);
+			}
+		}
+
+		// Remap group preset references nested under group preset attrs.
+		foreach ( $processed_presets['group'] ?? [] as $group_name => $group_data ) {
+			$items = $group_data['items'] ?? [];
+			if ( ! is_array( $items ) ) {
+				continue;
+			}
+
+			foreach ( $items as $preset_id => $preset_item ) {
+				if ( ! is_array( $preset_item ) ) {
+					continue;
+				}
+
+				$group_presets = $preset_item['attrs']['groupPreset'] ?? [];
+				if ( ! is_array( $group_presets ) ) {
+					continue;
+				}
+
+				$processed_presets['group'][ $group_name ]['items'][ $preset_id ]['attrs']['groupPreset'] = self::_remap_group_preset_references(
+					$group_presets,
+					$group_mappings
+				);
+			}
+		}
+
+		return $processed_presets;
+	}
+
+	/**
+	 * Remap presetId values for a groupPreset reference map.
+	 *
+	 * @since ??
+	 *
+	 * @param array $group_preset_references Group preset references keyed by group ID.
+	 * @param array $group_mappings Group preset ID mappings keyed by group name.
+	 *
+	 * @return array Updated group preset references.
+	 */
+	private static function _remap_group_preset_references( array $group_preset_references, array $group_mappings ): array {
+		foreach ( $group_preset_references as $group_id => $group_ref ) {
+			if ( ! is_array( $group_ref ) ) {
+				continue;
+			}
+
+			$group_name      = $group_ref['groupName'] ?? '';
+			$preset_id_value = $group_ref['presetId'] ?? null;
+			$id_map          = $group_mappings[ $group_name ] ?? null;
+			if ( ! is_string( $group_name ) || '' === $group_name || ! is_array( $id_map ) || null === $preset_id_value ) {
+				continue;
+			}
+
+			$preset_ids = self::_extract_preset_ids_for_remap( $preset_id_value );
+			if ( empty( $preset_ids ) ) {
+				continue;
+			}
+
+			$remapped_ids = array_values(
+				array_unique(
+					array_map(
+						function ( string $preset_id ) use ( $id_map ): string {
+							return $id_map[ $preset_id ] ?? $preset_id;
+						},
+						$preset_ids
+					)
+				)
+			);
+			if ( empty( $remapped_ids ) ) {
+				continue;
+			}
+
+			$group_preset_references[ $group_id ]['presetId'] = is_array( $preset_id_value )
+				? $remapped_ids
+				: $remapped_ids[0];
+		}
+
+		return $group_preset_references;
+	}
+
+	/**
+	 * Extract preset IDs from legacy string or stacked array formats.
+	 *
+	 * Unlike normalize_preset_stack(), this keeps reserved IDs so they can be
+	 * remapped when import replaced them with generated IDs.
+	 *
+	 * @since ??
+	 *
+	 * @param mixed $preset_id_value Raw presetId value from preset payload.
+	 *
+	 * @return string[] Preset IDs eligible for remapping.
+	 */
+	private static function _extract_preset_ids_for_remap( $preset_id_value ): array {
+		if ( is_string( $preset_id_value ) ) {
+			$preset_id = trim( $preset_id_value );
+			return '' === $preset_id ? [] : [ $preset_id ];
+		}
+
+		if ( ! is_array( $preset_id_value ) ) {
+			return [];
+		}
+
+		$ids = [];
+		foreach ( $preset_id_value as $preset_id ) {
+			if ( ! is_scalar( $preset_id ) ) {
+				continue;
+			}
+
+			$preset_id_as_string = trim( (string) $preset_id );
+			if ( '' === $preset_id_as_string ) {
+				continue;
+			}
+
+			$ids[] = $preset_id_as_string;
+		}
+
+		return $ids;
 	}
 
 
@@ -1951,6 +2112,7 @@ class GlobalPreset {
 							'presetType'       => 'group',
 							'presetModuleName' => $module_name,
 							'presetGroupName'  => $group_name,
+							'presetGroupId'    => $preset_item->get_group_id(),
 							'presetId'         => $is_default ? 'default' : $single_preset_id,
 							'isNested'         => $is_nested,
 						]
@@ -1959,6 +2121,7 @@ class GlobalPreset {
 					// Add normalized preset item to the accumulator.
 					$acc[] = [
 						'groupName' => $group_name,
+						'groupId'   => $preset_item->get_group_id(),
 						'id'        => $single_preset_id,
 						'isDefault' => $is_default,
 						'className' => $class_name,
@@ -1977,9 +2140,13 @@ class GlobalPreset {
 			$normalized,
 			function ( $item ) use ( $normalized ) {
 				if ( $item['isDefault'] ) {
-					// Check if there's a non-default preset with the same group name.
+					// Check if there's a non-default preset with the same group name and host group ID.
 					foreach ( $normalized as $normalized_item ) {
-						if ( $normalized_item['groupName'] === $item['groupName'] && ! $normalized_item['isDefault'] ) {
+						if (
+							$normalized_item['groupName'] === $item['groupName']
+							&& $normalized_item['groupId'] === $item['groupId']
+							&& ! $normalized_item['isDefault']
+						) {
 							// Exclude this default preset since a custom preset exists for this group.
 							return false;
 						}
@@ -2050,6 +2217,10 @@ class GlobalPreset {
 		$nested_group_ids = [];
 		// Track which preset IDs are nested for each group ID.
 		$nested_preset_ids_by_group = [];
+		// Queue of group preset references to traverse recursively for nested group presets.
+		$nested_group_preset_queue = [];
+		// Guard against cyclic references while traversing nested group presets.
+		$visited_group_preset_refs = [];
 
 		// Convert module name if needed (for preset compatibility).
 		$module_name_converted = ModuleUtils::maybe_convert_preset_module_name( $module_name, $module_attrs );
@@ -2135,6 +2306,17 @@ class GlobalPreset {
 								$nested_preset_ids_by_group[ $group_id ] = [];
 							}
 							$nested_preset_ids_by_group[ $group_id ] = array_merge( $nested_preset_ids_by_group[ $group_id ], $preset_ids );
+
+							// Queue these nested refs to discover deeper nested presets recursively.
+							foreach ( $preset_ids as $preset_id ) {
+								if ( ! empty( $preset_id ) ) {
+									$nested_group_preset_queue[] = [
+										'groupId'   => $group_id,
+										'groupName' => $group_preset_ref['groupName'],
+										'presetId'  => $preset_id,
+									];
+								}
+							}
 						}
 					}
 				}
@@ -2159,6 +2341,104 @@ class GlobalPreset {
 			} else {
 				// Only explicit exists (no nested preset), so override any default.
 				$group_presets[ $gid ] = $attr;
+			}
+
+			// Explicit group presets are roots for recursive nested discovery.
+			if ( ! empty( $attr['groupName'] ) ) {
+				$explicit_preset_ids = self::normalize_preset_stack( $attr['presetId'] ?? '' );
+				foreach ( $explicit_preset_ids as $explicit_preset_id ) {
+					if ( ! empty( $explicit_preset_id ) ) {
+						$nested_group_preset_queue[] = [
+							'groupId'   => $gid,
+							'groupName' => $attr['groupName'],
+							'presetId'  => $explicit_preset_id,
+						];
+					}
+				}
+			}
+		}
+
+		// Recursively discover nested group presets inside assigned group presets.
+		// This enables group presets nested inside other group presets to be processed on FE.
+		// Iterate by index to avoid O(n) cost of repeatedly shifting arrays.
+		for ( $queue_index = 0; isset( $nested_group_preset_queue[ $queue_index ] ); $queue_index++ ) {
+			$current_ref = $nested_group_preset_queue[ $queue_index ];
+			if ( ! is_array( $current_ref ) ) {
+				continue;
+			}
+
+			$current_group_name = $current_ref['groupName'] ?? '';
+			$current_group_id   = $current_ref['groupId'] ?? '';
+			$current_preset_id  = $current_ref['presetId'] ?? '';
+			if ( empty( $current_group_name ) || empty( $current_preset_id ) ) {
+				continue;
+			}
+
+			// Include module and group context so shared preset IDs remain unambiguous across scopes.
+			$visit_key = $module_name_converted . '::' . $current_group_id . '::' . $current_group_name . '::' . $current_preset_id;
+			if ( isset( $visited_group_preset_refs[ $visit_key ] ) ) {
+				continue;
+			}
+			$visited_group_preset_refs[ $visit_key ] = true;
+
+			$current_group_preset_data = $all_data['group'][ $current_group_name ]['items'][ $current_preset_id ] ?? null;
+			if ( ! is_array( $current_group_preset_data ) ) {
+				continue;
+			}
+
+			$current_group_preset_data = self::_maybe_runtime_migrate_preset_data(
+				$current_group_preset_data,
+				$module_name
+			);
+
+			$nested_group_refs = $current_group_preset_data['attrs']['groupPreset'] ?? [];
+			if ( ! is_array( $nested_group_refs ) ) {
+				continue;
+			}
+
+			foreach ( $nested_group_refs as $nested_group_id => $nested_group_ref ) {
+				if ( ! is_array( $nested_group_ref ) ) {
+					continue;
+				}
+
+				$nested_group_name = $nested_group_ref['groupName'] ?? '';
+				if ( empty( $nested_group_name ) ) {
+					continue;
+				}
+
+				$nested_preset_ids = self::normalize_preset_stack( $nested_group_ref['presetId'] ?? '' );
+				if ( empty( $nested_preset_ids ) ) {
+					continue;
+				}
+
+				$existing_preset_ids = self::normalize_preset_stack( $group_presets[ $nested_group_id ]['presetId'] ?? '' );
+				$stacked_preset_ids  = array_values( array_unique( array_merge( $existing_preset_ids, $nested_preset_ids ) ) );
+
+				$group_presets[ $nested_group_id ] = [
+					'presetId'  => $stacked_preset_ids,
+					'groupName' => $group_presets[ $nested_group_id ]['groupName'] ?? $nested_group_name,
+				];
+
+				$nested_group_ids[ $nested_group_id ] = true;
+				if ( ! isset( $nested_preset_ids_by_group[ $nested_group_id ] ) ) {
+					$nested_preset_ids_by_group[ $nested_group_id ] = [];
+				}
+				$nested_preset_ids_by_group[ $nested_group_id ] = array_values(
+					array_unique(
+						array_merge( $nested_preset_ids_by_group[ $nested_group_id ], $nested_preset_ids )
+					)
+				);
+
+				// Continue traversing deeper nested references.
+				foreach ( $nested_preset_ids as $nested_preset_id ) {
+					if ( ! empty( $nested_preset_id ) ) {
+						$nested_group_preset_queue[] = [
+							'groupId'   => $nested_group_id,
+							'groupName' => $nested_group_name,
+							'presetId'  => $nested_preset_id,
+						];
+					}
+				}
 			}
 		}
 
@@ -2372,14 +2652,16 @@ class GlobalPreset {
 
 						// Check if group-item references a composite group via groupSlug.
 						if ( ! empty( $group_slug ) && isset( $module_data->settings['groups'] ) ) {
-							$composite_groups = $module_data->settings['groups'];
-							$composite_group  = $composite_groups[ $group_slug ] ?? null;
+							$composite_groups               = $module_data->settings['groups'];
+							$composite_group                = $composite_groups[ $group_slug ] ?? null;
+							$composite_group_component_name = $composite_group['component']['name'] ?? '';
 
-							if ( isset( $composite_group['component']['name'] )
-								&& 'divi/composite' === $composite_group['component']['name'] ) {
+							if ( self::_is_supported_composite_group_component( $composite_group ) ) {
 								$preset_group_name = $composite_group['component']['props']['presetGroup'] ?? '';
 								if ( ! empty( $preset_group_name ) ) {
 									$group_name = $preset_group_name;
+								} elseif ( self::_should_use_component_name_as_preset_group( $composite_group ) ) {
+									$group_name = $composite_group_component_name;
 								}
 							}
 						}
@@ -2447,13 +2729,27 @@ class GlobalPreset {
 		$composite_groups = $module_data->settings['groups'] ?? [];
 
 		foreach ( $composite_groups as $group_id => $group ) {
-			if ( isset( $group['component']['name'] ) && 'divi/composite' === $group['component']['name'] ) {
-				$preset_group_name = $group['component']['props']['presetGroup'] ?? '';
-				if ( ! empty( $preset_group_name ) ) {
-					$default_attrs[ $group_id ] = [
-						'groupName' => $preset_group_name,
-					];
-				}
+			$component_name = $group['component']['name'] ?? '';
+
+			if ( ! self::_is_supported_composite_group_component( $group ) ) {
+				continue;
+			}
+
+			$preset_group_name = $group['component']['props']['presetGroup'] ?? '';
+			$resolved_group_id = $group['component']['props']['attrName'] ?? $group_id;
+
+			if ( ! is_string( $resolved_group_id ) || empty( $resolved_group_id ) ) {
+				$resolved_group_id = $group_id;
+			}
+
+			if ( empty( $preset_group_name ) && self::_should_use_component_name_as_preset_group( $group ) ) {
+				$preset_group_name = $component_name;
+			}
+
+			if ( ! empty( $preset_group_name ) ) {
+				$default_attrs[ $resolved_group_id ] = [
+					'groupName' => $preset_group_name,
+				];
 			}
 		}
 
@@ -2505,6 +2801,51 @@ class GlobalPreset {
 		];
 
 		return $group_name_map[ $attr_type ][ $group_id ] ?? '';
+	}
+
+	/**
+	 * Determine whether a group component is supported for composite preset processing.
+	 *
+	 * @since ??
+	 *
+	 * @param mixed $group Group configuration.
+	 *
+	 * @return bool
+	 */
+	private static function _is_supported_composite_group_component( $group ): bool {
+		if ( ! is_array( $group ) ) {
+			return false;
+		}
+
+		$component_name = $group['component']['name'] ?? '';
+
+		if ( 'divi/composite' === $component_name ) {
+			return true;
+		}
+
+		return self::_should_use_component_name_as_preset_group( $group );
+	}
+
+	/**
+	 * Determine whether preset group should fallback to component name.
+	 *
+	 * @since ??
+	 *
+	 * @param array $group Group configuration.
+	 *
+	 * @return bool
+	 */
+	private static function _should_use_component_name_as_preset_group( array $group ): bool {
+		$component_name  = $group['component']['name'] ?? '';
+		$component_props = $group['component']['props'] ?? [];
+		$flag            = $component_props['useComponentNameAsPresetGroup'] ?? false;
+
+		if ( is_bool( $flag ) && $flag ) {
+			return true;
+		}
+
+		// Backward compatibility for existing metadata.
+		return in_array( $component_name, [ 'divi/form-field', 'divi/checkbox', 'divi/checkboxes', 'divi/radio', 'divi/radios' ], true );
 	}
 
 	/**

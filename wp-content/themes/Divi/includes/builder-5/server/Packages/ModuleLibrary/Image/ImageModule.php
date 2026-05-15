@@ -574,6 +574,72 @@ class ImageModule implements DependencyInterface {
 
 
 	/**
+	 * Style declaration for SVG image child elements (a, .et_pb_image_wrap).
+	 *
+	 * Always emits width: 100% for SVG images to prevent nested percentage scaling.
+	 * Preserves the flex visibility fix from #48460 while resolving the regression
+	 * where the user's custom width was propagated into child elements.
+	 *
+	 * @since ??
+	 *
+	 * @param array $params {
+	 *     An array of arguments.
+	 *
+	 *     @type array  $attrValue Optional. The value (breakpoint > state > value) of the module attribute. Default `[]`.
+	 * }
+	 *
+	 * @return string The value of the style declaration.
+	 */
+	public static function svg_child_style_declaration( $params ) {
+		$attr_value = $params['attrValue'] ?? [];
+		$attr       = $params['attr'] ?? null;
+		$breakpoint = $params['breakpoint'] ?? null;
+		$state      = $params['state'] ?? 'value';
+
+		$style_declarations = new StyleDeclarations(
+			[
+				'returnType' => 'string',
+				'important'  => false,
+			]
+		);
+
+		// Extract src for the current breakpoint.
+		$src = $attr_value['src'] ?? '';
+
+		// Inherit from parent breakpoints if current breakpoint value is missing.
+		if ( $attr && $breakpoint ) {
+			$all_breakpoint_names = Breakpoint::get_all_breakpoint_names();
+
+			$inherited_value = ModuleUtils::get_attr_value(
+				[
+					'attr'            => $attr,
+					'breakpoint'      => $breakpoint,
+					'state'           => $state,
+					'mode'            => 'getAndInheritAll',
+					'defaultValue'    => [],
+					'breakpointNames' => $all_breakpoint_names,
+					'baseBreakpoint'  => 'desktop',
+				]
+			);
+
+			$src = $src ? $src : ( $inherited_value['src'] ?? '' );
+		}
+
+		// Check if image is SVG using utility that handles query params and fragments.
+		$is_src_svg = ! empty( $src ) && ImageUtils::is_file_extension( $src, 'svg' );
+
+		if ( $is_src_svg ) {
+			// Child elements always fill the module container at 100%.
+			// This prevents the user's custom percentage width from nesting
+			// into child elements and causing visual scaling regression.
+			$style_declarations->add( 'width', '100%' );
+		}
+
+		return $style_declarations->value();
+	}
+
+
+	/**
 	 * Sizing flex style declaration.
 	 *
 	 * This function is responsible for declaring the flex style for the Image module.
@@ -858,16 +924,17 @@ class ImageModule implements DependencyInterface {
 									[
 										'componentName' => 'divi/common',
 										'props'         => [
-											'selector' => implode(
-												', ',
-												[
-													"{$args['orderClass']}",
-													"{$args['orderClass']} a",
-													"{$args['orderClass']} .et_pb_image_wrap",
-												]
-											),
+											'selector' => "{$args['orderClass']}",
 											'attr'     => array_replace_recursive( [], $attrs['module']['advanced']['sizing'] ?? [], $attrs['image']['innerContent'] ?? [] ),
 											'declarationFunction' => [ self::class, 'svg_style_declaration' ],
+										],
+									],
+									[
+										'componentName' => 'divi/common',
+										'props'         => [
+											'selector' => "{$args['orderClass']} a, {$args['orderClass']} .et_pb_image_wrap",
+											'attr'     => array_replace_recursive( [], $attrs['module']['advanced']['sizing'] ?? [], $attrs['image']['innerContent'] ?? [] ),
+											'declarationFunction' => [ self::class, 'svg_child_style_declaration' ],
 										],
 									],
 								],

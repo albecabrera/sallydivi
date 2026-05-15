@@ -46,6 +46,7 @@ use ET\Builder\Packages\ModuleLibrary\Menu\MenuTermsController;
 use ET\Builder\Packages\ModuleLibrary\Portfolio\PortfolioController;
 use ET\Builder\Packages\ModuleLibrary\PostNavigation\PostNavigationController;
 use ET\Builder\Packages\ModuleLibrary\Sidebar\SidebarController;
+use ET\Builder\Packages\ModuleLibrary\ContactForm7\ContactForm7Controller;
 use ET\Builder\Packages\ModuleLibrary\Video\VideoCoverController;
 use ET\Builder\Packages\ModuleLibrary\Video\VideoHTMLController;
 use ET\Builder\Packages\ModuleLibrary\Video\VideoThumbnailController;
@@ -64,6 +65,8 @@ use ET\Builder\VisualBuilder\REST\SyncToServer\SyncToServerController;
 use ET\Builder\VisualBuilder\REST\UpdateDefaultColors\UpdateDefaultColorsController;
 use ET\Builder\VisualBuilder\REST\SpamProtectionService\SpamProtectionServiceController;
 use ET\Builder\VisualBuilder\REST\EmailService\EmailServiceController;
+use ET\Builder\VisualBuilder\REST\MenuManager\MenuItemsController;
+use ET\Builder\VisualBuilder\REST\MenuManager\MenuManagerController;
 use ET\Builder\VisualBuilder\SettingsData\SettingsDataController;
 use ET\Builder\VisualBuilder\REST\ModuleRender\ModuleRenderController;
 use ET\Builder\VisualBuilder\REST\PageManager\PageManagerController;
@@ -454,6 +457,20 @@ class RESTRegistration implements DependencyInterface {
 								'args'                => [ WooCommerceCrossSellsController::class, 'index_args' ],
 								'callback'            => [ WooCommerceCrossSellsController::class, 'index' ],
 								'permission_callback' => [ WooCommerceCrossSellsController::class, 'index_permission' ],
+							]
+						);
+					}
+
+					if ( class_exists( '\WPCF7_ContactForm' ) ) {
+						/**
+						 * Contact Form 7 module.
+						 */
+						$router->post(
+							'/contact-form-7/html',
+							[
+								'args'                => [ ContactForm7Controller::class, 'index_args' ],
+								'callback'            => [ ContactForm7Controller::class, 'index' ],
+								'permission_callback' => [ ContactForm7Controller::class, 'index_permission' ],
 							]
 						);
 					}
@@ -1110,6 +1127,81 @@ class RESTRegistration implements DependencyInterface {
 				'args'                => [ PageManagerController::class, 'update_order_args' ],
 				'callback'            => [ PageManagerController::class, 'update_order' ],
 				'permission_callback' => [ PageManagerController::class, 'update_order_permission' ],
+			]
+		);
+
+		/**
+		 * Menu manager endpoints.
+		 */
+		$route->post(
+			'/menu-manager/create',
+			[
+				'args'                => [ MenuManagerController::class, 'create_args' ],
+				'callback'            => [ MenuManagerController::class, 'create' ],
+				'permission_callback' => [ MenuManagerController::class, 'menu_permission' ],
+			]
+		);
+
+		$route->post(
+			'/menu-manager/delete',
+			[
+				'args'                => [ MenuManagerController::class, 'delete_args' ],
+				'callback'            => [ MenuManagerController::class, 'delete' ],
+				'permission_callback' => [ MenuManagerController::class, 'menu_permission' ],
+			]
+		);
+
+		$route->post(
+			'/menu-manager/assign-location',
+			[
+				'args'                => [ MenuManagerController::class, 'assign_location_args' ],
+				'callback'            => [ MenuManagerController::class, 'assign_location' ],
+				'permission_callback' => [ MenuManagerController::class, 'menu_permission' ],
+			]
+		);
+
+		$route->post(
+			'/menu-manager/unassign-location',
+			[
+				'args'                => [ MenuManagerController::class, 'unassign_location_args' ],
+				'callback'            => [ MenuManagerController::class, 'unassign_location' ],
+				'permission_callback' => [ MenuManagerController::class, 'menu_permission' ],
+			]
+		);
+
+		$route->post(
+			'/menu-manager/resolve',
+			[
+				'args'                => [ MenuManagerController::class, 'resolve_args' ],
+				'callback'            => [ MenuManagerController::class, 'resolve' ],
+				'permission_callback' => [ MenuManagerController::class, 'resolve_permission' ],
+			]
+		);
+
+		$route->post(
+			'/menu-manager/items/create',
+			[
+				'args'                => [ MenuItemsController::class, 'create_args' ],
+				'callback'            => [ MenuItemsController::class, 'create' ],
+				'permission_callback' => [ MenuItemsController::class, 'menu_item_permission' ],
+			]
+		);
+
+		$route->post(
+			'/menu-manager/items/delete',
+			[
+				'args'                => [ MenuItemsController::class, 'delete_args' ],
+				'callback'            => [ MenuItemsController::class, 'delete' ],
+				'permission_callback' => [ MenuItemsController::class, 'menu_item_permission' ],
+			]
+		);
+
+		$route->post(
+			'/menu-manager/items/reorder',
+			[
+				'args'                => [ MenuItemsController::class, 'reorder_args' ],
+				'callback'            => [ MenuItemsController::class, 'reorder' ],
+				'permission_callback' => [ MenuItemsController::class, 'menu_item_permission' ],
 			]
 		);
 	}

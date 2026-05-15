@@ -4,6 +4,7 @@ const settings = {
   'import/resolver': {
     'eslint-import-resolver-custom-alias': {
       alias: {
+        '@langchain/langgraph/web': path.resolve(__dirname, '../node_modules/@langchain/langgraph/dist/web.js'),
         '@langchain/langgraph/prebuilt': path.resolve(
           __dirname,
           '../node_modules/@langchain/langgraph/dist/prebuilt/index.js',

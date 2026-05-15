@@ -12,6 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
+use ET\Builder\Packages\Module\Options\FormField\FieldDecorationPresetAttrsMap;
+
 
 /**
  * Class LoginPresetAttrsMap
@@ -157,63 +159,17 @@ class LoginPresetAttrsMap {
 			'button.decoration.button.decoration.sizing__height',
 			'button.decoration.button.decoration.sizing__maxHeight',
 			'button.decoration.button.decoration.sizing__flexType',
-			'field.decoration.background__gradient.stops',
-			'field.decoration.background__gradient.enabled',
-			'field.decoration.background__gradient.type',
-			'field.decoration.background__gradient.direction',
-			'field.decoration.background__gradient.directionRadial',
-			'field.decoration.background__gradient.repeat',
-			'field.decoration.background__gradient.length',
-			'field.decoration.background__gradient.overlaysImage',
-			'field.decoration.background__image.url',
-			'field.decoration.background__image.parallax.enabled',
-			'field.decoration.background__image.parallax.method',
-			'field.decoration.background__image.size',
-			'field.decoration.background__image.width',
-			'field.decoration.background__image.height',
-			'field.decoration.background__image.position',
-			'field.decoration.background__image.horizontalOffset',
-			'field.decoration.background__image.verticalOffset',
-			'field.decoration.background__image.repeat',
-			'field.decoration.background__image.blend',
-			'field.decoration.background__video.mp4',
-			'field.decoration.background__video.webm',
-			'field.decoration.background__video.width',
-			'field.decoration.background__video.height',
-			'field.decoration.background__video.allowPlayerPause',
-			'field.decoration.background__video.pauseOutsideViewport',
-			'field.decoration.background__pattern.style',
-			'field.decoration.background__pattern.enabled',
-			'field.decoration.background__pattern.color',
-			'field.decoration.background__pattern.transform',
-			'field.decoration.background__pattern.size',
-			'field.decoration.background__pattern.width',
-			'field.decoration.background__pattern.height',
-			'field.decoration.background__pattern.repeatOrigin',
-			'field.decoration.background__pattern.horizontalOffset',
-			'field.decoration.background__pattern.verticalOffset',
-			'field.decoration.background__pattern.repeat',
-			'field.decoration.background__pattern.blend',
-			'field.decoration.background__mask.style',
-			'field.decoration.background__mask.enabled',
-			'field.decoration.background__mask.color',
-			'field.decoration.background__mask.transform',
-			'field.decoration.background__mask.aspectRatio',
-			'field.decoration.background__mask.size',
-			'field.decoration.background__mask.width',
-			'field.decoration.background__mask.height',
-			'field.decoration.background__mask.position',
-			'field.decoration.background__mask.horizontalOffset',
-			'field.decoration.background__mask.verticalOffset',
-			'field.decoration.background__mask.blend',
 		];
 
 		foreach ( $keys_to_remove as $key ) {
 			unset( $map[ $key ] );
 		}
 
+		$field_decoration_map = FieldDecorationPresetAttrsMap::get_map();
+
 		return array_merge(
 			$map,
+			$field_decoration_map,
 			[
 				'button.innerContent__text'                => [
 					'attrName' => 'button.innerContent',
@@ -229,26 +185,6 @@ class LoginPresetAttrsMap {
 					'attrName' => 'field.advanced.focus.font.font',
 					'preset'   => [ 'style' ],
 					'subName'  => 'color',
-				],
-				'field.advanced.focus.font.font__size'     => [
-					'attrName' => 'field.advanced.focus.font.font',
-					'preset'   => [ 'style' ],
-					'subName'  => 'size',
-				],
-				'field.advanced.focus.font.font__letterSpacing' => [
-					'attrName' => 'field.advanced.focus.font.font',
-					'preset'   => [ 'style' ],
-					'subName'  => 'letterSpacing',
-				],
-				'field.advanced.focus.font.font__lineHeight' => [
-					'attrName' => 'field.advanced.focus.font.font',
-					'preset'   => [ 'style' ],
-					'subName'  => 'lineHeight',
-				],
-				'field.decoration.font.font__headingLevel' => [
-					'attrName' => 'field.decoration.font.font',
-					'preset'   => [ 'html' ],
-					'subName'  => 'headingLevel',
 				],
 				'button.decoration.background__color'      => [
 					'attrName' => 'button.decoration.background',

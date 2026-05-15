@@ -10,6 +10,12 @@ This is the child theme for Divi theme, generated with Generate Child Theme plug
 (optional values you can add: Theme URI, Author URI, License, License URI, Tags, Text Domain)
 */
 
+/* ── Color tokens ─────────────────────────────────────────────────────────── */
+:root {
+    --color-primary:   #c6a3aa;
+    --color-secondary: #b48e95;
+}
+
 /* All buttons - unified style + hover lift animation */
 body #page-container .et_pb_button,
 body #page-container .et-pb-button,
@@ -128,11 +134,11 @@ body .sally-newsletter-form input[type="email"] {
     -webkit-appearance: none;
 }
 body .sally-newsletter-form input[type="email"]:focus {
-    border-color: #5c3344 !important;
+    border-color: #c6a3aa !important;
 }
 body .sally-newsletter-form button[type="submit"] {
     padding: 13px 30px !important;
-    background-color: #5c3344 !important;
+    background-color: #b48e95 !important;
     color: #fff !important;
     border: none !important;
     border-radius: 8px !important;
@@ -146,7 +152,7 @@ body .sally-newsletter-form button[type="submit"] {
     box-sizing: border-box;
 }
 body .sally-newsletter-form button[type="submit"]:hover {
-    background-color: #8a5566 !important;
+    background-color: #9a7880 !important;
 }
 .sally-nl-hint {
     font-size: 13px !important;
@@ -156,7 +162,7 @@ body .sally-newsletter-form button[type="submit"]:hover {
     padding-bottom: 0 !important;
 }
 .sally-nl-success {
-    color: #5c3344;
+    color: #c6a3aa;
     font-weight: 600;
     font-size: 18px !important;
     text-align: center;
@@ -233,13 +239,13 @@ body .sally-newsletter-form button[type="submit"]:hover {
     transition: color .2s, background .2s;
 }
 .bh-nl-popup-close:hover {
-    color: #5c3344;
+    color: #c6a3aa;
     background: #f5edef;
 }
 .bh-nl-popup-heading {
     font-size: 22px !important;
     font-weight: 700 !important;
-    color: #5c3344 !important;
+    color: #c6a3aa !important;
     margin: 0 0 10px !important;
     padding: 0 !important;
     line-height: 1.3 !important;
@@ -268,7 +274,7 @@ body .sally-newsletter-form button[type="submit"]:hover {
     -webkit-appearance: none;
 }
 .bh-nl-popup-form .bh-nl-popup-fields input[type="email"]:focus {
-    border-color: #5c3344 !important;
+    border-color: #c6a3aa !important;
     outline: none !important;
 }
 .bh-nl-popup-form .bh-nl-popup-fields button[type="submit"] {
@@ -277,7 +283,7 @@ body .sally-newsletter-form button[type="submit"]:hover {
     font-size: 17px !important;
     font-family: 'Roboto', sans-serif !important;
     font-weight: 600 !important;
-    background: #5c3344 !important;
+    background: #b48e95 !important;
     color: #fff !important;
     border: none !important;
     border-radius: 8px !important;
@@ -285,7 +291,7 @@ body .sally-newsletter-form button[type="submit"]:hover {
     transition: background-color .2s !important;
 }
 .bh-nl-popup-form .bh-nl-popup-fields button[type="submit"]:hover {
-    background: #8a5566 !important;
+    background: #9a7880 !important;
 }
 @media (max-width: 520px) {
     .bh-nl-popup {
@@ -328,7 +334,7 @@ body .sally-newsletter-form button[type="submit"]:hover {
     -webkit-appearance: none;
 }
 .et_pb_newsletter .bh-nl-injected-form .et_pb_newsletter_field .input:focus {
-    border-color: #5c3344 !important;
+    border-color: #c6a3aa !important;
     outline: none !important;
 }
 .et_pb_newsletter .bh-nl-injected-form .et_pb_newsletter_button_wrap {
@@ -342,7 +348,7 @@ body .sally-newsletter-form button[type="submit"]:hover {
     padding: 13px 28px !important;
     font-size: 16px !important;
     font-weight: 600 !important;
-    background: #5c3344 !important;
+    background: #b48e95 !important;
     color: #fff !important;
     border: none !important;
     border-radius: 8px !important;
@@ -355,11 +361,11 @@ body .sally-newsletter-form button[type="submit"]:hover {
     letter-spacing: 0 !important;
 }
 .et_pb_newsletter .bh-nl-injected-form .et_pb_newsletter_button:hover {
-    background: #8a5566 !important;
+    background: #9a7880 !important;
 }
 .bh-nl-inline-success {
     text-align: center;
-    color: #5c3344;
+    color: #c6a3aa;
     font-weight: 600;
     font-size: 18px !important;
     padding: 14px 0;
@@ -383,29 +389,43 @@ body .sally-newsletter-form button[type="submit"]:hover {
     -webkit-text-fill-color: #2b2b2b !important;
 }
 
-/* ── Footer menu – hamburger toggle on tablet + phone ───────────────────────
-   Divi's JS never populates et_mobile_menu inside the footer.
-   A custom script (functions.php) clones the nav, gives it the unique class
-   bh-footer-mobile-menu, appends it to <body>, and wires the toggle.
-   Using a unique class avoids Divi overriding position/display.           ── */
+/* ── Footer menu – nav visible directo en tablet + mobile ───────────────────
+   Mostramos el desktop nav directamente en todos los tamaños.
+   La hamburguesa está oculta; sub-menus también en mobile. ── */
+
+.et_pb_menu_0_tb_footer .et_mobile_nav_menu {
+    display: none !important;
+}
 
 @media only screen and (max-width: 980px) {
-    /* Keep the desktop nav hidden; show the hamburger */
     .et_pb_menu_0_tb_footer .et_pb_menu__menu {
+        display: block !important;
+    }
+    .et_pb_menu_0_tb_footer .et_pb_menu__menu ul.et-menu {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        align-items: center !important;
+        list-style: none !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+    }
+    .et_pb_menu_0_tb_footer .et_pb_menu__menu ul.et-menu > li {
+        display: inline-flex !important;
+        align-items: center !important;
+    }
+    .et_pb_menu_0_tb_footer .et_pb_menu__menu ul.et-menu > li > a {
+        padding: 6px 10px !important;
+        font-size: 13px !important;
+        white-space: nowrap !important;
+        color: inherit !important;
+        text-decoration: none !important;
+    }
+    .et_pb_menu_0_tb_footer .et_pb_menu__menu .sub-menu {
         display: none !important;
     }
-    .et_pb_menu_0_tb_footer .et_mobile_nav_menu {
-        display: flex !important;
-        justify-content: center !important;
-        width: 100% !important;
-    }
-    .et_pb_menu_0_tb_footer .mobile_menu_bar {
-        cursor: pointer !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        min-width: 44px !important;
-        min-height: 44px !important;
+    .et_pb_menu_0_tb_footer .et_pb_menu__menu .menu-item-has-children > a:after {
+        display: none !important;
     }
 }
 
@@ -557,14 +577,12 @@ body select:focus {
     padding-bottom: 15px !important;
 }
 
-/* ── Hamburger-Dropdown: Overflow-Fix (Mobile/Tablet) ────────────────────────
-   Divi-Custom-CSS setzt width:100vw + left:50% + translateX(-50%).
-   Da die Row nur 90% breit ist, verschiebt sich die Berechnung um ~5 vw
-   nach links → Dropdown überragt den linken Rand und erzeugt horizontalen
-   Scroll. Fix: höhere Spezifität (0,3,0 vs 0,2,0) setzt width:100% /
-   left:0 / right:0 / transform:none — trotz späterer Divi-CSS-Ladereihenfolge. */
+/* ── Header mobile/tablet: hamburguesa izquierda · logo centrado · sticky ─────
+   Divi oculta col-0 (logo) con display:none !important en todo < 980px.
+   Logo del módulo menú tiene src vacío → se oculta.
+   El dropdown nativo de Divi (.et_mobile_menu) se oculta; se usa sidenav propio. */
 @media only screen and (max-width: 980px) {
-    /* Header: fixed directo en la sección — no depende del wrapper de Divi */
+    /* 1 ── Header sticky ──────────────────────────────────────────────────── */
     .social_header_sec1 {
         position: fixed !important;
         top: 0 !important;
@@ -572,97 +590,284 @@ body select:focus {
         right: 0 !important;
         z-index: 99999 !important;
         width: 100% !important;
-        padding-top: 6px !important;
-        padding-bottom: 6px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
     }
 
-    /* Compensación: empuja el contenido para que no quede bajo el header fijo */
+    /* Empuja el contenido bajo el header fijo */
     #page-container,
     #main-content,
     .et-l--body {
         margin-top: 60px !important;
     }
 
-    /* Row: contenedor relativo para centrado absoluto del logo */
+    /* Divi agrega margin-top:62px al slider para compensar su propio sticky header.
+       En mobile/tablet usamos nuestro propio offset (60px arriba), así que el
+       margin del slider se anula para evitar el doble gap. */
+    .et_pb_fullwidth_slider_0 {
+        margin-top: 0 !important;
+    }
+
+    /* 2 ── Row: contenedor relativo para logo absolutamente centrado ───────── */
     .social_header_sec1 .et_pb_row_0_tb_header {
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
         justify-content: flex-start !important;
         position: relative !important;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
         width: 100% !important;
+        max-width: 100% !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+        padding-left: 4% !important;
+        padding-right: 4% !important;
+        margin-top: 0 !important;
+        box-sizing: border-box !important;
     }
 
-    /* Logo: izquierda */
-    .social_header_sec1 .et_pb_column_0_tb_header {
+    /* 3 ── Col-1 (menú/hamburguesa): izquierda, en flujo normal ───────────── */
+    .social_header_sec1 .et_pb_column_1_tb_header {
         flex: 0 0 auto !important;
         width: auto !important;
         position: static !important;
         transform: none !important;
+        float: none !important;
         order: 1 !important;
+        margin-bottom: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        z-index: 1 !important;
     }
 
-    /* Hamburger: centrado en el row */
-    .social_header_sec1 .et_pb_column_1_tb_header {
+    /* 4 ── Col-0 (logo): absolutamente centrado en el row ─────────────────── */
+    .social_header_sec1 .et_pb_column_0_tb_header {
+        display: flex !important;
+        flex: 0 0 auto !important;
+        width: auto !important;
         position: absolute !important;
         left: 50% !important;
-        transform: translateX(-50%) !important;
-        flex: none !important;
-        width: auto !important;
-        float: none !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
         order: 2 !important;
+        align-items: center !important;
+        z-index: 0 !important;
     }
 
-    /* "Kontaktiere mich"-Button-Spalte auf Mobile/Tablet ausblenden */
-    .social_header_sec1 .et_pb_column_2_tb_header {
+    /* Logo: tamaño responsivo */
+    .social_header_sec1 .et_pb_column_0_tb_header img {
+        width: clamp(90px, 26vw, 150px) !important;
+        height: auto !important;
+        display: block !important;
+    }
+
+    /* Hamburguesa: área táctil mínima 44px */
+    .social_header_sec1 .et_pb_menu_0_tb_header .et_mobile_nav_menu {
+        display: flex !important;
+        align-items: center !important;
+        width: auto !important;
+    }
+    .social_header_sec1 .et_pb_menu_0_tb_header .mobile_menu_bar {
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+    }
+
+    /* Ocultar nav escritorio y logo interno del módulo menú (src vacío) */
+    .social_header_sec1 .et_pb_menu_0_tb_header .et_pb_menu__menu {
+        display: none !important;
+    }
+    .social_header_sec1 .et_pb_menu_0_tb_header .et_pb_menu__logo-wrap {
         display: none !important;
     }
 
-    /* Dropdown: breit genug für alle Links, rechtsbündig am Hamburger */
+    /* Ocultar dropdown nativo de Divi: se reemplaza por el sidenav propio */
     .social_header_sec1 .et_pb_menu_0_tb_header .et_mobile_menu {
-        width: auto !important;
-        min-width: 220px !important;
-        max-width: 90vw !important;
-        left: auto !important;
-        right: 0 !important;
-        transform: none !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
+        display: none !important;
+    }
+
+    /* 5 ── Col-2 (botón): oculta ─────────────────────────────────────────── */
+    .social_header_sec1 .et_pb_column_2_tb_header {
+        display: none !important;
     }
 }
 
-/* ── Hero-Bild: Tablet + iPad Pro – stabile Position/Größe ───────────────────
-   Divi setzt je nach Breakpoint unterschiedliche Defaults (u.a. absolute Position
-   + fixe Offsets), was das Hero-Bild auf Tablets verschiebt/abschneidet.
-   Für 768-1100px wird ein einheitliches, normales Layout erzwungen. */
+/* ── Footer mobile: bh-footer-mobile-menu siempre oculto ─────────────────── */
+@media only screen and (max-width: 767px) {
+    .bh-footer-mobile-menu,
+    .bh-footer-mobile-menu.open {
+        display: none !important;
+    }
+}
+
+/* ── Sidenav: panel deslizante desde la izquierda ────────────────────────── */
+.bh-sidenav-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999996;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.bh-sidenav-overlay.open {
+    display: block;
+    opacity: 1;
+}
+
+.bh-sidenav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 72vw;
+    max-width: 300px;
+    height: 100%;
+    background: #fff;
+    z-index: 999997;
+    transform: translateX(-100%);
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
+    padding-top: 24px;
+    box-sizing: border-box;
+}
+.bh-sidenav.open {
+    transform: translateX(0);
+}
+
+/* Nav items — display:block !important overrides Divi's @media(max-width:980px){.et-menu{display:none}} */
+.bh-sidenav ul.et-menu {
+    display: block !important;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.bh-sidenav ul.et-menu > li {
+    display: block !important;
+    border-bottom: 1px solid #f0eded;
+}
+.bh-sidenav ul.et-menu > li > a {
+    display: block;
+    padding: 16px 28px;
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #2b2b2b;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: color 0.2s, background 0.2s;
+}
+.bh-sidenav ul.et-menu > li > a:hover,
+.bh-sidenav ul.et-menu > li.current-menu-item > a,
+.bh-sidenav ul.et-menu > li.current-menu-ancestor > a {
+    color: #b48e95;
+    background: #fdf8f9;
+}
+
+/* Sub-menu */
+.bh-sidenav .sub-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: #fafafa;
+    border-top: 1px solid #f0eded;
+}
+.bh-sidenav .sub-menu li {
+    border-bottom: 1px solid #f5f2f2;
+}
+.bh-sidenav .sub-menu li a {
+    display: block;
+    padding: 12px 28px 12px 44px;
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: #666;
+    text-decoration: none;
+    transition: color 0.2s, background 0.2s;
+}
+.bh-sidenav .sub-menu li a:hover {
+    color: #b48e95;
+    background: #fdf8f9;
+}
+
+/* Bloquear scroll del body cuando el sidenav está abierto */
+body.bh-sidenav-open {
+    overflow: hidden !important;
+}
+
+/* Solo visible en mobile/tablet — ocultar en desktop */
+@media (min-width: 981px) {
+    .bh-sidenav,
+    .bh-sidenav-overlay {
+        display: none !important;
+    }
+}
+
+/* ── Hero: Tablet + iPad Pro – imagen izquierda, texto derecha (= laptop) ─────
+   Divi en tablet/mobile aplica: display:table/table-cell, position:absolute en
+   imagen, float:right en descripción, display:none en imagen (< 980px), y
+   margin-left:300px en imagen (desktop). Todo se resetea aquí antes del flex.
+   Desktop (> 1100px) y móvil (< 768px) no se tocan. */
 @media only screen and (min-width: 768px) and (max-width: 1100px) {
-    .et_pb_fullwidth_slider_0.et_pb_slider .et_pb_slide_0 .et_pb_container {
+    /* 1. Romper display:table del container padre */
+    .et_pb_fullwidth_slider_0 .et_pb_slide_0 .et_pb_container {
+        display: block !important;
+    }
+
+    /* 2. Flex row en el contenedor real (directo padre de imagen + descripción) */
+    .et_pb_fullwidth_slider_0 .et_pb_slide_0 .et_pb_slider_container_inner {
         display: flex !important;
+        flex-direction: row !important;
         align-items: center !important;
         justify-content: space-between !important;
-        gap: 32px !important;
+        gap: 40px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
-    .et_pb_fullwidth_slider_0.et_pb_slider .et_pb_slide_0 .et_pb_slide_image {
+    /* 3. Imagen: izquierda (order 1).
+       Resetea: position:absolute, top:50%, bottom:auto, margin-left:300px,
+       display:none (Divi lo oculta en < 980px).
+       Mantiene: border-radius:50%, outline (círculo blanco) – no se tocan. */
+    .et_pb_fullwidth_slider_0 .et_pb_slide_0 .et_pb_slide_image {
         order: 1 !important;
-        flex: 0 0 auto !important;
         position: static !important;
         display: block !important;
+        flex: 0 0 260px !important;
+        width: 260px !important;
+        height: 260px !important;
         transform: none !important;
+        top: auto !important;
+        bottom: auto !important;
         margin: 0 !important;
-        width: clamp(240px, 34vw, 320px) !important;
-        max-width: 100% !important;
-        height: auto !important;
+        overflow: hidden !important;
     }
 
-    .et_pb_fullwidth_slider_0.et_pb_slider .et_pb_slide_0 .et_pb_slide_description {
+    /* Imagen interna: llena el contenedor cuadrado para que el círculo sea perfecto */
+    .et_pb_fullwidth_slider_0 .et_pb_slide_0 .et_pb_slide_image img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        max-height: none !important;
+    }
+
+    /* 4. Descripción: derecha (order 2).
+       Resetea: float:right, width:47.25%, padding excesivo.
+       Mantiene padding vertical proporcional al desktop (120px → 80px). */
+    .et_pb_fullwidth_slider_0 .et_pb_slide_0 .et_pb_slide_description {
         order: 2 !important;
+        float: none !important;
         flex: 1 1 auto !important;
         align-self: center !important;
         width: auto !important;
-        padding: 0 !important;
+        padding-top: 80px !important;
+        padding-bottom: 80px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
         margin: 0 !important;
         transform: none !important;
         text-align: left !important;
@@ -696,6 +901,166 @@ body select:focus {
     }
 }
 
+/* ── Über mich: Sally foto – contenedor de contexto para overlay ─────────── */
+.page-id-987550606 .social_about_img {
+    position: relative !important;
+    overflow: visible !important;
+}
+
+/* Ocultar segunda imagen (social_about_img1) que divide la foto en dos secciones */
+.page-id-987550606 .social_about_img1 {
+    display: none !important;
+}
+
+/* Mostrar imagen completa sin crop — override del max-height:400px del customizer */
+body.page-id-987550606 .social_about_img .et_pb_image_wrap img,
+body.page-id-987550606 .social_about_img img {
+    max-height: none !important;
+    height: auto !important;
+    object-fit: cover !important;
+}
+
+/* Columna derecha: misma altura que la imagen + contenido distribuido verticalmente */
+.page-id-987550606 .social_about .et_flex_column {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Foto superpuesta inyectada vía JS */
+.bh-photo-overlay {
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 35%;
+    z-index: 10;
+    border: 3px solid #ffffff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+.bh-photo-overlay img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+@media only screen and (max-width: 767px) {
+    .bh-photo-overlay {
+        width: 30%;
+        bottom: -12px;
+        right: -10px;
+    }
+}
+
+/* ── Hero: fondo color primario ───────────────────────────────────────────── */
+.et_pb_fullwidth_slider_0 .et_pb_slide_0 {
+    background-color: #c6a3aa !important;
+}
+
+/* ── Hero Über mich: mismo color primario ─────────────────────────────────── */
+.page-id-987550606 .et_pb_section:first-of-type,
+.page-id-987550606 .et_pb_section_0 {
+    background-color: #c6a3aa !important;
+}
+
+/* Kill cualquier blue inline que Divi inyecte en esa sección */
+.page-id-987550606 .et_pb_section:first-of-type[style*="background"],
+.page-id-987550606 .et_pb_section_0[style*="background"] {
+    background-color: #c6a3aa !important;
+    background-image: none !important;
+}
+
+/* Row interno del hero: fondo transparente para revelar el color de la sección */
+.page-id-987550606 .et_pb_section:first-of-type .et_pb_row,
+.page-id-987550606 .et_pb_section_0 .et_pb_row {
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* ── Hero: ocultar botón "Erfahre mehr" en todos los dispositivos ─────────── */
+.et_pb_slide_description .et_pb_button_wrapper {
+    display: none !important;
+}
+
+/* ── Footer: fondo igual al header (#f9f9f9) + texto oscuro para contraste ───
+   Divi inyecta su CSS en un <style> inline DESPUÉS del child theme, así que
+   con igual !important gana Divi. Solución: usar más clases en el selector
+   para ganar por especificidad independientemente del orden de carga.       */
+
+/* Fondo — Divi usa 4 clases (0-4-0), yo uso 5 (0-5-0): gano */
+.et-l.et-l--footer > .et_builder_inner_content .et_pb_section.et_pb_section_0_tb_footer {
+    background-color: #f9f9f9 !important;
+}
+
+/* Texto newsletter — prefijo .et-l--footer sube de 2 a 3 clases */
+.et-l--footer .et_pb_text_0_tb_footer .et_pb_text_inner,
+.et-l--footer .et_pb_text_0_tb_footer .et_pb_text_inner *,
+.et-l--footer .et_pb_text_1_tb_footer .et_pb_text_inner,
+.et-l--footer .et_pb_text_1_tb_footer .et_pb_text_inner * {
+    color: #2b2b2b !important;
+}
+
+/* Nav links del footer */
+.et-l--footer .et_pb_menu_0_tb_footer.et_pb_menu ul li a {
+    color: #2b2b2b !important;
+}
+.et-l--footer .et_pb_menu_0_tb_footer .et_pb_menu__menu ul.et-menu > li > a {
+    color: #2b2b2b !important;
+}
+
+/* ── Über mich hotfix cross-browser: disable legacy photo overlay ───────────
+   Safari may show fresh code while Chromium browsers keep older cached JS.
+   This hard-kills any previously injected overlay node regardless of cache. */
+.page-id-987550606 .bh-photo-overlay {
+    display: none !important;
+}
+
+/* Copyright y texto de fila inferior */
+.et-l--footer .et_pb_text_2_tb_footer .et_pb_text_inner,
+.et-l--footer .et_pb_text_3_tb_footer .et_pb_text_inner {
+    color: #2b2b2b !important;
+}
+
+/* Bordes internos: de blanco semitransparente a negro semitransparente */
+.et-l--footer .et_pb_row_2_tb_footer {
+    border-top-color: rgba(0, 0, 0, 0.12) !important;
+    border-bottom-color: rgba(0, 0, 0, 0.12) !important;
+}
+.et-l--footer .et_pb_column_2_tb_footer {
+    border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Facebook e Instagram: círculo negro con ícono blanco */
+.et-l--footer .et_pb_social_media_follow_network_0_tb_footer a.icon,
+.et-l--footer .et_pb_social_media_follow_network_1_tb_footer a.icon {
+    background-color: #000000 !important;
+}
+
+/* Hover Facebook e Instagram: fondo #c4a2a8, ícono blanco */
+.et-l--footer .et_pb_social_media_follow_network_0_tb_footer a.icon:hover,
+.et-l--footer .et_pb_social_media_follow_network_1_tb_footer a.icon:hover {
+    background-color: #c4a2a8 !important;
+}
+.et-l--footer .et_pb_social_media_follow_network_0_tb_footer a.icon:hover:before,
+.et-l--footer .et_pb_social_media_follow_network_1_tb_footer a.icon:hover:before {
+    color: #ffffff !important;
+}
+
+/* Hover del resto de íconos sociales */
+.et-l--footer .et_pb_social_media_follow_network_2_tb_footer a.icon:hover,
+.et-l--footer .et_pb_social_media_follow_network_3_tb_footer a.icon:hover {
+    background-color: #2b2b2b !important;
+}
+
+/* ── Espaciado consistente entre última sección y footer ─────────────────────
+   Divi aplica margin-top:328px al primer section del footer solo en desktop.
+   Aquí lo sobreescribimos con un valor uniforme para todos los dispositivos. */
+.et_pb_section_0_tb_footer.et_pb_section {
+    margin-top: 80px !important;
+}
+
 /* ETmodules icon font - fix mobile menu toggle icon */
 @font-face {
     font-family: ETmodules;
@@ -707,4 +1072,25 @@ body select:focus {
          url('../Divi/core/admin/fonts/modules/all/modules.svg#ETmodules') format('svg');
     font-weight: 400;
     font-style: normal;
+}
+/* ── Global typography + render performance ───────────────────────────────── */
+body,
+button,
+input,
+select,
+textarea,
+h1, h2, h3, h4, h5, h6,
+p, a, li, span {
+	font-family: 'Roboto', sans-serif !important;
+}
+
+/* Faster painting for long pages */
+.et_pb_section,
+.et_pb_row {
+	content-visibility: auto;
+	contain-intrinsic-size: 1px 800px;
+}
+
+img {
+	height: auto;
 }

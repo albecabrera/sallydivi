@@ -151,169 +151,8 @@
       "type": "object",
       "elementType": "field",
       "settings": {
-        "advanced": {
-          "placeholder": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 5,
-              "render": true,
-              "component": {
-                "props": {
-                  "grouped": false,
-                  "fields": {
-                    "color": {
-                      "render": true
-                    },
-                    "lineHeight": {
-                      "render": false
-                    },
-                    "letterSpacing": {
-                      "render": false
-                    },
-                    "size": {
-                      "render": false
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "focusUseBorder": {
-            "groupType": "group-item",
-            "item": {
-              "priority": 80,
-              "render": true,
-              "groupSlug": "designFieldField",
-              "attrName": "field.advanced.focusUseBorder",
-              "label": "Use Focus Borders",
-              "description": "Enabling this option will add borders to input fields when focused.",
-              "component": {
-                "type": "field",
-                "name": "divi/toggle"
-              }
-            }
-          },
-          "focus": {
-            "groupType": "group-items",
-            "items": {
-              "focusBackgroundColor": {
-                "priority": 15,
-                "render": true,
-                "groupSlug": "designFieldField",
-                "component": {
-                  "props": {
-                    "grouped": false
-                  }
-                }
-              },
-              "focusFont": {
-                "priority": 15,
-                "render": true,
-                "groupSlug": "designFieldField",
-                "component": {
-                  "props": {
-                    "grouped": false,
-                    "fields": {
-                      "letterSpacing": {
-                        "render": false
-                      },
-                      "lineHeight": {
-                        "render": false
-                      },
-                      "size": {
-                        "render": false
-                      }
-                    }
-                  }
-                }
-              },
-              "focusBorderGroup": {
-                "render": true,
-                "priority": 90,
-                "groupSlug": "designFieldField",
-                "component": {
-                  "props": {
-                    "grouped": true,
-                    "groupLabel": "Fields Focus Borders",
-                    "fieldLabel": "Fields Focus"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "decoration": {
-          "background": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "attrName": "field.decoration.background",
-              "subName": "color",
-              "label": "Fields Background Color",
-              "description": "Pick a color to fill the module's input fields.",
-              "priority": 10,
-              "render": true,
-              "features": {
-                "dynamicContent": {
-                  "type": "color"
-                }
-              },
-              "component": {
-                "type": "field",
-                "name": "divi/color-picker"
-              }
-            }
-          },
-          "spacing": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 20,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/spacing",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          },
-          "font": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 25,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/font",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          },
-          "border": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 30,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/border",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          }
-        }
+        "advanced": {},
+        "decoration": {}
       },
       "styleProps": {
         "border": {
@@ -342,35 +181,6 @@
               "hover": "{{selector}} form .input-text, {{selector}} form .input-text:hover::placeholder, {{selector}} form .input-text:hover::-webkit-input-placeholder, {{selector}} form .input-text:hover::-moz-placeholder, {{selector}} form .input-text:hover:-ms-input-placeholder"
             }
           }
-        }
-      }
-    },
-    "fieldLabels": {
-      "type": "object",
-      "settings": {
-        "decoration": {
-          "font": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldLabels",
-              "priority": 10,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/font",
-                "props": {
-                  "grouped": false,
-                  "groupLabel": "Field Label",
-                  "fieldLabel": "Field Label"
-                }
-              }
-            }
-          }
-        }
-      },
-      "styleProps": {
-        "font": {
-          "selector": "{{selector}} form .form-row label"
         }
       }
     }
@@ -428,29 +238,16 @@
           }
         }
       },
-      "designFieldLabels": {
-        "panel": "design",
-        "priority": 30,
-        "groupName": "designFieldLabels",
-        "multiElements": true,
-        "component": {
-          "name": "divi/composite",
-          "props": {
-            "groupLabel": "Field Labels",
-            "presetGroup": "divi/font",
-            "dynamicSubgroupHost": true
-          }
-        }
-      },
       "designFieldField": {
         "panel": "design",
-        "priority": 40,
+        "priority": 30,
         "groupName": "designFieldField",
         "multiElements": true,
         "component": {
-          "name": "divi/composite",
+          "name": "divi/form-field",
           "props": {
             "groupLabel": "Fields",
+            "attrName": "field",
             "dynamicSubgroupHost": true
           }
         }

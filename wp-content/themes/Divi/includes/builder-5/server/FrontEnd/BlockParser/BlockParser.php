@@ -176,6 +176,10 @@ class BlockParser extends \WP_Block_Parser {
 			'divi/video'                       => $base_namespace . 'Video\VideoModule',
 		];
 
+		if ( class_exists( '\WPCF7_ContactForm' ) ) {
+			$modules['divi/contact-form-7'] = $base_namespace . 'ContactForm7\ContactForm7Module';
+		}
+
 		/*
 		 * Additional WooCommerce Modules dependencies.
 		 */

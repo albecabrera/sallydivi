@@ -342,20 +342,24 @@ function et_core_clear_wp_cache( $post_id = '' ) {
 			autoptimizeCache::clearall();
 		}
 
-		// WP Optimize.
+		// WP Optimize (full purge: wpo_cache_flush clears file HTML cache for guests).
 		if ( class_exists( 'WP_Optimize' ) && defined( 'WPO_PLUGIN_MAIN_PATH' ) ) {
+			if ( '' === $post_id && function_exists( 'wpo_cache_flush' ) ) {
+				wpo_cache_flush();
+			}
+
 			if ( '' !== $post_id && is_callable( array( 'WPO_Page_Cache', 'delete_single_post_cache' ) ) ) {
 				WPO_Page_Cache::delete_single_post_cache( $post_id );
+
 				if ( $homepage_id > 0 && $homepage_id !== (int) $post_id ) {
 					WPO_Page_Cache::delete_single_post_cache( $homepage_id );
 				}
-			} elseif ( is_callable( array( 'WP_Optimize', 'get_page_cache' ) ) ) {
-				$wp_optimize_instance = WP_Optimize();
-				if ( is_object( $wp_optimize_instance ) ) {
-					$page_cache = $wp_optimize_instance->get_page_cache();
-					if ( is_object( $page_cache ) && is_callable( array( $page_cache, 'purge' ) ) ) {
-						$page_cache->purge();
-					}
+			} else {
+				$wp_optimize = WP_Optimize();
+				$page_cache  = is_object( $wp_optimize ) ? $wp_optimize->get_page_cache() : null;
+
+				if ( is_object( $page_cache ) && is_callable( array( $page_cache, 'purge' ) ) ) {
+					$page_cache->purge();
 				}
 			}
 		}
@@ -436,45 +440,82 @@ function et_core_clear_wp_cache( $post_id = '' ) {
 
 		// WP Compress
 		if ( class_exists( 'wps_ic_cache' ) ) {
-			$wpc_cache_logic = new wps_ic_cache();
-			if ( '' !== $post_id ) {
-				if ( is_callable( array( 'wps_ic_cache', 'removeHtmlCacheFiles' ) ) ) {
-					wps_ic_cache::removeHtmlCacheFiles( $post_id );
+			$wpc_used_new_integrations = false;
+
+			$wpc_plugin_path = WP_PLUGIN_DIR . '/wp-compress-image-optimizer/wp-compress.php';
+
+			if ( file_exists( $wpc_plugin_path ) && class_exists( 'wps_ic_cache_integrations' ) ) {
+				$wpc_plugin_headers = get_file_data(
+					$wpc_plugin_path,
+					array(
+						'Version' => 'Version',
+					),
+					'plugin'
+				);
+
+				$wpc_plugin_version = $wpc_plugin_headers['Version'];
+
+				if ( ! empty( $wpc_plugin_version ) && version_compare( $wpc_plugin_version, '6.60.46', '>=' ) ) {
+					$wpc_integrations = new wps_ic_cache_integrations();
+
+					if ( '' !== $post_id && is_callable( array( $wpc_integrations, 'purge_id' ) ) ) {
+						$wpc_integrations->purge_id( $post_id );
+
+						// Always clear homepage cache.
+						if ( $homepage_id > 0 && $homepage_id !== (int) $post_id ) {
+							$wpc_integrations->purge_id( $homepage_id );
+						}
+
+						$wpc_used_new_integrations = true;
+					} elseif ( '' === $post_id && is_callable( array( $wpc_integrations, 'purge_site' ) ) ) {
+						$wpc_integrations->purge_site();
+
+						$wpc_used_new_integrations = true;
+					}
 				}
-				if ( is_callable( array( 'wps_ic_cache', 'removeCriticalFiles' ) ) ) {
-					wps_ic_cache::removeCriticalFiles( $post_id );
-				}
-				if ( is_callable( array( 'wps_ic_cache', 'removeCombinedFiles' ) ) ) {
-					wps_ic_cache::removeCombinedFiles( $post_id );
-				}
-				// Always clear homepage cache.
-				if ( $homepage_id > 0 && $homepage_id !== (int) $post_id ) {
+			}
+
+			if ( ! $wpc_used_new_integrations ) {
+				$wpc_cache_logic = new wps_ic_cache();
+				if ( '' !== $post_id ) {
 					if ( is_callable( array( 'wps_ic_cache', 'removeHtmlCacheFiles' ) ) ) {
-						wps_ic_cache::removeHtmlCacheFiles( $homepage_id );
+						wps_ic_cache::removeHtmlCacheFiles( $post_id );
 					}
 					if ( is_callable( array( 'wps_ic_cache', 'removeCriticalFiles' ) ) ) {
-						wps_ic_cache::removeCriticalFiles( $homepage_id );
+						wps_ic_cache::removeCriticalFiles( $post_id );
 					}
 					if ( is_callable( array( 'wps_ic_cache', 'removeCombinedFiles' ) ) ) {
-						wps_ic_cache::removeCombinedFiles( $homepage_id );
+						wps_ic_cache::removeCombinedFiles( $post_id );
 					}
-				}
-			} else {
-				// Clear entire website cache.
-				if ( class_exists( 'wps_ic_cache_integrations' ) ) {
-					$wpc_cache = new wps_ic_cache_integrations();
-					if ( is_callable( array( 'wps_ic_cache_integrations', 'purgeAll' ) ) ) {
-						wps_ic_cache_integrations::purgeAll( false, true, false, false );
+					// Always clear homepage cache.
+					if ( $homepage_id > 0 && $homepage_id !== (int) $post_id ) {
+						if ( is_callable( array( 'wps_ic_cache', 'removeHtmlCacheFiles' ) ) ) {
+							wps_ic_cache::removeHtmlCacheFiles( $homepage_id );
+						}
+						if ( is_callable( array( 'wps_ic_cache', 'removeCriticalFiles' ) ) ) {
+							wps_ic_cache::removeCriticalFiles( $homepage_id );
+						}
+						if ( is_callable( array( 'wps_ic_cache', 'removeCombinedFiles' ) ) ) {
+							wps_ic_cache::removeCombinedFiles( $homepage_id );
+						}
 					}
-					if ( is_callable( array( 'wps_ic_cache_integrations', 'purgeCombinedFiles' ) ) ) {
-						wps_ic_cache_integrations::purgeCombinedFiles();
+				} else {
+					// Clear entire website cache.
+					if ( class_exists( 'wps_ic_cache_integrations' ) ) {
+						$wpc_cache = new wps_ic_cache_integrations();
+						if ( is_callable( array( 'wps_ic_cache_integrations', 'purgeAll' ) ) ) {
+							wps_ic_cache_integrations::purgeAll( false, true, false, false );
+						}
+						if ( is_callable( array( 'wps_ic_cache_integrations', 'purgeCombinedFiles' ) ) ) {
+							wps_ic_cache_integrations::purgeCombinedFiles();
+						}
 					}
-				}
-				if ( is_callable( array( 'wps_ic_cache', 'removeHtmlCacheFiles' ) ) ) {
-					wps_ic_cache::removeHtmlCacheFiles( 'all' );
-				}
-				if ( is_callable( array( 'wps_ic_cache', 'removeCriticalFiles' ) ) ) {
-					wps_ic_cache::removeCriticalFiles( 'all' );
+					if ( is_callable( array( 'wps_ic_cache', 'removeHtmlCacheFiles' ) ) ) {
+						wps_ic_cache::removeHtmlCacheFiles( 'all' );
+					}
+					if ( is_callable( array( 'wps_ic_cache', 'removeCriticalFiles' ) ) ) {
+						wps_ic_cache::removeCriticalFiles( 'all' );
+					}
 				}
 			}
 		}
@@ -601,7 +642,7 @@ if ( ! function_exists( 'et_core_page_resource_get' ) ):
 function et_core_page_resource_get( $owner, $slug, $post_id = null, $priority = 10, $location = 'head-late', $type = 'style' ) {
 	// Use null check instead of truthy check to preserve 0 as a valid post_id value.
 	$post_id = null !== $post_id ? $post_id : et_core_page_resource_get_the_ID();
-	
+
 	// Generate lookup slug matching the filename generation logic in PageResource constructor.
 	// Use consolidated method to determine if post_id should be excluded.
 	$lookup_post_id = '';

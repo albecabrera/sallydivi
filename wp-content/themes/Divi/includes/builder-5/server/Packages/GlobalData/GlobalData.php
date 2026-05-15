@@ -833,9 +833,10 @@ class GlobalData {
 						continue;
 					}
 
-					if ( 'strings' === $type ) {
-						// Sanitize string value but keep new line.
-						$sanitized_data[ $type ][ $global_id ][ sanitize_text_field( $param_key ) ] = sanitize_textarea_field( $param_value );
+					if ( 'strings' === $type && 'value' === $param_key ) {
+						// Keep string variable value character-identical while still removing invalid UTF-8 and null bytes.
+						$string_value = is_scalar( $param_value ) ? wp_check_invalid_utf8( (string) $param_value ) : '';
+						$sanitized_data[ $type ][ $global_id ][ sanitize_text_field( $param_key ) ] = wp_kses_no_null( $string_value );
 					} elseif ( 'links' === $type && 'value' === $param_key ) {
 						// Sanitize URL value while preserving URL encoding.
 						$sanitized_data[ $type ][ $global_id ][ sanitize_text_field( $param_key ) ] = esc_url_raw( $param_value );

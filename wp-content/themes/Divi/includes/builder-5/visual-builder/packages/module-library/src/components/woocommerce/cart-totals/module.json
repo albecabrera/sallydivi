@@ -162,7 +162,7 @@
       },
       "styleProps": {
         "bodyFont": {
-          "selector": "{{selector}} .woocommerce-Price-amount,{{selector}} .woocommerce-shipping-totals label,{{selector}} .woocommerce-shipping-totals .woocommerce-shipping-destination,{{selector}} table.shop_table a,{{selector}} table.shop_table tr.shipping td,{{selector}} table.shop_table tr.cart-subtotal td,{{selector}} table.shop_table tr.order-total td",
+          "selector": "{{selector}} .woocommerce-Price-amount,{{selector}} .woocommerce-shipping-totals label,{{selector}} .woocommerce-shipping-totals .woocommerce-shipping-destination,{{selector}} table.shop_table a,{{selector}} table.shop_table tr.shipping td,{{selector}} table.shop_table tr.cart-subtotal td,{{selector}} table.shop_table tr.order-total td,{{selector}} table.shop_table tr.cart-discount td,{{selector}} table.shop_table tr.tax-rate td,{{selector}} table.shop_table tr.tax-total td",
           "propertySelectors": {
             "body": {
               "desktop": {
@@ -176,6 +176,27 @@
               "desktop": {
                 "value": {
                   "line-height": "{{selector}} table.shop_table td"
+                }
+              }
+            }
+          },
+          "important": {
+            "body": {
+              "font": {
+                "desktop": {
+                  "value": {
+                    "text-align": true
+                  }
+                },
+                "tablet": {
+                  "value": {
+                    "text-align": true
+                  }
+                },
+                "phone": {
+                  "value": {
+                    "text-align": true
+                  }
                 }
               }
             }
@@ -349,190 +370,14 @@
       "type": "object",
       "elementType": "field",
       "settings": {
-        "advanced": {
-          "placeholder": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 5,
-              "render": true,
-              "component": {
-                "props": {
-                  "grouped": false,
-                  "fields": {
-                    "color": {
-                      "render": true
-                    },
-                    "lineHeight": {
-                      "render": false
-                    },
-                    "letterSpacing": {
-                      "render": false
-                    },
-                    "size": {
-                      "render": false
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "focusUseBorder": {
-            "groupType": "group-item",
-            "item": {
-              "priority": 80,
-              "render": true,
-              "groupSlug": "designFieldField",
-              "attrName": "field.advanced.focusUseBorder",
-              "label": "Use Focus Borders",
-              "description": "Enabling this option will add borders to input fields when focused.",
-              "features": {
-                "responsive": false,
-                "sticky": false,
-                "preset": [
-                  "html"
-                ]
-              },
-              "component": {
-                "type": "field",
-                "name": "divi/toggle"
-              }
-            }
-          },
-          "focus": {
-            "groupType": "group-items",
-            "items": {
-              "focusBackgroundColor": {
-                "priority": 15,
-                "render": true,
-                "groupSlug": "designFieldField",
-                "component": {
-                  "props": {
-                    "grouped": false
-                  }
-                }
-              },
-              "focusFont": {
-                "priority": 15,
-                "render": true,
-                "groupSlug": "designFieldField",
-                "component": {
-                  "props": {
-                    "grouped": false,
-                    "fields": {
-                      "letterSpacing": {
-                        "render": false
-                      },
-                      "lineHeight": {
-                        "render": false
-                      },
-                      "size": {
-                        "render": false
-                      }
-                    }
-                  }
-                }
-              },
-              "focusBorderGroup": {
-                "render": true,
-                "priority": 90,
-                "groupSlug": "designFieldField",
-                "component": {
-                  "props": {
-                    "grouped": true,
-                    "groupLabel": "Fields Focus Borders",
-                    "fieldLabel": "Fields Focus"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "decoration": {
-          "background": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "attrName": "field.decoration.background",
-              "subName": "color",
-              "label": "Fields Background Color",
-              "description": "Pick a color to fill the module's input fields.",
-              "priority": 10,
-              "render": true,
-              "component": {
-                "type": "field",
-                "name": "divi/color-picker"
-              }
-            }
-          },
-          "spacing": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 20,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/spacing",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          },
-          "font": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 25,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/font",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          },
-          "border": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 30,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/border",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          },
-          "boxShadow": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 40,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/box-shadow",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          }
-        }
+        "advanced": {},
+        "decoration": {}
       },
       "styleProps": {
-        "selector": "{{selector}} .select2-container--default.select2-container--open .select2-selection--single,{{selector}} form .form-row input.input-text,{{selector}} form .form-row textarea",
+        "selector": "{{selector}} .select2-container--default .select2-selection--single, {{selector}} form .form-row input.input-text, {{selector}} form .form-row textarea",
+        "background": {
+          "selector": "{{selector}} .select2-container--default .select2-selection--single, {{selector}} form .form-row input.input-text, {{selector}} form .form-row textarea"
+        },
         "border": {
           "propertySelectors": {
             "desktop": {
@@ -1064,9 +909,10 @@
         "groupName": "designFieldField",
         "multiElements": true,
         "component": {
-          "name": "divi/composite",
+          "name": "divi/form-field",
           "props": {
             "groupLabel": "Fields",
+            "attrName": "field",
             "dynamicSubgroupHost": true
           }
         }

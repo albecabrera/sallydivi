@@ -27,6 +27,7 @@ use ET\Builder\Packages\Module\Layout\Components\MultiView\MultiViewUtils;
 use ET\Builder\Packages\Module\Module;
 use ET\Builder\Packages\Module\Options\Css\CssStyle;
 use ET\Builder\Packages\Module\Options\FormField\FormFieldStyle;
+use ET\Builder\Packages\Module\Options\Element\ElementStyle;
 use ET\Builder\Packages\Module\Options\Element\ElementClassnames;
 use ET\Builder\Packages\Module\Options\Text\TextClassnames;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
@@ -528,20 +529,101 @@ class WooCommerceCheckoutShippingModule implements DependencyInterface {
 										],
 									],
 								],
+								'label'       => [
+									'font' => [
+										'font'       => [
+											'desktop' => [
+												'value' => array_fill_keys(
+													[
+														'color',
+														'font-family',
+														'font-size',
+														'font-style',
+														'font-weight',
+														'letter-spacing',
+														'line-height',
+														'text-align',
+														'text-decoration',
+														'text-transform',
+													],
+													"{$order_class} form .form-row label"
+												),
+												'hover' => array_fill_keys(
+													[
+														'color',
+														'font-family',
+														'font-size',
+														'font-style',
+														'font-weight',
+														'letter-spacing',
+														'line-height',
+														'text-align',
+														'text-decoration',
+														'text-transform',
+													],
+													"{$order_class} form .form-row label:hover"
+												),
+											],
+										],
+										'textShadow' => [
+											'desktop' => [
+												'value' => [
+													'text-shadow' => "{$order_class} form .form-row label",
+												],
+												'hover' => [
+													'text-shadow' => "{$order_class} form .form-row label:hover",
+												],
+											],
+										],
+									],
+								],
 							],
 						]
 					),
-					// Field Labels.
+					// Placeholder styles from migrated placeholder group.
+					ElementStyle::style(
+						[
+							'selector'               => implode(
+								', ',
+								[
+									".woocommerce {$order_class} form .form-row input.input-text",
+									".woocommerce {$order_class} form .form-row textarea.input-text",
+								]
+							),
+							'attrs'                  => [
+								'font' => $attrs['field']['decoration']['placeholderFont'] ?? [],
+							],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+							'font'                   => [
+								'selectorFunction' => function ( $params ) {
+									$maybe_multiple_selectors = $params['selector'] ?? '';
+									$base_selectors           = array_map( 'trim', explode( ',', $maybe_multiple_selectors ) );
+									$placeholder_selectors    = [];
+
+									// Generate placeholder pseudo-element selector for each base selector.
+									foreach ( $base_selectors as $selector ) {
+										$placeholder_selectors[] = "{$selector}::placeholder";
+									}
+
+									return implode( ', ', $placeholder_selectors );
+								},
+								'important'        => true,
+							],
+						]
+					),
+					// Required Field Indicator Color.
 					$elements->style(
 						[
-							'attrName'   => 'fieldLabels',
+							'attrName'   => 'field',
 							'styleProps' => [
 								'advancedStyles' => [
 									// Required Field Indicator Color.
 									[
 										'componentName' => 'divi/common',
 										'props'         => [
-											'attr'      => $attrs['fieldLabels']['advanced']['requiredFieldIndicatorColor'] ?? [],
+											'attr'      => $attrs['field']['advanced']['requiredFieldIndicatorColor'] ?? [],
 											'selector'  => "{$order_class} form .form-row .required",
 											'declarationFunction' => [ self::class, 'required_field_indicator_color_style_declaration' ],
 											'important' => true,
@@ -550,6 +632,124 @@ class WooCommerceCheckoutShippingModule implements DependencyInterface {
 													'value' => "{$order_class} form .form-row .required",
 													'hover' => "{$order_class} form .form-row:hover .required",
 												],
+											],
+										],
+									],
+								],
+							],
+						]
+					),
+					// Checkbox.
+					FormFieldStyle::style(
+						[
+							'selector'               => "{$order_class} input[type=\"checkbox\"]",
+							'attr'                   => $attrs['checkbox'] ?? [],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+							'disableLabelStyle'      => true,
+							'propertySelectors'      => [
+								'font' => [
+									'font'       => [
+										'desktop' => [
+											'value' => array_fill_keys(
+												[
+													'color',
+													'font-family',
+													'font-size',
+													'font-style',
+													'font-weight',
+													'letter-spacing',
+													'line-height',
+													'text-align',
+													'text-decoration',
+													'text-transform',
+												],
+												"{$order_class} label.checkbox"
+											),
+											'hover' => array_fill_keys(
+												[
+													'color',
+													'font-family',
+													'font-size',
+													'font-style',
+													'font-weight',
+													'letter-spacing',
+													'line-height',
+													'text-align',
+													'text-decoration',
+													'text-transform',
+												],
+												"{$order_class} label.checkbox:hover"
+											),
+										],
+									],
+									'textShadow' => [
+										'desktop' => [
+											'value' => [
+												'text-shadow' => "{$order_class} label.checkbox",
+											],
+											'hover' => [
+												'text-shadow' => "{$order_class} label.checkbox:hover",
+											],
+										],
+									],
+								],
+							],
+						]
+					),
+					// Radio.
+					FormFieldStyle::style(
+						[
+							'selector'               => "{$order_class} input[type=\"radio\"]",
+							'attr'                   => $attrs['radio'] ?? [],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+							'disableLabelStyle'      => true,
+							'propertySelectors'      => [
+								'font' => [
+									'font'       => [
+										'desktop' => [
+											'value' => array_fill_keys(
+												[
+													'color',
+													'font-family',
+													'font-size',
+													'font-style',
+													'font-weight',
+													'letter-spacing',
+													'line-height',
+													'text-align',
+													'text-decoration',
+													'text-transform',
+												],
+												"{$order_class} label.radio"
+											),
+											'hover' => array_fill_keys(
+												[
+													'color',
+													'font-family',
+													'font-size',
+													'font-style',
+													'font-weight',
+													'letter-spacing',
+													'line-height',
+													'text-align',
+													'text-decoration',
+													'text-transform',
+												],
+												"{$order_class} label.radio:hover"
+											),
+										],
+									],
+									'textShadow' => [
+										'desktop' => [
+											'value' => [
+												'text-shadow' => "{$order_class} label.radio",
+											],
+											'hover' => [
+												'text-shadow' => "{$order_class} label.radio:hover",
 											],
 										],
 									],

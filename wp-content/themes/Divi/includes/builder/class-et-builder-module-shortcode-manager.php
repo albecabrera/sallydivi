@@ -722,10 +722,30 @@ class ET_Builder_Module_Shortcode_Manager {
 		 */
 		do_action( 'et_builder_modules_load' );
 
+		/**
+		 * Fires before loading Divi module type files.
+		 *
+		 * @since 5.3.3
+		 */
+		do_action( 'divi_visual_builder_before_load_module_types' );
+
 		foreach ( $et_builder_module_types as $module_type ) {
 			require_once $module_type;
 		}
 
+		/**
+		 * Fires after loading Divi module type files.
+		 *
+		 * @since 5.3.3
+		 */
+		do_action( 'divi_visual_builder_after_load_module_types' );
+
+		/**
+		 * Fires before loading Divi module files.
+		 *
+		 * @since 5.3.3
+		 */
+		do_action( 'divi_visual_builder_before_load_module_files' );
 		foreach ( $et_builder_module_files as $module_file ) {
 			// skip this all caps version, if it exists.
 			// See https://github.com/elegantthemes/Divi/issues/24780.
@@ -736,11 +756,32 @@ class ET_Builder_Module_Shortcode_Manager {
 			require_once $module_file;
 		}
 
+		/**
+		 * Fires after loading Divi module files.
+		 *
+		 * @since 5.3.3
+		 */
+		do_action( 'divi_visual_builder_after_load_module_files' );
+
 		if ( apply_filters( 'et_builder_load_woocommerce_modules', et_is_woocommerce_plugin_active() ) ) {
+			/**
+			 * Fires before loading WooCommerce module files.
+			 *
+			 * @since 5.3.3
+			 */
+			do_action( 'divi_visual_builder_before_load_woo_module_files' );
+
 			$et_builder_woocommerce_module_files = glob( ET_BUILDER_DIR . 'module/woocommerce/*.php' );
 			foreach ( $et_builder_woocommerce_module_files as $module_type ) {
 				require_once $module_type;
 			}
+
+			/**
+			 * Fires after loading WooCommerce module files.
+			 *
+			 * @since 5.3.3
+			 */
+			do_action( 'divi_visual_builder_after_load_woo_module_files' );
 		}
 
 		/**

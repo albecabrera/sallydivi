@@ -1299,6 +1299,12 @@ class DynamicAssetsUtils {
 					"{$prefix}/css/buttons{$suffix}.css",
 				],
 			],
+			'divi/contact-form-7'                       => [
+				'css' => [
+					"{$prefix}/css/contact_form_7{$suffix}.css",
+					"{$prefix}/css/buttons{$suffix}.css",
+				],
+			],
 			'divi/countdown-timer'                      => [
 				'css' => "{$prefix}/css/countdown_timer{$suffix}.css",
 			],
@@ -3695,5 +3701,19 @@ class DynamicAssetsUtils {
 			$features,
 			[ self::class, 'is_meaningful_feature_value' ]
 		);
+	}
+
+	/**
+	 * Reset static caches.
+	 *
+	 * @since ??
+	 *
+	 * @return void
+	 */
+	public static function reset(): void {
+		self::$_batch_post_meta_cache                 = [];
+		self::$_canvas_data_static_cache              = [];
+		self::$_canvas_posts_static_cache             = [];
+		self::$_local_canvas_posts_by_owner_set_cache = [];
 	}
 }

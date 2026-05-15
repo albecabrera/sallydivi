@@ -438,16 +438,16 @@ class WooCommerceCheckoutBillingModule implements DependencyInterface {
 						]
 					),
 
-					// Field Labels.
+					// Required Field Indicator Color.
 					$elements->style(
 						[
-							'attrName'   => 'fieldLabels',
+							'attrName'   => 'field',
 							'styleProps' => [
 								'advancedStyles' => [
 									[
 										'componentName' => 'divi/common',
 										'props'         => [
-											'attr'      => $attrs['fieldLabels']['advanced']['requiredFieldIndicatorColor'] ?? [],
+											'attr'      => $attrs['field']['advanced']['requiredFieldIndicatorColor'] ?? [],
 											'declarationFunction' => [ self::class, 'required_field_indicator_color_style_declaration' ],
 											'selector'  => "{$order_class} form .form-row .required",
 											'selectors' => [
@@ -657,6 +657,54 @@ class WooCommerceCheckoutBillingModule implements DependencyInterface {
 										],
 									],
 								],
+								'label'      => [
+									'font' => [
+										'font'       => [
+											'desktop' => [
+												'value' => array_fill_keys(
+													[
+														'color',
+														'font-family',
+														'font-size',
+														'font-style',
+														'font-weight',
+														'letter-spacing',
+														'line-height',
+														'text-align',
+														'text-decoration',
+														'text-transform',
+													],
+													"{$order_class} form .form-row label"
+												),
+												'hover' => array_fill_keys(
+													[
+														'color',
+														'font-family',
+														'font-size',
+														'font-style',
+														'font-weight',
+														'letter-spacing',
+														'line-height',
+														'text-align',
+														'text-decoration',
+														'text-transform',
+													],
+													"{$order_class} form .form-row label:hover"
+												),
+											],
+										],
+										'textShadow' => [
+											'desktop' => [
+												'value' => [
+													'text-shadow' => "{$order_class} form .form-row label",
+												],
+												'hover' => [
+													'text-shadow' => "{$order_class} form .form-row label:hover",
+												],
+											],
+										],
+									],
+								],
 							],
 						]
 					),
@@ -690,7 +738,7 @@ class WooCommerceCheckoutBillingModule implements DependencyInterface {
 								]
 							),
 							'attrs'                  => [
-								'font' => $attrs['field']['advanced']['placeholder']['font'] ?? [],
+								'font' => $attrs['field']['decoration']['placeholderFont'] ?? [],
 							],
 							'orderClass'             => $order_class,
 							'isInsideStickyModule'   => $is_inside_sticky_module,
@@ -701,12 +749,9 @@ class WooCommerceCheckoutBillingModule implements DependencyInterface {
 									$base_selectors           = array_map( 'trim', explode( ',', $maybe_multiple_selectors ) );
 									$placeholder_selectors    = [];
 
-									// Generate all pseudo-element combinations for each base selector.
+									// Generate placeholder pseudo-element selector for each base selector.
 									foreach ( $base_selectors as $selector ) {
 										$placeholder_selectors[] = "{$selector}::placeholder";
-										$placeholder_selectors[] = "{$selector}::-webkit-input-placeholder";
-										$placeholder_selectors[] = "{$selector}::-moz-placeholder";
-										$placeholder_selectors[] = "{$selector}:-ms-input-placeholder";
 									}
 
 									return implode( ', ', $placeholder_selectors );

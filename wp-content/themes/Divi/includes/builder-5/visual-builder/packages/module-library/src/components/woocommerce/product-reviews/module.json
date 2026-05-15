@@ -372,156 +372,8 @@
       "type": "object",
       "elementType": "field",
       "settings": {
-        "advanced": {
-          "focusUseBorder": {
-            "groupType": "group-item",
-            "item": {
-              "priority": 100,
-              "render": true,
-              "groupSlug": "designFieldField",
-              "attrName": "field.advanced.focusUseBorder",
-              "label": "Use Focus Borders",
-              "description": "Enabling this option will add borders to input fields when focused.",
-              "features": {
-                "preset": [
-                  "html"
-                ]
-              },
-              "component": {
-                "type": "field",
-                "name": "divi/toggle"
-              }
-            }
-          },
-          "focus": {
-            "groupType": "group-items",
-            "items": {
-              "focusBorderGroup": {
-                "render": true,
-                "groupSlug": "designFieldField",
-                "component": {
-                  "props": {
-                    "grouped": true
-                  }
-                }
-              },
-              "focusBackgroundColor": {
-                "priority": 5,
-                "render": true,
-                "groupSlug": "designFieldField"
-              },
-              "focusFont": {
-                "priority": 10,
-                "render": true,
-                "groupSlug": "designFieldField",
-                "component": {
-                  "props": {
-                    "grouped": true,
-                    "fields": {
-                      "letterSpacing": {
-                        "render": false
-                      },
-                      "lineHeight": {
-                        "render": false
-                      },
-                      "size": {
-                        "render": false
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "decoration": {
-          "background": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "attrName": "field.decoration.background",
-              "subName": "color",
-              "label": "Fields Background Color",
-              "description": "Pick a color to fill the module's input fields.",
-              "priority": 5,
-              "render": true,
-              "features": {
-                "dynamicContent": {
-                  "type": "color"
-                }
-              },
-              "component": {
-                "type": "field",
-                "name": "divi/color-picker"
-              }
-            }
-          },
-          "spacing": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 10,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/spacing",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          },
-          "font": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 10,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/font",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields",
-                  "dynamicSubgroupHost": true
-                }
-              }
-            }
-          },
-          "border": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 10,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/border",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          },
-          "boxShadow": {
-            "groupType": "group-item",
-            "item": {
-              "groupSlug": "designFieldField",
-              "priority": 200,
-              "render": true,
-              "component": {
-                "type": "group",
-                "name": "divi/box-shadow",
-                "props": {
-                  "grouped": true,
-                  "fieldLabel": "Fields"
-                }
-              }
-            }
-          }
-        }
+        "advanced": {},
+        "decoration": {}
       },
       "styleProps": {
         "border": {
@@ -802,10 +654,11 @@
         "groupName": "field",
         "multiElements": true,
         "component": {
-          "name": "divi/composite",
+          "name": "divi/form-field",
           "props": {
             "clipboardCategory": "style",
             "groupLabel": "Fields",
+            "attrName": "field",
             "dynamicSubgroupHost": true
           }
         }

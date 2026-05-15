@@ -5,7 +5,8 @@
       "layout": {
         "desktop": {
           "value": {
-            "flexDirection": "column"
+            "flexDirection": "column",
+            "rowGap": "0px"
           }
         }
       }

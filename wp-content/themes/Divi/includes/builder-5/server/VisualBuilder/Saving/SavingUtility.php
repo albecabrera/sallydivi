@@ -2046,7 +2046,25 @@ class SavingUtility {
 		unset( $settings_for_et_builder['et_pb_post_settings_title'] );
 		unset( $settings_for_et_builder['et_pb_post_settings_excerpt'] );
 
+		// Exclude et_pb_custom_css from et_builder_update_settings() because that path runs.
+		// sanitize_textarea_field(), which strips percent-encoded sequences (%XX) and breaks.
+		// data URLs in CSS (e.g. SVG in url("data:image/svg+xml,...")). Values are already.
+		// sanitized via sanitize_page_settings_css() before this method runs.
+		$should_persist_custom_css_directly = false;
+		$custom_css_value                   = '';
+
+		if ( array_key_exists( 'et_pb_custom_css', $mapped_page_settings ) ) {
+			$should_persist_custom_css_directly = true;
+			$custom_css_value                   = $mapped_page_settings['et_pb_custom_css'];
+			unset( $settings_for_et_builder['et_pb_custom_css'] );
+		}
+
 		et_builder_update_settings( $settings_for_et_builder, $post_id );
+
+		if ( true === $should_persist_custom_css_directly ) {
+			update_post_meta( $post_id, '_et_pb_custom_css', $custom_css_value );
+			delete_post_meta( $post_id, '_et_pb_custom_css_draft' );
+		}
 
 		// Keep legacy post settings meta in sync without triggering additional wp_update_post calls.
 		// Some integrations still read these explicit meta values directly.

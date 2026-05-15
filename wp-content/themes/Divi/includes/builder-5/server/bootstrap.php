@@ -9,6 +9,7 @@
 use ET\Builder\Framework\Utility\Conditions;
 use ET\Builder\Framework\Utility\DependencyChangeDetector;
 use ET\Builder\VisualBuilder\OffCanvas\OffCanvasHooks;
+use ET\Builder\VisualBuilder\Performance\PerformanceLogger;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
@@ -19,6 +20,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 require __DIR__ . '/vendor/autoload.php';
 
+// Initialize performance logging when available.
+if ( class_exists( PerformanceLogger::class ) ) {
+	PerformanceLogger::initialize();
+}
 
 /**
  * Define constants.

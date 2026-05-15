@@ -34,6 +34,15 @@ class Fonts {
 	public static $_fonts_added = [];
 
 	/**
+	 * Reset fonts added.
+	 *
+	 * @since ??
+	 */
+	public static function reset(): void {
+		self::$_fonts_added = [];
+	}
+
+	/**
 	 * Add a font family to the store.
 	 *
 	 * Enqueue a given font family for use in the Builder.
@@ -117,7 +126,7 @@ class Fonts {
 				$is_font = substr( $var_name, -5 ) === '_font' && 'none' !== $value;
 				if ( $is_font ) {
 					$formatted_font_value = FontUtils::format_font_value_with_ms_version( $value );
-					$needs_ms_version     = strpos( $formatted_font_value, " MS', '" ) !== false;
+					$needs_ms_version     = str_contains( $formatted_font_value, " MS', '" );
 					$value                = $formatted_font_value;
 				} else {
 					$value = esc_html( $value );

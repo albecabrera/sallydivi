@@ -6,6 +6,9 @@ use ET\Builder\Packages\StyleLibrary\Utils\Utils;
 
 if ( ! isset( $content_width ) ) $content_width = 1080;
 
+// TODO fix(D4, Comments): Remove this require and the shim file after WordPress core resolves Trac #61468. [https://github.com/elegantthemes/Divi/issues/28338]
+require_once __DIR__ . '/includes/functions/comments-template-safe.php';
+
 function et_setup_theme() {
 	global $themename, $shortname, $et_store_options_in_one_row, $default_colorscheme;
 	$themename = 'Divi';
@@ -271,10 +274,8 @@ function et_divi_load_fonts() {
 	// Get user selected font defined on customizer
 	$et_gf_body_font = et_get_option( 'body_font', 'none' );
 
-	$is_et_fb_enabled = function_exists( 'et_fb_enabled' ) && et_fb_enabled();
-
 	// Determine whether current page needs Open Sans or not
-	$no_open_sans = ! is_customize_preview() && 'none' !== $et_gf_body_font && '' !== $et_gf_body_font && ! $is_et_fb_enabled;
+	$no_open_sans = ! is_customize_preview() && 'none' !== $et_gf_body_font && '' !== $et_gf_body_font;
 
 	if ( ! empty( $google_fonts_url ) && ! $no_open_sans ) {
 		$feature_manager = ET_Builder_Google_Fonts_Feature::instance();
@@ -5619,7 +5620,20 @@ function et_divi_add_customizer_css() {
 		$is_singular = et_core_page_resource_is_singular();
 		$is_cpt      = et_builder_should_wrap_styles();
 
-		$forced_inline     = $is_preview || ! et_core_is_static_css_enabled() || post_password_required();
+		$is_paginated_loop_request = false;
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only request inspection for loop pagination request detection.
+		if ( isset( $_GET ) && is_array( $_GET ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only request inspection for loop pagination request detection.
+			foreach ( $_GET as $param => $value ) {
+				if ( is_string( $param ) && 0 === strpos( $param, 'loop-' ) && is_numeric( $value ) && (int) $value > 1 ) {
+					$is_paginated_loop_request = true;
+					break;
+				}
+			}
+		}
+
+		$forced_inline     = $is_preview || $is_paginated_loop_request || ! et_core_is_static_css_enabled() || post_password_required();
 		$builder_in_footer = 'on' === et_get_option( 'et_pb_css_in_footer', 'off' );
 
 		$unified_styles = $is_singular && ! $forced_inline && ! $builder_in_footer && et_core_is_builder_used_on_current_request();
@@ -5683,7 +5697,7 @@ function et_divi_add_customizer_css() {
 		$body_font_weight    = absint( et_get_option( 'body_font_weight', '500' ) );
 
 		$accent_color = et_get_option( 'accent_color', '#2ea3f2' );
-		$link_color   = et_get_option( 'link_color', $accent_color );
+		$link_color   = Utils::resolve_dynamic_variable( et_get_option( 'link_color', $accent_color ) );
 
 		$content_width = absint( et_get_option( 'content_width', '1080' ) );
 		$large_content_width = intval ( $content_width * 1.25 );
@@ -5786,6 +5800,12 @@ function et_divi_add_customizer_css() {
 		// use different selector for the styles applied directly to body tag while in Visual Builder. Otherwise unwanted styles applied to the Builder interface.
 		$body_selector         = empty( $_GET['et_fb'] ) ? 'body' : 'body .et-fb-post-content';
 		$body_selector_sibling = empty( $_GET['et_fb'] ) ? '' : 'body .et-fb-root-ancestor-sibling, ';
+		$body_color_selector         = $body_selector;
+		$body_color_selector_sibling = $body_selector_sibling;
+
+		if ( $is_vb ) {
+			$body_color_selector_sibling = 'body .et-fb-root-ancestor-sibling #et-boc .et-l, ';
+		}
 
 		/* ====================================================
 		 * --------->>> BEGIN THEME CUSTOMIZER CSS <<<---------
@@ -5813,8 +5833,8 @@ function et_divi_add_customizer_css() {
 				font-size: <?php echo esc_html( intval( $body_font_size * 1.14 ) ); ?>px;
 			}
 		<?php if ( '#666666' !== $body_font_color) { ?>
-			<?php echo esc_html( $body_selector_sibling ); ?>
-			<?php echo esc_html( $body_selector ); ?> {
+			<?php echo esc_html( $body_color_selector_sibling ); ?>
+			<?php echo esc_html( $body_color_selector ); ?> {
 				color: <?php echo esc_html( $body_font_color ); ?>;
 			}
 		<?php } ?>
@@ -8981,8 +9001,31 @@ function et_divi_register_customizer_portability() {
 	// get all the roles that can edit theme options.
 	$applicability_roles = et_core_get_roles_by_capabilities( [ 'edit_theme_options' ] );
 
-	// Make sure the Portability is loaded.
+	// Ensure portability is available before admin_init hooks run.
 	et_core_load_component( 'portability' );
+
+	// phpcs:disable Generic.WhiteSpace.ScopeIndent.Incorrect, Generic.WhiteSpace.ScopeIndent.IncorrectExact -- Legacy file indentation is inconsistent; keep this localized block stable.
+	if ( ! function_exists( 'et_core_portability_register' ) ) {
+		// Fallback for preload/CI timing: avoid fatal if component load is skipped.
+		if ( defined( 'ET_CORE_PATH' ) ) {
+			$portability_cache = ET_CORE_PATH . 'components/Cache.php';
+			$portability_file  = ET_CORE_PATH . 'components/Portability.php';
+
+			if ( is_readable( $portability_cache ) ) {
+				require_once $portability_cache;
+			}
+
+			if ( is_readable( $portability_file ) ) {
+				require_once $portability_file;
+			}
+		}
+	}
+
+	if ( ! function_exists( 'et_core_portability_register' ) ) {
+		// Bail if portability is still unavailable to prevent admin 500s.
+		return;
+	}
+	// phpcs:enable Generic.WhiteSpace.ScopeIndent.Incorrect, Generic.WhiteSpace.ScopeIndent.IncorrectExact
 
 	// Load ePanel options.
 	et_load_core_options();
@@ -9511,4 +9554,4 @@ function et_divi_maybe_dequeue_block_css() {
 	}
 
 }
-
+add_filter( 'wp_enqueue_scripts', 'et_divi_maybe_dequeue_block_css', 100 );

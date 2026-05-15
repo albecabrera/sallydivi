@@ -9,6 +9,7 @@
   "moduleIcon": "divi/module-map",
   "childModuleName": "divi/map-pin",
   "childModuleTitle": "Pin",
+  "childModuleTitleAttribute": "title",
   "category": "module",
   "childrenName": [
     "divi/map-pin"

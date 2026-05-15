@@ -207,7 +207,8 @@
               }
             },
             "features": {
-              "preset": "content"
+              "preset": "content",
+              "sticky": false
             },
             "component": {
               "name": "divi/text",

@@ -781,6 +781,13 @@ return [
                             ]
                         ]
                     ]
+                ],
+                'sizing' => [
+                    'desktop' => [
+                        'value' => [
+                            'alignment' => 'right'
+                        ]
+                    ]
                 ]
             ]
         ],
@@ -793,6 +800,29 @@ return [
                 ]
             ]
         ]
+    ],
+    'contact-form-7' => [
+        'module' => [
+            'meta' => [
+                'adminLabel' => [
+                    'desktop' => [
+                        'value' => 'Contact Form 7 Styler'
+                    ]
+                ]
+            ],
+            'decoration' => [
+                'spacing' => [
+                    'desktop' => [
+                        'value' => [
+                            'margin' => [
+                                'bottom' => '0px'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ],
+        'form' => []
     ],
     'countdown-timer' => [
         'module' => [
@@ -3609,39 +3639,9 @@ return [
                         'value' => 'on'
                     ]
                 ],
-                'focus' => [
-                    'border' => [
-                        'desktop' => [
-                            'value' => [
-                                'radius' => [
-                                    'sync' => 'on',
-                                    'topLeft' => '3px',
-                                    'topRight' => '3px',
-                                    'bottomLeft' => '3px',
-                                    'bottomRight' => '3px'
-                                ]
-                            ]
-                        ]
-                    ]
-                ],
                 'focusUseBorder' => [
                     'desktop' => [
                         'value' => 'off'
-                    ]
-                ]
-            ],
-            'decoration' => [
-                'border' => [
-                    'desktop' => [
-                        'value' => [
-                            'radius' => [
-                                'sync' => 'on',
-                                'topLeft' => '3px',
-                                'topRight' => '3px',
-                                'bottomLeft' => '3px',
-                                'bottomRight' => '3px'
-                            ]
-                        ]
                     ]
                 ]
             ]

@@ -44,6 +44,7 @@ use ET\Builder\VisualBuilder\TemplatePlaceholder;
 use ET\Builder\VisualBuilder\Workspace\Workspace;
 use ET\Builder\Packages\Conversion\ShortcodeMigration;
 use ET\Builder\VisualBuilder\OffCanvas\OffCanvasHooks;
+use ET\Builder\VisualBuilder\Performance\SettingsDataPerfCache;
 use ET\Builder\Packages\ModuleUtils\CanvasUtils;
 
 /**
@@ -518,6 +519,21 @@ class SettingsDataCallbacks {
 	}
 
 	/**
+	 * Get lightweight `dynamicContent` setting data for initial app load.
+	 *
+	 * Full dynamic content options are deferred to after-app-load REST fetch.
+	 *
+	 * @since ??
+	 *
+	 * @return array
+	 */
+	public static function dynamic_content_app_load(): array {
+		return [
+			'options' => [],
+		];
+	}
+
+	/**
 	 * Get `fonts` setting data.
 	 *
 	 * @since ??
@@ -674,6 +690,21 @@ class SettingsDataCallbacks {
 	}
 
 	/**
+	 * Get lightweight `markups` setting data for initial app load.
+	 *
+	 * Full markup payload is deferred to after-app-load REST fetch.
+	 *
+	 * @since ??
+	 *
+	 * @return array
+	 */
+	public static function markups_app_load(): array {
+		return [
+			'commentsModule' => '',
+		];
+	}
+
+	/**
 	 * Get `navMenus` setting data.
 	 *
 	 * @since ??
@@ -684,6 +715,48 @@ class SettingsDataCallbacks {
 		if ( null === $return ) {
 			$return = [
 				'options' => et_builder_get_nav_menus_options(),
+			];
+		}
+
+		return $return;
+	}
+
+	/**
+	 * Get Contact Form 7 forms setting data.
+	 *
+	 * @since ??
+	 *
+	 * @return array
+	 */
+	public static function contact_form_7(): array {
+		static $return = null;
+
+		if ( null === $return || Conditions::is_test_env() ) {
+			$forms     = [];
+			$is_active = false;
+
+			if ( class_exists( '\WPCF7_ContactForm' ) ) {
+				$is_active     = true;
+				$contact_forms = get_posts(
+					[
+						'post_type'      => 'wpcf7_contact_form',
+						'post_status'    => 'publish',
+						'posts_per_page' => 500,
+						'orderby'        => 'title',
+						'order'          => 'ASC',
+					]
+				);
+
+				foreach ( $contact_forms as $form ) {
+					$forms[ (string) $form->ID ] = [
+						'label' => $form->post_title,
+					];
+				}
+			}
+
+			$return = [
+				'isActive' => $is_active,
+				'forms'    => $forms,
 			];
 		}
 
@@ -723,7 +796,10 @@ class SettingsDataCallbacks {
 
 			// Apply full PHP conversion for visual builder BEFORE D5-to-D5 migrations run.
 			// This ensures D4 content is converted to D5 blocks before D5 migrations try to process it.
-			$has_shortcode = Shortcode::has_builder_shortcode( $post_content );
+			$has_shortcode = false;
+			if ( '' !== $post_content && str_contains( $post_content, '[et_pb_' ) ) {
+				$has_shortcode = Shortcode::has_builder_shortcode( $post_content );
+			}
 			if ( $post_content && $has_shortcode ) {
 				// Initialize shortcode framework (handles module loading automatically).
 				Conversion::initialize_shortcode_framework();
@@ -798,17 +874,18 @@ class SettingsDataCallbacks {
 			}
 
 			$return = [
-				'content'     => $raw_post_content,
-				'id'          => $post_id,
-				'title'       => get_the_title( $post_id ),
-				'type'        => $post_type,
-				'requestType' => $request_type,
-				'status'      => $post_status,
-				'url'         => get_permalink( $post_id ),
-				'editUrl'     => get_edit_post_link( $post_id, 'raw' ),
-				'iframeSrc'   => ( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['REQUEST_URI'] ) ) ?
+				'content'          => $raw_post_content,
+				'id'               => $post_id,
+				'title'            => get_the_title( $post_id ),
+				'type'             => $post_type,
+				'requestType'      => $request_type,
+				'status'           => $post_status,
+				'url'              => get_permalink( $post_id ),
+				'editUrl'          => get_edit_post_link( $post_id, 'raw' ),
+				'iframeSrc'        => ( isset( $_SERVER['HTTP_HOST'] ) && isset( $_SERVER['REQUEST_URI'] ) ) ?
 					( is_ssl() ? 'https://' : 'http://' ) . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) )
 					. sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '',
+				'showPageCreation' => get_post_meta( $post_id, '_et_pb_show_page_creation', true ),
 			];
 		}
 
@@ -859,7 +936,10 @@ class SettingsDataCallbacks {
 		$layout_content = $layout_post->post_content;
 
 		// Apply conversion if needed (similar to post content processing).
-		$has_shortcode = Shortcode::has_builder_shortcode( $layout_content );
+		$has_shortcode = false;
+		if ( '' !== $layout_content && str_contains( $layout_content, '[et_pb_' ) ) {
+			$has_shortcode = Shortcode::has_builder_shortcode( $layout_content );
+		}
 		if ( $layout_content && $has_shortcode ) {
 			Conversion::initialize_shortcode_framework();
 			do_action( 'divi_visual_builder_before_d4_conversion' );
@@ -904,11 +984,13 @@ class SettingsDataCallbacks {
 			$post_type              = $post->post_type ?? 'post';
 			$post_id                = isset( $post->ID ) ? (int) $post->ID : 0;
 			$is_tb_layout_post_type = et_theme_builder_is_layout_post_type( $post_type );
+			$is_divi_library_layout = 'et_pb_layout' === $post_type;
 			$can_edit_posts         = current_user_can( 'edit_posts' );
 			$can_edit_current_post  = 0 === $post_id || current_user_can( 'edit_post', $post_id );
 			$can_use_theme_builder  = et_pb_is_allowed( 'theme_builder' ) && $can_edit_posts && $can_edit_current_post;
 			// In Theme Builder layout editor, template areas must remain available even if the preference is disabled.
-			$should_show_theme_builder_templates = ( $is_tb_layout_post_type || $show_theme_builder_templates ) && $can_use_theme_builder;
+			// In Divi Library, template areas must not be shown even if the preference is enabled.
+			$should_show_theme_builder_templates = ( $is_tb_layout_post_type || $show_theme_builder_templates ) && $can_use_theme_builder && ! $is_divi_library_layout;
 			$active_tb_layout                    = Layout::get_layout_based_on_post_type( $post_type );
 			$active_template_areas               = $is_tb_layout_post_type
 				? [ $active_tb_layout ]
@@ -955,7 +1037,8 @@ class SettingsDataCallbacks {
 				],
 			];
 
-			// When Theme Builder templates are hidden, short-circuit before any TB template fetching.
+			// Short-circuit before Theme Builder template fetching when templates are hidden in the UI, or when
+			// editing a Divi Library layout ($is_divi_library_layout, post type et_pb_layout).
 			if ( ! $should_show_theme_builder_templates ) {
 				// Get post content (for postContent layout).
 				if ( is_singular() && $post_id > 0 ) {
@@ -1282,12 +1365,33 @@ class SettingsDataCallbacks {
 		static $return = null;
 
 		if ( null === $return ) {
+			// Perf-only fast path for CI timing stabilization.
+			// This is a strict no-op outside perf mode to avoid core D5 overhead.
+			$cached = SettingsDataPerfCache::get_cached_shortcode_module_definitions();
+			if ( null !== $cached ) {
+				$return = $cached;
+				return $return;
+			}
+
 			// fire the actions to initialize any Divi Extensions.
 			do_action( 'divi_extensions_init' );
 			do_action( 'et_builder_ready' );
 			do_action( 'divi_visual_builder_before_get_shortcode_module_definitions' );
 
 			$return = \ET_Builder_Element::get_shortcode_module_definitions();
+
+			/**
+			 * Filters shortcode module definitions returned after app load.
+			 * This affects Visual Builder settings-data payload only and does not alter frontend render callbacks.
+			 *
+			 * @since ??
+			 *
+			 * @param array $return Shortcode module definitions.
+			 */
+			$return = apply_filters( 'divi_visual_builder_settings_data_after_app_load', $return );
+
+			// Perf-only persistent cache write for repeated after-app-load requests.
+			SettingsDataPerfCache::cache_shortcode_module_definitions( $return );
 		}
 
 		return $return;
@@ -1448,6 +1552,26 @@ class SettingsDataCallbacks {
 		}
 
 		return $return;
+	}
+
+	/**
+	 * Get lightweight `taxonomy` setting data for initial app load.
+	 *
+	 * Full taxonomy payload is deferred to after-app-load REST fetch.
+	 *
+	 * @since ??
+	 *
+	 * @return array
+	 */
+	public static function taxonomy_app_load(): array {
+		return [
+			'layoutCategory'    => [],
+			'layoutTag'         => [],
+			'projectCategories' => (object) [],
+			'postCategories'    => (object) [],
+			'productCategories' => (object) [],
+			'byPostType'        => [],
+		];
 	}
 
 	/**
@@ -1720,7 +1844,7 @@ class SettingsDataCallbacks {
 		// Keep the post_id guard for singular pages (and when mainLoopType is undefined / defaults to singular).
 		// Non-singular pages can have no stable post ID (currentPage.id is false), but can still own canvases
 		// via a main-loop context key.
-		if ( ! $post_id && ( ! is_string( $main_loop_type ) || '' === $main_loop_type || 'singular' === $main_loop_type ) ) {
+		if ( 0 === $post_id && ( ! is_string( $main_loop_type ) || '' === $main_loop_type || 'singular' === $main_loop_type ) ) {
 			return [
 				'canvases'       => [],
 				'activeCanvasId' => '',
@@ -1736,7 +1860,7 @@ class SettingsDataCallbacks {
 		];
 
 		// Load post-backed canvases when a post ID exists.
-		if ( $post_id ) {
+		if ( 0 !== $post_id ) {
 			$off_canvas_data = OffCanvasHooks::get_off_canvas_data_for_post( $post_id );
 		}
 
@@ -1749,9 +1873,7 @@ class SettingsDataCallbacks {
 
 			$context_canvases = $context_off_canvas_data['canvases'] ?? [];
 			if ( is_array( $context_canvases ) && ! empty( $context_canvases ) ) {
-				foreach ( $context_canvases as $canvas_id => $context_canvas ) {
-					$off_canvas_data['canvases'][ $canvas_id ] = $context_canvas;
-				}
+				$off_canvas_data['canvases'] = array_merge( $off_canvas_data['canvases'], $context_canvases );
 			}
 		}
 
@@ -1767,7 +1889,7 @@ class SettingsDataCallbacks {
 		if ( ! empty( array_filter( $current_tb_layout_ids ) ) ) {
 			$theme_builder_layouts = [
 				ET_THEME_BUILDER_HEADER_LAYOUT_POST_TYPE => [ 'id' => absint( $current_tb_layout_ids['header'] ?? 0 ) ],
-				ET_THEME_BUILDER_BODY_LAYOUT_POST_TYPE   => [ 'id' => absint( $current_tb_layout_ids['body'] ?? 0 ) ],
+				ET_THEME_BUILDER_BODY_LAYOUT_POST_TYPE => [ 'id' => absint( $current_tb_layout_ids['body'] ?? 0 ) ],
 				ET_THEME_BUILDER_FOOTER_LAYOUT_POST_TYPE => [ 'id' => absint( $current_tb_layout_ids['footer'] ?? 0 ) ],
 			];
 		}
@@ -1784,6 +1906,7 @@ class SettingsDataCallbacks {
 				$theme_builder_layouts = et_theme_builder_get_template_layouts( $tb_request );
 			}
 		}
+
 		$get_assigned_layout_id = static function ( array $layouts, string $layout_key ): int {
 			$layout_data = $layouts[ $layout_key ] ?? [];
 			// In some Theme Builder contexts, `override` can be false/omitted even when
@@ -1791,7 +1914,8 @@ class SettingsDataCallbacks {
 			// resolved layout ID directly so template-owned canvases are still included.
 			return absint( $layout_data['id'] ?? 0 );
 		};
-		$template_post_ids      = [
+
+		$template_post_ids = [
 			'header' => $get_assigned_layout_id( $theme_builder_layouts, ET_THEME_BUILDER_HEADER_LAYOUT_POST_TYPE ),
 			'body'   => $get_assigned_layout_id( $theme_builder_layouts, ET_THEME_BUILDER_BODY_LAYOUT_POST_TYPE ),
 			'footer' => $get_assigned_layout_id( $theme_builder_layouts, ET_THEME_BUILDER_FOOTER_LAYOUT_POST_TYPE ),
@@ -1823,13 +1947,18 @@ class SettingsDataCallbacks {
 				$is_global = ! empty( $template_canvas['isGlobal'] );
 
 				if ( ! $is_global ) {
-					$template_canvas['parentPostId']       = $template_post_id;
-					$template_canvas['themeBuilderLayout'] = $layout;
+					// Local canvases from TB layouts are owned by the areas themselves, but
+					// they need a distinct ID to avoid collisions with main post canvases.
+					$canvas_id = "{$layout}-{$canvas_id}";
+
+					// For local canvases, ensure the data also reflects the prefixed ID.
+					$template_canvas['id'] = $canvas_id;
 				}
 
 				$off_canvas_data['canvases'][ $canvas_id ] = $template_canvas;
 			}
 		}
+
 		return $off_canvas_data;
 	}
 }

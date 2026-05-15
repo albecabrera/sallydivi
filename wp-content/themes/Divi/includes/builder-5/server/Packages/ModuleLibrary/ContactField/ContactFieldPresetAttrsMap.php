@@ -12,6 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Direct access forbidden.' );
 }
 
+use ET\Builder\Packages\ModuleLibrary\FormFieldVariantPresetMapTrait;
+use ET\Builder\Packages\Module\Options\FormField\FieldDecorationPresetAttrsMap;
+use ET\Builder\Packages\Module\Options\Icon\IconPresetAttrsMap;
+
 
 /**
  * Class ContactFieldPresetAttrsMap
@@ -21,6 +25,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package ET\Builder\Packages\ModuleLibrary\ContactField
  */
 class ContactFieldPresetAttrsMap {
+	use FormFieldVariantPresetMapTrait;
+
 	/**
 	 * Get the preset attributes map for the ContactField module.
 	 *
@@ -52,100 +58,34 @@ class ContactFieldPresetAttrsMap {
 			'module.decoration.sticky__limit.bottom',
 			'module.decoration.sticky__offset.surrounding',
 			'module.decoration.sticky__transition',
-			'field.decoration.background__gradient.stops',
-			'field.decoration.background__gradient.enabled',
-			'field.decoration.background__gradient.type',
-			'field.decoration.background__gradient.direction',
-			'field.decoration.background__gradient.directionRadial',
-			'field.decoration.background__gradient.repeat',
-			'field.decoration.background__gradient.length',
-			'field.decoration.background__gradient.overlaysImage',
-			'field.decoration.background__image.url',
-			'field.decoration.background__image.parallax.enabled',
-			'field.decoration.background__image.parallax.method',
-			'field.decoration.background__image.size',
-			'field.decoration.background__image.width',
-			'field.decoration.background__image.height',
-			'field.decoration.background__image.position',
-			'field.decoration.background__image.horizontalOffset',
-			'field.decoration.background__image.verticalOffset',
-			'field.decoration.background__image.repeat',
-			'field.decoration.background__image.blend',
-			'field.decoration.background__video.mp4',
-			'field.decoration.background__video.webm',
-			'field.decoration.background__video.width',
-			'field.decoration.background__video.height',
-			'field.decoration.background__video.allowPlayerPause',
-			'field.decoration.background__video.pauseOutsideViewport',
-			'field.decoration.background__pattern.style',
-			'field.decoration.background__pattern.enabled',
-			'field.decoration.background__pattern.color',
-			'field.decoration.background__pattern.transform',
-			'field.decoration.background__pattern.size',
-			'field.decoration.background__pattern.width',
-			'field.decoration.background__pattern.height',
-			'field.decoration.background__pattern.repeatOrigin',
-			'field.decoration.background__pattern.horizontalOffset',
-			'field.decoration.background__pattern.verticalOffset',
-			'field.decoration.background__pattern.repeat',
-			'field.decoration.background__pattern.blend',
-			'field.decoration.background__mask.style',
-			'field.decoration.background__mask.enabled',
-			'field.decoration.background__mask.color',
-			'field.decoration.background__mask.transform',
-			'field.decoration.background__mask.aspectRatio',
-			'field.decoration.background__mask.size',
-			'field.decoration.background__mask.width',
-			'field.decoration.background__mask.height',
-			'field.decoration.background__mask.position',
-			'field.decoration.background__mask.horizontalOffset',
-			'field.decoration.background__mask.verticalOffset',
-			'field.decoration.background__mask.blend',
 		];
 
 		foreach ( $keys_to_remove as $key ) {
 			unset( $map[ $key ] );
 		}
 
-		return array_merge(
+		$field_decoration_map = FieldDecorationPresetAttrsMap::get_map();
+
+		$merged_map = array_merge(
 			$map,
+			$field_decoration_map,
 			[
-				'field.advanced.focus.background__color'   => [
+				'field.advanced.focus.background__color'  => [
 					'attrName' => 'field.advanced.focus.background',
 					'preset'   => [ 'style' ],
 					'subName'  => 'color',
 				],
-				'field.advanced.focus.font.font__color'    => [
+				'field.advanced.focus.font.font__color'   => [
 					'attrName' => 'field.advanced.focus.font.font',
 					'preset'   => [ 'style' ],
 					'subName'  => 'color',
 				],
-				'field.advanced.focus.font.font__size'     => [
-					'attrName' => 'field.advanced.focus.font.font',
-					'preset'   => [ 'style' ],
-					'subName'  => 'size',
-				],
-				'field.advanced.focus.font.font__letterSpacing' => [
-					'attrName' => 'field.advanced.focus.font.font',
-					'preset'   => [ 'style' ],
-					'subName'  => 'letterSpacing',
-				],
-				'field.advanced.focus.font.font__lineHeight' => [
-					'attrName' => 'field.advanced.focus.font.font',
-					'preset'   => [ 'style' ],
-					'subName'  => 'lineHeight',
-				],
-				'field.decoration.font.font__headingLevel' => [
-					'attrName' => 'field.decoration.font.font',
-					'preset'   => [ 'html' ],
-					'subName'  => 'headingLevel',
-				],
-				'fieldTitle.decoration.font.font__color'   => [
+				'fieldTitle.decoration.font.font__color'  => [
 					'attrName' => 'fieldTitle.decoration.font.font',
 					'preset'   => [ 'style' ],
 					'subName'  => 'color',
 				],
-				'fieldTitle.decoration.font.font__family'  => [
+				'fieldTitle.decoration.font.font__family' => [
 					'attrName' => 'fieldTitle.decoration.font.font',
 					'preset'   => [ 'style' ],
 					'subName'  => 'family',
@@ -170,12 +110,12 @@ class ContactFieldPresetAttrsMap {
 					'preset'   => [ 'style' ],
 					'subName'  => 'lineStyle',
 				],
-				'fieldTitle.decoration.font.font__size'    => [
+				'fieldTitle.decoration.font.font__size'   => [
 					'attrName' => 'fieldTitle.decoration.font.font',
 					'preset'   => [ 'style' ],
 					'subName'  => 'size',
 				],
-				'fieldTitle.decoration.font.font__style'   => [
+				'fieldTitle.decoration.font.font__style'  => [
 					'attrName' => 'fieldTitle.decoration.font.font',
 					'preset'   => [ 'style' ],
 					'subName'  => 'style',
@@ -185,7 +125,7 @@ class ContactFieldPresetAttrsMap {
 					'preset'   => [ 'style' ],
 					'subName'  => 'textAlign',
 				],
-				'fieldTitle.decoration.font.font__weight'  => [
+				'fieldTitle.decoration.font.font__weight' => [
 					'attrName' => 'fieldTitle.decoration.font.font',
 					'preset'   => [ 'style' ],
 					'subName'  => 'weight',
@@ -215,112 +155,71 @@ class ContactFieldPresetAttrsMap {
 					'preset'   => [ 'style' ],
 					'subName'  => 'vertical',
 				],
-				'field.advanced.focus.border__radius'      => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'radius',
-				],
-				'field.advanced.focus.border__styles'      => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles',
-				],
-				'field.advanced.focus.border__styles.all.width' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.all.width',
-				],
-				'field.advanced.focus.border__styles.top.width' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.top.width',
-				],
-				'field.advanced.focus.border__styles.right.width' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.right.width',
-				],
-				'field.advanced.focus.border__styles.bottom.width' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.bottom.width',
-				],
-				'field.advanced.focus.border__styles.left.width' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.left.width',
-				],
-				'field.advanced.focus.border__styles.all.color' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.all.color',
-				],
-				'field.advanced.focus.border__styles.top.color' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.top.color',
-				],
-				'field.advanced.focus.border__styles.right.color' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.right.color',
-				],
-				'field.advanced.focus.border__styles.bottom.color' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.bottom.color',
-				],
-				'field.advanced.focus.border__styles.left.color' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.left.color',
-				],
-				'field.advanced.focus.border__styles.all.style' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.all.style',
-				],
-				'field.advanced.focus.border__styles.top.style' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.top.style',
-				],
-				'field.advanced.focus.border__styles.right.style' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.right.style',
-				],
-				'field.advanced.focus.border__styles.bottom.style' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.bottom.style',
-				],
-				'field.advanced.focus.border__styles.left.style' => [
-					'attrName' => 'field.advanced.focus.border',
-					'preset'   => [ 'style' ],
-					'subName'  => 'styles.left.style',
-				],
-				'module.advanced.text__orientation'        => [
+				'module.advanced.text__orientation'       => [
 					'attrName' => 'module.advanced.text',
 					'preset'   => [ 'html' ],
 					'subName'  => 'orientation',
 				],
-				'module.advanced.html__elementType'        => [
+				'module.advanced.html__elementType'       => [
 					'attrName' => 'module.advanced.html',
 					'preset'   => [ 'html' ],
 					'subName'  => 'elementType',
 				],
-				'module.advanced.html__htmlAfter'          => [
+				'module.advanced.html__htmlAfter'         => [
 					'attrName' => 'module.advanced.html',
 					'preset'   => [ 'html' ],
 					'subName'  => 'htmlAfter',
 				],
-				'module.advanced.html__htmlBefore'         => [
+				'module.advanced.html__htmlBefore'        => [
 					'attrName' => 'module.advanced.html',
 					'preset'   => [ 'html' ],
 					'subName'  => 'htmlBefore',
 				],
 			]
+		);
+
+		$checkbox_map = self::_duplicate_map_entries_by_prefix(
+			$merged_map,
+			'field.',
+			'checkbox.'
+		);
+		$checkbox_map = self::_filter_form_field_variant_map(
+			$checkbox_map,
+			'checkbox.'
+		);
+		$radio_map    = self::_duplicate_map_entries_by_prefix(
+			$merged_map,
+			'field.',
+			'radio.'
+		);
+		$radio_map    = self::_filter_form_field_variant_map(
+			$radio_map,
+			'radio.'
+		);
+
+		$checkbox_icon_map      = IconPresetAttrsMap::get_map( 'checkbox.decoration.icon' );
+		$radio_icon_map         = IconPresetAttrsMap::get_map( 'radio.decoration.icon' );
+		$checkbox_icon_root_map = [
+			'checkbox.decoration.icon' => [
+				'attrName' => 'checkbox.decoration.icon',
+				'preset'   => [ 'style', 'html' ],
+			],
+		];
+		$radio_icon_root_map    = [
+			'radio.decoration.icon' => [
+				'attrName' => 'radio.decoration.icon',
+				'preset'   => [ 'style', 'html' ],
+			],
+		];
+
+		return array_merge(
+			$merged_map,
+			$checkbox_map,
+			$checkbox_icon_root_map,
+			$checkbox_icon_map,
+			$radio_map,
+			$radio_icon_root_map,
+			$radio_icon_map
 		);
 	}
 }

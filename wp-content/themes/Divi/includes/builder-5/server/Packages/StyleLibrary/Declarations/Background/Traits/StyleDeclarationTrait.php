@@ -147,41 +147,39 @@ trait StyleDeclarationTrait {
 			// Empty string ('') is falsy, so truthy check correctly skips it and stops inheritance.
 			$responsive_url = null;
 
-			if ( $image ) {
-				// Get dynamic breakpoint order to support custom breakpoints like phoneWide.
-				$breakpoint_names = Breakpoint::get_enabled_breakpoint_names();
-				$current_index    = array_search( $breakpoint, $breakpoint_names, true );
+			// Get dynamic breakpoint order to support custom breakpoints like phoneWide.
+			$breakpoint_names = Breakpoint::get_enabled_breakpoint_names();
+			$current_index    = array_search( $breakpoint, $breakpoint_names, true );
 
-				if ( false !== $current_index ) {
-					// First, check if current breakpoint has explicit deletion.
-					$current_breakpoint_data = $attr['background'][ $breakpoint ][ $state ]['image'] ?? null;
-					$current_breakpoint_url  = $current_breakpoint_data['url'] ?? null;
+			if ( false !== $current_index ) {
+				// First, check if current breakpoint has explicit deletion.
+				$current_breakpoint_data = $attr[ $breakpoint ][ $state ]['image'] ?? null;
+				$current_breakpoint_url  = $current_breakpoint_data['url'] ?? null;
 
-					// CRITICAL: If current breakpoint has empty string, it means explicit deletion.
-					// We must NOT inherit from any larger breakpoint.
-					if ( '' === $current_breakpoint_url ) {
-						$has_parent_empty_string_deletion = true;
-					} else {
-						// Only check larger breakpoints if current breakpoint doesn't have explicit deletion.
-						// Loop through larger breakpoints (closest first), same as background style component.
-						for ( $i = $current_index - 1; $i >= 0; $i-- ) {
-							$larger_breakpoint      = $breakpoint_names[ $i ];
-							$larger_breakpoint_data = $attr['background'][ $larger_breakpoint ][ $state ]['image'] ?? null;
-							$larger_breakpoint_url  = $larger_breakpoint_data['url'] ?? null;
+				// CRITICAL: If current breakpoint has empty string, it means explicit deletion.
+				// We must NOT inherit from any larger breakpoint.
+				if ( '' === $current_breakpoint_url ) {
+					$has_parent_empty_string_deletion = true;
+				} else {
+					// Only check larger breakpoints if current breakpoint doesn't have explicit deletion.
+					// Loop through larger breakpoints (closest first), same as background style component.
+					for ( $i = $current_index - 1; $i >= 0; $i-- ) {
+						$larger_breakpoint      = $breakpoint_names[ $i ];
+						$larger_breakpoint_data = $attr[ $larger_breakpoint ][ $state ]['image'] ?? null;
+						$larger_breakpoint_url  = $larger_breakpoint_data['url'] ?? null;
 
-							// CRITICAL: If we encounter an empty string, it means explicit deletion at this breakpoint.
-							// We must STOP inheritance entirely, not continue to larger breakpoints.
-							if ( '' === $larger_breakpoint_url ) {
-								$has_parent_empty_string_deletion = true;
-								break;
-							}
+						// CRITICAL: If we encounter an empty string, it means explicit deletion at this breakpoint.
+						// We must STOP inheritance entirely, not continue to larger breakpoints.
+						if ( '' === $larger_breakpoint_url ) {
+							$has_parent_empty_string_deletion = true;
+							break;
+						}
 
-							// Truthy check: if URL exists and is not empty, inherit it.
-							// Same logic as background style component: `if (largerBreakpointData?.url && ...)`.
-							if ( $larger_breakpoint_url ) {
-								$responsive_url = $larger_breakpoint_url;
-								break;
-							}
+						// Truthy check: if URL exists and is not empty, inherit it.
+						// Same logic as background style component: `if (largerBreakpointData?.url && ...)`.
+						if ( $larger_breakpoint_url ) {
+							$responsive_url = $larger_breakpoint_url;
+							break;
 						}
 					}
 				}
@@ -230,7 +228,7 @@ trait StyleDeclarationTrait {
 			$vertical_offset   = $image_values['verticalOffset'];
 			$repeat            = $image_values['repeat'];
 			$blend             = $image_values['blend'];
-			$is_img_var        = strpos( $url, 'var(' ) !== false;
+			$is_img_var        = str_contains( $url, 'var(' );
 
 			$should_output_property = function ( $prop, $value, $attr, $breakpoint, $state ) use ( $image ) {
 				if ( 'desktop' === $breakpoint || null === $attr ) {
@@ -448,9 +446,9 @@ trait StyleDeclarationTrait {
 		// Note: Image is prepended (added to beginning) to maintain default order [image, gradient].
 		// The overlaysImage logic below will reverse this if needed to put gradient on top.
 		if ( ! empty( $background_images ) && $gradient && isset( $gradient['enabled'] ) && 'on' === $gradient['enabled'] && ! empty( $gradient['stops'] ) ) {
-			if ( $image && ! $is_image_not_enabled && isset( $image_values['url'] ) && '' !== $image_values['url'] && isset( $parallax['enabled'] ) && 'on' !== $parallax['enabled'] ) {
+			if ( ( $image || $responsive_url ) && ! $is_image_not_enabled && isset( $image_values['url'] ) && '' !== $image_values['url'] && isset( $parallax['enabled'] ) && 'on' !== $parallax['enabled'] ) {
 				$image_url      = $image_values['url'];
-				$is_image_var   = strpos( $image_url, 'var(' ) !== false;
+				$is_image_var   = str_contains( $image_url, 'var(' );
 				$background_url = $is_image_var ? "{$image_url}" : "url({$image_url})";
 
 				// Only add if it's not already in the array (it may have been added earlier if URL changed).
@@ -464,15 +462,34 @@ trait StyleDeclarationTrait {
 
 		// D4 compatibility: When parallax and gradient overlays image are both enabled, set background-image to initial.
 		// This prevents the parent element from having the background, which is handled by the parallax container.
-		$gradient_overlays_image = $gradient['overlaysImage'] ?? $default_attr['gradient']['overlaysImage'] ?? 'off';
+		// Resolve overlaysImage with responsive inheritance: check current gradient, then inherit from larger
+		// breakpoints via $attr, then fall back to default. This ensures OGP presets that only override gradient
+		// stops still inherit the overlaysImage setting from the desktop breakpoint.
+		$gradient_overlays_image = $gradient['overlaysImage'] ?? null;
+
+		if ( null === $gradient_overlays_image && $attr && $breakpoint ) {
+			$breakpoint_names = Breakpoint::get_enabled_breakpoint_names();
+			$current_index    = array_search( $breakpoint, $breakpoint_names, true );
+
+			if ( false !== $current_index ) {
+				for ( $i = $current_index - 1; $i >= 0; $i-- ) {
+					$larger_bp_overlays = $attr[ $breakpoint_names[ $i ] ][ $state ]['gradient']['overlaysImage'] ?? null;
+					if ( null !== $larger_bp_overlays ) {
+						$gradient_overlays_image = $larger_bp_overlays;
+						break;
+					}
+				}
+			}
+		}
+
+		$gradient_overlays_image = $gradient_overlays_image ?? $default_attr['gradient']['overlaysImage'] ?? 'off';
 		$parallax_enabled        = $parallax['enabled'] ?? 'off';
 
 		if ( ! $preview && 'on' === $parallax_enabled && 'on' === $gradient_overlays_image ) {
 			$background_images = [ 'initial' ];
 		} elseif ( ! empty( $background_images ) ) {
 			// Swap background gradient on top of background image when gradient has stops and overlayImage option is on.
-			$gradient_overlays_value = $gradient['overlaysImage'] ?? $default_attr['gradient']['overlaysImage'] ?? 'off';
-			if ( $gradient && ! empty( $gradient['stops'] ) && 'on' === $gradient_overlays_value ) {
+			if ( $gradient && ! empty( $gradient['stops'] ) && 'on' === $gradient_overlays_image ) {
 				$background_images = array_reverse( $background_images );
 			}
 		} elseif ( $is_image_not_enabled || $is_gradient_not_enabled ) {

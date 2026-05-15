@@ -150,9 +150,7 @@ class TransitionStyle {
 		// If attrs_json is provided use that, otherwise JSON encode the attributes array.
 		$attrs_json = null === $args['attrs_json'] ? wp_json_encode( $attrs ) : $args['attrs_json'];
 
-		// JSON encode the attributes array for faster search using strpos and avoid any loops.
-		$hover  = (bool) strpos( $attrs_json, 'hover' ); // Check if a module attribute has hover state.
-		$sticky = (bool) strpos( $attrs_json, 'sticky' ); // Check if a module attribute has sticky state.
+		$active_transition_states = TransitionUtils::get_active_transition_states_from_json( $attrs_json );
 
 		// Set initial transition attribute.
 		$transition_attr  = [];
@@ -160,8 +158,7 @@ class TransitionStyle {
 		foreach ( $attr_breakpoints as $breakpoint ) {
 			$transition_attr[ $breakpoint ] = [
 				'value' => [
-					'hover'              => $hover,
-					'sticky'             => $sticky,
+					'states'             => $active_transition_states,
 					'moduleAttrs'        => [],
 					'advancedProperties' => [],
 					'duration'           => $attr[ $breakpoint ]['value']['duration'] ?? $duration_default_value,
@@ -251,9 +248,9 @@ class TransitionStyle {
 							if ( ! $has_sub_selectors ) {
 								// Check if the main selectors ($prop_selectors) include :before or :after pseudo-selectors.
 								// Necessary cause some icons are styled intentionally on pseudo-elements (e.g., Accordion module icons).
-								if ( false === strpos( $prop_selectors, ':before' ) && false === strpos( $prop_selectors, ':after' ) ) {
+								if ( ! str_contains( $prop_selectors, ':before' ) && ! str_contains( $prop_selectors, ':after' ) ) {
 									// Do not add the property selector if the selector containing :before or :after. It's causing icon transition issue.
-									if ( false === strpos( $css_property_selector, ':before' ) && false === strpos( $css_property_selector, ':after' ) ) {
+									if ( ! str_contains( $css_property_selector, ':before' ) && ! str_contains( $css_property_selector, ':after' ) ) {
 										// Add the property selector to the list of all selectors.
 										$all_selectors[] = $css_property_selector;
 									}
@@ -670,19 +667,13 @@ class TransitionStyle {
 			return $cached[ $cache_key ];
 		}
 
-		// JSON encode the attributes array for faster search using strpos and avoid any loops.
-		$hover  = (bool) strpos( $attrs_json, 'hover' ); // Check if a module attribute has hover state.
-		$sticky = (bool) strpos( $attrs_json, 'sticky' ); // Check if a module attribute has sticky state.
-
-		// Do not output anything if there is no 'hover' or 'sticky' styles for a module.
-		if ( ! $hover && ! $sticky ) {
-			$cached[ $cache_key ] = false;
-			return false;
+		if ( TransitionUtils::has_transition_state_in_json( $attrs_json ) ) {
+			$cached[ $cache_key ] = true;
+			return true;
 		}
 
-		$cached[ $cache_key ] = true;
-
-		return true;
+		$cached[ $cache_key ] = false;
+		return false;
 	}
 
 	/**
@@ -781,7 +772,7 @@ class TransitionStyle {
 			$transition_css_props = self::get_advanced_transition_styles_css_properties( $style_data );
 
 			if ( is_string( $transition_css_props ) && '' !== $transition_css_props ) {
-				if ( strpos( $transition_css_props, ',' ) !== false ) {
+				if ( str_contains( $transition_css_props, ',' ) ) {
 					$transition_css_props_array = explode( ',', $transition_css_props );
 				} else {
 					$transition_css_props_array[] = $transition_css_props;
@@ -929,7 +920,7 @@ class TransitionStyle {
 				$css_properties  = array_merge( $css_properties, $base_properties );
 			}
 
-			foreach ( [ 'hover', 'sticky' ] as $state ) {
+			foreach ( TransitionUtils::get_transition_states() as $state ) {
 				if ( ! empty( $desktop_attr[ $state ] ) ) {
 					$state_properties = $extract_css_properties( $desktop_attr[ $state ] );
 					$css_properties   = array_merge( $css_properties, $state_properties );
@@ -970,10 +961,12 @@ class TransitionStyle {
 			$attr_desktop_value = isset( $common_style_attr['desktop'] ) ? $common_style_attr['desktop'] : null;
 
 			if ( is_array( $attr_desktop_value ) && count( $attr_desktop_value ) > 0 ) {
-				$attr_state_values = array_merge(
-					isset( $attr_desktop_value['hover'] ) ? [ $attr_desktop_value['hover'] ] : [],
-					isset( $attr_desktop_value['sticky'] ) ? [ $attr_desktop_value['sticky'] ] : []
-				);
+				$attr_state_values = [];
+				foreach ( TransitionUtils::get_transition_states() as $state ) {
+					if ( isset( $attr_desktop_value[ $state ] ) ) {
+						$attr_state_values[] = $attr_desktop_value[ $state ];
+					}
+				}
 
 				if ( ! empty( $attr_state_values ) ) {
 					foreach ( $attr_state_values as $attr_value ) {
@@ -1029,10 +1022,10 @@ class TransitionStyle {
 		$desktop_attr   = $attr['desktop'] ?? [];
 
 		if ( ! empty( $desktop_attr ) ) {
-			$hover_sticky_attr = array_merge(
-				$desktop_attr['hover'] ?? [],
-				$desktop_attr['sticky'] ?? []
-			);
+			$hover_sticky_attr = [];
+			foreach ( TransitionUtils::get_transition_states() as $state ) {
+				$hover_sticky_attr = array_merge( $hover_sticky_attr, $desktop_attr[ $state ] ?? [] );
+			}
 
 			if ( ! empty( $hover_sticky_attr ) ) {
 				foreach ( $hover_sticky_attr as $css_property => $value ) {
@@ -1069,10 +1062,10 @@ class TransitionStyle {
 		$desktop_attr = $style_attr['desktop'] ?? [];
 
 		if ( ! empty( $desktop_attr ) ) {
-			$hover_sticky_attr = array_merge(
-				$desktop_attr['hover'] ?? [],
-				$desktop_attr['sticky'] ?? []
-			);
+			$hover_sticky_attr = [];
+			foreach ( TransitionUtils::get_transition_states() as $state ) {
+				$hover_sticky_attr = array_merge( $hover_sticky_attr, $desktop_attr[ $state ] ?? [] );
+			}
 
 			if ( ! empty( $hover_sticky_attr ) ) {
 				foreach ( $hover_sticky_attr as $sizing_key => $sizing_value ) {
@@ -1117,10 +1110,10 @@ class TransitionStyle {
 		$desktop_attr = $style_attr['desktop'] ?? [];
 
 		if ( ! empty( $desktop_attr ) ) {
-			$hover_sticky_attr = array_merge(
-				$desktop_attr['hover'] ?? [],
-				$desktop_attr['sticky'] ?? []
-			);
+			$hover_sticky_attr = [];
+			foreach ( TransitionUtils::get_transition_states() as $state ) {
+				$hover_sticky_attr = array_merge( $hover_sticky_attr, $desktop_attr[ $state ] ?? [] );
+			}
 
 			if ( ! empty( $hover_sticky_attr ) ) {
 				foreach ( $hover_sticky_attr as $spacing_key => $spacing_value ) {
@@ -1165,10 +1158,10 @@ class TransitionStyle {
 				$attr_desktop_value = $text_style_attr[ $key ]['desktop'] ?? null;
 
 				if ( is_array( $attr_desktop_value ) && ! empty( $attr_desktop_value ) ) {
-					$attr_mode_value = array_merge(
-						isset( $attr_desktop_value['hover'] ) ? $attr_desktop_value['hover'] : [],
-						isset( $attr_desktop_value['sticky'] ) ? $attr_desktop_value['sticky'] : []
-					);
+					$attr_mode_value = [];
+					foreach ( TransitionUtils::get_transition_states() as $state ) {
+						$attr_mode_value = array_merge( $attr_mode_value, $attr_desktop_value[ $state ] ?? [] );
+					}
 
 					if ( is_array( $attr_mode_value ) && ! empty( $attr_mode_value ) ) {
 						if ( 'textShadow' === $key ) {

@@ -737,7 +737,7 @@ class ET_Core_PageResource {
 			foreach ( $resources as $slug => $resource ) {
 				// Mirror StaticCSS paginated-loop inline behavior to avoid cache poisoning
 				// where paginated-specific CSS overwrites base page CSS files.
-				if ( 'style' === $resource->type && self::_should_force_inline_for_paginated_request() ) {
+				if ( 'style' === $resource->type && self::should_force_inline_for_paginated_request() ) {
 					$resource->forced_inline = true;
 				}
 
@@ -848,7 +848,7 @@ class ET_Core_PageResource {
 
 		foreach ( $sorted_resources as $priority => $resources ) {
 			foreach ( $resources as $slug => $resource ) {
-				if ( 'style' === $resource->type && self::_should_force_inline_for_paginated_request() ) {
+				if ( 'style' === $resource->type && self::should_force_inline_for_paginated_request() ) {
 					continue;
 				}
 
@@ -1003,7 +1003,7 @@ class ET_Core_PageResource {
 	 *
 	 * @return bool
 	 */
-	protected static function _should_force_inline_for_paginated_request() {
+	public static function should_force_inline_for_paginated_request() {
 		// PageResource does not know loop settings, so this guard only applies to
 		// actual loop pagination requests (loop-* page > 1).
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only request inspection for cache-safety behavior.
@@ -1558,21 +1558,21 @@ class ET_Core_PageResource {
 			}
 
 			if ( is_file( $file ) ) {
-			if ( $delete_files ) {
-				// Only delete CSS files with Divi naming convention.
-				if ( self::_is_valid_divi_css_file( $file ) ) {
-					// Delete the file immediately.
-					self::$wpfs->delete( $file );
+				if ( $delete_files ) {
+					// Only delete CSS files with Divi naming convention.
+					if ( self::_is_valid_divi_css_file( $file ) ) {
+						// Delete the file immediately.
+						self::$wpfs->delete( $file );
 
-					// Delete the companion .stale marker if it exists.
-					if ( file_exists( $stale_marker ) ) {
-						self::$wpfs->delete( $stale_marker );
+						// Delete the companion .stale marker if it exists.
+						if ( file_exists( $stale_marker ) ) {
+							self::$wpfs->delete( $stale_marker );
+						}
 					}
+				} else {
+					// Create companion .stale marker next to the file.
+					self::$wpfs->put_contents( $stale_marker, '' );
 				}
-			} else {
-				// Create companion .stale marker next to the file.
-				self::$wpfs->put_contents( $stale_marker, '' );
-			}
 			}
 		}
 	}

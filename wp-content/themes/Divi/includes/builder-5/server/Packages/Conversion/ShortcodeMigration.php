@@ -25,6 +25,25 @@ use ET\Builder\Framework\Utility\StringUtility;
  */
 class ShortcodeMigration {
 	/**
+	 * Detect whether inner content contains non-shortcode content.
+	 *
+	 * @param string|null $content Inner content to inspect.
+	 *
+	 * @return bool
+	 */
+	private static function has_non_shortcode_content( ?string $content ): bool {
+		if ( ! is_string( $content ) || '' === trim( $content ) ) {
+			return false;
+		}
+
+		// Regex101 link: https://regex101.com/r/JZSiv6/1.
+		$without_shortcodes = preg_replace( '/\[\/?[^\]]+\]/', '', $content );
+		$without_shortcodes = is_string( $without_shortcodes ) ? trim( $without_shortcodes ) : '';
+
+		return '' !== $without_shortcodes;
+	}
+
+	/**
 	 * Parse shortcode attributes using WordPress core function.
 	 *
 	 * WordPress puts boolean attributes (e.g., `enabled` in `[tag enabled]`) as positional
@@ -84,7 +103,7 @@ class ShortcodeMigration {
 	 * @return bool|null Should the attribute be removed?
 	 */
 	public static function should_handle_migration( $should_handle, string $module_slug ) {
-		if ( 0 === strpos( $module_slug, 'et_pb_' ) ) {
+		if ( str_starts_with( $module_slug, 'et_pb_' ) ) {
 			return true;
 		}
 
@@ -128,16 +147,26 @@ class ShortcodeMigration {
 			);
 
 			// If not self-closing, recursively parse inner content for nested shortcodes.
-			$parsed_inner = ! $self_closing && ! empty( $inner_content )
-				? self::process_shortcode( $inner_content, $current_address )
-				: null;
+			$parsed_inner = null;
+			if ( ! $self_closing && ! empty( $inner_content ) ) {
+				$parsed_inner = self::process_shortcode( $inner_content, $current_address );
+			}
+
+			$parsed_inner_count = is_array( $parsed_inner ) ? count( $parsed_inner ) : 0;
+			$has_mixed_content  = 0 < $parsed_inner_count && self::has_non_shortcode_content( $inner_content );
+
+			$content_value = null;
+			if ( ! $self_closing ) {
+				$should_use_parsed_inner = ! empty( $parsed_inner ) && ! $has_mixed_content;
+				$content_value           = $should_use_parsed_inner ? $parsed_inner : $inner_content;
+			}
 
 			$result[] = [
 				'index'           => $index,
 				'address'         => $current_address,
 				'name'            => $shortcode_name,
 				'attributes'      => $atts,
-				'content'         => $self_closing ? null : ( ! empty( $parsed_inner ) ? $parsed_inner : $inner_content ),
+				'content'         => $content_value,
 				'self_closing'    => $self_closing,
 				'has_closing_tag' => $has_closing_tag,
 			];
@@ -210,6 +239,42 @@ class ShortcodeMigration {
 
 			$cached[ $key ] = [
 				'mode'    => 'hover',
+				'key'     => $key,
+				'baseKey' => $base_key,
+			];
+
+			return $cached[ $key ];
+		}
+
+		if ( StringUtility::ends_with( $key, '__focus' ) ) {
+			$base_key = substr( $key, 0, -7 );
+
+			$cached[ $key ] = [
+				'mode'    => 'focus',
+				'key'     => $key,
+				'baseKey' => $base_key,
+			];
+
+			return $cached[ $key ];
+		}
+
+		if ( StringUtility::ends_with( $key, '__checked' ) ) {
+			$base_key = substr( $key, 0, -9 );
+
+			$cached[ $key ] = [
+				'mode'    => 'checked',
+				'key'     => $key,
+				'baseKey' => $base_key,
+			];
+
+			return $cached[ $key ];
+		}
+
+		if ( StringUtility::ends_with( $key, '__active' ) ) {
+			$base_key = substr( $key, 0, -8 );
+
+			$cached[ $key ] = [
+				'mode'    => 'active',
 				'key'     => $key,
 				'baseKey' => $base_key,
 			];
@@ -318,7 +383,7 @@ class ShortcodeMigration {
 	public static function is_migrate_legacy_shortcode( string $shortcode ): bool {
 		// Exit early if the content contains `wp:divi/shortcode-module` (indicating it's already a block)
 		// or if no shortcode with the '[et_pb_' prefix is found (indicating there are no relevant shortcodes to process).
-		if ( false !== strpos( $shortcode, 'wp:divi/shortcode-module' ) || false === strpos( $shortcode, '[et_pb_' ) ) {
+		if ( str_contains( $shortcode, 'wp:divi/shortcode-module' ) || ! str_contains( $shortcode, '[et_pb_' ) ) {
 			return false;
 		}
 

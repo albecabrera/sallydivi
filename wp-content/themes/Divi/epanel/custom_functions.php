@@ -137,49 +137,57 @@ add_filter( 'update_custom_css_data', 'et_update_custom_css_data_cb' );
 endif;
 
 if ( ! function_exists( 'et_epanel_handle_custom_css_output' ) ):
-function et_epanel_handle_custom_css_output( $css, $stylesheet ) {
-	global $wp_current_filter, $shortname;
+	function et_epanel_handle_custom_css_output( $css, $stylesheet ) {
+		global $wp_current_filter, $shortname;
 
-	/** @see ET_Core_SupportCenter::toggle_safe_mode */
-	if ( et_core_is_safe_mode_active() ) {
-		return $css;
+		/** @see ET_Core_SupportCenter::toggle_safe_mode */
+		if ( et_core_is_safe_mode_active() ) {
+			return $css;
+		}
+
+		if ( ! $css || ! in_array( 'wp_head', $wp_current_filter ) || is_admin() && ! is_customize_preview() ) {
+			return $css;
+		}
+
+		$post_id     = et_core_page_resource_get_the_ID();
+		$is_preview  = is_preview() || isset( $_GET['et_pb_preview_nonce'] ) || is_customize_preview(); // phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
+		$is_singular = et_core_page_resource_is_singular();
+
+		// Loop Builder pagination: PageResource skips enqueuing linked styles; et_core_is_static_css_enabled()
+		// short-circuits on normal frontend so builder filters do not run;
+		// use the same URL detection as PageResource.
+		$is_loop_paginated_request = ET_Core_PageResource::should_force_inline_for_paginated_request();
+
+		$forced_inline     = $is_preview || ! et_core_is_static_css_enabled() || post_password_required() || $is_loop_paginated_request;
+		$builder_in_footer = 'on' === et_get_option( 'et_pb_css_in_footer', 'off' );
+		$unified_styles    = $is_singular && ! $forced_inline && ! $builder_in_footer && et_core_is_builder_used_on_current_request();
+		$resource_owner    = $unified_styles ? 'core' : $shortname;
+		$resource_slug     = $unified_styles ? 'unified' : 'customizer';
+
+		if ( $is_preview ) {
+			// Don't let previews cause existing saved static css files to be modified.
+			$resource_slug .= '-preview';
+		}
+
+		if ( function_exists( 'et_fb_is_enabled' ) && et_fb_is_enabled() ) {
+			$resource_slug .= '-vb';
+		}
+
+		if ( ! $unified_styles ) {
+			$post_id = 'global';
+		}
+
+		$styles_manager = et_core_page_resource_get( $resource_owner, $resource_slug, $post_id, 30 );
+
+		// Include local $forced_inline so set_data runs when static CSS is off, on loop-paginated URLs
+		// or before head-late sets $styles_manager->forced_inline on the resource.
+		if ( $forced_inline || $styles_manager->forced_inline || ! $styles_manager->has_file() ) {
+			$styles_manager->set_data( $css, 30 );
+		}
+
+		return ''; // We're handling the custom CSS output ourselves.
 	}
-
-	if ( ! $css || ! in_array( 'wp_head', $wp_current_filter ) || is_admin() && ! is_customize_preview() ) {
-		return $css;
-	}
-
-	$post_id           = et_core_page_resource_get_the_ID();
-	$is_preview        = is_preview() || isset( $_GET['et_pb_preview_nonce'] ) || is_customize_preview(); // phpcs:ignore WordPress.Security.NonceVerification.NoNonceVerification
-	$is_singular       = et_core_page_resource_is_singular();
-	$forced_inline     = $is_preview || ! et_core_is_static_css_enabled() || post_password_required();
-	$builder_in_footer = 'on' === et_get_option( 'et_pb_css_in_footer', 'off' );
-	$unified_styles    = $is_singular && ! $forced_inline && ! $builder_in_footer && et_core_is_builder_used_on_current_request();
-	$resource_owner    = $unified_styles ? 'core' : $shortname;
-	$resource_slug     = $unified_styles ? 'unified' : 'customizer';
-
-	if ( $is_preview ) {
-		// Don't let previews cause existing saved static css files to be modified.
-		$resource_slug .= '-preview';
-	}
-
-	if ( function_exists( 'et_fb_is_enabled' ) && et_fb_is_enabled() ) {
-		$resource_slug .= '-vb';
-	}
-
-	if ( ! $unified_styles ) {
-		$post_id = 'global';
-	}
-
-	$styles_manager = et_core_page_resource_get( $resource_owner, $resource_slug, $post_id, 30 );
-
-	if ( $styles_manager->forced_inline || ! $styles_manager->has_file() ) {
-		$styles_manager->set_data( $css, 30 );
-	}
-
-	return ''; // We're handling the custom CSS output ourselves.
-}
-add_filter( 'wp_get_custom_css', 'et_epanel_handle_custom_css_output', 999, 2 );
+	add_filter( 'wp_get_custom_css', 'et_epanel_handle_custom_css_output', 999, 2 );
 endif;
 
 if ( ! function_exists( 'et_get_option' ) ) {

@@ -3,7 +3,7 @@
  * ModuleLibrary: Custom Field Module class.
  *
  * @package Builder\Packages\ModuleLibrary
- * @since ??
+ * @since   ??
  */
 
 namespace ET\Builder\Packages\ModuleLibrary\SignupCustomField;
@@ -27,6 +27,7 @@ use ET\Builder\Packages\Module\Options\Element\ElementStyle;
 use ET\Builder\Packages\Module\Options\FormField\FormFieldStyle;
 use ET\Builder\Packages\Module\Options\Text\TextClassnames;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
+use ET\Builder\Packages\ModuleLibrary\RadioFieldAndIconAttrs;
 use ET\Builder\Packages\Module\Options\Css\CssStyle;
 use WP_Block_Type_Registry;
 use WP_Block;
@@ -40,6 +41,7 @@ use ET\Builder\Packages\GlobalData\GlobalPresetItemGroup;
  * @since ??
  */
 class SignupCustomFieldModule implements DependencyInterface {
+
 
 	/**
 	 * Module custom CSS fields.
@@ -64,20 +66,20 @@ class SignupCustomFieldModule implements DependencyInterface {
 	 * @since ??
 	 *
 	 * @param array $args {
-	 *     An array of arguments.
+	 *                    An array of arguments.
 	 *
-	 *     @type string $id                  Module unique ID.
-	 *     @type string $name                Module name with namespace.
-	 *     @type array  $attrs               Module attributes.
-	 *     @type array  $childrenIds         Module children IDs.
-	 *     @type bool   $hasModule           Flag that indicates if module has child modules.
-	 *     @type bool   $isFirst             Flag that indicates if module is first in the row.
-	 *     @type bool   $isLast              Flag that indicates if module is last in the row.
-	 *     @type object $classnamesInstance  Instance of Instance of ET\Builder\Packages\Module\Layout\Components\Classnames class.
+	 * @type string $id                  Module unique ID.
+	 * @type string $name                Module name with namespace.
+	 * @type array  $attrs               Module attributes.
+	 * @type array  $childrenIds         Module children IDs.
+	 * @type bool   $hasModule           Flag that indicates if module has child modules.
+	 * @type bool   $isFirst             Flag that indicates if module is first in the row.
+	 * @type bool   $isLast              Flag that indicates if module is last in the row.
+	 * @type object $classnamesInstance  Instance of Instance of ET\Builder\Packages\Module\Layout\Components\Classnames class.
 	 *
 	 *     // FE only.
-	 *     @type int|null $storeInstance The ID of instance where this block stored in BlockParserStore.
-	 *     @type int      $orderIndex    The order index of the element.
+	 * @type int|null $storeInstance The ID of instance where this block stored in BlockParserStore.
+	 * @type int      $orderIndex    The order index of the element.
 	 * }
 	 */
 	public static function module_classnames( $args ) {
@@ -133,18 +135,18 @@ class SignupCustomFieldModule implements DependencyInterface {
 	 * @since ??
 	 *
 	 * @param array $args {
-	 *     An array of arguments.
+	 *                    An array of arguments.
 	 *
-	 *     @type string         $id            Module unique ID.
-	 *     @type string         $name          Module name with namespace.
-	 *     @type string         $selector      Module CSS selector.
-	 *     @type array          $attrs         Module attributes.
-	 *     @type array          $parentAttrs   Parent module attributes.
-	 *     @type ModuleElements $elements      Instance of ModuleElements class.
+	 * @type string         $id            Module unique ID.
+	 * @type string         $name          Module name with namespace.
+	 * @type string         $selector      Module CSS selector.
+	 * @type array          $attrs         Module attributes.
+	 * @type array          $parentAttrs   Parent module attributes.
+	 * @type ModuleElements $elements      Instance of ModuleElements class.
 	 *
 	 *     // FE only.
-	 *     @type int|null $storeInstance The ID of instance where this block stored in BlockParserStore.
-	 *     @type int      $orderIndex    The order index of the element.
+	 * @type int|null $storeInstance The ID of instance where this block stored in BlockParserStore.
+	 * @type int      $orderIndex    The order index of the element.
 	 * }
 	 */
 	public static function module_script_data( $args ) {
@@ -195,27 +197,27 @@ class SignupCustomFieldModule implements DependencyInterface {
 	 * @since ??
 	 *
 	 * @param array $args {
-	 *     An array of arguments.
+	 *                    An array of arguments.
 	 *
-	 *     @type string $id                       Module unique ID.
-	 *     @type string $name                     Module name with namespace.
-	 *     @type array  $attrs                    Module attributes.
-	 *     @type array  $parentAttrs              Parent module attributes.
-	 *     @type array  $siblingAttrs             Sibling module attributes.
-	 *     @type array  $defaultPrintedStyleAttrs Default printed style attributes.
-	 *     @type string $orderClass               Module CSS selector.
-	 *     @type string $parentOrderClass         Parent module CSS selector.
-	 *     @type string $wrapperOrderClass        Wrapper module CSS selector.
-	 *     @type array  $settings                 Custom settings.
-	 *     @type object $elements                 Instance of ET\Builder\Packages\Module\Layout\Components\ModuleElements\ModuleElements class.
+	 * @type string $id                       Module unique ID.
+	 * @type string $name                     Module name with namespace.
+	 * @type array  $attrs                    Module attributes.
+	 * @type array  $parentAttrs              Parent module attributes.
+	 * @type array  $siblingAttrs             Sibling module attributes.
+	 * @type array  $defaultPrintedStyleAttrs Default printed style attributes.
+	 * @type string $orderClass               Module CSS selector.
+	 * @type string $parentOrderClass         Parent module CSS selector.
+	 * @type string $wrapperOrderClass        Wrapper module CSS selector.
+	 * @type array  $settings                 Custom settings.
+	 * @type object $elements                 Instance of ET\Builder\Packages\Module\Layout\Components\ModuleElements\ModuleElements class.
 	 *
 	 *     // VB only.
-	 *     @type string $state Attributes state.
-	 *     @type string $mode  Style mode.
+	 * @type string $state Attributes state.
+	 * @type string $mode  Style mode.
 	 *
 	 *     // FE only.
-	 *     @type int|null $storeInstance The ID of instance where this block stored in BlockParserStore.
-	 *     @type int      $orderIndex    The order index of the element.
+	 * @type int|null $storeInstance The ID of instance where this block stored in BlockParserStore.
+	 * @type int      $orderIndex    The order index of the element.
 	 * }
 	 */
 	public static function module_styles( $args ) {
@@ -225,6 +227,33 @@ class SignupCustomFieldModule implements DependencyInterface {
 		$order_class = $args['orderClass'] ?? '';
 
 		$default_printed_style_attrs = $args['defaultPrintedStyleAttrs'] ?? [];
+		$font_group_properties       = [
+			'color',
+			'font-family',
+			'font-size',
+			'font-style',
+			'font-weight',
+			'letter-spacing',
+			'line-height',
+			'text-align',
+			'text-decoration',
+			'text-transform',
+		];
+		$field_label_targets         = implode(
+			', ',
+			[
+				".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .et_pb_contact_field_options_title",
+			]
+		);
+		$field_label_targets_hover   = implode(
+			', ',
+			[
+				".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .et_pb_contact_field_options_title:hover",
+			]
+		);
+		$radio_attrs                 = RadioFieldAndIconAttrs::get( $attrs['radio'] ?? [] );
+		$radio_attr                  = $radio_attrs['fieldAttr'];
+		$radio_icon_attr             = $radio_attrs['iconAttr'];
 
 		Style::add(
 			[
@@ -253,7 +282,7 @@ class SignupCustomFieldModule implements DependencyInterface {
 									],
 								],
 								'border'                   => [
-									'selector' => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input, .et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type='checkbox'] + label i, .et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type='radio'] + label i",
+									'selector' => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input:not([type=checkbox]):not([type=radio])",
 								],
 								'boxShadow'                => [
 									'selector' => "{$order_class} input, {$order_class} select, {$order_class} textarea, {$order_class} .et_pb_contact_field_options_list label > i",
@@ -282,7 +311,7 @@ class SignupCustomFieldModule implements DependencyInterface {
 					FormFieldStyle::style(
 						[
 							'attr'              => $attrs['field'] ?? [],
-							'selector'          => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"radio\"] + label, .et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input, .et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"checkbox\"] + label, {$order_class}.et_pb_contact_field .et_pb_contact_field_options_title",
+							'selector'          => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input:not([type=checkbox]):not([type=radio])",
 							'important'         => [
 								'font' => [
 									'font' => [
@@ -298,19 +327,39 @@ class SignupCustomFieldModule implements DependencyInterface {
 								'background' => [
 									'desktop' => [
 										'value' => [
-											'background-color' => ".et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} input[type=\"text\"], .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} textarea, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} select, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} .input[type=\"checkbox\"] + label i, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} .input[type=\"radio\"] + label i",
+											'background-color' => ".et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} input[type=\"text\"], .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} textarea, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} select",
 										],
-										'hover' => ".et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} input[type=\"text\"]:hover, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} textarea:hover, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} select:hover, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} .input[type=\"checkbox\"] + label:hover i, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} .input[type=\"radio\"] + label:hover i",
+										'hover' => ".et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} input[type=\"text\"]:hover, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} textarea:hover, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} select:hover",
 									],
 								],
 								'font'       => [
 									'font' => [
 										'desktop' => [
 											'value' => [
-												'color' => ".et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} input[type=\"text\"], .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} textarea, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} select, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} .input[type=\"checkbox\"] + label i::before, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} .input::placeholder",
+												'color' => ".et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} input[type=\"text\"], .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} textarea, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} select",
 											],
 											'hover' => [
-												'color' => ".et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} input[type=\"text\"]:hover, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} textarea:hover, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} select:hover, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} .input[type=\"checkbox\"] + label:hover i::before, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} .input:hover::placeholder",
+												'color' => ".et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} input[type=\"text\"]:hover, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} textarea:hover, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} select:hover",
+											],
+										],
+									],
+								],
+								'label'      => [
+									'font' => [
+										'font'       => [
+											'desktop' => [
+												'value' => array_fill_keys( $font_group_properties, $field_label_targets ),
+												'hover' => array_fill_keys( $font_group_properties, $field_label_targets_hover ),
+											],
+										],
+										'textShadow' => [
+											'desktop' => [
+												'value' => [
+													'text-shadow' => $field_label_targets,
+												],
+												'hover' => [
+													'text-shadow' => $field_label_targets_hover,
+												],
 											],
 										],
 									],
@@ -327,7 +376,7 @@ class SignupCustomFieldModule implements DependencyInterface {
 										'font' => [
 											'desktop' => [
 												'value' => [
-													'color' => ".et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} .input, .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} input.input",
+													'color' => ".et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} .input:not([type=checkbox]):not([type=radio]), .et_pb_newsletter_form .et_pb_newsletter_fields {$order_class} input.input:not([type=checkbox]):not([type=radio])",
 												],
 											],
 										],
@@ -337,89 +386,129 @@ class SignupCustomFieldModule implements DependencyInterface {
 							'orderClass'        => $order_class,
 						]
 					),
+					FormFieldStyle::style(
+						[
+							'attr'              => $attrs['checkbox'] ?? [],
+							'selector'          => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"checkbox\"] + label i",
+							'selectors'         => [
+								'desktop' => [
+									'value'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"checkbox\"] + label i",
+									'hover'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"checkbox\"]:hover + label i",
+									'focus'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"checkbox\"]:focus + label i",
+									'checked' => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"checkbox\"]:checked + label i",
+								],
+							],
+							'propertySelectors' => [
+								'font' => [
+									'font'       => [
+										'desktop' => [
+											'value'   => array_fill_keys(
+												$font_group_properties,
+												".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"checkbox\"] + label"
+											),
+											'hover'   => array_fill_keys(
+												$font_group_properties,
+												".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"checkbox\"]:hover + label"
+											),
+											'checked' => array_fill_keys(
+												$font_group_properties,
+												".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"checkbox\"]:checked + label"
+											),
+										],
+									],
+									'textShadow' => [
+										'desktop' => [
+											'value'   => [
+												'text-shadow' => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"checkbox\"] + label",
+											],
+											'hover'   => [
+												'text-shadow' => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"checkbox\"]:hover + label",
+											],
+											'checked' => [
+												'text-shadow' => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"checkbox\"]:checked + label",
+											],
+										],
+									],
+								],
+							],
+							'orderClass'        => $order_class,
+							'disableLabelStyle' => true,
+						]
+					),
+					ElementStyle::style(
+						[
+							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"checkbox\"]:checked + label i:before",
+							'attrs'      => [
+								'icon' => $attrs['checkbox']['decoration']['icon'] ?? [],
+							],
+							'orderClass' => $order_class,
+						]
+					),
+					FormFieldStyle::style(
+						[
+							'attr'              => $radio_attr,
+							'selector'          => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"radio\"] + label i",
+							'selectors'         => [
+								'desktop' => [
+									'value'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"radio\"] + label i",
+									'hover'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"radio\"]:hover + label i",
+									'focus'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"radio\"]:focus + label i",
+									'checked' => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"radio\"]:checked + label i",
+								],
+							],
+							'propertySelectors' => [
+								'font' => [
+									'font'       => [
+										'desktop' => [
+											'value'   => array_fill_keys(
+												$font_group_properties,
+												".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"radio\"] + label"
+											),
+											'hover'   => array_fill_keys(
+												$font_group_properties,
+												".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"radio\"]:hover + label"
+											),
+											'checked' => array_fill_keys(
+												$font_group_properties,
+												".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"radio\"]:checked + label"
+											),
+										],
+									],
+									'textShadow' => [
+										'desktop' => [
+											'value'   => [
+												'text-shadow' => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"radio\"] + label",
+											],
+											'hover'   => [
+												'text-shadow' => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"radio\"]:hover + label",
+											],
+											'checked' => [
+												'text-shadow' => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"radio\"]:checked + label",
+											],
+										],
+									],
+								],
+							],
+							'orderClass'        => $order_class,
+							'disableLabelStyle' => true,
+						]
+					),
+					ElementStyle::style(
+						[
+							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input[type=\"radio\"]:checked + label i:before",
+							'attrs'      => [
+								'icon' => $radio_icon_attr,
+							],
+							'orderClass' => $order_class,
+						]
+					),
 					ElementStyle::style(
 						[
 							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input::placeholder",
-							'attr'       => [
-								'font' => $attrs['field']['decoration']['font'] ?? [],
-							],
-							'orderClass' => $order_class,
-						]
-					),
-					ElementStyle::style(
-						[
-							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input::-webkit-input-placeholder",
-							'attr'       => [
-								'font' => $attrs['field']['decoration']['font'] ?? [],
-							],
-							'orderClass' => $order_class,
-						]
-					),
-					ElementStyle::style(
-						[
-							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input::-moz-placeholder",
-							'attr'       => [
-								'font' => $attrs['field']['decoration']['font'] ?? [],
-							],
-							'orderClass' => $order_class,
-						]
-					),
-					ElementStyle::style(
-						[
-							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input::-ms-input-placeholder",
-							'attr'       => [
-								'font' => $attrs['field']['decoration']['font'] ?? [],
-							],
-							'orderClass' => $order_class,
-						]
-					),
-					// Focus placeholder styles with !important.
-					ElementStyle::style(
-						[
-							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input:focus::placeholder",
 							'attrs'      => [
-								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
+								'font' => $attrs['field']['decoration']['placeholderFont'] ?? [],
 							],
 							'orderClass' => $order_class,
-							'font'       => [
-								'important' => true,
-							],
-						]
-					),
-					ElementStyle::style(
-						[
-							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input:focus::-webkit-input-placeholder",
-							'attrs'      => [
-								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
-							],
-							'orderClass' => $order_class,
-							'font'       => [
-								'important' => true,
-							],
-						]
-					),
-					ElementStyle::style(
-						[
-							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input:focus::-moz-placeholder",
-							'attrs'      => [
-								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
-							],
-							'orderClass' => $order_class,
-							'font'       => [
-								'important' => true,
-							],
-						]
-					),
-					ElementStyle::style(
-						[
-							'selector'   => ".et_pb_newsletter_form .et_pb_newsletter_fields p{$order_class} .input:focus::-ms-input-placeholder",
-							'attrs'      => [
-								'font' => $attrs['field']['advanced']['focus']['font'] ?? [],
-							],
-							'orderClass' => $order_class,
-							'font'       => [
-								'important' => true,
-							],
 						]
 					),
 					// Module - Only for Custom CSS.
@@ -508,8 +597,8 @@ class SignupCustomFieldModule implements DependencyInterface {
 					$title           = __( 'Only numbers allowed.', 'et_builder_5' );
 					break;
 				case 'alphanumeric':
-					$symbols_pattern = '[\w\s\-]';
-					$title           = __( 'Only letters and numbers allowed.', 'et_builder_5' );
+						$symbols_pattern = '[\w\s\-]';
+						$title           = __( 'Only letters and numbers allowed.', 'et_builder_5' );
 					break;
 			}
 		}
@@ -695,7 +784,7 @@ class SignupCustomFieldModule implements DependencyInterface {
 						'tagEscaped'        => true,
 						'childrenSanitizer' => 'et_core_esc_previously',
 						'attributes'        => [
-							'class' => 'et_pb_contact_field_options_wrapper',
+							'class' => 'et_pb_contact_field_options_wrapper et_pb_field_module_checkbox',
 						],
 						'children'          => [
 							HTMLUtility::render(
@@ -813,7 +902,7 @@ class SignupCustomFieldModule implements DependencyInterface {
 						'tagEscaped'        => true,
 						'childrenSanitizer' => 'et_core_esc_previously',
 						'attributes'        => [
-							'class' => 'et_pb_contact_field_options_wrapper',
+							'class' => 'et_pb_contact_field_options_wrapper et_pb_field_module_radio',
 						],
 						'children'          => [
 							HTMLUtility::render(
@@ -954,7 +1043,7 @@ class SignupCustomFieldModule implements DependencyInterface {
 	 *
 	 * @since ??
 	 *
-	 * @param string $module_id Module ID.
+	 * @param string $module_id      Module ID.
 	 * @param int    $store_instance Store instance.
 	 *
 	 * @return string Field unique id.

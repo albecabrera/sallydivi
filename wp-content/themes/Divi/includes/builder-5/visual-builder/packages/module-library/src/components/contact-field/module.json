@@ -121,15 +121,46 @@
     "field": {
       "type": "object",
       "elementType": "field",
-      "selector": "{{selector}}.et_pb_contact_field .input",
+      "selector": "{{selector}}.et_pb_contact_field .input:not([type=checkbox]):not([type=radio])",
       "settings": {
-        "decoration": {
-          "background": {},
-          "font": {}
-        },
-        "advanced": {
-          "focus": {}
+        "decoration": {},
+        "advanced": {}
+      }
+    },
+    "checkbox": {
+      "type": "object",
+      "elementType": "field",
+      "selector": "{{selector}} [type=checkbox]",
+      "styleProps": {
+        "selector": "{{selector}} [type=checkbox]",
+        "selectors": {
+          "desktop": {
+            "value": "{{selector}}.et_pb_contact_field .input[type=checkbox] + label i",
+            "hover": "{{selector}}.et_pb_contact_field .input[type=checkbox]:hover + label i"
+          }
         }
+      },
+      "settings": {
+        "decoration": {},
+        "advanced": {}
+      }
+    },
+    "radio": {
+      "type": "object",
+      "elementType": "field",
+      "selector": "{{selector}} [type=radio]",
+      "styleProps": {
+        "selector": "{{selector}} [type=radio]",
+        "selectors": {
+          "desktop": {
+            "value": "{{selector}}.et_pb_contact_field .input[type=radio] + label i",
+            "hover": "{{selector}}.et_pb_contact_field .input[type=radio]:hover + label i"
+          }
+        }
+      },
+      "settings": {
+        "decoration": {},
+        "advanced": {}
       }
     },
     "fieldTitle": {
@@ -594,6 +625,54 @@
           "name": "divi/composite",
           "props": {
             "groupLabel": "Conditional Logic"
+          }
+        }
+      },
+      "designFieldField": {
+        "panel": "design",
+        "priority": 10,
+        "groupName": "field",
+        "multiElements": true,
+        "component": {
+          "name": "divi/form-field",
+          "props": {
+            "groupLabel": "Fields",
+            "clipboardCategory": "style",
+            "attrName": "field",
+            "dynamicSubgroupHost": true,
+            "useComponentNameAsPresetGroup": true
+          }
+        }
+      },
+      "designFieldCheckbox": {
+        "panel": "design",
+        "priority": 10,
+        "groupName": "checkbox",
+        "multiElements": true,
+        "component": {
+          "name": "divi/checkbox",
+          "props": {
+            "groupLabel": "Checkbox",
+            "clipboardCategory": "style",
+            "attrName": "checkbox",
+            "dynamicSubgroupHost": true,
+            "useComponentNameAsPresetGroup": true
+          }
+        }
+      },
+      "designFieldRadio": {
+        "panel": "design",
+        "priority": 10,
+        "groupName": "radio",
+        "multiElements": true,
+        "component": {
+          "name": "divi/radio",
+          "props": {
+            "groupLabel": "Radio",
+            "clipboardCategory": "style",
+            "attrName": "radio",
+            "dynamicSubgroupHost": true,
+            "useComponentNameAsPresetGroup": true
           }
         }
       }

@@ -54,8 +54,7 @@ trait StyleDeclarationTrait {
 		$attr_value          = $args['attrValue'];
 		$attrs               = $args['attrValue']['moduleAttrs'] ?? [];
 		$advanced_properties = isset( $args['attrValue']['advancedProperties'] ) ? $args['attrValue']['advancedProperties'] : [];
-		$sticky              = $args['attrValue']['sticky'] ?? false;
-		$hover               = $args['attrValue']['hover'] ?? false;
+		$states              = isset( $args['attrValue']['states'] ) && is_array( $args['attrValue']['states'] ) ? $args['attrValue']['states'] : [];
 		$important           = $args['important'];
 		$return_type         = $args['returnType'];
 
@@ -66,7 +65,7 @@ trait StyleDeclarationTrait {
 			]
 		);
 
-		$transition_properties = TransitionUtils::get_transition_properties( $attrs, $hover, $sticky );
+		$transition_properties = TransitionUtils::get_transition_properties( $attrs, $states );
 		$transition_duration   = array_key_exists( 'duration', $attr_value ) && $attr_value['duration'] && '' !== $attr_value['duration'] ? $attr_value['duration'] : '300ms';
 		$transition_delay      = array_key_exists( 'delay', $attr_value ) && $attr_value['delay'] && '' !== $attr_value['delay'] ? $attr_value['delay'] : '0ms';
 		$transition_speed      = array_key_exists( 'speedCurve', $attr_value ) && $attr_value['speedCurve'] && '' !== $attr_value['speedCurve'] ? $attr_value['speedCurve'] : '';

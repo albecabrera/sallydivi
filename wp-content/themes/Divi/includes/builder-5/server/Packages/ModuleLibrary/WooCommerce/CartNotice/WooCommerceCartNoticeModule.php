@@ -561,20 +561,68 @@ class WooCommerceCartNoticeModule implements DependencyInterface {
 										],
 									],
 								],
+								'label' => [
+									'font' => [
+										'font'       => [
+											'desktop' => [
+												'value' => array_fill_keys(
+													[
+														'color',
+														'font-family',
+														'font-size',
+														'font-style',
+														'font-weight',
+														'letter-spacing',
+														'line-height',
+														'text-align',
+														'text-decoration',
+														'text-transform',
+													],
+													"{$order_class} form .form-row label"
+												),
+												'hover' => array_fill_keys(
+													[
+														'color',
+														'font-family',
+														'font-size',
+														'font-style',
+														'font-weight',
+														'letter-spacing',
+														'line-height',
+														'text-align',
+														'text-decoration',
+														'text-transform',
+													],
+													"{$order_class} form .form-row label:hover"
+												),
+											],
+										],
+										'textShadow' => [
+											'desktop' => [
+												'value' => [
+													'text-shadow' => "{$order_class} form .form-row label",
+												],
+												'hover' => [
+													'text-shadow' => "{$order_class} form .form-row label:hover",
+												],
+											],
+										],
+									],
+								],
 							],
 						]
 					),
-					// Field Labels.
+					// Required Field Indicator Color.
 					$elements->style(
 						[
-							'attrName'   => 'fieldLabels',
+							'attrName'   => 'field',
 							'styleProps' => [
 								'advancedStyles' => [
 									// Required Field Indicator Color.
 									[
 										'componentName' => 'divi/common',
 										'props'         => [
-											'attr'     => $attrs['fieldLabels']['advanced']['requiredFieldIndicatorColor'] ?? [],
+											'attr'     => $attrs['field']['advanced']['requiredFieldIndicatorColor'] ?? [],
 											'selector' => "{$order_class} form .form-row .required",
 											'declarationFunction' => [ self::class, 'required_field_indicator_color_style_declaration' ],
 											'propertySelectors' => [

@@ -1,1 +1,1 @@
-<?php return array('dependencies' => array('divi-data', 'divi-settings'), 'version' => '3436f46f17fc5c74bab2');
+<?php return array('dependencies' => array('divi-data', 'divi-settings'), 'version' => 'ea3c4b75b41598aec64f');

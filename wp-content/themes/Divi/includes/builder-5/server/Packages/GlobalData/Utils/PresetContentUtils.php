@@ -107,12 +107,16 @@ class PresetContentUtils {
 					$module_preset = $attrs['modulePreset'];
 					$id_map        = $module_mappings[ $block_name ];
 
-					if ( is_string( $module_preset ) && isset( $id_map[ $module_preset ] ) ) {
+					if ( ( is_string( $module_preset ) || is_int( $module_preset ) ) && isset( $id_map[ $module_preset ] ) ) {
 						$block['attrs']['modulePreset'] = $id_map[ $module_preset ];
 					} elseif ( is_array( $module_preset ) ) {
 						$block['attrs']['modulePreset'] = array_map(
 							function ( $preset_id ) use ( $id_map ) {
-								return $id_map[ $preset_id ] ?? $preset_id;
+								if ( ( is_string( $preset_id ) || is_int( $preset_id ) ) && isset( $id_map[ $preset_id ] ) ) {
+									return $id_map[ $preset_id ];
+								}
+
+								return $preset_id;
 							},
 							$module_preset
 						);
@@ -122,15 +126,34 @@ class PresetContentUtils {
 				// Remap groupPreset.
 				if ( ! empty( $group_mappings ) && isset( $attrs['groupPreset'] ) && is_array( $attrs['groupPreset'] ) ) {
 					foreach ( $attrs['groupPreset'] as $group_key => $group_data ) {
-						if ( ! is_array( $group_data ) || ! isset( $group_data['presetId'] ) || ! isset( $group_data['groupName'] ) ) {
+						if ( ! is_array( $group_data ) || ! isset( $group_data['presetId'] ) ) {
 							continue;
 						}
 
-						$group_name = $group_data['groupName'];
+						$group_name = $group_data['groupName'] ?? $group_key;
 						$preset_id  = $group_data['presetId'];
 
-						if ( isset( $group_mappings[ $group_name ][ $preset_id ] ) ) {
-							$block['attrs']['groupPreset'][ $group_key ]['presetId'] = $group_mappings[ $group_name ][ $preset_id ];
+						$has_valid_group_name_key = is_string( $group_name ) || is_int( $group_name );
+
+						if ( ! $has_valid_group_name_key || ! isset( $group_mappings[ $group_name ] ) || ! is_array( $group_mappings[ $group_name ] ) ) {
+							continue;
+						}
+
+						$group_id_map = $group_mappings[ $group_name ];
+
+						if ( ( is_string( $preset_id ) || is_int( $preset_id ) ) && isset( $group_id_map[ $preset_id ] ) ) {
+							$block['attrs']['groupPreset'][ $group_key ]['presetId'] = $group_id_map[ $preset_id ];
+						} elseif ( is_array( $preset_id ) ) {
+							$block['attrs']['groupPreset'][ $group_key ]['presetId'] = array_map(
+								function ( $single_preset_id ) use ( $group_id_map ) {
+									if ( ( is_string( $single_preset_id ) || is_int( $single_preset_id ) ) && isset( $group_id_map[ $single_preset_id ] ) ) {
+										return $group_id_map[ $single_preset_id ];
+									}
+
+									return $single_preset_id;
+								},
+								$preset_id
+							);
 						}
 					}
 				}

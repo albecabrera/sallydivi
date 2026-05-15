@@ -223,88 +223,8 @@
       "selector": "{{selector}} #commentform textarea, {{selector}} #commentform input[type='text'], {{selector}} #commentform input[type='email'], {{selector}} #commentform input[type='url']",
       "elementType": "field",
       "settings": {
-        "decoration": {
-          "background": {},
-          "border": {},
-          "boxShadow": {},
-          "spacing": {},
-          "font": {}
-        },
-        "advanced": {
-          "focusUseBorder": {
-            "groupType": "group-item",
-            "item": {
-              "priority": 100,
-              "render": true,
-              "groupSlug": "designFieldField",
-              "attrName": "field.advanced.focusUseBorder",
-              "label": "Use Focus Borders",
-              "description": "Enabling this option will add borders to input fields when focused.",
-              "features": {
-                "preset": [
-                  "html"
-                ]
-              },
-              "component": {
-                "type": "field",
-                "name": "divi/toggle"
-              }
-            }
-          },
-          "focus": {
-            "groupType": "group-items",
-            "items": {
-              "focusBorderGroup": {
-                "render": true,
-                "groupSlug": "designFieldField"
-              },
-              "focusFont": {
-                "priority": 40,
-                "render": true,
-                "groupSlug": "designFieldField",
-                "component": {
-                  "props": {
-                    "fields": {
-                      "headingLevel": {
-                        "render": false
-                      },
-                      "family": {
-                        "render": false
-                      },
-                      "weight": {
-                        "render": false
-                      },
-                      "style": {
-                        "render": false
-                      },
-                      "letterSpacing": {
-                        "render": false
-                      },
-                      "lineHeight": {
-                        "render": false
-                      },
-                      "lineColor": {
-                        "render": false
-                      },
-                      "lineStyle": {
-                        "render": false
-                      },
-                      "textShadowGroup": {
-                        "render": false
-                      },
-                      "textAlign": {
-                        "render": false
-                      },
-                      "size": {
-                        "render": false
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+        "decoration": {},
+        "advanced": {}
       },
       "styleProps": {
         "font": {
@@ -620,10 +540,11 @@
         "groupName": "field",
         "multiElements": true,
         "component": {
-          "name": "divi/composite",
+          "name": "divi/form-field",
           "props": {
             "groupLabel": "Fields",
             "clipboardCategory": "style",
+            "attrName": "field",
             "dynamicSubgroupHost": true
           }
         }

@@ -20,6 +20,95 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since ??
  */
 class TransitionUtils {
+	/**
+	 * Transition states supported by style declarations.
+	 *
+	 * @since ??
+	 *
+	 * @return array
+	 */
+	public static function get_transition_states(): array {
+		return [ 'hover', 'sticky', 'focus', 'active', 'checked' ];
+	}
+
+	/**
+	 * Check whether the encoded attrs JSON contains any transition state keys.
+	 *
+	 * Matches JSON object keys only (e.g. `"hover":`, `"active":`) to avoid
+	 * false positives from unrelated substrings (e.g. `inactive`, `unchecked`).
+	 *
+	 * @since ??
+	 *
+	 * @param string $attrs_json Encoded attrs JSON.
+	 * @param array  $states     Optional transition states to check.
+	 *
+	 * @return bool
+	 */
+	public static function has_transition_state_in_json( string $attrs_json, array $states = [] ): bool {
+		if ( '' === $attrs_json ) {
+			return false;
+		}
+
+		$target_states = empty( $states ) ? self::get_transition_states() : array_values(
+			array_unique(
+				array_intersect( $states, self::get_transition_states() )
+			)
+		);
+
+		if ( empty( $target_states ) ) {
+			return false;
+		}
+
+		$pattern = self::_get_transition_state_json_key_pattern( $target_states );
+
+		return 1 === preg_match( $pattern, $attrs_json );
+	}
+
+	/**
+	 * Get active transition states found in encoded attrs JSON.
+	 *
+	 * @since ??
+	 *
+	 * @param string $attrs_json Encoded attrs JSON.
+	 *
+	 * @return array
+	 */
+	public static function get_active_transition_states_from_json( string $attrs_json ): array {
+		if ( '' === $attrs_json ) {
+			return [];
+		}
+
+		$active_states = [];
+
+		foreach ( self::get_transition_states() as $state ) {
+			$pattern = self::_get_transition_state_json_key_pattern( [ $state ] );
+			if ( 1 === preg_match( $pattern, $attrs_json ) ) {
+				$active_states[] = $state;
+			}
+		}
+
+		return $active_states;
+	}
+
+	/**
+	 * Get regex pattern that matches exact JSON keys for transition states.
+	 *
+	 * @since ??
+	 *
+	 * @param array $states Transition state names.
+	 *
+	 * @return string
+	 */
+	private static function _get_transition_state_json_key_pattern( array $states ): string {
+		$quoted_states = array_map(
+			function ( string $state ): string {
+				return preg_quote( $state, '/' );
+			},
+			$states
+		);
+
+		return '/"(' . implode( '|', $quoted_states ) . ')"\s*:/';
+	}
 
 	/**
 	 * Get animatable options for transitions.
@@ -390,16 +479,16 @@ class TransitionUtils {
 	}
 
 	/**
-	 * Get the transition properties based on the given attributes, hover state, and sticky state.
+	 * Get the transition properties based on the given attributes and transition states.
 	 *
-	 * This function retrieves the transition properties for a specific element based on its attributes,
-	 * hover state, and sticky state. It uses the TransitionUtils class to fetch the necessary properties.
+	 * This function retrieves transition properties for a specific element based on its attributes
+	 * and active transition states. For backward compatibility, it also accepts the legacy
+	 * hover/sticky boolean arguments.
 	 *
 	 * @since ??
 	 *
 	 * @param array $attrs  The attributes of the element.
-	 * @param bool  $hover  Whether the element is in hover state or not.
-	 * @param bool  $sticky Whether the element is in sticky state or not.
+	 * @param array $states The active transition states.
 	 *
 	 * @return array The array of transition properties.
 	 *
@@ -411,10 +500,9 @@ class TransitionUtils {
 	 *     'padding',
 	 * );
 	 *
-	 * $hover = true;
-	 * $sticky = false;
+	 * $states = array( 'hover' );
 	 *
-	 * $properties = TransitionUtils::get_transition_properties( $attrs, $hover, $sticky );
+	 * $properties = TransitionUtils::get_transition_properties( $attrs, $states );
 	 * // Returns: array('color', 'background-color', 'padding')
 	 * ```
 	 *
@@ -426,10 +514,9 @@ class TransitionUtils {
 	 *     'margin',
 	 * );
 	 *
-	 * $hover = false;
-	 * $sticky = true;
+	 * $states = array( 'sticky' );
 	 *
-	 * $properties = TransitionUtils::get_transition_properties( $attrs, $hover, $sticky );
+	 * $properties = TransitionUtils::get_transition_properties( $attrs, $states );
 	 * // Returns: array('font-size', 'line-height', 'margin')
 	 * ```
 	 *
@@ -441,30 +528,26 @@ class TransitionUtils {
 	 *     'opacity',
 	 * );
 	 *
-	 * $hover = true;
-	 * $sticky = true;
+	 * $states = array( 'hover', 'focus' );
 	 *
-	 * $properties = TransitionUtils::get_transition_properties( $attrs, $hover, $sticky );
+	 * $properties = TransitionUtils::get_transition_properties( $attrs, $states );
 	 * // Returns: array('width', 'height', 'opacity')
 	 * ```
 	 */
-	public static function get_transition_properties( array $attrs, bool $hover, bool $sticky ): array {
+	public static function get_transition_properties( array $attrs, array $states = [] ): array {
+		$supported_states      = self::get_transition_states();
+		$transition_states     = array_values( array_unique( array_intersect( $states, $supported_states ) ) );
+		$transition_properties = [];
 
-		$transition_properties        = [];
-		$transition_hover_properties  = [];
-		$transition_sticky_properties = [];
+		foreach ( $transition_states as $mode ) {
+			$mode_transition_properties = self::compose_transition_css_properties( $mode, $attrs );
 
-		if ( $hover ) {
-			$transition_hover_properties = self::get_hover_transition_property( $attrs );
+			if ( ! empty( $mode_transition_properties ) ) {
+				$transition_properties = array_merge( $transition_properties, $mode_transition_properties );
+			}
 		}
 
-		if ( $sticky ) {
-			$transition_sticky_properties = self::get_sticky_transition_property( $attrs );
-		}
-
-		$transition_properties = array_unique( array_merge( $transition_hover_properties, $transition_sticky_properties ) );
-
-		return $transition_properties;
+		return array_values( array_unique( $transition_properties ) );
 	}
 
 	/**
@@ -633,7 +716,10 @@ class TransitionUtils {
 						} elseif ( 'image' === $background_key ) {
 							if ( is_array( $background_value ) && ! empty( $background_value ) ) {
 								foreach ( array_keys( $background_value ) as $origin_key ) {
-									$css_properties[] = 'background-' . $origin_key;
+									$mapped = self::map_background_image_field_key_to_transition_css_properties( $origin_key );
+									if ( '' !== $mapped ) {
+										$css_properties[] = $mapped;
+									}
 								}
 							}
 						} elseif ( 'mask' === $background_key ) {
@@ -660,6 +746,36 @@ class TransitionUtils {
 		}
 
 		return $css_properties;
+	}
+
+	/**
+	 * Map Divi background.image field keys to CSS transition property names.
+	 *
+	 * Custom image size is stored as width/height; the rendered property is background-size.
+	 *
+	 * @since ??
+	 *
+	 * @param string $field_key Field key under background.image.
+	 *
+	 * @return string CSS property name, or empty string when there is no mapped property for this field key.
+	 */
+	public static function map_background_image_field_key_to_transition_css_properties( string $field_key ): string {
+		static $map = null;
+
+		if ( null === $map ) {
+			$map = [
+				'blend'            => 'background-blend-mode',
+				'height'           => 'background-size',
+				'horizontalOffset' => 'background-position',
+				'position'         => 'background-position',
+				'repeat'           => 'background-repeat',
+				'size'             => 'background-size',
+				'verticalOffset'   => 'background-position',
+				'width'            => 'background-size',
+			];
+		}
+
+		return $map[ $field_key ] ?? '';
 	}
 
 	/**

@@ -20,6 +20,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 class ContactFormUtils {
 
 	/**
+	 * Normalize a field value to a string for message building (checkbox arrays use comma-separated join).
+	 *
+	 * @param mixed $value Raw field value.
+	 *
+	 * @return string
+	 */
+	public static function normalize_field_value_for_message( $value ): string {
+		if ( true === is_array( $value ) ) {
+			$parts = [];
+
+			foreach ( $value as $item ) {
+				if ( true === is_scalar( $item ) ) {
+					$parts[] = (string) $item;
+				}
+			}
+
+			return implode( ', ', $parts );
+		}
+
+		if ( true === is_scalar( $value ) ) {
+			return (string) $value;
+		}
+
+		return '';
+	}
+
+	/**
 	 * Build the message.
 	 *
 	 * @since ??
@@ -36,10 +63,10 @@ class ContactFormUtils {
 				continue;
 			}
 
-			$value = $field['value'] ?? '';
+			$value = self::normalize_field_value_for_message( $field['value'] ?? '' );
 
 			// Skip fields with empty string value.
-			if ( '' === trim( (string) $value ) ) {
+			if ( '' === trim( $value ) ) {
 				continue;
 			}
 
@@ -76,7 +103,8 @@ class ContactFormUtils {
 
 		foreach ( $fields as $key => $field ) {
 			// strip all tags from each field. Don't strip tags from the entire message to allow using HTML in the pattern.
-			$message = str_ireplace( "%%{$key}%%", wp_strip_all_tags( $field['value'] ?? '' ), $message );
+			$replacement = self::normalize_field_value_for_message( $field['value'] ?? '' );
+			$message     = str_ireplace( "%%{$key}%%", wp_strip_all_tags( $replacement ), $message );
 		}
 
 		// Remove placeholders for skipped fields (matching Divi 4 behavior).

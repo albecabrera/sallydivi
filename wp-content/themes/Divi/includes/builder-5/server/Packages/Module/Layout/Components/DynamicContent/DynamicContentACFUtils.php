@@ -26,6 +26,41 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since ??
  */
 class DynamicContentACFUtils {
+	/**
+	 * Cached ACF plugin status for the current request.
+	 *
+	 * @since ??
+	 *
+	 * @var bool|null
+	 */
+	private static ?bool $_acf_active_cache = null;
+
+	/**
+	 * Cached ACF field info by meta type for the current request.
+	 *
+	 * @since ??
+	 *
+	 * @var array<string, array>
+	 */
+	private static array $_acf_field_info_cache = [];
+
+	/**
+	 * Cached ACF field groups for the current request.
+	 *
+	 * @since ??
+	 *
+	 * @var array|null
+	 */
+	private static ?array $_acf_field_groups_cache = null;
+
+	/**
+	 * Cached ACF fields by group ID for the current request.
+	 *
+	 * @since ??
+	 *
+	 * @var array<int, array>
+	 */
+	private static array $_acf_fields_by_group_cache = [];
 
 	/**
 	 * Default items per page for repeater queries.
@@ -45,13 +80,19 @@ class DynamicContentACFUtils {
 	 * @return bool True if ACF or SCF is active, false otherwise.
 	 */
 	public static function is_acf_active(): bool {
+		if ( null !== self::$_acf_active_cache ) {
+			return self::$_acf_active_cache;
+		}
+
 		if ( ! function_exists( 'is_plugin_active' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 
-		return is_plugin_active( 'advanced-custom-fields/acf.php' )
+		self::$_acf_active_cache = is_plugin_active( 'advanced-custom-fields/acf.php' )
 			|| is_plugin_active( 'advanced-custom-fields-pro/acf.php' )
 			|| is_plugin_active( 'secure-custom-fields/secure-custom-fields.php' );
+
+		return self::$_acf_active_cache;
 	}
 
 	/**
@@ -73,8 +114,13 @@ class DynamicContentACFUtils {
 	 * @return array Array of ACF field info with field names as keys and labels as values.
 	 */
 	public static function get_acf_field_info( string $meta_type ): array {
+		if ( isset( self::$_acf_field_info_cache[ $meta_type ] ) ) {
+			return self::$_acf_field_info_cache[ $meta_type ];
+		}
+
 		if ( ! self::is_acf_active() || ! function_exists( 'acf_get_field_groups' ) ) {
-			return [];
+			self::$_acf_field_info_cache[ $meta_type ] = [];
+			return self::$_acf_field_info_cache[ $meta_type ];
 		}
 
 		// Check permissions for user meta access.
@@ -89,15 +135,16 @@ class DynamicContentACFUtils {
 		// Include all field groups for all meta types (post, user, term) to ensure
 		// ACF fields are available regardless of location rules. This matches the
 		// behavior where user ACF fields appear when post type is selected for loops.
-		$field_groups = acf_get_field_groups();
+		$field_groups = self::_get_acf_field_groups();
 
 		if ( empty( $field_groups ) ) {
-			return [];
+			self::$_acf_field_info_cache[ $meta_type ] = [];
+			return self::$_acf_field_info_cache[ $meta_type ];
 		}
 
 		foreach ( $field_groups as $group ) {
 			// Get fields from this group.
-			$fields = acf_get_fields( $group['ID'] );
+			$fields = self::_get_acf_fields_for_group( $group['ID'] );
 
 			if ( empty( $fields ) ) {
 				continue;
@@ -122,7 +169,47 @@ class DynamicContentACFUtils {
 			}
 		}
 
-		return $acf_fields;
+		self::$_acf_field_info_cache[ $meta_type ] = $acf_fields;
+
+		return self::$_acf_field_info_cache[ $meta_type ];
+	}
+
+	/**
+	 * Get cached ACF field groups for the current request.
+	 *
+	 * @since ??
+	 *
+	 * @return array
+	 */
+	private static function _get_acf_field_groups(): array {
+		if ( null !== self::$_acf_field_groups_cache ) {
+			return self::$_acf_field_groups_cache;
+		}
+
+		$field_groups                  = acf_get_field_groups();
+		self::$_acf_field_groups_cache = is_array( $field_groups ) ? $field_groups : [];
+
+		return self::$_acf_field_groups_cache;
+	}
+
+	/**
+	 * Get cached ACF fields for a group ID for the current request.
+	 *
+	 * @since ??
+	 *
+	 * @param int $group_id ACF field group ID.
+	 *
+	 * @return array
+	 */
+	private static function _get_acf_fields_for_group( int $group_id ): array {
+		if ( isset( self::$_acf_fields_by_group_cache[ $group_id ] ) ) {
+			return self::$_acf_fields_by_group_cache[ $group_id ];
+		}
+
+		$fields                                        = acf_get_fields( $group_id );
+		self::$_acf_fields_by_group_cache[ $group_id ] = is_array( $fields ) ? $fields : [];
+
+		return self::$_acf_fields_by_group_cache[ $group_id ];
 	}
 
 	/**

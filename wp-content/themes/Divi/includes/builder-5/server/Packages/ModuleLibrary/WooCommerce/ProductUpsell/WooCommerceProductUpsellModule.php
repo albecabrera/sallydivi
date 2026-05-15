@@ -962,7 +962,13 @@ class WooCommerceProductUpsellModule implements DependencyInterface {
 		// (via `woocommerce_product_class` filter) so related product can output visible content based on pre-filled value in TB.
 		// Note: sanitize_text_fields() converts booleans to strings ('1' for true, '' for false),
 		// so we check for both boolean true and string representations.
+		$added_product_class_filter = false;
+
 		if ( in_array( $is_tb, [ true, '1', 'true', 1 ], true ) || is_et_pb_preview() ) {
+			// Ensure product class filters are removed before querying upsells to avoid recursion.
+			remove_filter( 'woocommerce_product_class', 'et_theme_builder_wc_product_class' );
+			remove_filter( 'woocommerce_product_class', [ WooCommerceUtils::class, 'divi_theme_builder_wc_product_class' ] );
+
 			// Set upsells id; adjust it with module's arguments. This is specifically needed if
 			// the module is fetching the value via REST API because some fields no longer use default value.
 			WooCommerceProductVariablePlaceholder::set_tb_upsells_ids(
@@ -971,8 +977,8 @@ class WooCommerceProductUpsellModule implements DependencyInterface {
 				]
 			);
 
-			remove_filter( 'woocommerce_product_class', 'et_theme_builder_wc_product_class' );
 			add_filter( 'woocommerce_product_class', [ WooCommerceUtils::class, 'divi_theme_builder_wc_product_class' ] );
+			$added_product_class_filter = true;
 		}
 
 		$is_offset_valid = absint( $offset_number ) > 0;
@@ -1024,6 +1030,10 @@ class WooCommerceProductUpsellModule implements DependencyInterface {
 			remove_filter( 'woocommerce_product_get_upsell_ids', [ self::class, 'apply_offset_to_upsell_ids' ], 10 );
 
 			self::$offset = 0;
+		}
+
+		if ( $added_product_class_filter ) {
+			remove_filter( 'woocommerce_product_class', [ WooCommerceUtils::class, 'divi_theme_builder_wc_product_class' ] );
 		}
 
 		return $output;

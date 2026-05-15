@@ -54,19 +54,8 @@
             }
           }
         },
-        "border": {
-          "propertySelectors": {
-            "desktop": {
-              "value": {
-                "border-radius": "{{selector}}.et_pb_contact_form_container .input, {{selector}}.et_pb_contact_form_container .input[type=\"checkbox\"] + label i, {{selector}}.et_pb_contact_form_container .input[type=\"radio\"] + label i",
-                "border-style": "{{selector}}.et_pb_contact_form_container .input, {{selector}}.et_pb_contact_form_container .input[type=\"checkbox\"] + label i, {{selector}}.et_pb_contact_form_container .input[type=\"radio\"] + label i"
-              }
-            }
-          }
-        },
-        "boxShadow": {
-          "selector": "{{selector}} .et_pb_contact_field input, {{selector}} .et_pb_contact_field select, {{selector}} .et_pb_contact_field textarea, {{selector}} .et_pb_contact_field .et_pb_contact_field_options_list label > i, {{selector}} input.et_pb_contact_captcha"
-        },
+        "border": {},
+        "boxShadow": {},
         "layout": {
           "selector": "{{selector}} .et_pb_contact_form"
         }
@@ -136,13 +125,7 @@
           "animation": {},
           "attributes": {},
           "background": {},
-          "border": {
-            "component": {
-              "props": {
-                "fieldLabel": "Inputs"
-              }
-            }
-          },
+          "border": {},
           "boxShadow": {},
           "conditions": {},
           "disabledOn": {},
@@ -253,25 +236,55 @@
     "field": {
       "type": "object",
       "elementType": "field",
-      "selector": "{{selector}} .input",
+      "selector": "{{selector}} .input:not([type=checkbox]):not([type=radio])",
       "styleProps": {
-        "selector": "{{selector}} .input",
+        "selector": "{{selector}} .input:not([type=checkbox]):not([type=radio])",
         "selectors": {
           "desktop": {
-            "value": "{{selector}}.et_pb_contact_form_container .input, {{selector}}.et_pb_contact_form_container .input::placeholder, {{selector}}.et_pb_contact_form_container .input::-webkit-input-placeholder, {{selector}}.et_pb_contact_form_container .input::-moz-placeholder, {{selector}}.et_pb_contact_form_container .input:-ms-input-placeholder, {{selector}}.et_pb_contact_form_container .input[type=checkbox] + label, {{selector}}.et_pb_contact_form_container .input[type=radio] + label",
-            "hover": "{{selector}}.et_pb_contact_form_container .input:hover, {{selector}}.et_pb_contact_form_container .input:hover::placeholder, {{selector}}.et_pb_contact_form_container .input:hover::-webkit-input-placeholder, {{selector}}.et_pb_contact_form_container .input:hover::-moz-placeholder, {{selector}}.et_pb_contact_form_container .input:hover:-ms-input-placeholder, {{selector}}.et_pb_contact_form_container .input[type=checkbox]:hover + label, {{selector}}.et_pb_contact_form_container .input[type=radio]:hover + label"
+            "value": "{{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]), {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio])::placeholder, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio])::-webkit-input-placeholder, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio])::-moz-placeholder, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]):-ms-input-placeholder",
+            "hover": "{{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]):hover, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]):hover::placeholder, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]):hover::-webkit-input-placeholder, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]):hover::-moz-placeholder, {{selector}}.et_pb_contact_form_container .input:not([type=checkbox]):not([type=radio]):hover:-ms-input-placeholder"
           }
         }
       },
       "settings": {
-        "decoration": {
-          "background": {},
-          "font": {},
-          "spacing": {}
-        },
-        "advanced": {
-          "focus": {}
+        "decoration": {},
+        "advanced": {}
+      }
+    },
+    "checkbox": {
+      "type": "object",
+      "elementType": "field",
+      "selector": "{{selector}} [type=checkbox]",
+      "styleProps": {
+        "selector": "{{selector}} [type=checkbox]",
+        "selectors": {
+          "desktop": {
+            "value": "{{selector}}.et_pb_contact_form_container .input[type=checkbox] + label i",
+            "hover": "{{selector}}.et_pb_contact_form_container .input[type=checkbox]:hover + label i"
+          }
         }
+      },
+      "settings": {
+        "decoration": {},
+        "advanced": {}
+      }
+    },
+    "radio": {
+      "type": "object",
+      "elementType": "field",
+      "selector": "{{selector}} [type=radio]",
+      "styleProps": {
+        "selector": "{{selector}} [type=radio]",
+        "selectors": {
+          "desktop": {
+            "value": "{{selector}}.et_pb_contact_form_container .input[type=radio] + label i",
+            "hover": "{{selector}}.et_pb_contact_form_container .input[type=radio]:hover + label i"
+          }
+        }
+      },
+      "settings": {
+        "decoration": {},
+        "advanced": {}
       }
     },
     "button": {
@@ -570,11 +583,45 @@
         "groupName": "field",
         "multiElements": true,
         "component": {
-          "name": "divi/composite",
+          "name": "divi/form-field",
           "props": {
             "groupLabel": "Fields",
             "clipboardCategory": "style",
-            "dynamicSubgroupHost": true
+            "attrName": "field",
+            "dynamicSubgroupHost": true,
+            "useComponentNameAsPresetGroup": true
+          }
+        }
+      },
+      "designFieldCheckbox": {
+        "panel": "design",
+        "priority": 10,
+        "groupName": "checkbox",
+        "multiElements": true,
+        "component": {
+          "name": "divi/checkbox",
+          "props": {
+            "groupLabel": "Checkbox",
+            "clipboardCategory": "style",
+            "attrName": "checkbox",
+            "dynamicSubgroupHost": true,
+            "useComponentNameAsPresetGroup": true
+          }
+        }
+      },
+      "designFieldRadio": {
+        "panel": "design",
+        "priority": 10,
+        "groupName": "radio",
+        "multiElements": true,
+        "component": {
+          "name": "divi/radio",
+          "props": {
+            "groupLabel": "Radio",
+            "clipboardCategory": "style",
+            "attrName": "radio",
+            "dynamicSubgroupHost": true,
+            "useComponentNameAsPresetGroup": true
           }
         }
       }

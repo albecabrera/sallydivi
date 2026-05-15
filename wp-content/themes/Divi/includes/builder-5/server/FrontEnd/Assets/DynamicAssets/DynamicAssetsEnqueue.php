@@ -343,6 +343,11 @@ class DynamicAssetsEnqueue {
 	 * @since 4.10.0
 	 */
 	public function enqueue_dynamic_assets(): void {
+		// Dynamic frontend assets are not required in the VB top window.
+		if ( Conditions::is_vb_top_window() ) {
+			return;
+		}
+
 		$dynamic_assets = $this->get_dynamic_assets_files();
 
 		if ( empty( $dynamic_assets ) || ! DynamicAssetsUtils::use_dynamic_assets() ) {
@@ -633,8 +638,7 @@ class DynamicAssetsEnqueue {
 	 * @param string $request_type whether early or late request.
 	 */
 	public function enqueue_dynamic_scripts( string $request_type = 'early' ): void {
-		// No need to print dynamic scripts on Visual Builder's top window because no frontend is being rendered
-		// nor processed in VB's top window. Short-circuiting it to make it render as small possible element.
+		// Dynamic frontend scripts are not required in the VB top window.
 		if ( Conditions::is_vb_top_window() ) {
 			return;
 		}

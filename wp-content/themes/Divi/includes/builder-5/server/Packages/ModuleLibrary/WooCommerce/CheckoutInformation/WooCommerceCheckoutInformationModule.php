@@ -30,7 +30,6 @@ use ET\Builder\Packages\Module\Options\Element\ElementStyle;
 use ET\Builder\Packages\Module\Options\FormField\FormFieldStyle;
 use ET\Builder\Packages\Module\Options\Text\TextClassnames;
 use ET\Builder\Packages\ModuleLibrary\ModuleRegistration;
-use ET\Builder\Packages\StyleLibrary\Utils\StyleDeclarations;
 use ET\Builder\Framework\Utility\Conditions;
 use ET\Builder\Packages\WooCommerce\WooCommerceHooks;
 use ET\Builder\Packages\WooCommerce\WooCommerceUtils;
@@ -389,37 +388,6 @@ class WooCommerceCheckoutInformationModule implements DependencyInterface {
 							'attrName' => 'title',
 						]
 					),
-					// Field Custom Styles added via custom style declarations functions.
-					ElementStyle::style(
-						[
-							'selector'               => "{$order_class} form .form-row .input-text:focus",
-							'attrs'                  => [
-								'font'       => $attrs['field']['advanced']['focus']['font'] ?? [],
-								'background' => $attrs['field']['advanced']['focus']['background'] ?? [],
-							],
-							'orderClass'             => $order_class,
-							'isInsideStickyModule'   => $is_inside_sticky_module,
-							'stickyParentOrderClass' => $sticky_parent_order_class,
-							'advancedStyles'         => [
-								[
-									'componentName' => 'divi/common',
-									'props'         => [
-										'selector' => "{$order_class} form .form-row .input-text:focus",
-										'attr'     => $attrs['field']['advanced']['focus']['background'] ?? [],
-										'declarationFunction' => [ self::class, 'field_focus_background_color_style_declaration' ],
-									],
-								],
-								[
-									'componentName' => 'divi/common',
-									'props'         => [
-										'selector' => "{$order_class} form .form-row .input-text:focus",
-										'attr'     => $attrs['field']['advanced']['focus']['font']['font'] ?? [],
-										'declarationFunction' => [ self::class, 'field_focus_text_color_style_declaration' ],
-									],
-								],
-							],
-						]
-					),
 					// Field.
 					FormFieldStyle::style(
 						[
@@ -435,6 +403,54 @@ class WooCommerceCheckoutInformationModule implements DependencyInterface {
 											'value' => [
 												'border-radius' => "{$order_class} form .form-row textarea.input-text",
 												'border-style'  => "{$order_class} form .form-row textarea.input-text",
+											],
+										],
+									],
+								],
+								'label' => [
+									'font' => [
+										'font'       => [
+											'desktop' => [
+												'value' => array_fill_keys(
+													[
+														'color',
+														'font-family',
+														'font-size',
+														'font-style',
+														'font-weight',
+														'letter-spacing',
+														'line-height',
+														'text-align',
+														'text-decoration',
+														'text-transform',
+													],
+													"{$order_class} form .form-row label"
+												),
+												'hover' => array_fill_keys(
+													[
+														'color',
+														'font-family',
+														'font-size',
+														'font-style',
+														'font-weight',
+														'letter-spacing',
+														'line-height',
+														'text-align',
+														'text-decoration',
+														'text-transform',
+													],
+													"{$order_class} form .form-row label:hover"
+												),
+											],
+										],
+										'textShadow' => [
+											'desktop' => [
+												'value' => [
+													'text-shadow' => "{$order_class} form .form-row label",
+												],
+												'hover' => [
+													'text-shadow' => "{$order_class} form .form-row label:hover",
+												],
 											],
 										],
 									],
@@ -455,14 +471,39 @@ class WooCommerceCheckoutInformationModule implements DependencyInterface {
 							],
 						]
 					),
-
-					// Field Labels.
-					$elements->style(
+					// Placeholder styles from migrated placeholder group.
+					ElementStyle::style(
 						[
-							'attrName' => 'fieldLabels',
+							'selector'               => implode(
+								', ',
+								[
+									"{$order_class} form .form-row input.input-text",
+									"{$order_class} form .form-row textarea.input-text",
+								]
+							),
+							'attrs'                  => [
+								'font' => $attrs['field']['decoration']['placeholderFont'] ?? [],
+							],
+							'orderClass'             => $order_class,
+							'isInsideStickyModule'   => $is_inside_sticky_module,
+							'stickyParentOrderClass' => $sticky_parent_order_class,
+							'font'                   => [
+								'selectorFunction' => function ( $params ) {
+									$maybe_multiple_selectors = $params['selector'] ?? '';
+									$base_selectors           = array_map( 'trim', explode( ',', $maybe_multiple_selectors ) );
+									$placeholder_selectors    = [];
+
+									// Generate placeholder pseudo-element selector for each base selector.
+									foreach ( $base_selectors as $selector ) {
+										$placeholder_selectors[] = "{$selector}::placeholder";
+									}
+
+									return implode( ', ', $placeholder_selectors );
+								},
+								'important'        => true,
+							],
 						]
 					),
-
 					// Module - Only for Custom CSS.
 					CssStyle::style(
 						[
@@ -474,68 +515,6 @@ class WooCommerceCheckoutInformationModule implements DependencyInterface {
 				],
 			]
 		);
-	}
-
-	/**
-	 * Style declaration for WooCommerce Checkout Additional Info field focus background color.
-	 *
-	 * @since ??
-	 *
-	 * @param array $params {
-	 *     Style declaration params.
-	 *
-	 *     @type array $attrValue Background color attribute value.
-	 * }
-	 *
-	 * @return string CSS declarations.
-	 */
-	public static function field_focus_background_color_style_declaration( array $params ): string {
-		$attr_value = $params['attrValue'] ?? [];
-		$color      = $attr_value['color'] ?? '';
-
-		$declarations = new StyleDeclarations(
-			[
-				'returnType' => 'string',
-				'important'  => false,
-			]
-		);
-
-		if ( ! empty( $color ) ) {
-			$declarations->add( 'background-color', $color );
-		}
-
-		return $declarations->value();
-	}
-
-	/**
-	 * Style declaration for WooCommerce Checkout Additional Info field focus text color.
-	 *
-	 * @since ??
-	 *
-	 * @param array $params {
-	 *     Style declaration params.
-	 *
-	 *     @type array $attrValue Text color attribute value.
-	 * }
-	 *
-	 * @return string CSS declarations.
-	 */
-	public static function field_focus_text_color_style_declaration( array $params ): string {
-		$attr_value = $params['attrValue'] ?? [];
-		$color      = $attr_value['color'] ?? '';
-
-		$declarations = new StyleDeclarations(
-			[
-				'returnType' => 'string',
-				'important'  => false,
-			]
-		);
-
-		if ( ! empty( $color ) ) {
-			$declarations->add( 'color', $color );
-		}
-
-		return $declarations->value();
 	}
 
 	/**

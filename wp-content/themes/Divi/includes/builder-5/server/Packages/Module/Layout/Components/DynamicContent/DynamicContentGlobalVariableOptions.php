@@ -138,18 +138,48 @@ class DynamicContentGlobalVariableOptions extends DynamicContentOptionBase imple
 		$name    = $data_args['name'] ?? '';
 		$post_id = $data_args['post_id'] ?? null;
 
-		if ( strpos( $name, $this->get_name() ) !== 0 ) {
+		if ( ! str_starts_with( $name, $this->get_name() ) ) {
 			return $value;
 		}
 
-		$value = $this->get_variable_value_by_id( $name );
+		$value         = $this->get_variable_value_by_id( $name );
+		$variable_type = $this->get_variable_type_by_id( $name );
+
+		// For string variables, allow safe HTML rendering; otherwise escape HTML.
+		if ( 'strings' === $variable_type ) {
+			$sanitized_value = wp_kses_post( $value );
+		} else {
+			$sanitized_value = esc_html( $value );
+		}
 
 		return DynamicContentElements::get_wrapper_element(
 			[
 				'post_id' => $post_id,
 				'name'    => $name,
-				'value'   => esc_html( $value ),
+				'value'   => $sanitized_value,
 			]
 		);
+	}
+
+	/**
+	 * Get the type of a global variable by its id.
+	 *
+	 * @since ??
+	 *
+	 * @param string $id The id of the global variable.
+	 *
+	 * @return string The type of the global variable (e.g., 'strings', 'numbers', 'fonts', etc.).
+	 */
+	public function get_variable_type_by_id( $id ) {
+		foreach ( GlobalData::get_global_variables() as $variable_type => $variables ) {
+			if ( is_object( $variables ) ) {
+				foreach ( $variables as $variable ) {
+					if ( isset( $variable['id'] ) && $variable['id'] === $id ) {
+						return $variable_type;
+					}
+				}
+			}
+		}
+		return '';
 	}
 }
