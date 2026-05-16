@@ -1154,6 +1154,22 @@ body.page-id-987550606 .social_about_img img {
     display: none !important;
 }
 
+/* ── Eliminar espacio entre header y hero ─────────────────────────────────── */
+/* La cadena entry-content → et-l--post → et_builder_inner_content puede
+   acumular padding/margin del tema padre que separa visualmente el hero del header. */
+.entry-content,
+.et-l--post,
+.et_builder_inner_content {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+/* Hero fullwidth section: sin margen superior propio */
+.et_pb_fullwidth_section:first-of-type,
+.et_pb_section_0.et_pb_fullwidth_section {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
 /* ── Footer: fondo igual al header (#f9f9f9) + texto oscuro para contraste ───
    Divi inyecta su CSS en un <style> inline DESPUÉS del child theme, así que
    con igual !important gana Divi. Solución: usar más clases en el selector
