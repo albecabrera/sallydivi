@@ -4,6 +4,8 @@
  *
  * (Please see https://developer.wordpress.org/themes/advanced-topics/child-themes/#how-to-create-a-child-theme)
  */
+
+require_once get_stylesheet_directory() . '/inc/instagram-api.php';
 add_action( 'wp_enqueue_scripts', 'child_theme_divi_enqueue_styles' );
 function child_theme_divi_enqueue_styles() {
 	wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
@@ -31,6 +33,7 @@ function bh_enqueue_main_script() {
 		'datenschutzUrl'   => $datenschutz_page ? get_permalink( $datenschutz_page ) : home_url( '/datenschutz/' ),
 		'carouselEndpoint' => rest_url( 'bh/v1/ig-sally-latest' ),
 		'isWechseljahre'   => (int) is_page( 'wechseljahrecoaching' ),
+		'googleFontsUrl'   => 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap',
 	) );
 }
 
@@ -54,15 +57,10 @@ function bh_replace_viewport( $html ) {
 //    connection while the HTML is still being parsed (saves ~150-300 ms).
 add_action( 'wp_head', 'bh_preconnect_fonts', 1 );
 function bh_preconnect_fonts() {
-    // Preconnect: eliminates DNS + TLS handshake latency for critical origins
-    echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
-    echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
-    // DNS-prefetch: fallback for browsers that don't support preconnect
-    echo '<link rel="dns-prefetch" href="https://fonts.googleapis.com">' . "\n";
-    echo '<link rel="dns-prefetch" href="https://fonts.gstatic.com">' . "\n";
-    // Preload Roboto 400 + 700 (the two weights used site-wide) so they're
-    // fetched before the render-blocking Google Fonts stylesheet resolves.
-    echo '<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">' . "\n";
+    // Google Fonts se cargan condicionalmente desde JS tras el cookie consent (DSGVO).
+    // Solo dns-prefetch aquí — preconnect y preload omitidos (harían TCP/TLS con Google sin consentimiento).
+    echo '<link rel="dns-prefetch" href="//fonts.googleapis.com">' . "\n";
+    echo '<link rel="dns-prefetch" href="//fonts.gstatic.com">' . "\n";
 }
 
 // 3. Remove WordPress emoji scripts/styles – they add an extra HTTP request
@@ -279,7 +277,10 @@ function bh_schema_json_ld() {
                 'name'     => $name,
                 'url'      => $url,
                 'jobTitle' => 'Menopause Coach',
-                'sameAs'   => [],
+                'sameAs'   => [
+                    'https://www.instagram.com/sally_bolinger/',
+                    'https://www.facebook.com/sally.bolinger',
+                ],
             ],
         ],
     ];
@@ -288,6 +289,19 @@ function bh_schema_json_ld() {
         . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES )
         . '</script>' . "\n";
 }
+
+// ── Skip link (accesibilidad) ────────────────────────────────────────────────
+add_action( 'wp_body_open', function() {
+    echo '<a class="bh-skip-link" href="#main-content">Zum Inhalt springen</a>' . "\n";
+} );
+
+// ── 404: título en alemán ────────────────────────────────────────────────────
+add_filter( 'document_title_parts', function( $parts ) {
+	if ( is_404() ) {
+		$parts['title'] = 'Seite nicht gefunden';
+	}
+	return $parts;
+} );
 
 // COPYRIGHT JAHR ALS SHORTCODE ///////////////////////////////////////////////
 function bh_year_shortcode( $atts ) {
@@ -371,7 +385,7 @@ function bh_ensure_impressum_page() {
 	) );
 }
 
-// ── Über mich: Instagram carousel (latest 4 posts) ──────────────────────────
+// ── Über mich: Instagram carousel (latest 4 posts via Graph API) ─────────────
 add_action( 'rest_api_init', function () {
 	register_rest_route( 'bh/v1', '/ig-sally-latest', array(
 		'methods'             => 'GET',
@@ -381,51 +395,38 @@ add_action( 'rest_api_init', function () {
 } );
 
 function bh_ig_sally_latest_endpoint() {
-	$username = 'sally_bolinger';
-	$urls     = array();
+	// 1. Graph API (si hay token guardado)
+	delete_transient( 'bh_ig_latest_posts_v1' );
+	$posts = bh_ig_get_latest_posts();
+	if ( ! empty( $posts ) ) return rest_ensure_response( array( 'posts' => $posts ) );
 
-	$api_res = wp_remote_get(
+	// 2. Scraping de Instagram (funciona en producción, falla en localhost)
+	$username = 'sally_bolinger';
+	$api_res  = wp_remote_get(
 		"https://i.instagram.com/api/v1/users/web_profile_info/?username={$username}",
-		array(
-			'timeout' => 12,
-			'headers' => array(
-				'User-Agent'      => 'Mozilla/5.0',
-				'x-ig-app-id'     => '936619743392459',
-				'Accept'          => 'application/json',
-			),
-		)
+		array( 'timeout' => 10, 'headers' => array( 'User-Agent' => 'Mozilla/5.0', 'x-ig-app-id' => '936619743392459' ) )
 	);
 	if ( ! is_wp_error( $api_res ) && wp_remote_retrieve_response_code( $api_res ) === 200 ) {
-		$data = json_decode( wp_remote_retrieve_body( $api_res ), true );
+		$data  = json_decode( wp_remote_retrieve_body( $api_res ), true );
 		$edges = $data['data']['user']['edge_owner_to_timeline_media']['edges'] ?? array();
 		foreach ( $edges as $edge ) {
-			$shortcode = $edge['node']['shortcode'] ?? '';
-			if ( $shortcode ) $urls[] = "https://www.instagram.com/p/{$shortcode}/";
-			if ( count( $urls ) >= 4 ) break;
+			$sc = $edge['node']['shortcode'] ?? '';
+			if ( $sc ) $posts[] = "https://www.instagram.com/p/{$sc}/";
+			if ( count( $posts ) >= 4 ) break;
 		}
 	}
-
-	if ( count( $urls ) < 4 ) {
-		$html_res = wp_remote_get( "https://www.instagram.com/{$username}/", array( 'timeout' => 12 ) );
-		if ( ! is_wp_error( $html_res ) && wp_remote_retrieve_response_code( $html_res ) === 200 ) {
-			$html = wp_remote_retrieve_body( $html_res );
-			if ( preg_match_all( '#href="/p/([A-Za-z0-9_-]+)/"#', $html, $m ) ) {
-				foreach ( array_values( array_unique( $m[1] ) ) as $sc ) {
-					$urls[] = "https://www.instagram.com/p/{$sc}/";
-					if ( count( $urls ) >= 4 ) break;
-				}
-			}
-		}
+	if ( ! empty( $posts ) ) {
+		set_transient( 'bh_ig_latest_posts_v1', $posts, 600 );
+		return rest_ensure_response( array( 'posts' => $posts ) );
 	}
 
-	return rest_ensure_response( array(
-		'account' => $username,
-		'posts'   => array_slice( array_values( array_unique( $urls ) ), 0, 4 ),
-	) );
+	// 3. URLs manuales (Settings → Instagram Feed)
+	$manual = get_option( 'bh_ig_manual_urls', array() );
+	$posts  = array_slice( array_filter( array_values( $manual ) ), 0, 4 );
+	return rest_ensure_response( array( 'posts' => $posts ) );
 }
 
-
-// ── Force render of shortcode feed on Über mich (Divi builder-safe) ─────────
+// ── (Legacy: custom shortcode feed — desactivado) ─────────────────────────────
 // add_action( 'wp_footer', 'bh_force_sally_instagram_shortcode_render', 170 );
 function bh_force_sally_instagram_shortcode_render() {
 	if ( ! is_page( 'ueber-uns' ) && ! is_page( 987550606 ) ) return;

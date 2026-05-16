@@ -187,7 +187,7 @@
                     var t = norm(node.textContent);
                     if (!t) return;
                     if (t === 'impressum | datenschutz' || t === 'impressum|datenschutz') {
-                        node.innerHTML = '<p>Design &amp; Entwicklung: <a href="https://deinewebseite.de">Alberto Cabrera</a></p>';
+                        node.innerHTML = '<p>Design &amp; Entwicklung: <a class="bh-dev-credit" href="https://deinewebseite.de">Alberto Cabrera</a></p>';
                     }
                 });
             });
@@ -279,28 +279,75 @@
     }
 
     // ── 6. Instagram carousel ───────────────────────────────────────────────────
+    // ── 6. Instagram carousel (blockquote embeds) ──────────────────────────────
     function initCarousel() {
         var endpoint = cfg.carouselEndpoint || '';
         if (!endpoint) return;
+        var onHome = document.body.classList.contains('page-id-987550602');
+        if (!onHome) return;
 
-        function mountCarousel() {
-            var existingWrap = document.getElementById('bh-ig-carousel-wrap');
-            if (existingWrap) {
-                existingWrap.style.display = 'block';
-                if (existingWrap.querySelector('.instagram-media, iframe, .sbi_item')) return;
-                existingWrap.remove();
-            }
+        var currentUrls = [];
 
-            var readMoreBtn = Array.from(document.querySelectorAll('a,button,.et_pb_button'))
-                .find(function (el) { return norm(el.textContent) === 'read more'; });
-            var marker = readMoreBtn || Array.from(document.querySelectorAll('h1,h2,h3,h4,p,strong,.et_pb_text_inner'))
-                .find(function (el) { return norm(el.textContent).indexOf('meine letztes feeds') !== -1; });
-            if (!marker) return;
+        function toEmbedUrl(postUrl) {
+            var m = postUrl.match(/instagram\.com\/p\/([A-Za-z0-9_-]+)/);
+            return m ? 'https://www.instagram.com/p/' + m[1] + '/embed/' : null;
+        }
 
-            fetch(endpoint)
+        function buildTrack(track, posts) {
+            track.innerHTML = '';
+            posts.slice(0, 4).forEach(function (url, idx) {
+                var embedUrl = toEmbedUrl(url);
+                if (!embedUrl) return;
+                var item = document.createElement('div');
+                item.className = 'bh-ig-item';
+                item.style.animationDelay = ((idx + 1) * 0.08).toFixed(2) + 's';
+                var iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('scrolling', 'no');
+                iframe.setAttribute('allowtransparency', 'true');
+                iframe.setAttribute('loading', 'lazy');
+                item.appendChild(iframe);
+                track.appendChild(item);
+            });
+        }
+
+        function refreshCarousel() {
+            var wrap = document.getElementById('bh-ig-carousel-wrap');
+            if (!wrap) return;
+            var track = wrap.querySelector('.bh-ig-track');
+            if (!track) return;
+            fetch(endpoint + '?t=' + Date.now())
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
                     if (!data || !Array.isArray(data.posts) || !data.posts.length) return;
+                    var newUrls = data.posts.slice(0, 4);
+                    if (newUrls.join('|') === currentUrls.join('|')) return;
+                    currentUrls = newUrls;
+                    track.style.opacity = '0';
+                    setTimeout(function () {
+                        buildTrack(track, newUrls);
+                        track.style.opacity = '1';
+                    }, 400);
+                }).catch(function () {});
+        }
+
+        function findAnchor() {
+            var el = Array.from(document.querySelectorAll('.et_pb_text_inner, .et_pb_heading_container'))
+                .find(function (e) { return /meine letzte[s]?\s+feeds/i.test(e.textContent); });
+            return el ? el.closest('.et_pb_section') : null;
+        }
+
+        function mount() {
+            if (document.getElementById('bh-ig-carousel-wrap')) return;
+            var anchor = findAnchor();
+            if (!anchor) return;
+
+            fetch(endpoint + '?t=' + Date.now())
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (!data || !Array.isArray(data.posts) || !data.posts.length) return;
+                    currentUrls = data.posts.slice(0, 4);
 
                     var wrap = document.createElement('div');
                     wrap.id = 'bh-ig-carousel-wrap';
@@ -310,28 +357,8 @@
                         '<button type="button" class="bh-ig-nav bh-ig-next" aria-label="Weiter">&#8250;</button>' +
                         '</div>';
                     var track = wrap.querySelector('.bh-ig-track');
-
-                    data.posts.slice(0, 4).forEach(function (url) {
-                        var item = document.createElement('div');
-                        item.className = 'bh-ig-item';
-                        var bq = document.createElement('blockquote');
-                        bq.className = 'instagram-media';
-                        bq.setAttribute('data-instgrm-permalink', url);
-                        bq.setAttribute('data-instgrm-version', '14');
-                        item.appendChild(bq);
-                        track.appendChild(item);
-                    });
-
-                    var row = marker.closest('.et_pb_row');
-                    if (row) {
-                        row.classList.add('bh-feed-block-center');
-                        row.insertAdjacentElement('afterend', wrap);
-                    } else {
-                        var anchor = marker.closest('.et_pb_button_module_wrapper') ||
-                            marker.closest('.et_pb_module') || marker;
-                        anchor.insertAdjacentElement('afterend', wrap);
-                    }
-                    wrap.style.display = 'block';
+                    buildTrack(track, currentUrls);
+                    anchor.insertAdjacentElement('afterend', wrap);
 
                     wrap.querySelector('.bh-ig-prev').addEventListener('click', function () {
                         track.scrollBy({ left: -320, behavior: 'smooth' });
@@ -340,26 +367,14 @@
                         track.scrollBy({ left: 320, behavior: 'smooth' });
                     });
 
-                    if (!document.getElementById('instagram-embed-js')) {
-                        var s = document.createElement('script');
-                        s.id = 'instagram-embed-js';
-                        s.async = true;
-                        s.src = 'https://www.instagram.com/embed.js';
-                        s.onload = function () {
-                            if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
-                        };
-                        document.body.appendChild(s);
-                    } else if (window.instgrm && window.instgrm.Embeds) {
-                        window.instgrm.Embeds.process();
-                    }
-                })
-                .catch(function () {});
+                    setInterval(refreshCarousel, 600000);
+                }).catch(function () {});
         }
 
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', mountCarousel);
+            document.addEventListener('DOMContentLoaded', mount);
         } else {
-            mountCarousel();
+            mount();
         }
     }
 
@@ -431,6 +446,79 @@
         window.addEventListener('load', function () { if (!intentional) hide(); });
     }
 
+    // ── 8. 404 enhancements ─────────────────────────────────────────────────────
+    function init404() {
+        if (!document.body.classList.contains('error404')) return;
+
+        // Translate "Back to Home" button to German
+        document.querySelectorAll('a.et_pb_button, .et_pb_button').forEach(function (btn) {
+            if ((btn.textContent || '').trim().toLowerCase() === 'back to home') {
+                btn.textContent = 'Zur Startseite';
+            }
+        });
+
+        // Inject a human-readable explanation after the "Error 404" heading
+        var headings = Array.from(document.querySelectorAll('h2, h1'));
+        var errorHeading = headings.find(function (h) {
+            return /error\s*404/i.test(h.textContent);
+        });
+        if (errorHeading && !document.getElementById('bh-404-msg')) {
+            var msg = document.createElement('h1');
+            msg.id = 'bh-404-msg';
+            msg.textContent = 'Diese Seite existiert leider nicht. Bitte überprüfe die URL oder kehre zur Startseite zurück.';
+            errorHeading.insertAdjacentElement('afterend', msg);
+        }
+    }
+
+    // ── 9. Cookie consent banner ────────────────────────────────────────────────
+    function initCookieBanner() {
+        var KEY = 'bh-cookie-consent';
+        var fontsUrl = cfg.googleFontsUrl || '';
+
+        function loadFonts() {
+            if (!fontsUrl || document.getElementById('bh-gfonts')) return;
+            var link = document.createElement('link');
+            link.id = 'bh-gfonts';
+            link.rel = 'stylesheet';
+            link.href = fontsUrl;
+            document.head.appendChild(link);
+        }
+
+        var consent = localStorage.getItem(KEY);
+        if (consent === 'accepted') { loadFonts(); return; }
+        if (consent === 'declined') { return; }
+
+        var datenschutzUrl = cfg.datenschutzUrl || '/datenschutz/';
+
+        var banner = document.createElement('div');
+        banner.id = 'bh-cookie-banner';
+        banner.setAttribute('role', 'dialog');
+        banner.setAttribute('aria-labelledby', 'bh-cookie-msg');
+        banner.innerHTML =
+            '<div class="bh-cookie-inner">' +
+                '<p id="bh-cookie-msg">Wir verwenden technisch notwendige Cookies sowie <strong>Google Fonts</strong> ' +
+                'für ein einheitliches Schriftbild. Weitere Infos in unserer ' +
+                '<a href="' + datenschutzUrl + '">Datenschutzerklärung</a>.</p>' +
+                '<div class="bh-cookie-actions">' +
+                    '<button id="bh-cookie-accept" type="button">Alle akzeptieren</button>' +
+                    '<button id="bh-cookie-decline" type="button">Nur notwendige</button>' +
+                '</div>' +
+            '</div>';
+
+        document.body.appendChild(banner);
+
+        document.getElementById('bh-cookie-accept').addEventListener('click', function () {
+            localStorage.setItem(KEY, 'accepted');
+            loadFonts();
+            banner.remove();
+        });
+
+        document.getElementById('bh-cookie-decline').addEventListener('click', function () {
+            localStorage.setItem(KEY, 'declined');
+            banner.remove();
+        });
+    }
+
     // ── Init ────────────────────────────────────────────────────────────────────
     initSidenav();
     initFooterMenu();
@@ -439,5 +527,7 @@
     initObjCleaner();
     initCarousel();
     if (cfg.isWechseljahre) initPopupGuard();
+    init404();
+    initCookieBanner();
 
 }(window.bhData || {}));

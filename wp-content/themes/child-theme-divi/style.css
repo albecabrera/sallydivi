@@ -968,14 +968,11 @@ body.bh-sidenav-open {
         max-width: 100% !important;
         width: 100% !important;
     }
-    /* Icono email (blurb module): reducir de 96px a 40px en mobile */
-    .et_pb_row:has(.et_pb_contact_form_container)
-    > .et_pb_column:not(:has(.et_pb_contact_form_container))
-    .et_pb_blurb_position_top_phone .et-pb-icon,
-    .et_pb_row:has(.et_pb_contact_form_container)
-    > .et_pb_column:not(:has(.et_pb_contact_form_container))
-    .et-pb-icon {
-        font-size: 40px !important;
+    /* Icono blurb: ocultar en mobile — encima de la foto es ruido visual */
+    .et_pb_row:has(.et_pb_contact_form_container) .et_pb_main_blurb_image,
+    .et_pb_row:has(.et_pb_contact_form_container) .et_pb_blurb_icon,
+    .et_pb_row:has(.et_pb_contact_form_container) .et-pb-icon {
+        display: none !important;
     }
 }
 
@@ -1296,35 +1293,170 @@ body #page-container a.et_pb_button:hover {
     box-shadow: 0 6px 18px rgba(180, 142, 149, 0.35) !important;
 }
 
-/* ── Instagram carousel ────────────────────────────────────────────────────── */
-#bh-ig-carousel-wrap { margin: 26px auto 0; width: 90%; max-width: 1200px; }
-.bh-feed-block-center { width: 90% !important; max-width: 1200px !important; margin-left: auto !important; margin-right: auto !important; }
-#bh-ig-carousel-wrap .bh-ig-row { display: flex; align-items: center; gap: 10px; }
-#bh-ig-carousel-wrap .bh-ig-track {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(260px, 1fr);
-    gap: 12px;
-    overflow-x: auto;
-    width: 100%;
-    padding: 2px;
-    scroll-snap-type: x mandatory;
+/* ── 404 explanatory message ────────────────────────────────────────────────── */
+#bh-404-msg {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 22px;
+    line-height: 1.5;
+    margin: 16px auto 28px;
+    max-width: 580px;
+    text-align: center;
 }
-#bh-ig-carousel-wrap .bh-ig-item { scroll-snap-align: start; background: #fff; border: 1px solid #eee; border-radius: 8px; overflow: hidden; }
-#bh-ig-carousel-wrap .instagram-media { min-width: 0 !important; width: 100% !important; max-width: 100% !important; margin: 0 !important; }
-#bh-ig-carousel-wrap .bh-ig-nav { width: 34px; height: 34px; border: 0; border-radius: 50%; background: #ddd; cursor: pointer; }
-@media (max-width: 1200px) {
-    #bh-ig-carousel-wrap,
-    .bh-feed-block-center { width: 90% !important; max-width: 90% !important; }
+
+/* ── Skip link ──────────────────────────────────────────────────────────────── */
+.bh-skip-link {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    z-index: 99999;
+    padding: 10px 20px;
+    background: #1a1a2e;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: top 0.15s;
+}
+.bh-skip-link:focus {
+    top: 0;
+}
+
+/* ── Cookie consent banner ─────────────────────────────────────────────────── */
+#bh-cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+    background: #fff;
+    border-top: 2px solid #c6a3aa;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+    padding: 16px 24px;
+    font-family: system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #2b2b2b;
+}
+.bh-cookie-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+.bh-cookie-inner p { flex: 1 1 280px; margin: 0; }
+.bh-cookie-inner a { color: #b48e95; text-decoration: underline; }
+.bh-cookie-actions { display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
+#bh-cookie-accept {
+    background: #c6a3aa;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-family: system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+#bh-cookie-accept:hover { background: #b48e95; }
+#bh-cookie-decline {
+    background: transparent;
+    color: #2b2b2b;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-family: system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+#bh-cookie-decline:hover { border-color: #c6a3aa; color: #c6a3aa; }
+@media (max-width: 600px) {
+    #bh-cookie-banner { padding: 14px 16px; }
+    .bh-cookie-inner { flex-direction: column; align-items: stretch; gap: 14px; }
+    .bh-cookie-actions { justify-content: stretch; }
+    #bh-cookie-accept,
+    #bh-cookie-decline { flex: 1; text-align: center; }
+}
+
+/* ── Instagram carousel (Home) ──────────────────────────────────────────────── */
+#bh-ig-carousel-wrap {
+    width: 90%;
+    max-width: 1200px;
+    margin: 32px auto 0;
+}
+#bh-ig-carousel-wrap .bh-ig-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#bh-ig-carousel-wrap .bh-ig-track {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    gap: 10px;
+    width: 100%;
+    -webkit-box-align: stretch;
+    align-items: stretch;
+    box-sizing: border-box;
+}
+#bh-ig-carousel-wrap .bh-ig-item {
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 0 calc(25% - 8px);
+    flex: 0 0 calc(25% - 8px);
+    width: calc(25% - 8px);
+    min-width: 0;
+    max-width: calc(25% - 8px);
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    box-sizing: border-box;
+    animation: sifFadeUp 0.55s cubic-bezier(.22,.61,.36,1) both;
+}
+#bh-ig-carousel-wrap .bh-ig-item iframe {
+    display: block;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 460px;
+    border: 0;
+    box-sizing: border-box;
+}
+#bh-ig-carousel-wrap .bh-ig-nav { display: none; }
+@keyframes sifFadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 767px) {
+    #bh-ig-carousel-wrap .bh-ig-track { -webkit-flex-wrap: wrap; flex-wrap: wrap; }
+    #bh-ig-carousel-wrap .bh-ig-item  {
+        -webkit-flex: 0 0 calc(50% - 5px);
+        flex: 0 0 calc(50% - 5px);
+        width: calc(50% - 5px);
+        max-width: calc(50% - 5px);
+    }
+    #bh-ig-carousel-wrap .bh-ig-item iframe { height: 380px; }
 }
 
 /* ── Legal bar (Impressum / Datenschutz below footer) ───────────────────────── */
+a.bh-dev-credit { color: #1a56db !important; text-decoration: none; }
+a.bh-dev-credit:hover,
+a.bh-dev-credit:focus { text-decoration: underline; }
+
 .bh-impressum-below-footer {
     text-align: center;
     padding: 12px 16px 20px;
     font-size: 14px;
     line-height: 1.4;
+    color: #1a2e4a;
 }
-.bh-impressum-below-footer a { text-decoration: none; }
+.bh-impressum-below-footer a { text-decoration: none; color: #1a56db; }
 .bh-impressum-below-footer a:hover,
 .bh-impressum-below-footer a:focus { text-decoration: underline; }
