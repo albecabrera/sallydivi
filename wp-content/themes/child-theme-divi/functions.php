@@ -34,7 +34,33 @@ function bh_enqueue_main_script() {
 		'carouselEndpoint' => rest_url( 'bh/v1/ig-sally-latest' ),
 		'isWechseljahre'   => (int) is_page( 'wechseljahrecoaching' ),
 		'googleFontsUrl'   => 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap',
+		'navItems'         => bh_get_primary_nav_items(),
 	) );
+}
+
+function bh_get_primary_nav_items() {
+	$locations = get_nav_menu_locations();
+	$menu_id   = ! empty( $locations['primary-menu'] ) ? $locations['primary-menu'] : 0;
+
+	if ( ! $menu_id ) {
+		$menus   = wp_get_nav_menus();
+		$menu_id = ! empty( $menus ) ? $menus[0]->term_id : 0;
+	}
+	if ( ! $menu_id ) return array();
+
+	$items = wp_get_nav_menu_items( $menu_id );
+	if ( ! $items ) return array();
+
+	$result = array();
+	foreach ( $items as $item ) {
+		if ( $item->menu_item_parent != 0 ) continue;
+		$result[] = array(
+			'label'  => $item->title,
+			'url'    => $item->url,
+			'pageId' => (int) $item->object_id,
+		);
+	}
+	return $result;
 }
 
 // ── Performance & SEO ────────────────────────────────────────────────────────

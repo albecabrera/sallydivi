@@ -20,11 +20,29 @@
         sidenav.className = 'bh-sidenav';
         sidenav.setAttribute('aria-label', 'Navegación principal');
 
-        var headerMenu = document.querySelector('.social_header_sec1 .et_pb_menu__menu ul.et-menu');
-        if (headerMenu) {
-            var clone = headerMenu.cloneNode(true);
-            clone.removeAttribute('id');
-            sidenav.appendChild(clone);
+        if (cfg.navItems && cfg.navItems.length) {
+            var ul = document.createElement('ul');
+            ul.className = 'et-menu nav';
+            var currentPageId = document.body.className.match(/page-id-(\d+)/);
+            currentPageId = currentPageId ? currentPageId[1] : '';
+            cfg.navItems.forEach(function (item) {
+                var li = document.createElement('li');
+                li.className = 'menu-item et_pb_menu_page_id-' + item.pageId;
+                if (String(item.pageId) === currentPageId) li.classList.add('current-menu-item');
+                var a = document.createElement('a');
+                a.href = item.url;
+                a.textContent = item.label;
+                li.appendChild(a);
+                ul.appendChild(li);
+            });
+            sidenav.appendChild(ul);
+        } else {
+            var headerMenu = document.querySelector('.social_header_sec1 .et_pb_menu__menu ul.et-menu');
+            if (headerMenu) {
+                var clone = headerMenu.cloneNode(true);
+                clone.removeAttribute('id');
+                sidenav.appendChild(clone);
+            }
         }
 
         document.body.appendChild(sidenav);

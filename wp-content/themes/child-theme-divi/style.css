@@ -769,16 +769,18 @@ body select:focus {
     visibility: visible !important;
 }
 .bh-sidenav ul.et-menu > li > a {
-    display: block;
+    display: block !important;
     padding: 16px 28px;
     font-family: 'Roboto', Helvetica, Arial, sans-serif;
     font-size: 13px;
     font-weight: 600;
-    color: #2b2b2b;
-    text-decoration: none;
+    color: #2b2b2b !important;
+    text-decoration: none !important;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     transition: color 0.2s, background 0.2s;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 .bh-sidenav ul.et-menu > li > a:hover,
 .bh-sidenav ul.et-menu > li.current-menu-item > a,
