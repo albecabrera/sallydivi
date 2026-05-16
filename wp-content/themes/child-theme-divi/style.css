@@ -10,10 +10,39 @@ This is the child theme for Divi theme, generated with Generate Child Theme plug
 (optional values you can add: Theme URI, Author URI, License, License URI, Tags, Text Domain)
 */
 
-/* ── Color tokens ─────────────────────────────────────────────────────────── */
+/* ── Design tokens ────────────────────────────────────────────────────────── */
 :root {
-    --color-primary:   #c6a3aa;
-    --color-secondary: #b48e95;
+    /* Colors */
+    --color-primary:    #c6a3aa;
+    --color-secondary:  #b48e95;
+    --color-dark:       #2b2b2b;
+    --color-text-muted: #777;
+    --color-bg-soft:    #fdf8f9;
+    --color-border:     rgba(0, 0, 0, 0.08);
+
+    /* Spacing scale */
+    --space-xs:  8px;
+    --space-sm:  16px;
+    --space-md:  32px;
+    --space-lg:  60px;
+    --space-xl:  80px;
+    --space-2xl: 120px;
+
+    /* Shadows */
+    --shadow-sm:   0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-md:   0 6px 24px rgba(0, 0, 0, 0.09);
+    --shadow-lg:   0 20px 60px rgba(0, 0, 0, 0.14);
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.07);
+    --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.13);
+
+    /* Radii */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+
+    /* Transitions */
+    --transition: 0.22s ease;
+    --transition-slow: 0.38s ease;
 }
 
 /* All buttons - unified style + hover lift animation */
@@ -1225,12 +1254,114 @@ p, a, li, span {
     font-family: 'Roboto', sans-serif !important;
 }
 
+/* ── Premium rendering ────────────────────────────────────────────────────── */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.65;
+    color: var(--color-dark);
+}
+
+/* ── Heading refinements ──────────────────────────────────────────────────── */
+/* Tighter line-height + subtle negative tracking = optical premium feel.
+   Font-size intentionally left to Divi builder. */
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.2 !important;
+    letter-spacing: -0.015em !important;
+}
+h1 { letter-spacing: -0.03em  !important; }
+h2 { letter-spacing: -0.022em !important; }
+h3 { letter-spacing: -0.012em !important; }
+
+/* ── Body text readability ────────────────────────────────────────────────── */
+p {
+    line-height: 1.7;
+    max-width: 68ch; /* prevent overly long lines */
+}
+/* Reset max-width inside centered containers */
+.et_pb_text_inner p,
+.et_pb_blurb_description p {
+    max-width: none;
+}
+
+/* ── Link transitions ─────────────────────────────────────────────────────── */
+a {
+    transition: color var(--transition), opacity var(--transition) !important;
+}
+
+/* ── Consistent section padding across all regular content sections ─────────
+   Applies only to non-fullwidth, non-template sections.
+   Uses !important to normalize values the builder may have set inconsistently. */
+@media (min-width: 981px) {
+    .et_pb_section:not(.et_pb_fullwidth_section):not([class*="_tb_"]) {
+        padding-top: var(--space-xl) !important;
+        padding-bottom: var(--space-xl) !important;
+    }
+}
+@media (min-width: 768px) and (max-width: 980px) {
+    .et_pb_section:not(.et_pb_fullwidth_section):not([class*="_tb_"]) {
+        padding-top: var(--space-lg) !important;
+        padding-bottom: var(--space-lg) !important;
+    }
+}
+@media (max-width: 767px) {
+    .et_pb_section:not(.et_pb_fullwidth_section):not([class*="_tb_"]) {
+        padding-top: 40px !important;
+        padding-bottom: 40px !important;
+    }
+}
+/* Exceptions: Über mich hero keeps its 60px, newsletter keeps 50px */
+.page-id-987550606 .et_pb_section:first-of-type,
+.page-id-987550606 .et_pb_section_0 {
+    padding-top: 60px !important;
+    padding-bottom: 60px !important;
+}
+.et_pb_section:has(.et_pb_newsletter),
+.et_pb_section:has(.sally-newsletter-wrap) {
+    padding-top: 50px !important;
+    padding-bottom: 50px !important;
+}
+
+/* ── Card elevation ───────────────────────────────────────────────────────── */
+/* Blurb cards and testimonial elements get a subtle lift */
+.et_pb_blurb_content,
+.et_pb_testimonial_content {
+    transition: box-shadow var(--transition-slow), transform var(--transition-slow);
+}
+
+/* ── Image hover subtle zoom ─────────────────────────────────────────────── */
+.et_pb_image_wrap img,
+.et_pb_slide_image img {
+    transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+.et_pb_image:hover .et_pb_image_wrap img {
+    transform: scale(1.03) !important;
+}
+
+/* ── Instagram carousel: premium card shadow ─────────────────────────────── */
+#bh-ig-carousel-wrap .bh-ig-item {
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--transition-slow), transform var(--transition-slow);
+}
+#bh-ig-carousel-wrap .bh-ig-item:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-4px);
+}
+
 /* ── Smooth scroll ────────────────────────────────────────────────────────── */
 html {
     scroll-behavior: smooth;
 }
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
+    .et_pb_image_wrap img,
+    .et_pb_slide_image img,
+    .et_pb_blurb_content,
+    .et_pb_testimonial_content,
+    #bh-ig-carousel-wrap .bh-ig-item {
+        transition: none !important;
+        transform: none !important;
+    }
 }
 
 /* ── Images: prevent layout shift + lazy baseline ────────────────────────── */
@@ -1281,27 +1412,7 @@ textarea:focus-visible {
     outline-offset: 3px !important;
 }
 
-/* ── Consistent section spacing: normalize across browsers ───────────────── */
-/* Only applies to sections WITHOUT explicit Divi padding (no inline style).
-   Sections with inline style from builder are unaffected.                    */
-@media (min-width: 981px) {
-    .et_pb_section:not([style*="padding"]) {
-        padding-top: 80px;
-        padding-bottom: 80px;
-    }
-}
-@media (min-width: 768px) and (max-width: 980px) {
-    .et_pb_section:not([style*="padding"]) {
-        padding-top: 60px;
-        padding-bottom: 60px;
-    }
-}
-@media (max-width: 767px) {
-    .et_pb_section:not([style*="padding"]) {
-        padding-top: 40px;
-        padding-bottom: 40px;
-    }
-}
+/* ── Button transition: uniform across browsers ───────────────────────────── */
 
 /* ── Button transition: uniform across browsers ───────────────────────────── */
 body #page-container .et_pb_button,
