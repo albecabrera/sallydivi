@@ -537,6 +537,44 @@
         });
     }
 
+    // ── 9. Scroll cue (hero chevron) ────────────────────────────────────────────
+    function initScrollCue() {
+        var hero = document.querySelector('.et_pb_fullwidth_slider_0');
+        if (!hero) return;
+
+        var cue = document.createElement('button');
+        cue.className = 'bh-scroll-cue';
+        cue.setAttribute('aria-label', 'Nach unten scrollen');
+        cue.innerHTML =
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+            'stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+            '<polyline points="6 9 12 15 18 9"></polyline></svg>';
+        document.body.appendChild(cue);
+
+        var heroSection = hero.closest('.et_pb_section') || hero.parentElement;
+
+        cue.addEventListener('click', function () {
+            var next = heroSection && heroSection.nextElementSibling;
+            if (next) {
+                next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                window.scrollBy({ top: window.innerHeight * 0.9, behavior: 'smooth' });
+            }
+        });
+
+        if ('IntersectionObserver' in window) {
+            var obs = new IntersectionObserver(function (entries) {
+                cue.classList.toggle('bh-scroll-cue--hidden', !entries[0].isIntersecting);
+            }, { threshold: 0.05 });
+            obs.observe(hero);
+        } else {
+            window.addEventListener('scroll', function () {
+                cue.classList.toggle('bh-scroll-cue--hidden',
+                    hero.getBoundingClientRect().bottom <= 0);
+            }, { passive: true });
+        }
+    }
+
     // ── Init ────────────────────────────────────────────────────────────────────
     // initSidenav deferred to window.load so Divi's JS finishes its menu DOM
     // manipulation before we clone ul.et-menu (avoids missing last menu items).
@@ -550,6 +588,7 @@
     initFeedCleanup();
     initObjCleaner();
     initCarousel();
+    initScrollCue();
     if (cfg.isWechseljahre) initPopupGuard();
     init404();
     initCookieBanner();
