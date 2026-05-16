@@ -289,8 +289,8 @@
         var currentUrls = [];
 
         function toEmbedUrl(postUrl) {
-            var m = postUrl.match(/instagram\.com\/p\/([A-Za-z0-9_-]+)/);
-            return m ? 'https://www.instagram.com/p/' + m[1] + '/embed/' : null;
+            var m = postUrl.match(/instagram\.com\/(p|reel)\/([A-Za-z0-9_-]+)/);
+            return m ? 'https://www.instagram.com/' + m[1] + '/' + m[2] + '/embed/' : null;
         }
 
         function buildTrack(track, posts) {

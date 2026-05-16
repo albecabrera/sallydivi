@@ -1390,29 +1390,18 @@ body #page-container a.et_pb_button:hover {
     margin: 32px auto 0;
 }
 #bh-ig-carousel-wrap .bh-ig-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    width: 100%;
 }
 #bh-ig-carousel-wrap .bh-ig-track {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-wrap: nowrap;
-    flex-wrap: nowrap;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 10px;
     width: 100%;
-    -webkit-box-align: stretch;
-    align-items: stretch;
     box-sizing: border-box;
+    overflow: hidden;
 }
 #bh-ig-carousel-wrap .bh-ig-item {
-    -webkit-box-flex: 0;
-    -webkit-flex: 0 0 calc(25% - 8px);
-    flex: 0 0 calc(25% - 8px);
-    width: calc(25% - 8px);
     min-width: 0;
-    max-width: calc(25% - 8px);
     background: #fff;
     border: 1px solid #eee;
     border-radius: 8px;
@@ -1435,13 +1424,7 @@ body #page-container a.et_pb_button:hover {
     to   { opacity: 1; transform: translateY(0); }
 }
 @media (max-width: 767px) {
-    #bh-ig-carousel-wrap .bh-ig-track { -webkit-flex-wrap: wrap; flex-wrap: wrap; }
-    #bh-ig-carousel-wrap .bh-ig-item  {
-        -webkit-flex: 0 0 calc(50% - 5px);
-        flex: 0 0 calc(50% - 5px);
-        width: calc(50% - 5px);
-        max-width: calc(50% - 5px);
-    }
+    #bh-ig-carousel-wrap .bh-ig-track { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     #bh-ig-carousel-wrap .bh-ig-item iframe { height: 380px; }
 }
 
