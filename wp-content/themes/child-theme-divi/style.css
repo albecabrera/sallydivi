@@ -572,8 +572,8 @@ body select:focus {
     /* Header compacto en desktop — override Divi builder padding */
     .social_header_sec1.et_pb_section_0_tb_header,
     .social_header_sec1 {
-        padding-top: 6px !important;
-        padding-bottom: 6px !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
     }
     .social_header_sec1 .et_pb_row_0_tb_header {
         display: flex !important;
