@@ -967,25 +967,13 @@ body.bh-sidenav-open {
         align-items: stretch !important;
         gap: 20px !important;
     }
-    /* Foto: orden 1, ancho completo, altura contenida */
+    /* Foto: ocultar en mobile — solo formulario visible */
     .et_pb_row:has(.et_pb_contact_form_container) > .et_pb_column:not(:has(.et_pb_contact_form_container)) {
-        order: 1 !important;
-        display: block !important;
-        flex: 0 0 auto !important;
-        max-width: 100% !important;
-        width: 100% !important;
+        display: none !important;
     }
-    .et_pb_row:has(.et_pb_contact_form_container) > .et_pb_column:not(:has(.et_pb_contact_form_container)) img {
-        width: 100% !important;
-        height: 200px !important;
-        object-fit: cover !important;
-        object-position: top center !important;
-        display: block !important;
-        border-radius: 10px !important;
-    }
-    /* Formulario: orden 2, ancho completo */
+    /* Formulario: ancho completo */
     .et_pb_row:has(.et_pb_contact_form_container) > .et_pb_column:has(.et_pb_contact_form_container) {
-        order: 2 !important;
+        order: 1 !important;
         flex: 0 0 auto !important;
         max-width: 100% !important;
         width: 100% !important;
