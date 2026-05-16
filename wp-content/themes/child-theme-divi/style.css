@@ -605,6 +605,13 @@ body select:focus {
     align-self: center !important;
 }
 
+/* Logo column: garantizar espacio mínimo arriba/abajo en desktop */
+.social_header_sec1 .et_pb_column_0_tb_header .et_pb_image_wrap,
+.social_header_sec1 .et_pb_column_0_tb_header .et_pb_module {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
 /* Espaciado simétrico entre enlaces del menú de navegación del header.
    Divi usa sólo padding-right:22px en li, lo que crea gaps asimétricos.
    Cambiamos a 11px en cada lado para mantener la misma separación visual. */
@@ -664,8 +671,8 @@ body select:focus {
         position: relative !important;
         width: 100% !important;
         max-width: 100% !important;
-        padding-top: 5px !important;
-        padding-bottom: 5px !important;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
         padding-left: 4% !important;
         padding-right: 4% !important;
         margin-top: 0 !important;
