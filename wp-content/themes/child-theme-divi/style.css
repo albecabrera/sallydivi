@@ -569,6 +569,12 @@ body select:focus {
 /* Row → Flex-Container: alle 3 Spalten bekommen gleiche Höhe,
    damit der Button auf exakt derselben Ebene wie die Nav-Links liegt. */
 @media (min-width: 981px) {
+    /* Header compacto en desktop — override Divi builder padding */
+    .social_header_sec1.et_pb_section_0_tb_header,
+    .social_header_sec1 {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+    }
     .social_header_sec1 .et_pb_row_0_tb_header {
         display: flex !important;
         align-items: stretch !important;
@@ -635,11 +641,11 @@ body select:focus {
         padding-bottom: 0 !important;
     }
 
-    /* Empuja el contenido bajo el header fijo */
+    /* Empuja el contenido bajo el header fijo (ajustado al header compacto ~50px) */
     #page-container,
     #main-content,
     .et-l--body {
-        margin-top: 60px !important;
+        margin-top: 50px !important;
     }
 
     /* Divi agrega margin-top:62px al slider para compensar su propio sticky header.
@@ -658,8 +664,8 @@ body select:focus {
         position: relative !important;
         width: 100% !important;
         max-width: 100% !important;
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
         padding-left: 4% !important;
         padding-right: 4% !important;
         margin-top: 0 !important;
