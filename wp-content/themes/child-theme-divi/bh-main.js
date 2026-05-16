@@ -520,7 +520,13 @@
     }
 
     // ── Init ────────────────────────────────────────────────────────────────────
-    initSidenav();
+    // initSidenav deferred to window.load so Divi's JS finishes its menu DOM
+    // manipulation before we clone ul.et-menu (avoids missing last menu items).
+    if (document.readyState === 'complete') {
+        initSidenav();
+    } else {
+        window.addEventListener('load', initSidenav);
+    }
     initFooterMenu();
     initLegalBar();
     initFeedCleanup();

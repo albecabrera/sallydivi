@@ -92,6 +92,19 @@ body #page-container input[type="submit"]:hover {
     max-width: 900px !important;
     width: 80% !important;
 }
+@media (max-width: 767px) {
+    /* Ocultar ícono de mail en mobile — home y contact page */
+    .contact-mail-icon {
+        display: none !important;
+    }
+    /* Formulario a ancho completo en mobile cuando no hay ícono */
+    .et_pb_section_5 .et_pb_column_10 {
+        -webkit-flex: 0 0 100% !important;
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
 .et_pb_text_11,
 .et_pb_text_11 .et_pb_text_inner {
     overflow: visible !important;
@@ -746,7 +759,14 @@ body select:focus {
 }
 .bh-sidenav ul.et-menu > li {
     display: block !important;
+    visibility: visible !important;
     border-bottom: 1px solid #f0eded;
+}
+/* Belt-and-suspenders: force Kontakt item visible regardless of Divi's per-device hiding */
+.bh-sidenav .et_pb_menu_page_id-987550609,
+.bh-sidenav .menu-item-987550620 {
+    display: block !important;
+    visibility: visible !important;
 }
 .bh-sidenav ul.et-menu > li > a {
     display: block;
@@ -1154,6 +1174,19 @@ body.page-id-987550606 .social_about_img img {
 .et-l--footer .et_pb_social_media_follow_network_0_tb_footer a.icon,
 .et-l--footer .et_pb_social_media_follow_network_1_tb_footer a.icon {
     background-color: #000000 !important;
+}
+
+/* Forzar font de íconos — compensa el override global font-family: Roboto en a */
+.et-l--footer .et_pb_social_media_follow_network_0_tb_footer a.icon:before,
+.et-l--footer .et_pb_social_media_follow_network_1_tb_footer a.icon:before {
+    font-family: ETmodules !important;
+    color: #ffffff !important;
+    display: block !important;
+}
+
+/* Ocultar texto "Follow" — por si el !important global lo muestra */
+.et_pb_social_media_follow_network_name {
+    display: none !important;
 }
 
 /* Hover Facebook e Instagram: fondo #c4a2a8, ícono blanco */
