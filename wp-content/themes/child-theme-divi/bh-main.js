@@ -10,7 +10,7 @@
 
     // ── 1. Header sidenav ───────────────────────────────────────────────────────
     function initSidenav() {
-        if (window.innerWidth >= 980) return;
+        if (window.innerWidth > 980) return;
 
         var overlay = document.createElement('div');
         overlay.className = 'bh-sidenav-overlay';
@@ -48,30 +48,43 @@
         document.body.appendChild(sidenav);
 
         var isOpen = false;
-        var mobileNav = document.querySelector('.social_header_sec1 .mobile_nav');
 
         function openNav() {
             sidenav.classList.add('open');
             overlay.classList.add('open');
-            document.body.classList.add('bh-sidenav-open');
-            if (mobileNav) { mobileNav.classList.remove('closed'); mobileNav.classList.add('opened'); }
             isOpen = true;
         }
 
         function closeNav() {
             sidenav.classList.remove('open');
             overlay.classList.remove('open');
-            document.body.classList.remove('bh-sidenav-open');
-            if (mobileNav) { mobileNav.classList.remove('opened'); mobileNav.classList.add('closed'); }
             isOpen = false;
         }
 
         var bar = document.querySelector('.social_header_sec1 .mobile_menu_bar');
         if (bar) {
+            // bh-main.js is deferred → loads AFTER Divi, so Divi's capture listeners
+            // are already registered first. stopImmediatePropagation() on click won't
+            // stop Divi from handling the tap.
+            // Fix: intercept touchstart in capture phase and call preventDefault(),
+            // which blocks the browser from generating the synthetic click event entirely
+            // → Divi's click handler never fires on touch devices.
+            // On pointer-only devices (desktop) touchstart never fires, click still works.
+            var lastHandled = 0;
+            function handleHamburger() {
+                var now = Date.now();
+                if (now - lastHandled < 500) return;
+                lastHandled = now;
+                isOpen ? closeNav() : openNav();
+            }
+            bar.addEventListener('touchstart', function (e) {
+                e.preventDefault();
+                handleHamburger();
+            }, { passive: false, capture: true });
             bar.addEventListener('click', function (e) {
                 e.stopImmediatePropagation();
                 e.preventDefault();
-                isOpen ? closeNav() : openNav();
+                handleHamburger();
             }, true);
         }
 
@@ -82,11 +95,12 @@
         });
 
         sidenav.addEventListener('click', function (e) {
-            if (e.target.tagName === 'A' && e.target.getAttribute('href')) closeNav();
+            var a = e.target.closest ? e.target.closest('a[href]') : null;
+            if (a) closeNav();
         });
 
         window.addEventListener('resize', function () {
-            if (window.innerWidth >= 980 && isOpen) closeNav();
+            if (window.innerWidth > 980 && isOpen) closeNav();
         });
     }
 
@@ -575,13 +589,42 @@
         }
     }
 
+    // ── 10. Desktop nav: bypass Divi's dropdown-toggle on parent items ──────────
+    function initDesktopNav() {
+        if (window.innerWidth <= 980) return;
+        // Divi registers a touchend handler (bubbling) on li.menu-item-has-children
+        // that always calls preventDefault(), blocking navigation on first tap.
+        // Our touchend capture handler on <a> fires before Divi's bubbling handler
+        // on <li> → stopImmediatePropagation + navigate directly on first tap.
+        // For mouse clicks, stopImmediatePropagation stops Divi's jQuery click handlers.
+        document.querySelectorAll(
+            '.social_header_sec1 .et_pb_menu__menu .et-menu > li.menu-item-has-children > a'
+        ).forEach(function (a) {
+            a.addEventListener('touchend', function (e) {
+                var href = a.getAttribute('href');
+                if (href && href !== '#') {
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    window.location.href = href;
+                }
+            }, { capture: true, passive: false });
+            a.addEventListener('click', function (e) {
+                e.stopImmediatePropagation();
+            }, true);
+        });
+    }
+
     // ── Init ────────────────────────────────────────────────────────────────────
-    // initSidenav deferred to window.load so Divi's JS finishes its menu DOM
-    // manipulation before we clone ul.et-menu (avoids missing last menu items).
-    if (document.readyState === 'complete') {
+    // initSidenav + initDesktopNav deferred to window.load so Divi's JS finishes
+    // its menu DOM manipulation first.
+    function initOnLoad() {
         initSidenav();
+        initDesktopNav();
+    }
+    if (document.readyState === 'complete') {
+        initOnLoad();
     } else {
-        window.addEventListener('load', initSidenav);
+        window.addEventListener('load', initOnLoad);
     }
     initFooterMenu();
     initLegalBar();

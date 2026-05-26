@@ -21,7 +21,7 @@ function bh_enqueue_main_script() {
 		'bh-main',
 		get_stylesheet_directory_uri() . '/bh-main.js',
 		array(),
-		'1.0.0',
+		filemtime( get_stylesheet_directory() . '/bh-main.js' ),
 		true
 	);
 
@@ -135,8 +135,12 @@ add_filter( 'wp_headers', function( $headers ) {
 // Disable trackbacks on new posts
 add_filter( 'default_ping_status', '__return_false' );
 
-// Remove ?ver= query strings from CSS/JS (improves proxy/CDN caching)
+// Remove ?ver= query strings from CSS/JS (improves proxy/CDN caching).
+// Exempt child theme assets — they use filemtime() for cache busting.
 function bh_remove_ver_strings( $src ) {
+    if ( strpos( $src, get_stylesheet_directory_uri() ) !== false ) {
+        return $src;
+    }
     if ( strpos( $src, '?ver=' ) !== false ) {
         $src = remove_query_arg( 'ver', $src );
     }
@@ -190,22 +194,36 @@ add_filter( 'login_errors', function() {
     return 'Anmeldedaten falsch.';
 } );
 
-// Security response headers
-add_action( 'send_headers', function() {
-    header( 'X-Content-Type-Options: nosniff' );
-    header( 'X-Frame-Options: SAMEORIGIN' );
-    header( 'X-XSS-Protection: 1; mode=block' );
-    header( 'Referrer-Policy: strict-origin-when-cross-origin' );
-    header( 'Permissions-Policy: geolocation=(), microphone=(), camera=()' );
+// Block user enumeration via REST API
+add_filter( 'rest_endpoints', function( $endpoints ) {
+    if ( ! current_user_can( 'list_users' ) ) {
+        unset( $endpoints['/wp/v2/users'] );
+        unset( $endpoints['/wp/v2/users/(?P<id>[\d]+)'] );
+    }
+    return $endpoints;
 } );
 
-// ── SEO: Resource hints ───────────────────────────────────────────────────────
+// ── Gmail SMTP ───────────────────────────────────────────────────────────────
+// Set BH_SMTP_PASSWORD in wp-config.php with a Gmail App Password.
+// Generate one at: myaccount.google.com → Security → App passwords
+// Priority 9999 overrides Post SMTP (priority 999).
+add_action( 'phpmailer_init', function ( $mail ) {
+    if ( ! defined( 'BH_SMTP_PASSWORD' ) || BH_SMTP_PASSWORD === '' ) return;
+    $mail->isSMTP();
+    $mail->Host       = 'smtp.gmail.com';
+    $mail->SMTPAuth   = true;
+    $mail->Port       = 587;
+    $mail->SMTPSecure = 'tls';
+    $mail->Username   = 'albecabrera442@gmail.com';
+    $mail->Password   = BH_SMTP_PASSWORD;
+    $mail->From       = 'albecabrera442@gmail.com';
+    $mail->FromName   = get_bloginfo( 'name' );
+}, 9999 );
 
-// dns-prefetch as fallback for browsers that don't support preconnect
-add_action( 'wp_head', function() {
-    echo '<link rel="dns-prefetch" href="//fonts.googleapis.com">' . "\n";
-    echo '<link rel="dns-prefetch" href="//fonts.gstatic.com">' . "\n";
-}, 0 );
+add_filter( 'wp_mail_from',      function() { return 'albecabrera442@gmail.com'; } );
+add_filter( 'wp_mail_from_name', function() { return get_bloginfo( 'name' ); } );
+
+// ── SEO: Resource hints ───────────────────────────────────────────────────────
 
 // ── SEO: Open Graph + Twitter Card ───────────────────────────────────────────
 // Note: disable Divi's built-in OG output (Divi > Theme Options > SEO) if
@@ -421,8 +439,7 @@ add_action( 'rest_api_init', function () {
 } );
 
 function bh_ig_sally_latest_endpoint() {
-	// 1. Graph API (si hay token guardado)
-	delete_transient( 'bh_ig_latest_posts_v1' );
+	// 1. Graph API (si hay token guardado) — usa el transient interno de bh_ig_get_latest_posts()
 	$posts = bh_ig_get_latest_posts();
 	if ( ! empty( $posts ) ) return rest_ensure_response( array( 'posts' => $posts ) );
 

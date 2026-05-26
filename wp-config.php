@@ -98,8 +98,12 @@ define( 'WP_DEBUG_LOG', false );
 /* Add any custom values between this line and the "stop editing" line. */
 
 define( 'FS_METHOD', 'direct' );
-
-
+define( 'DISALLOW_FILE_EDIT', true );
+define( 'FORCE_SSL_ADMIN',    true );
+define( 'DISABLE_WP_CRON',    true );
+// Gmail App Password — generate at myaccount.google.com → Security → App passwords
+// Leave empty on local dev; set on production server
+define( 'BH_SMTP_PASSWORD', '' );
 
 /* That's all, stop editing! Happy publishing. */
 

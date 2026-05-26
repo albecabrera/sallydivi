@@ -45,6 +45,28 @@ This is the child theme for Divi theme, generated with Generate Child Theme plug
     --transition-slow: 0.38s ease;
 }
 
+/* ── Cross-browser normalization ─────────────────────────────────────────── */
+/* box-sizing global: padding y border entran DENTRO del width, no lo suman */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Imágenes y video: nunca se salen de su contenedor en ningún navegador */
+img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+}
+
+/* Formularios: heredan la tipografía del padre (Firefox/Safari ignoran esto sin la regla) */
+input, button, textarea, select {
+    font: inherit;
+}
+
+/* Evita overflow horizontal inesperado por texto largo en mobile */
+p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+}
+
 /* All buttons - unified style + hover lift animation */
 body #page-container .et_pb_button,
 body #page-container .et-pb-button,
@@ -597,6 +619,7 @@ body select:focus {
     }
 }
 
+
 /* Button-Wrapper: keine störenden Margins */
 .social_header_sec1 .et_pb_column:last-child .et_pb_button_module_wrapper,
 .social_header_sec1 .et_pb_column:last-child > div:first-child {
@@ -619,16 +642,18 @@ body select:focus {
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
-/* Todo el padding va al <a> para que el área clickeable cubra la zona completa */
+/* Todo el padding va al <a> para que el área clickeable cubra la zona completa.
+   align-self/height:100% requieren que <li> sea flex container — no lo es en Divi.
+   Usamos padding vertical para garantizar un área de clic real. */
 .social_header_sec1 .et_pb_menu__menu .et-menu > li > a {
     display: flex !important;
     align-items: center !important;
-    align-self: stretch !important;
-    height: 100% !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
     padding-left: 11px !important;
     padding-right: 11px !important;
+    touch-action: manipulation !important;
+    pointer-events: auto !important;
 }
 
 /* ── Header mobile/tablet: hamburguesa izquierda · logo centrado · sticky ─────
@@ -648,11 +673,14 @@ body select:focus {
         padding-bottom: 0 !important;
     }
 
-    /* Empuja el contenido bajo el header fijo (ajustado al header compacto ~50px) */
+    /* Empuja el contenido bajo el header fijo — un solo punto de verdad en body */
+    body {
+        padding-top: 50px !important;
+    }
     #page-container,
     #main-content,
     .et-l--body {
-        margin-top: 50px !important;
+        margin-top: 0 !important;
     }
 
     /* Divi agrega margin-top:62px al slider para compensar su propio sticky header.
@@ -758,17 +786,19 @@ body select:focus {
 
 /* ── Sidenav: panel deslizante desde la izquierda ────────────────────────── */
 .bh-sidenav-overlay {
-    display: none;
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
     z-index: 999996;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 .bh-sidenav-overlay.open {
-    display: block;
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .bh-sidenav {
@@ -784,6 +814,7 @@ body select:focus {
     transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-y: auto;
     overflow-x: hidden;
+    overscroll-behavior: contain;
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
     padding-top: 24px;
     box-sizing: border-box;
@@ -861,10 +892,9 @@ body select:focus {
     background: #fdf8f9;
 }
 
-/* Bloquear scroll del body cuando el sidenav está abierto */
-body.bh-sidenav-open {
-    overflow: hidden !important;
-}
+/* overscroll-behavior: contain en el panel previene que el scroll
+   se propague al body — sin necesidad de overflow:hidden en body.
+   (overflow:hidden en body rompe position:fixed en Safari/mobile.) */
 
 /* Solo visible en mobile/tablet — ocultar en desktop */
 @media (min-width: 981px) {
@@ -1169,6 +1199,14 @@ body.page-id-987550606 .social_about_img img {
     margin-top: 0 !important;
     padding-top: 0 !important;
 }
+/* Desktop: #et-main-area y article pueden tener margin-top heredado */
+@media (min-width: 981px) {
+    #et-main-area,
+    #main-content > article {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+}
 
 /* ── Footer: fondo igual al header (#f9f9f9) + texto oscuro para contraste ───
    Divi inyecta su CSS en un <style> inline DESPUÉS del child theme, así que
@@ -1393,12 +1431,10 @@ html {
     }
 }
 
-/* ── Images: prevent layout shift + lazy baseline ────────────────────────── */
+/* ── Images: baseline reset ───────────────────────────────────────────────── */
 img {
     height: auto;
     max-width: 100%;
-    /* Reserve space before image loads to eliminate CLS */
-    content-visibility: auto;
 }
 
 /* ── GPU compositing: only on elements that actually animate ─────────────── */
@@ -1406,17 +1442,30 @@ img {
 .et-pb-button,
 a.et_pb_button,
 .bh-sidenav,
-.bh-nl-overlay,
 .bh-nl-popup {
     will-change: transform;
 }
+/* Overlay only animates opacity — hint the correct property */
+.bh-nl-overlay {
+    will-change: opacity;
+}
 
-/* ── Navigation: submenu z-index on desktop ──────────────────────────────── */
+/* ── Desktop header: anular el margin-top:-61px que Divi inyecta via inline CSS ──
+   Divi asume header fixed/sticky → sección con margin-top:-61px y slider con
+   margin-top:62px. Como usamos position:relative el header ya no flota; la sección
+   vacía del slider (los 62px de su módulo interno) tape físicamente el nav.
+   Forzamos ambos a 0 para que el header ocupe su espacio natural en el flujo. */
 @media (min-width: 981px) {
+    .et_pb_section_0_tb_header.et_pb_section {
+        margin-top: 0 !important;
+    }
+    .et_pb_fullwidth_slider_0 {
+        margin-top: 0 !important;
+    }
     /* Header section: establish stacking context above all page sections */
     .social_header_sec1 {
         position: relative !important;
-        z-index: 1000 !important;
+        z-index: 10000 !important;
     }
     /* Submenu dropdown: render above everything */
     .social_header_sec1 .et_pb_menu__menu .sub-menu,
@@ -1440,8 +1489,6 @@ textarea:focus-visible {
     outline: 2px solid #c6a3aa !important;
     outline-offset: 3px !important;
 }
-
-/* ── Button transition: uniform across browsers ───────────────────────────── */
 
 /* ── Button transition: uniform across browsers ───────────────────────────── */
 body #page-container .et_pb_button,
@@ -1585,6 +1632,10 @@ body #page-container a.et_pb_button:hover {
 @keyframes sifFadeUp {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
+}
+@media only screen and (min-width: 768px) and (max-width: 980px) {
+    #bh-ig-carousel-wrap .bh-ig-track { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #bh-ig-carousel-wrap .bh-ig-item iframe { height: 420px; }
 }
 @media (max-width: 767px) {
     #bh-ig-carousel-wrap .bh-ig-track { grid-template-columns: repeat(2, minmax(0, 1fr)); }
