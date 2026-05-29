@@ -219,7 +219,7 @@
                     var t = norm(node.textContent);
                     if (!t) return;
                     if (t === 'impressum | datenschutz' || t === 'impressum|datenschutz') {
-                        node.innerHTML = '<p>Design &amp; Entwicklung: <a class="bh-dev-credit" href="https://deinewebseite.de">Alberto Cabrera</a></p>';
+                        node.innerHTML = '<p>Design &amp; Entwicklung: Alberto Cabrera</p>';
                     }
                 });
             });
@@ -383,21 +383,10 @@
 
                     var wrap = document.createElement('div');
                     wrap.id = 'bh-ig-carousel-wrap';
-                    wrap.innerHTML = '<div class="bh-ig-row">' +
-                        '<button type="button" class="bh-ig-nav bh-ig-prev" aria-label="Zurück">&#8249;</button>' +
-                        '<div class="bh-ig-track"></div>' +
-                        '<button type="button" class="bh-ig-nav bh-ig-next" aria-label="Weiter">&#8250;</button>' +
-                        '</div>';
+                    wrap.innerHTML = '<div class="bh-ig-row"><div class="bh-ig-track"></div></div>';
                     var track = wrap.querySelector('.bh-ig-track');
                     buildTrack(track, currentUrls);
                     anchor.insertAdjacentElement('afterend', wrap);
-
-                    wrap.querySelector('.bh-ig-prev').addEventListener('click', function () {
-                        track.scrollBy({ left: -320, behavior: 'smooth' });
-                    });
-                    wrap.querySelector('.bh-ig-next').addEventListener('click', function () {
-                        track.scrollBy({ left: 320, behavior: 'smooth' });
-                    });
 
                     setInterval(refreshCarousel, 600000);
                 }).catch(function () {});
