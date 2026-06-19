@@ -97,6 +97,28 @@ body #page-container input[type="submit"]:hover {
     transform: translateY(-5px) !important;
 }
 
+/* Remove Divi hover arrow: kill opacity + reset padding that makes room for it */
+body #page-container .et_pb_button::after,
+body #page-container a.et_pb_button::after,
+body #page-container .et_pb_button:hover::after,
+body #page-container a.et_pb_button:hover::after {
+    opacity: 0 !important;
+    display: none !important;
+}
+body #page-container .et_pb_button:hover,
+body #page-container a.et_pb_button:hover {
+    padding: .3em 1em !important;
+}
+
+/* Align buttons to bottom in equal-height columns */
+.et_pb_section_1 .et_pb_row_1 .et_pb_column {
+    display: flex !important;
+    flex-direction: column !important;
+}
+.et_pb_section_1 .et_pb_row_1 .et_pb_button_module_wrapper {
+    margin-top: auto !important;
+}
+
 /* Keep newsletter popup hidden until the button is clicked.
    Divi removes its own hide-on-load <style> tag via JS, which on some pages
    causes the popup to flash open. This rule provides a permanent CSS-level hide.
@@ -1611,34 +1633,65 @@ body #page-container a.et_pb_button:hover {
     overflow: hidden;
 }
 #bh-ig-carousel-wrap .bh-ig-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
     min-width: 0;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 8px;
+    aspect-ratio: 4 / 5;
+    padding: 20px;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 12px;
     overflow: hidden;
     box-sizing: border-box;
+    background: linear-gradient(150deg, #C4A2A8 0%, #b1888f 60%, #9c7077 100%);
+    box-shadow: var(--shadow-card);
     animation: sifFadeUp 0.55s cubic-bezier(.22,.61,.36,1) both;
 }
-#bh-ig-carousel-wrap .bh-ig-item iframe {
+#bh-ig-carousel-wrap .bh-ig-item .bh-ig-glyph {
+    display: inline-flex;
+    width: 60px;
+    height: 60px;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid rgba(255,255,255,.7);
+    border-radius: 50%;
+    transition: transform var(--transition-slow);
+}
+#bh-ig-carousel-wrap .bh-ig-item:hover .bh-ig-glyph { transform: scale(1.08); }
+#bh-ig-carousel-wrap .bh-ig-item .bh-ig-label {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: .3px;
+}
+#bh-ig-carousel-wrap .bh-ig-follow {
     display: block;
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    height: 460px;
-    border: 0;
-    box-sizing: border-box;
+    width: max-content;
+    margin: 26px auto 0;
+    padding: 13px 30px;
+    border-radius: 999px;
+    background: var(--gcid-6p5151nkmu, #C4A2A8);
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: var(--shadow-card);
+    transition: transform var(--transition-slow), box-shadow var(--transition-slow);
+}
+#bh-ig-carousel-wrap .bh-ig-follow:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+    color: #fff;
 }
 @keyframes sifFadeUp {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
 }
-@media only screen and (min-width: 768px) and (max-width: 980px) {
-    #bh-ig-carousel-wrap .bh-ig-track { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    #bh-ig-carousel-wrap .bh-ig-item iframe { height: 420px; }
-}
 @media (max-width: 767px) {
     #bh-ig-carousel-wrap .bh-ig-track { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    #bh-ig-carousel-wrap .bh-ig-item iframe { height: 380px; }
 }
 
 /* ── Legal bar (Impressum / Datenschutz below footer) ───────────────────────── */

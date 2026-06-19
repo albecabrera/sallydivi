@@ -253,7 +253,7 @@
             var hasMarker = Array.from(document.querySelectorAll('h1,h2,h3,h4,p,strong,.et_pb_text_inner'))
                 .some(function (el) {
                     var t = norm(el.textContent);
-                    return t.indexOf('meine letztes feed') !== -1 || t.indexOf('mein letztes feed') !== -1;
+                    return t.indexOf('meine letzten feed') !== -1 || t.indexOf('meine letztes feed') !== -1 || t.indexOf('mein letztes feed') !== -1;
                 });
             if (!hasMarker) return;
 
@@ -274,7 +274,7 @@
             var hasMarker = Array.from(document.querySelectorAll('h1,h2,h3,h4,p,strong,.et_pb_text_inner'))
                 .some(function (el) {
                     var t = norm(el.textContent);
-                    return t.indexOf('meine letztes feed') !== -1 || t.indexOf('mein letztes feed') !== -1;
+                    return t.indexOf('meine letzten feed') !== -1 || t.indexOf('meine letztes feed') !== -1 || t.indexOf('mein letztes feed') !== -1;
                 });
             if (!hasMarker && feedMo) { feedMo.disconnect(); feedMo = null; }
         }
@@ -320,26 +320,24 @@
 
         var currentUrls = [];
 
-        function toEmbedUrl(postUrl) {
-            var m = postUrl.match(/instagram\.com\/(p|reel)\/([A-Za-z0-9_-]+)/);
-            return m ? 'https://www.instagram.com/' + m[1] + '/' + m[2] + '/embed/' : null;
-        }
+        var IG_GLYPH = '<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg>';
 
+        // Los embeds nativos de Instagram quedan en blanco sin login/consent y cargan tracking
+        // de terceros (problema GDPR). Renderizamos cards de marca que enlazan al post real.
         function buildTrack(track, posts) {
             track.innerHTML = '';
             posts.slice(0, 4).forEach(function (url, idx) {
-                var embedUrl = toEmbedUrl(url);
-                if (!embedUrl) return;
-                var item = document.createElement('div');
+                if (!/instagram\.com\/(p|reel)\//.test(url)) return;
+                var item = document.createElement('a');
                 item.className = 'bh-ig-item';
+                item.href = url;
+                item.target = '_blank';
+                item.rel = 'noopener noreferrer';
+                item.setAttribute('aria-label', 'Beitrag auf Instagram ansehen');
                 item.style.animationDelay = ((idx + 1) * 0.08).toFixed(2) + 's';
-                var iframe = document.createElement('iframe');
-                iframe.src = embedUrl;
-                iframe.setAttribute('frameborder', '0');
-                iframe.setAttribute('scrolling', 'no');
-                iframe.setAttribute('allowtransparency', 'true');
-                iframe.setAttribute('loading', 'lazy');
-                item.appendChild(iframe);
+                item.innerHTML =
+                    '<span class="bh-ig-glyph">' + IG_GLYPH + '</span>' +
+                    '<span class="bh-ig-label">Beitrag ansehen</span>';
                 track.appendChild(item);
             });
         }
@@ -366,7 +364,7 @@
 
         function findAnchor() {
             var el = Array.from(document.querySelectorAll('.et_pb_text_inner, .et_pb_heading_container'))
-                .find(function (e) { return /meine letzte[s]?\s+feeds/i.test(e.textContent); });
+                .find(function (e) { return /meine letzte[sn]?\s+feeds/i.test(e.textContent); });
             return el ? el.closest('.et_pb_section') : null;
         }
 
@@ -386,6 +384,16 @@
                     wrap.innerHTML = '<div class="bh-ig-row"><div class="bh-ig-track"></div></div>';
                     var track = wrap.querySelector('.bh-ig-track');
                     buildTrack(track, currentUrls);
+
+                    var profile = cfg.igProfile || 'https://www.instagram.com/sally_bolinger/';
+                    var cta = document.createElement('a');
+                    cta.className = 'bh-ig-follow';
+                    cta.href = profile;
+                    cta.target = '_blank';
+                    cta.rel = 'noopener noreferrer';
+                    cta.textContent = 'Auf Instagram folgen';
+                    wrap.appendChild(cta);
+
                     anchor.insertAdjacentElement('afterend', wrap);
 
                     setInterval(refreshCarousel, 600000);

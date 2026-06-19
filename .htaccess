@@ -1,3 +1,18 @@
+# Serve WebP automatically when browser supports it and .webp file exists
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP_ACCEPT} image/webp
+    RewriteCond %{REQUEST_FILENAME} ^(.+)\.(jpe?g|png)$
+    RewriteCond %1.webp -f
+    RewriteRule ^(.+)\.(jpe?g|png)$ $1.webp [T=image/webp,L]
+</IfModule>
+<IfModule mod_headers.c>
+    <FilesMatch "\.(jpe?g|png)$">
+        Header append Vary Accept
+    </FilesMatch>
+    AddType image/webp .webp
+</IfModule>
+
 # Gzip compression
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript

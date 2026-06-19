@@ -15,6 +15,43 @@ function child_theme_divi_enqueue_styles() {
 	);
 }
 
+// Inject overrides in footer — after ALL Divi CSS regardless of customizer order.
+add_action( 'wp_footer', 'bh_button_overrides', 1 );
+function bh_button_overrides() {
+	?>
+	<style id="bh-button-overrides">
+	/* Kill Divi arrow icon on BOTH pseudo-elements (::before left, ::after right) */
+	.et_pb_button::before,
+	.et_pb_button::after,
+	a.et_pb_button::before,
+	a.et_pb_button::after,
+	.et_pb_button:hover::before,
+	.et_pb_button:hover::after,
+	a.et_pb_button:hover::before,
+	a.et_pb_button:hover::after,
+	.et_pb_module .et_pb_button:hover::before,
+	.et_pb_module .et_pb_button:hover::after {
+		content: none !important;
+		opacity: 0 !important;
+		display: none !important;
+		width: 0 !important;
+	}
+	.et_pb_button:hover,
+	.et_pb_module .et_pb_button:hover {
+		padding: .3em 1em !important;
+	}
+
+	/* Uniform vertical rhythm: drop stray 60px top margins so every content
+	   section is separated only by its 80px padding (40px on mobile). */
+	body.page-id-987550602 .et_pb_section_5,
+	body.page-id-987550606 .et_pb_section_2,
+	body.page-id-987550609 .et_pb_section_1 {
+		margin-top: 0 !important;
+	}
+	</style>
+	<?php
+}
+
 add_action( 'wp_enqueue_scripts', 'bh_enqueue_main_script' );
 function bh_enqueue_main_script() {
 	wp_enqueue_script(
@@ -32,6 +69,7 @@ function bh_enqueue_main_script() {
 		'impressumUrl'     => $impressum_page   ? get_permalink( $impressum_page )   : home_url( '/impressum/' ),
 		'datenschutzUrl'   => $datenschutz_page ? get_permalink( $datenschutz_page ) : home_url( '/datenschutz/' ),
 		'carouselEndpoint' => rest_url( 'bh/v1/ig-sally-latest' ),
+		'igProfile'        => 'https://www.instagram.com/sally_bolinger/',
 		'isWechseljahre'   => (int) is_page( 'wechseljahrecoaching' ),
 		'googleFontsUrl'   => 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap',
 		'navItems'         => bh_get_primary_nav_items(),
