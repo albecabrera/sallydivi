@@ -48,6 +48,61 @@ function bh_button_overrides() {
 	body.page-id-987550609 .et_pb_section_1 {
 		margin-top: 0 !important;
 	}
+
+	/* Über mich: Divi builder injects margin-top:52px on first content section —
+	   creates gap between fixed header and hero. Reset to 0 like other pages. */
+	body.page-id-987550606 .et_pb_section_0.et_pb_section {
+		margin-top: 0 !important;
+	}
+
+	/* Footer nav: Divi hides .et_pb_menu__menu on mobile via customizer CSS.
+	   Force it visible in the footer so links are always accessible. */
+	@media only screen and (max-width: 980px) {
+		.et_pb_section_0_tb_footer .et_pb_menu__menu {
+			display: block !important;
+		}
+		.et_pb_section_0_tb_footer .mobile_menu_bar,
+		.et_pb_section_0_tb_footer .et_mobile_menu_icon {
+			display: none !important;
+		}
+		.et_pb_section_0_tb_footer .et_pb_menu__menu ul.et-menu {
+			display: flex !important;
+			flex-direction: row !important;
+			flex-wrap: wrap !important;
+			justify-content: center !important;
+			gap: 4px 16px !important;
+		}
+		.et_pb_section_0_tb_footer .et_pb_menu__menu ul.et-menu li a {
+			display: block !important;
+			padding: 4px 0 !important;
+		}
+	}
+
+	/* Über mich mobile fixes */
+	@media only screen and (max-width: 980px) {
+		/* Hero fullwidth header: correct negative margins so it spans viewport
+		   without overflowing (Divi generates wrong values for this layout). */
+		body.page-id-987550606 .et_pb_fullwidth_header_0 {
+			margin-left: calc(50% - 50vw) !important;
+			margin-right: calc(50% - 50vw) !important;
+			width: 100vw !important;
+			max-width: 100vw !important;
+		}
+		/* Card columns 1/3 don't stack on mobile — row is flex nowrap so
+		   width alone doesn't work; switch direction to column. */
+		body.page-id-987550606 .et_pb_section_2 .et_pb_row_2 {
+			flex-direction: column !important;
+		}
+		body.page-id-987550606 .et_pb_section_2 .et_pb_row_2 .et_pb_column_1_3 {
+			flex: 0 0 100% !important;
+			width: 100% !important;
+			max-width: 100% !important;
+			margin-bottom: 20px !important;
+		}
+		body.page-id-987550606 .et_pb_section_2 .et_pb_row_2 .et_pb_column_1_3:last-child {
+			margin-bottom: 0 !important;
+		}
+	}
 	</style>
 	<?php
 }
@@ -64,8 +119,11 @@ function bh_enqueue_main_script() {
 
 	$impressum_page   = get_page_by_path( 'impressum',   OBJECT, 'page' );
 	$datenschutz_page = get_page_by_path( 'datenschutz', OBJECT, 'page' );
+	$contact_page     = get_page_by_path( 'contact-us',  OBJECT, 'page' );
 
 	wp_localize_script( 'bh-main', 'bhData', array(
+		'homeUrl'          => home_url( '/' ),
+		'kontaktUrl'       => $contact_page ? get_permalink( $contact_page ) : home_url( '/contact-us/' ),
 		'impressumUrl'     => $impressum_page   ? get_permalink( $impressum_page )   : home_url( '/impressum/' ),
 		'datenschutzUrl'   => $datenschutz_page ? get_permalink( $datenschutz_page ) : home_url( '/datenschutz/' ),
 		'carouselEndpoint' => rest_url( 'bh/v1/ig-sally-latest' ),

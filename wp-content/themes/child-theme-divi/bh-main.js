@@ -611,6 +611,33 @@
         });
     }
 
+    // ── Header/footer logos → home · botón Kontaktiere → contacto ──────────────
+    function initLogoLink() {
+        if (cfg.homeUrl) {
+            // Logo del header: módulo imagen sin <a> propio → envolverlo
+            var wrap = document.querySelector('.et_pb_image_0_tb_header .et_pb_image_wrap');
+            if (wrap && !wrap.closest('a')) {
+                var a = document.createElement('a');
+                a.href = cfg.homeUrl;
+                a.setAttribute('aria-label', 'Zur Startseite');
+                wrap.parentNode.insertBefore(a, wrap);
+                a.appendChild(wrap);
+            }
+            // Logo del footer: ya tiene <a href="#"> → corregir destino
+            document.querySelectorAll('.et_pb_image_0_tb_footer a').forEach(function (link) {
+                link.href = cfg.homeUrl;
+                link.setAttribute('aria-label', 'Zur Startseite');
+            });
+        }
+        // Botón "Kontaktiere mich" del header viene con href vacío
+        if (cfg.kontaktUrl) {
+            document.querySelectorAll('a.et_pb_button_0_tb_header').forEach(function (btn) {
+                var href = btn.getAttribute('href');
+                if (!href || href === '#') btn.href = cfg.kontaktUrl;
+            });
+        }
+    }
+
     // ── Init ────────────────────────────────────────────────────────────────────
     // initSidenav + initDesktopNav deferred to window.load so Divi's JS finishes
     // its menu DOM manipulation first.
@@ -623,6 +650,7 @@
     } else {
         window.addEventListener('load', initOnLoad);
     }
+    initLogoLink();
     initFooterMenu();
     initLegalBar();
     initFeedCleanup();
