@@ -678,6 +678,16 @@ body select:focus {
     pointer-events: auto !important;
 }
 
+/* Divi agrega margin-top:62px al slider del hero para compensar un sticky header
+   que este theme no usa (el header es estático y ocupa su propio espacio en flujo).
+   Ese margen crea una banda blanca entre navbar y hero → se anula en todos los
+   breakpoints. En mobile el offset bajo el header fijo lo da body{padding-top}.
+   El selector lleva #page-container para superar en especificidad al critical CSS
+   inline de Divi (.et_pb_fullwidth_slider_0{margin-top:62px!important} en <head>). */
+#page-container .et_pb_fullwidth_slider_0 {
+    margin-top: 0 !important;
+}
+
 /* ── Header mobile/tablet: hamburguesa izquierda · logo centrado · sticky ─────
    Divi oculta col-0 (logo) con display:none !important en todo < 980px.
    Logo del módulo menú tiene src vacío → se oculta.
@@ -702,13 +712,6 @@ body select:focus {
     #page-container,
     #main-content,
     .et-l--body {
-        margin-top: 0 !important;
-    }
-
-    /* Divi agrega margin-top:62px al slider para compensar su propio sticky header.
-       En mobile/tablet usamos nuestro propio offset (60px arriba), así que el
-       margin del slider se anula para evitar el doble gap. */
-    .et_pb_fullwidth_slider_0 {
         margin-top: 0 !important;
     }
 
@@ -1169,37 +1172,6 @@ body.page-id-987550606 .social_about_img img {
     background-color: #c6a3aa !important;
 }
 
-/* ── Hero Über mich: mismo color primario + espaciado 90-130px ──────────────
-   Section 0: padding reducido para que navbar→hero→social_about quede en rango.
-   Section 2: margin-top original era 193px (excesivo). */
-.page-id-987550606 .et_pb_section:first-of-type,
-.page-id-987550606 .et_pb_section_0 {
-    background-color: #c6a3aa !important;
-    padding-top: 60px !important;
-    padding-bottom: 60px !important;
-    margin-top: 0 !important;
-}
-.page-id-987550606 .social_about {
-    padding-top: 60px !important;
-    padding-bottom: 60px !important;
-}
-.page-id-987550606 .et_pb_section_2 {
-    margin-top: 60px !important;
-}
-
-/* Kill cualquier blue inline que Divi inyecte en esa sección */
-.page-id-987550606 .et_pb_section:first-of-type[style*="background"],
-.page-id-987550606 .et_pb_section_0[style*="background"] {
-    background-color: #c6a3aa !important;
-    background-image: none !important;
-}
-
-/* Row interno del hero: fondo transparente para revelar el color de la sección */
-.page-id-987550606 .et_pb_section:first-of-type .et_pb_row,
-.page-id-987550606 .et_pb_section_0 .et_pb_row {
-    background-color: transparent !important;
-    background-image: none !important;
-}
 
 /* ── Hero: ocultar botón "Erfahre mehr" en todos los dispositivos ─────────── */
 .et_pb_slide_description .et_pb_button_wrapper {
@@ -1399,12 +1371,7 @@ a {
         padding-bottom: 40px !important;
     }
 }
-/* Exceptions: Über mich hero keeps its 60px, newsletter keeps 50px */
-.page-id-987550606 .et_pb_section:first-of-type,
-.page-id-987550606 .et_pb_section_0 {
-    padding-top: 60px !important;
-    padding-bottom: 60px !important;
-}
+/* Exceptions: newsletter keeps 50px */
 .et_pb_section:has(.et_pb_newsletter),
 .et_pb_section:has(.sally-newsletter-wrap) {
     padding-top: 50px !important;
@@ -1695,7 +1662,7 @@ body #page-container a.et_pb_button:hover {
 }
 
 /* ── Legal bar (Impressum / Datenschutz below footer) ───────────────────────── */
-a.bh-dev-credit { color: #1a56db !important; text-decoration: none; }
+a.bh-dev-credit { color: var(--color-secondary) !important; text-decoration: none; }
 a.bh-dev-credit:hover,
 a.bh-dev-credit:focus { text-decoration: underline; }
 
@@ -1704,11 +1671,11 @@ a.bh-dev-credit:focus { text-decoration: underline; }
     padding: 12px 16px 20px;
     font-size: 14px;
     line-height: 1.4;
-    color: #1a2e4a;
+    color: var(--color-text-muted);
 }
-.bh-impressum-below-footer a { text-decoration: none; color: #1a56db; }
+.bh-impressum-below-footer a { text-decoration: none; color: var(--color-secondary); }
 .bh-impressum-below-footer a:hover,
-.bh-impressum-below-footer a:focus { text-decoration: underline; }
+.bh-impressum-below-footer a:focus { text-decoration: underline; color: var(--color-primary); }
 
 /* ── Scroll cue (hero chevron) ───────────────────────────────────────────── */
 .bh-scroll-cue {
@@ -1750,4 +1717,61 @@ a.bh-dev-credit:focus { text-decoration: underline; }
 }
 @media (prefers-reduced-motion: reduce) {
     .bh-scroll-cue svg { animation: none; }
+}
+
+/* ── Links de texto en contenido: color de marca en vez del azul default ────
+   Solo dentro de #main-content (no toca header/footer del Theme Builder). */
+#main-content .et_pb_text a:not(.et_pb_button) {
+    color: var(--color-secondary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 300ms ease;
+}
+#main-content .et_pb_text a:not(.et_pb_button):hover,
+#main-content .et_pb_text a:not(.et_pb_button):focus {
+    color: var(--color-primary);
+}
+
+/* ── Wechseljahrecoaching: retrato superpuesto ──────────────────────────────
+   El módulo trae padding-right:44px que deja una franja vacía sobresaliendo
+   a la derecha del marco blanco → el badge no abraza la esquina de la foto. */
+.page-id-987550700 .et_pb_image_1 {
+    padding-right: 0 !important;
+}
+
+/* ── Roboto self-hosted (400 + 700, latin y latin-ext) ─────────────────────
+   Antes venía de fonts.googleapis.com solo tras aceptar cookies → quien
+   rechazaba veía la fuente fallback. Self-hosted: tipografía idéntica para
+   todos, sin request externo ni implicación GDPR. */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/roboto-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/roboto-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 500 700;
+    font-display: swap;
+    src: url('fonts/roboto-latin-700.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 500 700;
+    font-display: swap;
+    src: url('fonts/roboto-latin-ext-700.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }

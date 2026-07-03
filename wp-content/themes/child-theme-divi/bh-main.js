@@ -500,22 +500,13 @@
     }
 
     // ── 9. Cookie consent banner ────────────────────────────────────────────────
+    // Roboto es self-hosted (child theme /fonts) — ya no se carga nada externo
+    // tras el consentimiento; el banner solo informa de cookies técnicas.
     function initCookieBanner() {
         var KEY = 'bh-cookie-consent';
-        var fontsUrl = cfg.googleFontsUrl || '';
-
-        function loadFonts() {
-            if (!fontsUrl || document.getElementById('bh-gfonts')) return;
-            var link = document.createElement('link');
-            link.id = 'bh-gfonts';
-            link.rel = 'stylesheet';
-            link.href = fontsUrl;
-            document.head.appendChild(link);
-        }
 
         var consent = localStorage.getItem(KEY);
-        if (consent === 'accepted') { loadFonts(); return; }
-        if (consent === 'declined') { return; }
+        if (consent === 'accepted' || consent === 'declined') { return; }
 
         var datenschutzUrl = cfg.datenschutzUrl || '/datenschutz/';
 
@@ -525,8 +516,8 @@
         banner.setAttribute('aria-labelledby', 'bh-cookie-msg');
         banner.innerHTML =
             '<div class="bh-cookie-inner">' +
-                '<p id="bh-cookie-msg">Wir verwenden technisch notwendige Cookies sowie <strong>Google Fonts</strong> ' +
-                'für ein einheitliches Schriftbild. Weitere Infos in unserer ' +
+                '<p id="bh-cookie-msg">Wir verwenden ausschließlich technisch notwendige Cookies. ' +
+                'Weitere Infos in unserer ' +
                 '<a href="' + datenschutzUrl + '">Datenschutzerklärung</a>.</p>' +
                 '<div class="bh-cookie-actions">' +
                     '<button id="bh-cookie-accept" type="button">Alle akzeptieren</button>' +
@@ -538,7 +529,6 @@
 
         document.getElementById('bh-cookie-accept').addEventListener('click', function () {
             localStorage.setItem(KEY, 'accepted');
-            loadFonts();
             banner.remove();
         });
 

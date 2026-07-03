@@ -9,9 +9,12 @@ require_once get_stylesheet_directory() . '/inc/instagram-api.php';
 add_action( 'wp_enqueue_scripts', 'child_theme_divi_enqueue_styles' );
 function child_theme_divi_enqueue_styles() {
 	wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
+	// filemtime as version: page cache can serve old HTML briefly, but a CSS
+	// edit always changes the URL, so browsers never keep a stale stylesheet.
 	wp_enqueue_style( 'child-style',
 		get_stylesheet_directory_uri() . '/style.css',
-		array('parent-style')
+		array('parent-style'),
+		filemtime( get_stylesheet_directory() . '/style.css' )
 	);
 }
 
@@ -129,7 +132,6 @@ function bh_enqueue_main_script() {
 		'carouselEndpoint' => rest_url( 'bh/v1/ig-sally-latest' ),
 		'igProfile'        => 'https://www.instagram.com/sally_bolinger/',
 		'isWechseljahre'   => (int) is_page( 'wechseljahrecoaching' ),
-		'googleFontsUrl'   => 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap',
 		'navItems'         => bh_get_primary_nav_items(),
 	) );
 }
@@ -175,14 +177,33 @@ function bh_replace_viewport( $html ) {
 	);
 }
 
-// 2. Preconnect to Google Fonts origins so the browser opens the TCP/TLS
-//    connection while the HTML is still being parsed (saves ~150-300 ms).
-add_action( 'wp_head', 'bh_preconnect_fonts', 1 );
-function bh_preconnect_fonts() {
-    // Google Fonts se cargan condicionalmente desde JS tras el cookie consent (DSGVO).
-    // Solo dns-prefetch aquí — preconnect y preload omitidos (harían TCP/TLS con Google sin consentimiento).
-    echo '<link rel="dns-prefetch" href="//fonts.googleapis.com">' . "\n";
-    echo '<link rel="dns-prefetch" href="//fonts.gstatic.com">' . "\n";
+// 2. Roboto is self-hosted (child theme /fonts, @font-face in style.css).
+//    Divi would still enqueue Roboto/Open Sans from fonts.gstatic.com on its
+//    own (inline @font-face styles) — remove those so no request ever leaves
+//    for Google (GDPR + speed). Divi 5 ignores et_use_google_fonts, so the
+//    handles are dequeued directly.
+add_filter( 'et_use_google_fonts', '__return_false' );
+add_action( 'wp_enqueue_scripts', function () {
+    foreach ( [ 'et-builder-googlefonts-cached', 'et-builder-googlefonts', 'et-divi-open-sans', 'divi-fonts' ] as $handle ) {
+        wp_dequeue_style( $handle );
+        wp_deregister_style( $handle );
+    }
+}, 99 );
+// Drop the now-pointless preconnect to fonts.gstatic.com.
+add_filter( 'wp_resource_hints', function ( $urls, $relation_type ) {
+    if ( 'preconnect' === $relation_type || 'dns-prefetch' === $relation_type ) {
+        $urls = array_filter( $urls, function ( $url ) {
+            $href = is_array( $url ) ? ( $url['href'] ?? '' ) : $url;
+            return strpos( $href, 'fonts.gstatic.com' ) === false && strpos( $href, 'fonts.googleapis.com' ) === false;
+        } );
+    }
+    return $urls;
+}, 10, 2 );
+
+//    Preload the latin file so text renders with the right font on first paint.
+add_action( 'wp_head', 'bh_preload_fonts', 1 );
+function bh_preload_fonts() {
+    echo '<link rel="preload" href="' . esc_url( get_stylesheet_directory_uri() . '/fonts/roboto-latin.woff2' ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
 }
 
 // 3. Remove WordPress emoji scripts/styles – they add an extra HTTP request
@@ -260,6 +281,37 @@ add_filter( 'wp_get_attachment_image_attributes', function( $attr ) {
 add_filter( 'the_content', function( $content ) {
     return str_replace( '<iframe ', '<iframe loading="lazy" ', $content );
 }, 20 );
+
+// Divi 5 renders module <img> tags without alt even when the attachment has one
+// in the media library. Enrich the final HTML: alt from _wp_attachment_image_alt
+// (a11y/SEO) and a core-standard sizes attribute when missing (better srcset pick).
+add_filter( 'the_content', 'bh_enrich_content_images', 25 );
+add_filter( 'et_builder_render_layout', 'bh_enrich_content_images', 25 );
+function bh_enrich_content_images( $content ) {
+    if ( is_admin() || isset( $_GET['et_fb'] ) || strpos( $content, '<img' ) === false ) {
+        return $content;
+    }
+    return preg_replace_callback( '/<img\b[^>]*>/', function ( $m ) {
+        $img = $m[0];
+        if ( ! preg_match( '/\bwp-image-(\d+)/', $img, $idm ) ) {
+            return $img;
+        }
+        $id = (int) $idm[1];
+        if ( ! preg_match( '/\balt=/', $img ) ) {
+            $alt = trim( (string) get_post_meta( $id, '_wp_attachment_image_alt', true ) );
+            if ( $alt !== '' ) {
+                $img = str_replace( '<img ', '<img alt="' . esc_attr( $alt ) . '" ', $img );
+            }
+        }
+        if ( strpos( $img, ' sizes=' ) === false
+            && strpos( $img, ' srcset=' ) !== false
+            && preg_match( '/\bwidth="(\d+)"/', $img, $wm ) ) {
+            $w   = (int) $wm[1];
+            $img = str_replace( ' srcset=', ' sizes="(max-width: ' . $w . 'px) 100vw, ' . $w . 'px" srcset=', $img );
+        }
+        return $img;
+    }, $content );
+}
 
 // Defer non-critical scripts that don't need the parser.
 // Skips scripts already marked defer/async and the jQuery dependency chain.
