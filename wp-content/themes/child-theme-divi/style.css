@@ -151,6 +151,14 @@ body #page-container a.et_pb_button:hover {
     height: auto !important;
 }
 
+/* Divi legte einen ZWEITEN Schliessen-Button an (Icon_4, Interaction v4vo7uw3ul —
+   schliesst dasselbe Popup nds7mk13ev). Nachdem Icon_5 per JS in die Popup-Card
+   verschoben und in allen Breakpoints sichtbar ist, ist Icon_4 überflüssig und
+   erscheint auf Phone/kleinen Breiten als zweites Kreuz. Dauerhaft ausblenden. */
+.et_pb_icon_4_tb_footer {
+    display: none !important;
+}
+
 /* Fix dropdown arrow "3" in nav menu items with children */
 .et-menu .menu-item-has-children > a:first-child:after {
     display: none;
@@ -1531,7 +1539,7 @@ body #page-container a.et_pb_button:hover {
     border-top: 2px solid #c6a3aa;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
     padding: 16px 24px;
-    font-family: system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.5;
     color: #2b2b2b;
@@ -1554,7 +1562,7 @@ body #page-container a.et_pb_button:hover {
     border-radius: 4px;
     padding: 10px 22px;
     font-size: 14px;
-    font-family: system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
@@ -1568,7 +1576,7 @@ body #page-container a.et_pb_button:hover {
     border-radius: 4px;
     padding: 10px 22px;
     font-size: 14px;
-    font-family: system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
     cursor: pointer;
     transition: border-color 0.2s, color 0.2s;
     white-space: nowrap;

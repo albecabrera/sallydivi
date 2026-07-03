@@ -313,9 +313,16 @@ function bh_enrich_content_images( $content ) {
     }, $content );
 }
 
-// Defer non-critical scripts that don't need the parser.
+// Defer non-critical scripts that don't need the parser — FRONT-END ONLY.
+// Without is_admin() this also touched wp-admin (incl. et_fb=1 Visual Builder
+// bootstrap and JS-SPA admin pages like Smash Balloon's Feed Builder), forcing
+// defer on backbone/media-views/vue etc. and breaking their load order — that
+// showed up as a blank white page in admin.php?page=sbi-feed-builder.
 // Skips scripts already marked defer/async and the jQuery dependency chain.
 add_filter( 'script_loader_tag', function( $tag, $handle, $src ) {
+    if ( is_admin() ) {
+        return $tag;
+    }
     $skip = [ 'jquery', 'jquery-core', 'jquery-migrate', 'et-builder-modules-script',
                'et_builder_5-root', 'et_builder_5-app-ui', 'et-core-common' ];
     if ( in_array( $handle, $skip, true ) ) {

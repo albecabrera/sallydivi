@@ -628,6 +628,32 @@
         }
     }
 
+    // ── Newsletter-Popup: botón cerrar sobrevive a "Hide on Phone" de Divi ──────
+    // Divi oculta con display:none!important la columna decorativa que aloja el
+    // ícono de cerrar (Icon_5) en el breakpoint phone (<768px). position:absolute
+    // no rescata un elemento cuyo ancestro tiene display:none — el botón queda
+    // con bounding box 0x0, invisible e inclickeable. Se lo reubica como hijo
+    // directo de la card del popup (.et_pb_row_6_tb_footer, siempre visible y ya
+    // position:relative), inmune a qué columna decida ocultar Divi en cada ancho.
+    function initPopupCloseButtonFix() {
+        var closeBtn = document.querySelector('.et_pb_icon_5_tb_footer');
+        var card = document.querySelector('.et_pb_row_6_tb_footer');
+        if (closeBtn && card && closeBtn.parentElement !== card) {
+            card.appendChild(closeBtn);
+        }
+    }
+
+    // ── Logo fantasma del módulo menú ───────────────────────────────────────────
+    // El módulo menú de Divi renderiza <img src=""> (logo nunca configurado).
+    // Un src vacío cuenta como imagen rota para lectores/auditorías; se elimina.
+    function initGhostLogoCleanup() {
+        document.querySelectorAll('.et_pb_menu__logo img[src=""], .et_pb_menu__logo img:not([src])')
+            .forEach(function (img) {
+                var wrap = img.closest('.et_pb_menu__logo-wrap') || img.closest('.et_pb_menu__logo');
+                (wrap || img).remove();
+            });
+    }
+
     // ── Init ────────────────────────────────────────────────────────────────────
     // initSidenav + initDesktopNav deferred to window.load so Divi's JS finishes
     // its menu DOM manipulation first.
@@ -641,6 +667,8 @@
         window.addEventListener('load', initOnLoad);
     }
     initLogoLink();
+    initPopupCloseButtonFix();
+    initGhostLogoCleanup();
     initFooterMenu();
     initLegalBar();
     initFeedCleanup();

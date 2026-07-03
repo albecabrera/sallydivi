@@ -99,7 +99,15 @@ define( 'WP_DEBUG_LOG', false );
 
 define( 'FS_METHOD', 'direct' );
 define( 'DISALLOW_FILE_EDIT', true );
-define( 'FORCE_SSL_ADMIN',    true );
+// FORCE_SSL_ADMIN solo en el dominio real de producción — localhost (XAMPP/Docker
+// dev) no tiene un vhost HTTPS funcional y forzarlo deja wp-login/wp-admin
+// inalcanzables (el navegador intenta TLS contra un puerto sin handshake válido).
+$bh_is_local_dev = isset( $_SERVER['HTTP_HOST'] ) && in_array(
+    parse_url( 'http://' . $_SERVER['HTTP_HOST'], PHP_URL_HOST ),
+    [ 'localhost', '127.0.0.1' ],
+    true
+);
+define( 'FORCE_SSL_ADMIN', ! $bh_is_local_dev );
 define( 'DISABLE_WP_CRON',    true );
 // Gmail App Password — generate at myaccount.google.com → Security → App passwords
 // Leave empty on local dev; set on production server
